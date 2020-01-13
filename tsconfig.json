@@ -17,7 +17,15 @@
     "lib": [
       "es2018",
       "dom"
-    ]
+    ],
+    "paths": {
+      "sartography-workflow-lib": [
+        "dist/sartography-workflow-lib"
+      ],
+      "sartography-workflow-lib/*": [
+        "dist/sartography-workflow-lib/*"
+      ]
+    }
   },
   "angularCompilerOptions": {
     "fullTemplateTypeCheck": true,

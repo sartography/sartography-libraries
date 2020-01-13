@@ -2,5 +2,41 @@
   "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
   "version": 1,
   "newProjectRoot": "projects",
-  "projects": {}
+  "projects": {
+    "sartography-workflow-lib": {
+      "projectType": "library",
+      "root": "projects/sartography-workflow-lib",
+      "sourceRoot": "projects/sartography-workflow-lib/src",
+      "prefix": "lib",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-ng-packagr:build",
+          "options": {
+            "tsConfig": "projects/sartography-workflow-lib/tsconfig.lib.json",
+            "project": "projects/sartography-workflow-lib/ng-package.json"
+          }
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "projects/sartography-workflow-lib/src/test.ts",
+            "tsConfig": "projects/sartography-workflow-lib/tsconfig.spec.json",
+            "karmaConfig": "projects/sartography-workflow-lib/karma.conf.js"
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "projects/sartography-workflow-lib/tsconfig.lib.json",
+              "projects/sartography-workflow-lib/tsconfig.spec.json"
+            ],
+            "exclude": [
+              "**/node_modules/**"
+            ]
+          }
+        }
+      }
+    }},
+  "defaultProject": "sartography-workflow-lib"
 }
