@@ -175,11 +175,11 @@ export class ApiService {
   }
 
   /** Update a File and its File Metadata Workflow Specification */
-  updateFileMeta(fileMeta: FileMeta): Observable<FileMeta> {
+  updateFileMeta(specId: string, fileMeta: FileMeta): Observable<FileMeta> {
     const url = this.apiRoot + this.endpoints.file
       .replace('{file_id}', fileMeta.id.toString());
     const formData = new FormData();
-    formData.append('workflow_spec_id', fileMeta.workflow_spec_id);
+    formData.append('workflow_spec_id', specId);
     formData.append('file', fileMeta.file);
 
     return this.httpClient

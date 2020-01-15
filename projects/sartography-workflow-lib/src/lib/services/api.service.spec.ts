@@ -263,7 +263,7 @@ describe('ApiService', () => {
       workflow_spec_id: mockFileMeta0.workflow_spec_id,
     };
 
-    service.updateFileMeta(modifiedFileMeta).subscribe(data => {
+    service.updateFileMeta(mockFileMeta0.workflow_spec_id, modifiedFileMeta).subscribe(data => {
       expect(data.workflow_spec_id).toEqual(modifiedFileMeta.workflow_spec_id);
       expect(data.name).toEqual(modifiedFileMeta.name);
       expect(data.content_type).toEqual(modifiedFileMeta.content_type);
