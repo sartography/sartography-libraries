@@ -1,19 +1,13 @@
-import { NgModule } from '@angular/core';
-import { SartographyWorkflowLibComponent } from './components/sartography-workflow-lib.component';
-import {AppEnvironment} from './types/app-environment';
+import {NgModule} from '@angular/core';
+import {SartographyWorkflowLibComponent} from './components/sartography-workflow-lib.component';
+import {MockEnvironment} from './testing/mocks/environment.mocks';
 
-class DefaultEnvironment implements AppEnvironment {
-  production = false;
-  api = '';
-  googleAnalyticsKey = '';
-  irbUrl = '';
-}
 
 @NgModule({
   declarations: [SartographyWorkflowLibComponent],
-  imports: [
-  ],
+  imports: [],
   exports: [SartographyWorkflowLibComponent],
-  providers: [{provide: 'APP_ENVIRONMENT', useClass: DefaultEnvironment}]
+  providers: [{provide: 'APP_ENVIRONMENT', useClass: MockEnvironment}]
 })
-export class SartographyWorkflowLibModule { }
+export class SartographyWorkflowLibModule {
+}

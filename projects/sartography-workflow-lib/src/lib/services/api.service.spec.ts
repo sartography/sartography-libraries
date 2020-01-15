@@ -1,20 +1,13 @@
 import {HttpClientTestingModule, HttpTestingController} from '@angular/common/http/testing';
 import {TestBed} from '@angular/core/testing';
+import {MockEnvironment} from '../testing/mocks/environment.mocks';
 import {mockStudies, mockStudy0} from '../testing/mocks/study.mocks';
 import {mockTask0} from '../testing/mocks/task.mocks';
 import {mockWorkflowSpecs} from '../testing/mocks/workflow-spec.mocks';
 import {mockWorkflowTasks} from '../testing/mocks/workflow-task.mocks';
 import {mockWorkflow0, mockWorkflows} from '../testing/mocks/workflow.mocks';
-import {AppEnvironment} from '../types/app-environment';
 
 import {ApiService} from './api.service';
-
-class MockEnvironment implements AppEnvironment {
-  production = false;
-  api = 'apiRoot';
-  googleAnalyticsKey = '';
-  irbUrl = '';
-}
 
 describe('ApiService', () => {
   beforeEach(() => {
