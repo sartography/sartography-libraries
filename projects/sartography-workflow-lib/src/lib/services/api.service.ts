@@ -1,4 +1,4 @@
-import {HttpClient, HttpParams} from '@angular/common/http';
+import {HttpClient, HttpErrorResponse, HttpEvent, HttpParams, HttpResponse} from '@angular/common/http';
 import {Inject, Injectable} from '@angular/core';
 import {Observable, throwError} from 'rxjs';
 import {catchError} from 'rxjs/operators';
@@ -75,9 +75,9 @@ export class ApiService {
   }
 
   /** Update a specific Study */
-  updateStudy(studyId: string, study: Study): Observable<Study> {
+  updateStudy(studyId: number, study: Study): Observable<Study> {
     const url = this.apiRoot + this.endpoints.study
-      .replace('{study_id}', studyId);
+      .replace('{study_id}', studyId.toString());
 
     return this.httpClient
       .post<Study>(url, study)
@@ -85,21 +85,21 @@ export class ApiService {
   }
 
   /** Get status of a specific Study */
-  getStudyStatus(studyId: number): Observable<any> {
+  getStudyStatus(studyId: number): Observable<HttpResponse<any>> {
     const url = this.apiRoot + this.endpoints.studyStatus
       .replace('{study_id}', studyId.toString());
 
-    return this.httpClient.get<any>(url)
+    return this.httpClient.get<HttpResponse<any>>(url, {observe: 'response'})
       .pipe(catchError(this._handleError));
   }
 
   /** Add a Workflow to a specific Study */
-  addWorkflowForStudy(studyId: number, workflowSpecId: string): Observable<Study> {
+  addWorkflowForStudy(studyId: number, workflowSpecId: string): Observable<Workflow[]> {
     const url = this.apiRoot + this.endpoints.workflowListForStudy
       .replace('{study_id}', studyId.toString());
 
     return this.httpClient
-      .post<Study>(url, {id: workflowSpecId})
+      .post<Workflow[]>(url, {id: workflowSpecId})
       .pipe(catchError(this._handleError));
   }
 
@@ -132,12 +132,22 @@ export class ApiService {
   }
 
   /** Update a Workflow Specification */
+  getWorkflowSpecification(specId: string): Observable<WorkflowSpec> {
+    const url = this.apiRoot + this.endpoints.workflowSpec
+      .replace('{spec_id}', specId);
+
+    return this.httpClient
+      .get<WorkflowSpec>(url)
+      .pipe(catchError(this._handleError));
+  }
+
+  /** Update a Workflow Specification */
   updateWorkflowSpecification(specId: string, newSpec: WorkflowSpec): Observable<WorkflowSpec> {
     const url = this.apiRoot + this.endpoints.workflowSpec
       .replace('{spec_id}', specId);
 
     return this.httpClient
-      .post<WorkflowSpec>(url, newSpec)
+      .put<WorkflowSpec>(url, newSpec)
       .pipe(catchError(this._handleError));
   }
 
@@ -217,16 +227,6 @@ export class ApiService {
       .pipe(catchError(this._handleError));
   }
 
-  /** Update a specific Task for a Workflow */
-  updateTaskForWorkflow(workflowId: number, taskId: string, data: any): Observable<WorkflowTask> {
-    const url = this.apiRoot + this.endpoints.taskForWorkflow
-      .replace('{workflow_id}', workflowId.toString())
-      .replace('{task_id}', taskId);
-
-    return this.httpClient.put<WorkflowTask>(url, data)
-      .pipe(catchError(this._handleError));
-  }
-
   /** Update Task Data for a specific Workflow Task */
   updateTaskDataForWorkflow(workflowId: number, taskId: string, data: any): Observable<WorkflowTask> {
     const url = this.apiRoot + this.endpoints.taskDataForWorkflow
@@ -237,7 +237,7 @@ export class ApiService {
       .pipe(catchError(this._handleError));
   }
 
-  private _handleError(error: ApiError) {
+  private _handleError(error: ApiError): Observable<never> {
     return throwError(error.message || 'Could not complete your request; please try again later.');
   }
 }
