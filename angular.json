@@ -21,7 +21,14 @@
           "options": {
             "main": "projects/sartography-workflow-lib/src/test.ts",
             "tsConfig": "projects/sartography-workflow-lib/tsconfig.spec.json",
-            "karmaConfig": "projects/sartography-workflow-lib/karma.conf.js"
+            "karmaConfig": "projects/sartography-workflow-lib/karma.conf.js",
+            "codeCoverage": true,
+            "codeCoverageExclude": [
+              "src/lib/testing/mocks/*",
+              "src/lib/types/*",
+              "src/public-api.ts",
+              "src/test.ts"
+            ]
           }
         },
         "lint": {
