@@ -8,6 +8,8 @@ export const mockFileMeta0: FileMeta = {
   file: new File([], 'one-fish.bpmn'),
   type: FileType.BPMN,
   workflow_spec_id: mockWorkflowSpec0.id,
+  version: '1.0',
+  last_updated: new Date('2020-01-23T12:34:12.345Z'),
 };
 
 export const mockFileMeta1: FileMeta = {
@@ -17,6 +19,8 @@ export const mockFileMeta1: FileMeta = {
   file: new File([], 'two-fish.bpmn'),
   type: FileType.BPMN,
   workflow_spec_id: mockWorkflowSpec0.id,
+  version: '1.0',
+  last_updated: new Date('2020-01-23T12:34:12.345Z'),
 };
 
 export const mockFileMeta2: FileMeta = {
@@ -26,6 +30,8 @@ export const mockFileMeta2: FileMeta = {
   file: new File([], 'red-fish.bpmn'),
   type: FileType.BPMN,
   workflow_spec_id: mockWorkflowSpec0.id,
+  version: '1.0',
+  last_updated: new Date('2020-01-23T12:34:12.345Z'),
 };
 
 export const mockFileMeta3: FileMeta = {
@@ -35,6 +41,8 @@ export const mockFileMeta3: FileMeta = {
   file: new File([], 'blue-fish.bpmn'),
   type: FileType.BPMN,
   workflow_spec_id: mockWorkflowSpec0.id,
+  version: '1.0',
+  last_updated: new Date('2020-01-23T12:34:12.345Z'),
 };
 
 export const mockFileMetas: FileMeta[] = [
