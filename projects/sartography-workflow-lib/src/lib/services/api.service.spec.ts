@@ -302,12 +302,12 @@ describe('ApiService', () => {
     const badId = 666;
     service.getStudy(badId).subscribe(
       data => expect(data).toBeNull(),
-      err => expect(err.message).toEqual(mockErrorResponse.message)
+      err => expect(err).toEqual('Http failure response for apiRoot/study/666: 42 waaaa')
     );
 
     const req = httpMock.expectOne(`apiRoot/study/${badId}`);
     expect(req.request.method).toEqual('GET');
-    req.error(mockErrorResponse);
+    req.error(mockErrorResponse, {status: 42, statusText: 'waaaa'});
   });
 
 });
