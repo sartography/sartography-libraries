@@ -187,6 +187,15 @@ export class ApiService {
       .pipe(catchError(this._handleError));
   }
 
+  deleteFileMeta(fileMetaId: number): Observable<any> {
+    const url = this.apiRoot + this.endpoints.file
+      .replace('{file_id}', fileMetaId.toString());
+
+    return this.httpClient
+      .delete<FileMeta>(url)
+      .pipe(catchError(this._handleError));
+  }
+
   /** Get a specific File */
   getFileData(fileId: number): Observable<Blob> {
     const url = this.apiRoot + this.endpoints.fileData

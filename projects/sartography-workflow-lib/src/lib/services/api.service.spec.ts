@@ -274,6 +274,16 @@ describe('ApiService', () => {
     req.flush(modifiedFileMeta);
   });
 
+  it('should delete a given file', () => {
+    service.deleteFileMeta(mockFileMeta0.id).subscribe(data => {
+      expect(data).toBeNull();
+    });
+
+    const req = httpMock.expectOne(`apiRoot/file/${mockFileMeta0.id}`);
+    expect(req.request.method).toEqual('DELETE');
+    req.flush(null);
+  });
+
   it('should get file data for a given file', () => {
     service.getFileData(mockFileMeta0.id).subscribe((data: File) => {
       expect(data.type).toEqual(mockFileMeta0.file.type);
