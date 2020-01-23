@@ -151,6 +151,16 @@ export class ApiService {
       .pipe(catchError(this._handleError));
   }
 
+  /** Update a Workflow Specification */
+  deleteWorkflowSpecification(specId: string): Observable<null> {
+    const url = this.apiRoot + this.endpoints.workflowSpec
+      .replace('{spec_id}', specId);
+
+    return this.httpClient
+      .delete<null>(url)
+      .pipe(catchError(this._handleError));
+  }
+
   /** Get all Files and their File Metadata for a Workflow Specification */
   listBpmnFiles(specId: string): Observable<FileMeta[]> {
     const url = this.apiRoot + this.endpoints.fileList;
@@ -187,12 +197,12 @@ export class ApiService {
       .pipe(catchError(this._handleError));
   }
 
-  deleteFileMeta(fileMetaId: number): Observable<any> {
+  deleteFileMeta(fileMetaId: number): Observable<null> {
     const url = this.apiRoot + this.endpoints.file
       .replace('{file_id}', fileMetaId.toString());
 
     return this.httpClient
-      .delete<FileMeta>(url)
+      .delete<null>(url)
       .pipe(catchError(this._handleError));
   }
 
