@@ -20,3 +20,5 @@ export * from './lib/testing/mocks/task.mocks';
 export * from './lib/testing/mocks/workflow.mocks';
 export * from './lib/testing/mocks/workflow-spec.mocks';
 export * from './lib/testing/mocks/workflow-task.mocks';
+export * from './lib/static/bpmn';
+export * from './lib/static/dmn';
