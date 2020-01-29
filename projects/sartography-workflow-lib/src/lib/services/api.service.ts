@@ -247,12 +247,12 @@ export class ApiService {
   }
 
   /** Update Task Data for a specific Workflow Task */
-  updateTaskDataForWorkflow(workflowId: number, taskId: string, data: any): Observable<WorkflowTask> {
+  updateTaskDataForWorkflow(workflowId: number, taskId: string, data: any): Observable<Workflow> {
     const url = this.apiRoot + this.endpoints.taskDataForWorkflow
       .replace('{workflow_id}', workflowId.toString())
       .replace('{task_id}', taskId);
 
-    return this.httpClient.put<WorkflowTask>(url, data)
+    return this.httpClient.put<Workflow>(url, data)
       .pipe(catchError(this._handleError));
   }
 

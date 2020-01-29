@@ -298,14 +298,14 @@ describe('ApiService', () => {
 
   it('should update Task data for a given Workflow', () => {
     const newData = {process_id: 'abc123'};
-    service.updateTaskDataForWorkflow(mockWorkflow0.id, mockWorkflowTask0.id, newData).subscribe(data => {
-      expect(data.name).toEqual(mockWorkflowTask0.name);
-      expect(data.title).toEqual(mockWorkflowTask0.title);
+    service.updateTaskDataForWorkflow(mockWorkflow0.id, mockWorkflowTask0.id, newData).subscribe(workflow => {
+      expect(workflow.id).toEqual(mockWorkflow0.id);
+      expect(workflow.status).toEqual(mockWorkflow0.status);
     });
 
     const req = httpMock.expectOne(`apiRoot/workflow/${mockWorkflow0.id}/task/${mockWorkflowTask0.id}/data`);
     expect(req.request.method).toEqual('PUT');
-    req.flush(mockWorkflowTask0);
+    req.flush(mockWorkflow0);
   });
 
   it('should throw an error', () => {
