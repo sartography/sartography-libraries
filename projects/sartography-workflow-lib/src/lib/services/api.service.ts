@@ -27,6 +27,7 @@ export class ApiService {
     file: '/file/{file_id}',
     fileData: '/file/{file_id}/data',
     workflow: '/workflow/{workflow_id}',
+    taskListAllForWorkflow: '/workflow/{workflow_id}/all_tasks',
     taskListForWorkflow: '/workflow/{workflow_id}/tasks',
     taskForWorkflow: '/workflow/{workflow_id}/task/{task_id}',
     taskDataForWorkflow: '/workflow/{workflow_id}/task/{task_id}/data',
@@ -239,9 +240,9 @@ export class ApiService {
   }
 
   /** Get all Tasks for a Workflow */
-  getTaskListForWorkflow(workflowId: number): Observable<WorkflowTask[]> {
-    const url = this.apiRoot + this.endpoints.taskListForWorkflow
-      .replace('{workflow_id}', workflowId.toString());
+  getTaskListForWorkflow(workflowId: number, allTasks = false): Observable<WorkflowTask[]> {
+    const endpoint = allTasks ? this.endpoints.taskListAllForWorkflow : this.endpoints.taskListForWorkflow;
+    const url = this.apiRoot + endpoint.replace('{workflow_id}', workflowId.toString());
 
     return this.httpClient
       .get<WorkflowTask[]>(url)
