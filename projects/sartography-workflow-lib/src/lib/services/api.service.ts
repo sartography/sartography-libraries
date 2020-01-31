@@ -207,24 +207,24 @@ export class ApiService {
   }
 
   /** Get the File Data for specific File Metadata */
-  getFileData(fileId: number): Observable<File> {
+  getFileData(fileId: number): Observable<Blob> {
     const url = this.apiRoot + this.endpoints.fileData
       .replace('{file_id}', fileId.toString());
 
     return this.httpClient
-      .get<File>(url)
+      .get(url, {responseType: 'blob'})
       .pipe(catchError(this._handleError));
   }
 
   /** Update the File Data for specific File Metadata */
-  updateFileData(fileMeta: FileMeta): Observable<File> {
+  updateFileData(fileMeta: FileMeta): Observable<Blob> {
     const url = this.apiRoot + this.endpoints.fileData
       .replace('{file_id}', fileMeta.id.toString());
     const formData = new FormData();
     formData.append('file', fileMeta.file);
 
     return this.httpClient
-      .put<File>(url, formData)
+      .put(url, formData, {responseType: 'blob'})
       .pipe(catchError(this._handleError));
   }
 
