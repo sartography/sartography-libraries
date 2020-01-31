@@ -1,4 +1,4 @@
-import {HttpErrorResponse} from '@angular/common/http';
+import {HttpErrorResponse, HttpResponse} from '@angular/common/http';
 import {HttpClientTestingModule, HttpTestingController} from '@angular/common/http/testing';
 import {TestBed} from '@angular/core/testing';
 import {MockEnvironment} from '../testing/mocks/environment.mocks';
@@ -227,6 +227,16 @@ describe('ApiService', () => {
     req.flush(modifiedSpec);
   });
 
+  it('should delete a workflow specification', () => {
+    service.deleteWorkflowSpecification(mockWorkflowSpec0.id).subscribe(data => {
+      expect(data).toBeNull();
+    });
+
+    const req = httpMock.expectOne(`apiRoot/workflow-specification/${mockWorkflowSpec0.id}`);
+    expect(req.request.method).toEqual('DELETE');
+    req.flush(null);
+  });
+
   it('should get files for a given workflow specification', () => {
     service.listBpmnFiles(mockWorkflowSpec0.id).subscribe(data => {
       expect(data.length).toBeGreaterThan(0);
@@ -253,7 +263,7 @@ describe('ApiService', () => {
     req.flush(mockFileMeta0);
   });
 
-  it('should update a file for a given workflow specification', () => {
+  it('should update file metadata', () => {
     const modifiedFileMeta: FileMeta = {
       id: mockFileMeta0.id,
       content_type: mockFileMeta0.content_type,
@@ -263,7 +273,7 @@ describe('ApiService', () => {
       workflow_spec_id: mockFileMeta0.workflow_spec_id,
     };
 
-    service.updateFileMeta(mockFileMeta0.workflow_spec_id, modifiedFileMeta).subscribe(data => {
+    service.updateFileMeta(modifiedFileMeta).subscribe(data => {
       expect(data.workflow_spec_id).toEqual(modifiedFileMeta.workflow_spec_id);
       expect(data.name).toEqual(modifiedFileMeta.name);
       expect(data.content_type).toEqual(modifiedFileMeta.content_type);
@@ -272,16 +282,6 @@ describe('ApiService', () => {
     const req = httpMock.expectOne(`apiRoot/file/${mockFileMeta0.id}`);
     expect(req.request.method).toEqual('PUT');
     req.flush(modifiedFileMeta);
-  });
-
-  it('should delete a given file', () => {
-    service.deleteFileMeta(mockFileMeta0.id).subscribe(data => {
-      expect(data).toBeNull();
-    });
-
-    const req = httpMock.expectOne(`apiRoot/file/${mockFileMeta0.id}`);
-    expect(req.request.method).toEqual('DELETE');
-    req.flush(null);
   });
 
   it('should get file data for a given file', () => {
@@ -293,7 +293,37 @@ describe('ApiService', () => {
 
     const req = httpMock.expectOne(`apiRoot/file/${mockFileMeta0.id}/data`);
     expect(req.request.method).toEqual('GET');
-    req.flush(mockFileMeta0.file);
+    req.event(new HttpResponse<File>({body: mockFileMeta0.file}));
+  });
+
+  it('should update file data for a given file', () => {
+    const modifiedFileMeta: FileMeta = {
+      id: mockFileMeta0.id,
+      content_type: mockFileMeta0.content_type,
+      name: 'one-fish-v2.bpmn',
+      file: new File(['new file bits'], 'one-fish-v2.bpmn', {type: 'text/xml'}),
+      type: mockFileMeta0.type,
+      workflow_spec_id: mockFileMeta0.workflow_spec_id,
+    };
+
+    service.updateFileData(modifiedFileMeta).subscribe(data => {
+      expect(data.name).toEqual(modifiedFileMeta.name);
+      expect(data.type).toEqual(modifiedFileMeta.content_type);
+    });
+
+    const req = httpMock.expectOne(`apiRoot/file/${mockFileMeta0.id}/data`);
+    expect(req.request.method).toEqual('PUT');
+    req.event(new HttpResponse<File>({body: modifiedFileMeta.file}));
+  });
+
+  it('should delete a given file', () => {
+    service.deleteFileMeta(mockFileMeta0.id).subscribe(data => {
+      expect(data).toBeNull();
+    });
+
+    const req = httpMock.expectOne(`apiRoot/file/${mockFileMeta0.id}`);
+    expect(req.request.method).toEqual('DELETE');
+    req.flush(null);
   });
 
   it('should update Task data for a given Workflow', () => {

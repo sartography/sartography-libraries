@@ -184,16 +184,16 @@ export class ApiService {
       .pipe(catchError(this._handleError));
   }
 
-  /** Update a File and its File Metadata Workflow Specification */
-  updateFileMeta(specId: string, fileMeta: FileMeta): Observable<FileMeta> {
+  /** Update File Metadata */
+  updateFileMeta(fileMeta: FileMeta): Observable<FileMeta> {
     const url = this.apiRoot + this.endpoints.file
       .replace('{file_id}', fileMeta.id.toString());
-    const formData = new FormData();
-    formData.append('workflow_spec_id', specId);
-    formData.append('file', fileMeta.file);
+
+    // Don't send file data
+    delete fileMeta.file;
 
     return this.httpClient
-      .put<FileMeta>(url, formData)
+      .put<FileMeta>(url, fileMeta)
       .pipe(catchError(this._handleError));
   }
 
@@ -206,13 +206,25 @@ export class ApiService {
       .pipe(catchError(this._handleError));
   }
 
-  /** Get a specific File */
-  getFileData(fileId: number): Observable<Blob> {
+  /** Get the File Data for specific File Metadata */
+  getFileData(fileId: number): Observable<File> {
     const url = this.apiRoot + this.endpoints.fileData
       .replace('{file_id}', fileId.toString());
 
     return this.httpClient
-      .get(url, {responseType: 'blob'})
+      .get<File>(url)
+      .pipe(catchError(this._handleError));
+  }
+
+  /** Update the File Data for specific File Metadata */
+  updateFileData(fileMeta: FileMeta): Observable<File> {
+    const url = this.apiRoot + this.endpoints.fileData
+      .replace('{file_id}', fileMeta.id.toString());
+    const formData = new FormData();
+    formData.append('file', fileMeta.file);
+
+    return this.httpClient
+      .put<File>(url, formData)
       .pipe(catchError(this._handleError));
   }
 
