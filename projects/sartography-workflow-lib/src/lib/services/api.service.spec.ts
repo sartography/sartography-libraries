@@ -1,6 +1,7 @@
-import {HttpErrorResponse, HttpResponse} from '@angular/common/http';
+import {HttpResponse} from '@angular/common/http';
 import {HttpClientTestingModule, HttpTestingController} from '@angular/common/http/testing';
 import {TestBed} from '@angular/core/testing';
+import createClone from 'rfdc';
 import {MockEnvironment} from '../testing/mocks/environment.mocks';
 import {mockFileMeta0, mockFileMetas} from '../testing/mocks/file.mocks';
 import {mockErrorResponse, mockUpdatingResponse} from '../testing/mocks/study-status.mocks';
@@ -12,7 +13,6 @@ import {mockWorkflow0, mockWorkflows} from '../testing/mocks/workflow.mocks';
 import {FileMeta} from '../types/file';
 import {Study} from '../types/study';
 import {WorkflowSpec} from '../types/workflow';
-
 import {ApiService} from './api.service';
 
 describe('ApiService', () => {
@@ -88,7 +88,7 @@ describe('ApiService', () => {
   });
 
   it('should update a study', () => {
-    const modifiedStudy: Study = JSON.parse(JSON.stringify(mockStudy0));
+    const modifiedStudy: Study = createClone()(mockStudy0);
     modifiedStudy.title = 'New title';
 
     service.updateStudy(mockStudy0.id, modifiedStudy).subscribe(data => {
@@ -213,7 +213,7 @@ describe('ApiService', () => {
   });
 
   it('should update a workflow specification', () => {
-    const modifiedSpec: WorkflowSpec = JSON.parse(JSON.stringify(mockWorkflowSpec0));
+    const modifiedSpec: WorkflowSpec = createClone()(mockWorkflowSpec0);
     modifiedSpec.display_name = 'New name';
 
     service.updateWorkflowSpecification(mockWorkflowSpec0.id, modifiedSpec).subscribe(data => {
