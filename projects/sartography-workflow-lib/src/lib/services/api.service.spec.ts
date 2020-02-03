@@ -307,8 +307,9 @@ describe('ApiService', () => {
     };
 
     service.updateFileData(modifiedFileMeta).subscribe(data => {
-      expect(data.name).toEqual(modifiedFileMeta.name);
-      expect(data.type).toEqual(modifiedFileMeta.content_type);
+      const file = data as File;
+      expect(file.name).toEqual(modifiedFileMeta.name);
+      expect(file.type).toEqual(modifiedFileMeta.content_type);
     });
 
     const req = httpMock.expectOne(`apiRoot/file/${mockFileMeta0.id}/data`);
