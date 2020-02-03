@@ -18,4 +18,5 @@ export interface WorkflowTask {
   state: WorkflowTaskState;
   type: string;
   form: BpmnFormJson;
+  data: any;
 }

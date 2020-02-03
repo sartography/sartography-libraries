@@ -7,6 +7,7 @@ export const mockWorkflowTask0: WorkflowTask = {
   documentation: '# Markdown Heading\n\nSome more Markdown text.',
   state: WorkflowTaskState.WAITING,
   type: 'task',
+  data: {},
   form: {
     key: 'Create a beautiful little sunset.',
     fields: [
@@ -33,6 +34,7 @@ export const mockWorkflowTask1: WorkflowTask = {
   documentation: '# Markdown Heading\n\nSome more Markdown text.',
   state: WorkflowTaskState.READY,
   type: 'task',
+  data: {},
   form: {
     key: 'Form 0.0.0.0',
     fields: [
