@@ -162,7 +162,7 @@ export class ApiService {
       .pipe(catchError(this._handleError));
   }
 
-  /** Get all File Metadata for a given Workflow Specification, Study, or Task */
+  /** Get all File Metadata for a given Workflow Specification, Workflow Instance, Study, or Task */
   getFileMeta(fileParams: FileParams): Observable<FileMeta[]> {
     const url = this.apiRoot + this.endpoints.fileList;
     const params = this._fileParamsToHttpParams(fileParams);
@@ -273,11 +273,13 @@ export class ApiService {
     return throwError(error.message || 'Could not complete your request; please try again later.');
   }
 
+  /** Construct HttpParams from FileParams object. Only adds params that have been set. */
   private _fileParamsToHttpParams(fileParams: FileParams): HttpParams {
     const paramsObject = {};
     Object.keys(fileParams).forEach(k => {
-      if (fileParams[k] !== undefined) {
-        paramsObject[k] = fileParams[k].toString();
+      const val = fileParams[k];
+      if ((val !== undefined) && (val !== null)) {
+        paramsObject[k] = val.toString();
       }
     });
     return new HttpParams({fromObject: paramsObject});

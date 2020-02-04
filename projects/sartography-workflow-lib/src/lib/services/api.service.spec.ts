@@ -266,7 +266,12 @@ describe('ApiService', () => {
   });
 
   it('should get files for a given workflow task', () => {
-    service.getFileMeta({task_id: mockWorkflowTask0.id}).subscribe(data => {
+    const params: FileParams = {
+      study_id: mockStudy0.id,
+      workflow_id: mockWorkflow0.id,
+      task_id: mockTask0.id
+    };
+    service.getFileMeta(params).subscribe(data => {
       expect(data.length).toBeGreaterThan(0);
 
       for (const fileMeta of data) {
@@ -274,7 +279,8 @@ describe('ApiService', () => {
       }
     });
 
-    const req = httpMock.expectOne(`apiRoot/file?task_id=${mockWorkflowTask0.id}`);
+    const queryString = `study_id=${mockStudy0.id}&workflow_id=${mockWorkflow0.id}&task_id=${mockWorkflowTask0.id}`;
+    const req = httpMock.expectOne('apiRoot/file?' + queryString);
     expect(req.request.method).toEqual('GET');
     req.flush(mockFileMetas);
   });
@@ -287,6 +293,24 @@ describe('ApiService', () => {
     });
 
     const req = httpMock.expectOne(`apiRoot/file?workflow_spec_id=${mockFileMeta0.workflow_spec_id}`);
+    expect(req.request.method).toEqual('POST');
+    req.flush(mockFileMeta0);
+  });
+
+  it('should add a file for a given workflow task', () => {
+    const params: FileParams = {
+      study_id: mockStudy0.id,
+      workflow_id: mockWorkflow0.id,
+      task_id: mockTask0.id
+    };
+    service.addFileMeta(params, mockFileMeta0).subscribe(data => {
+      expect(data.workflow_spec_id).toEqual(mockFileMeta0.workflow_spec_id);
+      expect(data.name).toEqual(mockFileMeta0.name);
+      expect(data.content_type).toEqual(mockFileMeta0.content_type);
+    });
+
+    const queryString = `study_id=${mockStudy0.id}&workflow_id=${mockWorkflow0.id}&task_id=${mockWorkflowTask0.id}`;
+    const req = httpMock.expectOne('apiRoot/file?' + queryString);
     expect(req.request.method).toEqual('POST');
     req.flush(mockFileMeta0);
   });
