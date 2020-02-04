@@ -163,7 +163,7 @@ export class ApiService {
   }
 
   /** Get all File Metadata for a given Workflow Specification, Workflow Instance, Study, or Task */
-  getFileMeta(fileParams: FileParams): Observable<FileMeta[]> {
+  getFileMetas(fileParams: FileParams): Observable<FileMeta[]> {
     const url = this.apiRoot + this.endpoints.fileList;
     const params = this._fileParamsToHttpParams(fileParams);
 
@@ -182,6 +182,16 @@ export class ApiService {
 
     return this.httpClient
       .post<FileMeta>(url, formData, {params})
+      .pipe(catchError(this._handleError));
+  }
+
+  /** Get all File Metadata for a given Workflow Specification, Workflow Instance, Study, or Task */
+  getFileMeta(fileMetaId: number): Observable<FileMeta> {
+    const url = this.apiRoot + this.endpoints.file
+      .replace('{file_id}', fileMetaId.toString());
+
+    return this.httpClient
+      .get<FileMeta>(url)
       .pipe(catchError(this._handleError));
   }
 

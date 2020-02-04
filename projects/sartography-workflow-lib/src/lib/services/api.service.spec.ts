@@ -238,7 +238,7 @@ describe('ApiService', () => {
   });
 
   it('should get files for a given workflow specification', () => {
-    service.getFileMeta({workflow_spec_id: mockWorkflowSpec0.id}).subscribe(data => {
+    service.getFileMetas({workflow_spec_id: mockWorkflowSpec0.id}).subscribe(data => {
       expect(data.length).toBeGreaterThan(0);
 
       for (const fileMeta of data) {
@@ -252,7 +252,7 @@ describe('ApiService', () => {
   });
 
   it('should get files for a given study', () => {
-    service.getFileMeta({study_id: mockStudy0.id}).subscribe(data => {
+    service.getFileMetas({study_id: mockStudy0.id}).subscribe(data => {
       expect(data.length).toBeGreaterThan(0);
 
       for (const fileMeta of data) {
@@ -271,7 +271,7 @@ describe('ApiService', () => {
       workflow_id: mockWorkflow0.id,
       task_id: mockTask0.id
     };
-    service.getFileMeta(params).subscribe(data => {
+    service.getFileMetas(params).subscribe(data => {
       expect(data.length).toBeGreaterThan(0);
 
       for (const fileMeta of data) {
