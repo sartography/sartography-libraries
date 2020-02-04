@@ -10,7 +10,7 @@ import {mockTask0} from '../testing/mocks/task.mocks';
 import {mockWorkflowSpec0, mockWorkflowSpecs} from '../testing/mocks/workflow-spec.mocks';
 import {mockWorkflowTask0, mockWorkflowTasks} from '../testing/mocks/workflow-task.mocks';
 import {mockWorkflow0, mockWorkflows} from '../testing/mocks/workflow.mocks';
-import {FileMeta} from '../types/file';
+import {FileMeta, FileParams} from '../types/file';
 import {Study} from '../types/study';
 import {WorkflowSpec} from '../types/workflow';
 import {ApiService} from './api.service';
@@ -238,7 +238,7 @@ describe('ApiService', () => {
   });
 
   it('should get files for a given workflow specification', () => {
-    service.listBpmnFiles(mockWorkflowSpec0.id).subscribe(data => {
+    service.getFileMeta({workflow_spec_id: mockWorkflowSpec0.id}).subscribe(data => {
       expect(data.length).toBeGreaterThan(0);
 
       for (const fileMeta of data) {
@@ -246,13 +246,13 @@ describe('ApiService', () => {
       }
     });
 
-    const req = httpMock.expectOne(`apiRoot/file?spec_id=${mockWorkflowSpec0.id}`);
+    const req = httpMock.expectOne(`apiRoot/file?workflow_spec_id=${mockWorkflowSpec0.id}`);
     expect(req.request.method).toEqual('GET');
     req.flush(mockFileMetas);
   });
 
   it('should get files for a given study', () => {
-    service.getFileMetaForStudy(mockStudy0.id).subscribe(data => {
+    service.getFileMeta({study_id: mockStudy0.id}).subscribe(data => {
       expect(data.length).toBeGreaterThan(0);
 
       for (const fileMeta of data) {
@@ -266,7 +266,7 @@ describe('ApiService', () => {
   });
 
   it('should get files for a given workflow task', () => {
-    service.getFileMetaForTask(mockWorkflowTask0.id).subscribe(data => {
+    service.getFileMeta({task_id: mockWorkflowTask0.id}).subscribe(data => {
       expect(data.length).toBeGreaterThan(0);
 
       for (const fileMeta of data) {
@@ -280,13 +280,13 @@ describe('ApiService', () => {
   });
 
   it('should add a file for a given workflow specification', () => {
-    service.addFileMeta(mockFileMeta0.workflow_spec_id, mockFileMeta0).subscribe(data => {
+    service.addFileMeta({workflow_spec_id: mockWorkflowSpec0.id}, mockFileMeta0).subscribe(data => {
       expect(data.workflow_spec_id).toEqual(mockFileMeta0.workflow_spec_id);
       expect(data.name).toEqual(mockFileMeta0.name);
       expect(data.content_type).toEqual(mockFileMeta0.content_type);
     });
 
-    const req = httpMock.expectOne(`apiRoot/file?spec_id=${mockFileMeta0.workflow_spec_id}`);
+    const req = httpMock.expectOne(`apiRoot/file?workflow_spec_id=${mockFileMeta0.workflow_spec_id}`);
     expect(req.request.method).toEqual('POST');
     req.flush(mockFileMeta0);
   });

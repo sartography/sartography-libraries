@@ -62,3 +62,9 @@ export interface FileMeta {
   study_id?: number;
   task_id?: string;
 }
+
+export interface FileParams {
+  workflow_spec_id?: string;
+  study_id?: number;
+  task_id?: string;
+}

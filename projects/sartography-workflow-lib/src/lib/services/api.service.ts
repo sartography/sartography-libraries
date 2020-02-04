@@ -4,7 +4,7 @@ import {Observable, throwError} from 'rxjs';
 import {catchError} from 'rxjs/operators';
 import {ApiError} from '../types/api';
 import {AppEnvironment} from '../types/app-environment';
-import {FileMeta} from '../types/file';
+import {FileMeta, FileParams} from '../types/file';
 import {Study} from '../types/study';
 import {Workflow, WorkflowSpec} from '../types/workflow';
 import {WorkflowTask} from '../types/workflow-task';
@@ -162,30 +162,10 @@ export class ApiService {
       .pipe(catchError(this._handleError));
   }
 
-  /** Get all File Metadata for a Workflow Specification */
-  listBpmnFiles(specId: string): Observable<FileMeta[]> {
+  /** Get all File Metadata for a given Workflow Specification, Study, or Task */
+  getFileMeta(fileParams: FileParams): Observable<FileMeta[]> {
     const url = this.apiRoot + this.endpoints.fileList;
-    const params = new HttpParams().set('spec_id', specId);
-
-    return this.httpClient
-      .get<FileMeta[]>(url, {params})
-      .pipe(catchError(this._handleError));
-  }
-
-  /** Get all File Metadata for a Study */
-  getFileMetaForStudy(studyId: number): Observable<FileMeta[]> {
-    const url = this.apiRoot + this.endpoints.fileList;
-    const params = new HttpParams().set('study_id', studyId.toString());
-
-    return this.httpClient
-      .get<FileMeta[]>(url, {params})
-      .pipe(catchError(this._handleError));
-  }
-
-  /** Get all File Metadata for a Workflow Task */
-  getFileMetaForTask(taskId: string): Observable<FileMeta[]> {
-    const url = this.apiRoot + this.endpoints.fileList;
-    const params = new HttpParams().set('task_id', taskId);
+    const params = this._fileParamsToHttpParams(fileParams);
 
     return this.httpClient
       .get<FileMeta[]>(url, {params})
@@ -193,11 +173,11 @@ export class ApiService {
   }
 
   /** Add a File and its File Metadata to a Workflow Specification */
-  addFileMeta(specId: string, fileMeta: FileMeta): Observable<FileMeta> {
+  addFileMeta(fileParams: FileParams, fileMeta: FileMeta): Observable<FileMeta> {
     const url = this.apiRoot + this.endpoints.fileList;
-    const params = new HttpParams().set('spec_id', specId);
+    const params = this._fileParamsToHttpParams(fileParams);
+
     const formData = new FormData();
-    formData.append('workflow_spec_id', fileMeta.workflow_spec_id);
     formData.append('file', fileMeta.file);
 
     return this.httpClient
@@ -291,5 +271,15 @@ export class ApiService {
 
   private _handleError(error: ApiError): Observable<never> {
     return throwError(error.message || 'Could not complete your request; please try again later.');
+  }
+
+  private _fileParamsToHttpParams(fileParams: FileParams): HttpParams {
+    const paramsObject = {};
+    Object.keys(fileParams).forEach(k => {
+      if (fileParams[k] !== undefined) {
+        paramsObject[k] = fileParams[k].toString();
+      }
+    });
+    return new HttpParams({fromObject: paramsObject});
   }
 }
