@@ -162,10 +162,30 @@ export class ApiService {
       .pipe(catchError(this._handleError));
   }
 
-  /** Get all Files and their File Metadata for a Workflow Specification */
+  /** Get all File Metadata for a Workflow Specification */
   listBpmnFiles(specId: string): Observable<FileMeta[]> {
     const url = this.apiRoot + this.endpoints.fileList;
     const params = new HttpParams().set('spec_id', specId);
+
+    return this.httpClient
+      .get<FileMeta[]>(url, {params})
+      .pipe(catchError(this._handleError));
+  }
+
+  /** Get all File Metadata for a Study */
+  getFileMetaForStudy(studyId: number): Observable<FileMeta[]> {
+    const url = this.apiRoot + this.endpoints.fileList;
+    const params = new HttpParams().set('study_id', studyId.toString());
+
+    return this.httpClient
+      .get<FileMeta[]>(url, {params})
+      .pipe(catchError(this._handleError));
+  }
+
+  /** Get all File Metadata for a Workflow Task */
+  getFileMetaForTask(taskId: string): Observable<FileMeta[]> {
+    const url = this.apiRoot + this.endpoints.fileList;
+    const params = new HttpParams().set('task_id', taskId);
 
     return this.httpClient
       .get<FileMeta[]>(url, {params})

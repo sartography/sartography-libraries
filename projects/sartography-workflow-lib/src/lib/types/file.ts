@@ -59,4 +59,6 @@ export interface FileMeta {
   type: FileType;
   version?: string;
   workflow_spec_id?: string;
+  study_id?: number;
+  task_id?: string;
 }
