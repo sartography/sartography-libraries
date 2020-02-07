@@ -9,8 +9,8 @@ export const mockWorkflow0: Workflow = {
   status: WorkflowStatus.USER_INPUT_REQUIRED,
   study_id: mockStudy0.id,
   workflow_spec_id: mockWorkflowSpec0.id,
-  last_task_id: mockWorkflowTask0.id,
-  next_task_id: mockWorkflowTask1.id,
+  last_task: mockWorkflowTask0,
+  next_task: mockWorkflowTask1,
   user_tasks: mockWorkflowTasks,
 };
 
@@ -20,8 +20,8 @@ export const mockWorkflow1: Workflow = {
   status: WorkflowStatus.USER_INPUT_REQUIRED,
   study_id: mockStudy0.id,
   workflow_spec_id: mockWorkflowSpec1.id,
-  last_task_id: mockWorkflowTask0.id,
-  next_task_id: mockWorkflowTask1.id,
+  last_task: mockWorkflowTask0,
+  next_task: mockWorkflowTask1,
   user_tasks: mockWorkflowTasks,
 };
 
