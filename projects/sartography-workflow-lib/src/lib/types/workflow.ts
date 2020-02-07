@@ -21,5 +21,7 @@ export interface Workflow {
   study_id: number;
   workflow_spec_id: string;
   workflow_spec?: WorkflowSpec;
-  workflow_tasks?: WorkflowTask[];
+  last_task_id?: string;
+  next_task_id?: string;
+  user_tasks?: WorkflowTask[];
 }

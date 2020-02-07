@@ -126,21 +126,18 @@ describe('ApiService', () => {
   });
 
   it('should get tasks for a given workflow', () => {
-    const workflowId = 0;
-
-    service.getTaskListForWorkflow(workflowId).subscribe(data => {
-      expect(data.length).toBeGreaterThan(0);
-      data.forEach(t => expect(t).toBeDefined());
+    service.getWorkflow(mockWorkflow0.id).subscribe(data => {
+      expect(data.user_tasks.length).toBeGreaterThan(0);
+      data.user_tasks.forEach(t => expect(t).toBeDefined());
     });
 
-    const req = httpMock.expectOne(`apiRoot/workflow/${workflowId}/tasks`);
+    const req = httpMock.expectOne(`apiRoot/workflow/${mockWorkflow0.id}`);
     expect(req.request.method).toEqual('GET');
-    req.flush(mockWorkflowTasks);
+    req.flush(mockWorkflow0);
   });
 
-
   it('should get one task', () => {
-    const workflowId = 0;
+    const workflowId = mockWorkflow0.id;
     const taskId = mockTask0.id;
 
     service.getTaskForWorkflow(workflowId, taskId).subscribe(data => {

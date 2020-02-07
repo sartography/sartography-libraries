@@ -249,16 +249,6 @@ export class ApiService {
       .pipe(catchError(this._handleError));
   }
 
-  /** Get all Tasks for a Workflow */
-  getTaskListForWorkflow(workflowId: number, allTasks = false): Observable<WorkflowTask[]> {
-    const endpoint = allTasks ? this.endpoints.taskListAllForWorkflow : this.endpoints.taskListForWorkflow;
-    const url = this.apiRoot + endpoint.replace('{workflow_id}', workflowId.toString());
-
-    return this.httpClient
-      .get<WorkflowTask[]>(url)
-      .pipe(catchError(this._handleError));
-  }
-
   /** Get a specific Task for a Workflow */
   getTaskForWorkflow(workflowId: number, taskId: string): Observable<WorkflowTask> {
     const url = this.apiRoot + this.endpoints.taskForWorkflow
