@@ -17,7 +17,7 @@ module.exports = function (config) {
     },
     coverageIstanbulReporter: {
       dir: require('path').join(__dirname, 'coverage/sartography-workflow-lib'),
-      reports: ['html', 'lcovonly', 'text-summary'],
+      reports: ['lcovonly'],
       fixWebpackSourcePaths: true
     },
     reporters: ['progress', 'kjhtml'],
