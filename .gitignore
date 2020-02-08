@@ -48,3 +48,6 @@ Thumbs.db
 # Travis CLI files
 travis.log
 input.txt
+
+# Sonar
+.scannerwork
