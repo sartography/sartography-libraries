@@ -171,6 +171,15 @@ export class ApiService {
       .pipe(catchError(this._handleError));
   }
 
+  /** Get all Files and their File Metadata for a running workflow */
+  listWorkflowFiles(workflowId: number): Observable<FileMeta[]> {
+    const url = this.apiRoot + this.endpoints.fileList;
+    const params = new HttpParams().set('workflow_id', workflowId.toString());
+    return this.httpClient
+      .get<FileMeta[]>(url, {params})
+      .pipe(catchError(this._handleError));
+  }
+
   /** Add a File and its File Metadata to a Workflow Specification */
   addFileMeta(specId: string, fileMeta: FileMeta): Observable<FileMeta> {
     const url = this.apiRoot + this.endpoints.fileList;

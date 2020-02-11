@@ -2,6 +2,7 @@ export enum FileType {
   BPMN = 'bpmn',
   SVG = 'svg',
   DMN = 'dmn',
+  DOCX = 'docx'
 }
 
 export interface FileMeta {
@@ -14,4 +15,7 @@ export interface FileMeta {
   type: FileType;
   version?: string;
   workflow_spec_id?: string;
+  workflow_id?: number;
+  study_id?: number;
+  task_id?: string;
 }

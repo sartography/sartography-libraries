@@ -2,7 +2,7 @@ import {HttpErrorResponse} from '@angular/common/http';
 import {HttpClientTestingModule, HttpTestingController} from '@angular/common/http/testing';
 import {TestBed} from '@angular/core/testing';
 import {MockEnvironment} from '../testing/mocks/environment.mocks';
-import {mockFileMeta0, mockFileMetas} from '../testing/mocks/file.mocks';
+import {mockFileMeta0, mockFileMetas, mockFileMetaTask0} from '../testing/mocks/file.mocks';
 import {mockErrorResponse, mockUpdatingResponse} from '../testing/mocks/study-status.mocks';
 import {mockStudies, mockStudy0, newRandomStudy} from '../testing/mocks/study.mocks';
 import {mockTask0} from '../testing/mocks/task.mocks';
@@ -239,6 +239,21 @@ describe('ApiService', () => {
     const req = httpMock.expectOne(`apiRoot/file?spec_id=${mockWorkflowSpec0.id}`);
     expect(req.request.method).toEqual('GET');
     req.flush(mockFileMetas);
+  });
+
+  it('should get files for a given running workflow', () => {
+    service.listWorkflowFiles(mockWorkflow0.id).subscribe(data => {
+      expect(data.length).toBeGreaterThan(0);
+      for (const fileMeta of data) {
+        expect(fileMeta.workflow_id).toEqual(mockWorkflow0.id);
+        expect(fileMeta.study_id).toEqual(mockWorkflow0.study_id);
+        expect(fileMeta.task_id).toEqual(mockTask0.id);
+      }
+    });
+
+    const req = httpMock.expectOne(`apiRoot/file?workflow_id=${mockWorkflow0.id}`);
+    expect(req.request.method).toEqual('GET');
+    req.flush([mockFileMetaTask0]);
   });
 
   it('should add a file for a given workflow specification', () => {
