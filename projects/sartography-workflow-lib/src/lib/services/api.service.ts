@@ -194,7 +194,7 @@ export class ApiService {
       .pipe(catchError(this._handleError));
   }
 
-  /** Get all File Metadata for a given Workflow Specification, Workflow Instance, Study, or Task */
+  /** Get metadata for one specific File */
   getFileMeta(fileMetaId: number): Observable<FileMeta> {
     const url = this.apiRoot + this.endpoints.file
       .replace('{file_id}', fileMetaId.toString());
