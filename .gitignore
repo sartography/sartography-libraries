@@ -44,3 +44,10 @@ testem.log
 # System Files
 .DS_Store
 Thumbs.db
+
+# Travis CLI files
+travis.log
+input.txt
+
+# Sonar
+.scannerwork

@@ -1,0 +1,18 @@
+sudo: required
+dist: trusty
+addons:
+  chrome: stable
+  sonarcloud:
+    organization: "sartography"
+    token:
+      secure: Ioy9kKvGFXTzpvAwgVRESW0OFKZndIIeZSFBMzmYCmttbyQtjrV1pGsar2+ab0kkT8LUCoOXjJaRq91ru0+zz/rO84fJRHxvb1G46Iez0YvT/OG2qf1PKQ18HeYQADzQ44wOMLxfIwcjz2DHzDywxLhm6w4BX7mlk6o2moUf+SE7Q8+CSH4KFnDF7will+e1i17nSX0VcvvYoDo1iwRSsVQ+WgNKXjPx6B0VH9troSqQWMMNjJNk4pby0Tddv6Yjz18I+406E1yypdvoV50JqSaKEDjhtstXipgZ7CDrbZj3y4K/9Fxu6Va03pX08FrSYrxABdQtbhtjokmkMztFFr7kZS31N5f4GVrV2Lae3csYeyxyQFn6HDRzCqPHN2OF90HhMVJmBluScmYfYoR5aLKXcDgzV8nEEfdweqfSB8a3QOzCMjmedgHMfa1n6h6tVreCSs/ZbFOdYVH2ssmFVWSGDuBmkKBsJm11v3a+Eu0o9Z/vCtdS4ID4j5Rvc1AR5GEHCSbUgxEDDc8CcNJ5uOC5raCZmZjgGunt2PEZXqcI58xjmQfth/JdszVCh+GlMVx5Ua7RL9C8r9d7GBHStVoNuHk1J//ikyNw3lqtNHIgrBWrgvINjW35Gn+QsreUSOzEloimNrkyoCKB4KH399zTnLMYsnYao5CCdUcdO3g=
+language: node_js
+node_js:
+  - 12
+before_script:
+  - export DISPLAY=:99.0
+  - sh -e /etc/init.d/xvfb start
+install:
+  - npm install
+script:
+  - npm run ci

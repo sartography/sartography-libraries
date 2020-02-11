@@ -1,4 +1,4 @@
-import {WorkflowTask, WorkflowTaskState} from '../../types/workflow-task';
+import {WorkflowTask, WorkflowTaskState, WorkflowTaskType} from '../../types/workflow-task';
 
 export const mockWorkflowTask0: WorkflowTask = {
   id: '0',
@@ -6,7 +6,8 @@ export const mockWorkflowTask0: WorkflowTask = {
   title: 'Task Spec Title',
   documentation: '# Markdown Heading\n\nSome more Markdown text.',
   state: WorkflowTaskState.WAITING,
-  type: 'task',
+  type: WorkflowTaskType.USER_TASK,
+  data: {},
   form: {
     key: 'Create a beautiful little sunset.',
     fields: [
@@ -32,7 +33,8 @@ export const mockWorkflowTask1: WorkflowTask = {
   title: 'Task Spec Title',
   documentation: '# Markdown Heading\n\nSome more Markdown text.',
   state: WorkflowTaskState.READY,
-  type: 'task',
+  type: WorkflowTaskType.USER_TASK,
+  data: {},
   form: {
     key: 'Form 0.0.0.0',
     fields: [

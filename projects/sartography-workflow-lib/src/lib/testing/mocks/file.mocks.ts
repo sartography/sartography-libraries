@@ -1,7 +1,8 @@
 import {FileMeta, FileType} from '../../types/file';
+import {mockStudy0} from './study.mocks';
+import {mockTask0} from './task.mocks';
 import {mockWorkflowSpec0} from './workflow-spec.mocks';
 import {mockWorkflow0} from './workflow.mocks';
-import {mockTask0} from './task.mocks';
 
 export const mockFileMeta0: FileMeta = {
   id: 0,
@@ -10,6 +11,8 @@ export const mockFileMeta0: FileMeta = {
   file: new File([], 'one-fish.bpmn'),
   type: FileType.BPMN,
   workflow_spec_id: mockWorkflowSpec0.id,
+  task_id: mockTask0.id,
+  study_id: mockStudy0.id,
   version: '1.0',
   last_updated: new Date('2020-01-23T12:34:12.345Z'),
 };
@@ -21,6 +24,8 @@ export const mockFileMeta1: FileMeta = {
   file: new File([], 'two-fish.bpmn'),
   type: FileType.BPMN,
   workflow_spec_id: mockWorkflowSpec0.id,
+  task_id: mockTask0.id,
+  study_id: mockStudy0.id,
   version: '1.0',
   last_updated: new Date('2020-01-23T12:34:12.345Z'),
 };
@@ -32,6 +37,8 @@ export const mockFileMeta2: FileMeta = {
   file: new File([], 'red-fish.bpmn'),
   type: FileType.BPMN,
   workflow_spec_id: mockWorkflowSpec0.id,
+  task_id: mockTask0.id,
+  study_id: mockStudy0.id,
   version: '1.0',
   last_updated: new Date('2020-01-23T12:34:12.345Z'),
 };
@@ -43,6 +50,8 @@ export const mockFileMeta3: FileMeta = {
   file: new File([], 'blue-fish.bpmn'),
   type: FileType.BPMN,
   workflow_spec_id: mockWorkflowSpec0.id,
+  task_id: mockTask0.id,
+  study_id: mockStudy0.id,
   version: '1.0',
   last_updated: new Date('2020-01-23T12:34:12.345Z'),
 };

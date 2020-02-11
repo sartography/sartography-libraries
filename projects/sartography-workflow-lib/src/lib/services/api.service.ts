@@ -4,7 +4,7 @@ import {Observable, throwError} from 'rxjs';
 import {catchError} from 'rxjs/operators';
 import {ApiError} from '../types/api';
 import {AppEnvironment} from '../types/app-environment';
-import {FileMeta} from '../types/file';
+import {FileMeta, FileParams} from '../types/file';
 import {Study} from '../types/study';
 import {Workflow, WorkflowSpec} from '../types/workflow';
 import {WorkflowTask} from '../types/workflow-task';
@@ -27,6 +27,7 @@ export class ApiService {
     file: '/file/{file_id}',
     fileData: '/file/{file_id}/data',
     workflow: '/workflow/{workflow_id}',
+    taskListAllForWorkflow: '/workflow/{workflow_id}/all_tasks',
     taskListForWorkflow: '/workflow/{workflow_id}/tasks',
     taskForWorkflow: '/workflow/{workflow_id}/task/{task_id}',
     taskDataForWorkflow: '/workflow/{workflow_id}/task/{task_id}/data',
@@ -161,10 +162,10 @@ export class ApiService {
       .pipe(catchError(this._handleError));
   }
 
-  /** Get all Files and their File Metadata for a Workflow Specification */
-  listBpmnFiles(specId: string): Observable<FileMeta[]> {
+  /** Get all File Metadata for a given Workflow Specification, Workflow Instance, Study, or Task */
+  getFileMetas(fileParams: FileParams): Observable<FileMeta[]> {
     const url = this.apiRoot + this.endpoints.fileList;
-    const params = new HttpParams().set('spec_id', specId);
+    const params = this._fileParamsToHttpParams(fileParams);
 
     return this.httpClient
       .get<FileMeta[]>(url, {params})
@@ -181,11 +182,11 @@ export class ApiService {
   }
 
   /** Add a File and its File Metadata to a Workflow Specification */
-  addFileMeta(specId: string, fileMeta: FileMeta): Observable<FileMeta> {
+  addFileMeta(fileParams: FileParams, fileMeta: FileMeta): Observable<FileMeta> {
     const url = this.apiRoot + this.endpoints.fileList;
-    const params = new HttpParams().set('spec_id', specId);
+    const params = this._fileParamsToHttpParams(fileParams);
+
     const formData = new FormData();
-    formData.append('workflow_spec_id', fileMeta.workflow_spec_id);
     formData.append('file', fileMeta.file);
 
     return this.httpClient
@@ -193,16 +194,26 @@ export class ApiService {
       .pipe(catchError(this._handleError));
   }
 
-  /** Update a File and its File Metadata Workflow Specification */
-  updateFileMeta(specId: string, fileMeta: FileMeta): Observable<FileMeta> {
+  /** Get all File Metadata for a given Workflow Specification, Workflow Instance, Study, or Task */
+  getFileMeta(fileMetaId: number): Observable<FileMeta> {
     const url = this.apiRoot + this.endpoints.file
-      .replace('{file_id}', fileMeta.id.toString());
-    const formData = new FormData();
-    formData.append('workflow_spec_id', specId);
-    formData.append('file', fileMeta.file);
+      .replace('{file_id}', fileMetaId.toString());
 
     return this.httpClient
-      .put<FileMeta>(url, formData)
+      .get<FileMeta>(url)
+      .pipe(catchError(this._handleError));
+  }
+
+  /** Update File Metadata */
+  updateFileMeta(fileMeta: FileMeta): Observable<FileMeta> {
+    const url = this.apiRoot + this.endpoints.file
+      .replace('{file_id}', fileMeta.id.toString());
+
+    // Don't send file data
+    delete fileMeta.file;
+
+    return this.httpClient
+      .put<FileMeta>(url, fileMeta)
       .pipe(catchError(this._handleError));
   }
 
@@ -215,13 +226,25 @@ export class ApiService {
       .pipe(catchError(this._handleError));
   }
 
-  /** Get a specific File */
+  /** Get the File Data for specific File Metadata */
   getFileData(fileId: number): Observable<Blob> {
     const url = this.apiRoot + this.endpoints.fileData
       .replace('{file_id}', fileId.toString());
 
     return this.httpClient
       .get(url, {responseType: 'blob'})
+      .pipe(catchError(this._handleError));
+  }
+
+  /** Update the File Data for specific File Metadata */
+  updateFileData(fileMeta: FileMeta): Observable<Blob> {
+    const url = this.apiRoot + this.endpoints.fileData
+      .replace('{file_id}', fileMeta.id.toString());
+    const formData = new FormData();
+    formData.append('file', fileMeta.file);
+
+    return this.httpClient
+      .put(url, formData, {responseType: 'blob'})
       .pipe(catchError(this._handleError));
   }
 
@@ -232,16 +255,6 @@ export class ApiService {
 
     return this.httpClient
       .get<Workflow>(url)
-      .pipe(catchError(this._handleError));
-  }
-
-  /** Get all Tasks for a Workflow */
-  getTaskListForWorkflow(workflowId: number): Observable<WorkflowTask[]> {
-    const url = this.apiRoot + this.endpoints.taskListForWorkflow
-      .replace('{workflow_id}', workflowId.toString());
-
-    return this.httpClient
-      .get<WorkflowTask[]>(url)
       .pipe(catchError(this._handleError));
   }
 
@@ -267,5 +280,17 @@ export class ApiService {
 
   private _handleError(error: ApiError): Observable<never> {
     return throwError(error.message || 'Could not complete your request; please try again later.');
+  }
+
+  /** Construct HttpParams from FileParams object. Only adds params that have been set. */
+  private _fileParamsToHttpParams(fileParams: FileParams): HttpParams {
+    const paramsObject = {};
+    Object.keys(fileParams).forEach(k => {
+      const val = fileParams[k];
+      if ((val !== undefined) && (val !== null)) {
+        paramsObject[k] = val.toString();
+      }
+    });
+    return new HttpParams({fromObject: paramsObject});
   }
 }
