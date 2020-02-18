@@ -42,7 +42,7 @@ export const mockWorkflowTask1: WorkflowTask = {
         id: 'should_ask_color',
         label: 'Does color affect your mood?',
         type: 'boolean',
-        defaultValue: 'false',
+        default_value: 'false',
         validation: [
           {
             name: 'required',
@@ -60,7 +60,7 @@ export const mockWorkflowTask1: WorkflowTask = {
         id: 'favorite_color',
         label: 'What is your favorite color?',
         type: 'enum',
-        defaultValue: 'indigo',
+        default_value: 'indigo',
         options: [
           {
             id: 'red',
