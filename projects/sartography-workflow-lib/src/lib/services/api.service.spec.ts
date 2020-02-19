@@ -7,6 +7,7 @@ import {mockFileMeta0, mockFileMetas, mockFileMetaTask0} from '../testing/mocks/
 import {mockErrorResponse, mockUpdatingResponse} from '../testing/mocks/study-status.mocks';
 import {mockStudies, mockStudy0, newRandomStudy} from '../testing/mocks/study.mocks';
 import {mockTask0} from '../testing/mocks/task.mocks';
+import {mockUser} from '../testing/mocks/user.mocks';
 import {mockWorkflowSpec0, mockWorkflowSpecs} from '../testing/mocks/workflow-spec.mocks';
 import {mockWorkflowTask0, mockWorkflowTasks} from '../testing/mocks/workflow-task.mocks';
 import {mockWorkflow0, mockWorkflows} from '../testing/mocks/workflow.mocks';
@@ -401,6 +402,21 @@ describe('ApiService', () => {
     const req = httpMock.expectOne(`apiRoot/workflow/${mockWorkflow0.id}/task/${mockWorkflowTask0.id}/data`);
     expect(req.request.method).toEqual('PUT');
     req.flush(mockWorkflow0);
+  });
+
+  it('should get user', () => {
+    localStorage.setItem('token', 'some_token');
+    service.getUser().subscribe(result => expect(result).toEqual(mockUser));
+    const req = httpMock.expectOne(`apiRoot/user`);
+    expect(req.request.method).toEqual('GET');
+    req.flush(mockUser);
+    localStorage.removeItem('token');
+  });
+
+  it('should return null if no user token', () => {
+    localStorage.removeItem('token');
+    service.getUser().subscribe(result => expect(result).toBeNull());
+    httpMock.expectNone(`apiRoot/user`);
   });
 
   it('should throw an error', () => {

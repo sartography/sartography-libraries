@@ -1,11 +1,12 @@
 import {HttpClient, HttpErrorResponse, HttpEvent, HttpParams, HttpResponse} from '@angular/common/http';
 import {Inject, Injectable} from '@angular/core';
-import {Observable, throwError} from 'rxjs';
+import {Observable, of, throwError} from 'rxjs';
 import {catchError} from 'rxjs/operators';
 import {ApiError} from '../types/api';
 import {AppEnvironment} from '../types/app-environment';
 import {FileMeta, FileParams} from '../types/file';
 import {Study} from '../types/study';
+import {User} from '../types/user';
 import {Workflow, WorkflowSpec} from '../types/workflow';
 import {WorkflowTask} from '../types/workflow-task';
 
@@ -31,6 +32,7 @@ export class ApiService {
     taskListForWorkflow: '/workflow/{workflow_id}/tasks',
     taskForWorkflow: '/workflow/{workflow_id}/task/{task_id}',
     taskDataForWorkflow: '/workflow/{workflow_id}/task/{task_id}/data',
+    user: '/user'
   };
 
   constructor(
@@ -276,6 +278,16 @@ export class ApiService {
 
     return this.httpClient.put<Workflow>(url, data)
       .pipe(catchError(this._handleError));
+  }
+
+  /** getUser */
+  public getUser(): Observable<User> {
+    if (localStorage.getItem('token')) {
+      return this.httpClient.get<User>(this.apiRoot + this.endpoints.user)
+        .pipe(catchError(this._handleError));
+    } else {
+      return of(null);
+    }
   }
 
   private _handleError(error: ApiError): Observable<never> {
