@@ -1,9 +1,23 @@
 export interface User {
   id: number;
-  eppn?: string;
-  email: string;
-  display_name: string;
   role: string;
-  institutional_role?: string;
-  division?: string;
+  uid: string;
+  email_address?: string;
+  display_name?: string;
+  affiliation?: string;
+  eppn?: string;
+  first_name?: string;
+  last_name?: string;
+  title?: string;
+}
+
+export interface UserParams {
+  uid: string;
+  email_address?: string;
+  display_name?: string;
+  affiliation?: string;
+  eppn?: string;
+  first_name?: string;
+  last_name?: string;
+  title?: string;
 }

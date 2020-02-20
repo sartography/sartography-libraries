@@ -1,4 +1,4 @@
-import {HttpClient, HttpErrorResponse, HttpEvent, HttpParams, HttpResponse} from '@angular/common/http';
+import {HttpClient, HttpErrorResponse, HttpEvent, HttpHeaders, HttpParams, HttpResponse} from '@angular/common/http';
 import {Inject, Injectable} from '@angular/core';
 import {Observable, of, throwError} from 'rxjs';
 import {catchError} from 'rxjs/operators';
@@ -6,7 +6,7 @@ import {ApiError} from '../types/api';
 import {AppEnvironment} from '../types/app-environment';
 import {FileMeta, FileParams} from '../types/file';
 import {Study} from '../types/study';
-import {User} from '../types/user';
+import {User, UserParams} from '../types/user';
 import {Workflow, WorkflowSpec} from '../types/workflow';
 import {WorkflowTask} from '../types/workflow-task';
 
@@ -32,7 +32,8 @@ export class ApiService {
     taskListForWorkflow: '/workflow/{workflow_id}/tasks',
     taskForWorkflow: '/workflow/{workflow_id}/task/{task_id}',
     taskDataForWorkflow: '/workflow/{workflow_id}/task/{task_id}/data',
-    user: '/user'
+    fakeSession: '/sso_backdoor',
+    user: '/user',
   };
 
   constructor(
@@ -290,8 +291,32 @@ export class ApiService {
     }
   }
 
+  /** openSession */
+  openSession(userParams: UserParams): Observable<string | User> {
+    if (!this.environment.production) {
+      const headers = this._userParamsToHttpHeaders(userParams);
+
+      return this.httpClient.get<string>(this.apiRoot + this.endpoints.fakeSession, {headers})
+        .pipe(catchError(this._handleError));
+    } else {
+      return this.getUser();
+    }
+  }
+
   private _handleError(error: ApiError): Observable<never> {
     return throwError(error.message || 'Could not complete your request; please try again later.');
+  }
+
+  /** Construct HeaderParams from UserParams object. Only adds params that have been set. */
+  private _userParamsToHttpHeaders(userParams: UserParams): HttpHeaders {
+    let httpHeaders = new HttpHeaders();
+    Object.keys(userParams).forEach(k => {
+      const val = userParams[k];
+      if ((val !== undefined) && (val !== null)) {
+        httpHeaders = httpHeaders.set(k, val.toString());
+      }
+    });
+    return httpHeaders;
   }
 
   /** Construct HttpParams from FileParams object. Only adds params that have been set. */

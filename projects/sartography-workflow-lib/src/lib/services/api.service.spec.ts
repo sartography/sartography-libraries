@@ -13,6 +13,7 @@ import {mockWorkflowTask0, mockWorkflowTasks} from '../testing/mocks/workflow-ta
 import {mockWorkflow0, mockWorkflows} from '../testing/mocks/workflow.mocks';
 import {FileMeta, FileParams} from '../types/file';
 import {Study} from '../types/study';
+import {UserParams} from '../types/user';
 import {WorkflowSpec} from '../types/workflow';
 import {ApiService} from './api.service';
 
@@ -402,6 +403,25 @@ describe('ApiService', () => {
     const req = httpMock.expectOne(`apiRoot/workflow/${mockWorkflow0.id}/task/${mockWorkflowTask0.id}/data`);
     expect(req.request.method).toEqual('PUT');
     req.flush(mockWorkflow0);
+  });
+
+  it('should open a new session', () => {
+    localStorage.removeItem('token');
+    const userParams: UserParams = {
+      uid: 'bbf2f',
+      first_name: 'Babu',
+      last_name: 'Frik',
+      email_address: 'bbf2f@droidsmithery.anzelia.edu',
+    };
+    const tokenUrl = 'frontendurl/some_token';
+    service.openSession(userParams).subscribe(result => expect(result).toEqual(tokenUrl));
+    const req = httpMock.expectOne(`apiRoot/sso_backdoor`);
+    expect(req.request.method).toEqual('GET');
+
+    Object.keys(userParams).forEach(key => {
+      expect(req.request.headers.get(key)).toEqual(userParams[key]);
+    });
+    req.flush(tokenUrl);
   });
 
   it('should get user', () => {
