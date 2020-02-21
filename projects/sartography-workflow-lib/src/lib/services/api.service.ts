@@ -1,4 +1,4 @@
-import {HttpClient, HttpErrorResponse, HttpEvent, HttpHeaders, HttpParams, HttpResponse} from '@angular/common/http';
+import {HttpClient, HttpParams, HttpResponse} from '@angular/common/http';
 import {Inject, Injectable} from '@angular/core';
 import {Observable, of, throwError} from 'rxjs';
 import {catchError} from 'rxjs/operators';
@@ -282,7 +282,7 @@ export class ApiService {
   }
 
   /** getUser */
-  public getUser(): Observable<User> {
+  getUser(): Observable<User> {
     if (localStorage.getItem('token')) {
       return this.httpClient.get<User>(this.apiRoot + this.endpoints.user)
         .pipe(catchError(this._handleError));
@@ -295,10 +295,14 @@ export class ApiService {
   openSession(userParams: UserParams) {
     if (!this.environment.production) {
       const queryString = this._userParamsToQueryString(userParams);
-      this._openUrl(this.apiRoot + this.endpoints.fakeSession + queryString);
+      this.openUrl(this.apiRoot + this.endpoints.fakeSession + queryString);
     } else {
       return this.getUser();
     }
+  }
+
+  openUrl(url: string) {
+    location.href = url;
   }
 
   private _handleError(error: ApiError): Observable<never> {
@@ -332,9 +336,5 @@ export class ApiService {
       }
     });
     return new HttpParams({fromObject: paramsObject});
-  }
-
-  private _openUrl(url: string) {
-    location.href = url;
   }
 }

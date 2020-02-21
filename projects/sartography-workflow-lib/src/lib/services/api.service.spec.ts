@@ -9,7 +9,7 @@ import {mockStudies, mockStudy0, newRandomStudy} from '../testing/mocks/study.mo
 import {mockTask0} from '../testing/mocks/task.mocks';
 import {mockUser} from '../testing/mocks/user.mocks';
 import {mockWorkflowSpec0, mockWorkflowSpecs} from '../testing/mocks/workflow-spec.mocks';
-import {mockWorkflowTask0, mockWorkflowTasks} from '../testing/mocks/workflow-task.mocks';
+import {mockWorkflowTask0} from '../testing/mocks/workflow-task.mocks';
 import {mockWorkflow0, mockWorkflows} from '../testing/mocks/workflow.mocks';
 import {FileMeta, FileParams} from '../types/file';
 import {Study} from '../types/study';
@@ -26,7 +26,7 @@ describe('ApiService', () => {
       imports: [HttpClientTestingModule],
       providers: [
         ApiService,
-        {provide: 'APP_ENVIRONMENT', useClass: MockEnvironment}
+        {provide: 'APP_ENVIRONMENT', useClass: MockEnvironment},
       ]
     });
 
@@ -350,6 +350,18 @@ describe('ApiService', () => {
     req.flush(modifiedFileMeta);
   });
 
+  it('should get file metadata for a given file', () => {
+    service.getFileMeta(mockFileMeta0.id).subscribe((data: FileMeta) => {
+      expect(data.id).toEqual(mockFileMeta0.id);
+      expect(data.type).toEqual(mockFileMeta0.type);
+      expect(data.name).toEqual(mockFileMeta0.name);
+    });
+
+    const req = httpMock.expectOne(`apiRoot/file/${mockFileMeta0.id}`);
+    expect(req.request.method).toEqual('GET');
+    req.flush(mockFileMeta0);
+  });
+
   it('should get file data for a given file', () => {
     service.getFileData(mockFileMeta0.id).subscribe((data: File) => {
       expect(data.type).toEqual(mockFileMeta0.file.type);
@@ -405,7 +417,7 @@ describe('ApiService', () => {
     req.flush(mockWorkflow0);
   });
 
-  it('should open a new session', () => {
+  it('should open a new session when testing', () => {
     localStorage.removeItem('token');
     const userParams: UserParams = {
       uid: 'bbf2f',
@@ -415,10 +427,19 @@ describe('ApiService', () => {
     };
     const queryString = '?uid=bbf2f&first_name=Babu&last_name=Frik&email_address=bbf2f%40droidsmithery.anzelia.edu';
     const queryStringSpy = spyOn((service as any), '_userParamsToQueryString').and.callThrough();
-    const openUrlSpy = spyOn((service as any), '_openUrl').and.stub();
+    const openUrlSpy = spyOn(service, 'openUrl').and.stub();
     service.openSession(userParams);
     expect(queryStringSpy).toHaveBeenCalledWith(userParams);
     expect(openUrlSpy).toHaveBeenCalledWith('apiRoot/sso_backdoor' + queryString);
+  });
+
+  it('should get user from existing session on production', () => {
+    const queryStringSpy = spyOn((service as any), '_userParamsToQueryString').and.stub();
+    const openUrlSpy = spyOn(service, 'openUrl').and.stub();
+    (service as any).environment.production = true;
+    service.openSession(mockUser);
+    expect(queryStringSpy).not.toHaveBeenCalled();
+    expect(openUrlSpy).not.toHaveBeenCalled();
   });
 
   it('should get user', () => {
