@@ -413,15 +413,12 @@ describe('ApiService', () => {
       last_name: 'Frik',
       email_address: 'bbf2f@droidsmithery.anzelia.edu',
     };
-    const tokenUrl = 'frontendurl/some_token';
-    service.openSession(userParams).subscribe(result => expect(result).toEqual(tokenUrl));
-    const req = httpMock.expectOne(`apiRoot/sso_backdoor`);
-    expect(req.request.method).toEqual('GET');
-
-    Object.keys(userParams).forEach(key => {
-      expect(req.request.headers.get(key)).toEqual(userParams[key]);
-    });
-    req.flush(tokenUrl);
+    const queryString = '?uid=bbf2f&first_name=Babu&last_name=Frik&email_address=bbf2f%40droidsmithery.anzelia.edu';
+    const queryStringSpy = spyOn((service as any), '_userParamsToQueryString').and.callThrough();
+    const openUrlSpy = spyOn((service as any), '_openUrl').and.stub();
+    service.openSession(userParams);
+    expect(queryStringSpy).toHaveBeenCalledWith(userParams);
+    expect(openUrlSpy).toHaveBeenCalledWith('apiRoot/sso_backdoor' + queryString);
   });
 
   it('should get user', () => {

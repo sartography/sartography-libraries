@@ -292,12 +292,10 @@ export class ApiService {
   }
 
   /** openSession */
-  openSession(userParams: UserParams): Observable<string | User> {
+  openSession(userParams: UserParams) {
     if (!this.environment.production) {
-      const headers = this._userParamsToHttpHeaders(userParams);
-
-      return this.httpClient.get<string>(this.apiRoot + this.endpoints.fakeSession, {headers})
-        .pipe(catchError(this._handleError));
+      const queryString = this._userParamsToQueryString(userParams);
+      this._openUrl(this.apiRoot + this.endpoints.fakeSession + queryString);
     } else {
       return this.getUser();
     }
@@ -308,15 +306,20 @@ export class ApiService {
   }
 
   /** Construct HeaderParams from UserParams object. Only adds params that have been set. */
-  private _userParamsToHttpHeaders(userParams: UserParams): HttpHeaders {
-    let httpHeaders = new HttpHeaders();
-    Object.keys(userParams).forEach(k => {
+  private _userParamsToQueryString(userParams: UserParams): string {
+    let queryString = '?';
+    const keys = Object.keys(userParams);
+    keys.forEach((k, i) => {
       const val = userParams[k];
       if ((val !== undefined) && (val !== null)) {
-        httpHeaders = httpHeaders.set(k, val.toString());
+        queryString += k + '=' + encodeURIComponent(val.toString());
+      }
+
+      if (i < keys.length - 1) {
+        queryString += '&';
       }
     });
-    return httpHeaders;
+    return queryString;
   }
 
   /** Construct HttpParams from FileParams object. Only adds params that have been set. */
@@ -329,5 +332,9 @@ export class ApiService {
       }
     });
     return new HttpParams({fromObject: paramsObject});
+  }
+
+  private _openUrl(url: string) {
+    location.href = url;
   }
 }
