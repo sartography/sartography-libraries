@@ -9,6 +9,7 @@ import {Study} from '../types/study';
 import {User, UserParams} from '../types/user';
 import {Workflow, WorkflowSpec} from '../types/workflow';
 import {WorkflowTask} from '../types/workflow-task';
+import {isSignedIn} from '../util/is-signed-in';
 
 
 @Injectable({
@@ -283,7 +284,7 @@ export class ApiService {
 
   /** getUser */
   getUser(): Observable<User> {
-    if (localStorage.getItem('token')) {
+    if (isSignedIn()) {
       return this.httpClient.get<User>(this.apiRoot + this.endpoints.user)
         .pipe(catchError(this._handleError));
     } else {

@@ -27,3 +27,4 @@ export * from './lib/types/task';
 export * from './lib/types/user';
 export * from './lib/types/workflow';
 export * from './lib/types/workflow-task';
+export * from './lib/util/is-signed-in';
