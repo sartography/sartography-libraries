@@ -20,4 +20,5 @@ export interface UserParams {
   first_name?: string;
   last_name?: string;
   title?: string;
+  redirect_url?: string;
 }
