@@ -15,7 +15,12 @@
             "tsConfig": "projects/sartography-workflow-lib/tsconfig.lib.json",
             "project": "projects/sartography-workflow-lib/ng-package.json"
           }
-        },
+        ,          "configurations": {
+            "production": {
+              "tsConfig": "projects/sartography-workflow-lib/tsconfig.lib.prod.json"
+            }
+          }
+},
         "test": {
           "builder": "@angular-devkit/build-angular:karma",
           "options": {
