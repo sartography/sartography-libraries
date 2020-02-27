@@ -8,6 +8,7 @@ export const mockStudy0: Study = {
   primary_investigator_id: 'Dr. Tricia Marie McMillan',
   sponsor: 'Sirius Cybernetics Corporation',
   title: 'Phase III Trial of Genuine People Personalities (GPP) Autonomous Intelligent Emotional Agents for Interstellar Spacecraft',
+  inactive: false,
 };
 
 export const mockStudy1: Study = {
@@ -18,6 +19,7 @@ export const mockStudy1: Study = {
   primary_investigator_id: 'Dr. Slartibartfast Magrathean',
   sponsor: 'CamTim',
   title: 'Pilot Study of Fjord Placement for Single Fraction Outcomes to Cortisol Susceptibility',
+  inactive: false,
 };
 
 export const mockStudies: Study[] = [
@@ -80,5 +82,6 @@ export const newRandomStudy = (): Study => {
     primary_investigator_id: _randomWords(3),
     sponsor: _randomWords(2),
     title: _randomWords(10),
+    inactive: false,
   };
 };

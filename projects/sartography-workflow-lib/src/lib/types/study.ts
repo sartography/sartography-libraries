@@ -13,4 +13,5 @@ export interface Study {
   primary_investigator_id: string;
   sponsor: string;
   ind_number: string;
+  inactive: boolean;
 }
