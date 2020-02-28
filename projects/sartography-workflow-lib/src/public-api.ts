@@ -6,6 +6,7 @@ export * from './lib/sartography-workflow-lib.module';
 export * from './lib/components/session-redirect/session-redirect.component';
 export * from './lib/components/sartography-workflow-lib.component';
 export * from './lib/services/api.service';
+export * from './lib/services/interval/interval.service';
 export * from './lib/services/auth-interceptor';
 export * from './lib/static/bpmn';
 export * from './lib/static/dmn';
