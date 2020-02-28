@@ -1,4 +1,4 @@
-import {ProtocolBuilderStatus, Study} from '../../types/study';
+import {ProtocolBuilderRequiredDocs, ProtocolBuilderRequirement, ProtocolBuilderStatus, Study} from '../../types/study';
 
 export const mockStudy0: Study = {
   id: 0,
@@ -39,32 +39,32 @@ export const newRandomStudy = (): Study => {
 
   function _randomWords(numWords: number): string {
     const words = [
-        'Reliance Agreement',
-        'Evaluation',
-        'Drug Interactions',
-        'Channel Blockers',
-        'Cortisol',
-        'Trial',
-        'Radiosurgery',
-        'Brain Disease',
-        'Susceptibility',
-        'Strategies',
-        'Outcomes',
-        'Infections',
-        'Neutropenia',
-        'Patients',
-        'Nephrology',
-        'Workforce',
-        'Project',
-        'Ischemia',
-        'Events',
-        'Pilot Study',
-        'Therapy',
-        'Tolerance',
-        'Decisions',
-        'Radiation',
-        'Cancer',
-        'Tolerability'
+      'Reliance Agreement',
+      'Evaluation',
+      'Drug Interactions',
+      'Channel Blockers',
+      'Cortisol',
+      'Trial',
+      'Radiosurgery',
+      'Brain Disease',
+      'Susceptibility',
+      'Strategies',
+      'Outcomes',
+      'Infections',
+      'Neutropenia',
+      'Patients',
+      'Nephrology',
+      'Workforce',
+      'Project',
+      'Ischemia',
+      'Events',
+      'Pilot Study',
+      'Therapy',
+      'Tolerance',
+      'Decisions',
+      'Radiation',
+      'Cancer',
+      'Tolerability'
     ];
     const resultArray = [];
     for (let i = 0; i < numWords; i++) {
@@ -74,8 +74,13 @@ export const newRandomStudy = (): Study => {
     return resultArray.join(' ');
   }
 
+  function _randomRequirements(): ProtocolBuilderRequirement[] {
+    return Object.entries(ProtocolBuilderRequiredDocs).filter(req => Math.floor(Math.random() * 10) % 2 === 0);
+  }
+
   return {
     id: _randomNumber(5),
+    hsr_number: _randomNumber(5).toString(),
     ind_number: _randomNumber(5).toString(),
     last_updated: new Date(),
     protocol_builder_status: ProtocolBuilderStatus.IN_PROCESS,
@@ -83,5 +88,6 @@ export const newRandomStudy = (): Study => {
     sponsor: _randomWords(2),
     title: _randomWords(10),
     inactive: false,
+    requirements: _randomRequirements(),
   };
 };
