@@ -1,8 +1,17 @@
 export enum ProtocolBuilderStatus {
+  DRAFT = 'draft',
   IN_PROCESS = 'in_process',
-  COMPLETE = 'complete',
-  UPDATING = 'updating',
-  OUT_OF_DATE = 'out_of_date',
+  IN_REVIEW = 'in_review',
+  REVIEW_COMPLETE = 'review_complete',
+  INACTIVE = 'inactive',
+}
+
+export enum ProtocolBuilderStatusLabels {
+  DRAFT = 'Draft',
+  IN_PROCESS = 'Prepping for IRB review',
+  IN_REVIEW = 'Out for IRB review',
+  REVIEW_COMPLETE = 'IRB review complete',
+  INACTIVE = 'Inactive',
 }
 
 export const ProtocolBuilderRequiredDocs = {
