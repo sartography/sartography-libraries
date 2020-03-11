@@ -7,7 +7,7 @@ export enum ProtocolBuilderStatus {
 }
 
 export enum ProtocolBuilderStatusLabels {
-  DRAFT = 'Draft',
+  DRAFT = 'New',
   IN_PROCESS = 'Prepping for IRB review',
   IN_REVIEW = 'Out for IRB review',
   REVIEW_COMPLETE = 'IRB review complete',
@@ -64,4 +64,5 @@ export interface Study {
   ind_number?: string;
   inactive?: boolean;
   requirements?: ProtocolBuilderRequirement[];
+  investigator_uids?: string[];
 }

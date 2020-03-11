@@ -5,6 +5,7 @@ import {catchError} from 'rxjs/operators';
 import {ApiError} from '../types/api';
 import {AppEnvironment} from '../types/app-environment';
 import {FileMeta, FileParams} from '../types/file';
+import {WorkflowStats} from '../types/stats';
 import {Study} from '../types/study';
 import {User, UserParams} from '../types/user';
 import {Workflow, WorkflowSpec} from '../types/workflow';
@@ -29,6 +30,7 @@ export class ApiService {
     file: '/file/{file_id}',
     fileData: '/file/{file_id}/data',
     workflow: '/workflow/{workflow_id}',
+    workflowStats: '/workflow/{workflow_id}/stats',
     taskListAllForWorkflow: '/workflow/{workflow_id}/all_tasks',
     taskListForWorkflow: '/workflow/{workflow_id}/tasks',
     taskForWorkflow: '/workflow/{workflow_id}/task/{task_id}',
@@ -259,6 +261,16 @@ export class ApiService {
 
     return this.httpClient
       .get<Workflow>(url)
+      .pipe(catchError(this._handleError));
+  }
+
+  /** Get a specific Workflow */
+  getWorkflowStats(workflowId: number): Observable<WorkflowStats> {
+    const url = this.apiRoot + this.endpoints.workflowStats
+      .replace('{workflow_id}', workflowId.toString());
+
+    return this.httpClient
+      .get<WorkflowStats>(url)
       .pipe(catchError(this._handleError));
   }
 
