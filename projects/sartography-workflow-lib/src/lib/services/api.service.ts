@@ -180,9 +180,9 @@ export class ApiService {
   }
 
   /** Update a Workflow Specification */
-  getWorkflowSpecCategory(catId: string): Observable<WorkflowSpecCategory> {
+  getWorkflowSpecCategory(catId: number): Observable<WorkflowSpecCategory> {
     const url = this.apiRoot + this.endpoints.workflowSpecCategory
-      .replace('{cat_id}', catId);
+      .replace('{cat_id}', catId.toString());
 
     return this.httpClient
       .get<WorkflowSpecCategory>(url)
@@ -190,9 +190,9 @@ export class ApiService {
   }
 
   /** Update a Workflow Specification */
-  updateWorkflowSpecCategory(catId: string, newCat: WorkflowSpecCategory): Observable<WorkflowSpecCategory> {
+  updateWorkflowSpecCategory(catId: number, newCat: WorkflowSpecCategory): Observable<WorkflowSpecCategory> {
     const url = this.apiRoot + this.endpoints.workflowSpecCategory
-      .replace('{cat_id}', catId);
+      .replace('{cat_id}', catId.toString());
 
     return this.httpClient
       .put<WorkflowSpecCategory>(url, newCat)
@@ -200,9 +200,9 @@ export class ApiService {
   }
 
   /** Update a Workflow Specification */
-  deleteWorkflowSpecCategory(catId: string): Observable<null> {
+  deleteWorkflowSpecCategory(catId: number): Observable<null> {
     const url = this.apiRoot + this.endpoints.workflowSpecCategory
-      .replace('{cat_id}', catId);
+      .replace('{cat_id}', catId.toString());
 
     return this.httpClient
       .delete<null>(url)
