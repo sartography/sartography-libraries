@@ -8,7 +8,7 @@ import {FileMeta, FileParams} from '../types/file';
 import {WorkflowStats} from '../types/stats';
 import {Study} from '../types/study';
 import {User, UserParams} from '../types/user';
-import {Workflow, WorkflowSpec} from '../types/workflow';
+import {Workflow, WorkflowSpec, WorkflowSpecCategory} from '../types/workflow';
 import {WorkflowTask} from '../types/workflow-task';
 import {isSignedIn} from '../util/is-signed-in';
 
@@ -26,6 +26,8 @@ export class ApiService {
     workflowListForStudy: '/study/{study_id}/workflows',
     workflowSpecList: '/workflow-specification',
     workflowSpec: '/workflow-specification/{spec_id}',
+    workflowSpecCategoryList: '/workflow-specification-category',
+    workflowSpecCategory: '/workflow-specification-category/{cat_id}',
     fileList: '/file',
     file: '/file/{file_id}',
     fileData: '/file/{file_id}/data',
@@ -162,6 +164,45 @@ export class ApiService {
   deleteWorkflowSpecification(specId: string): Observable<null> {
     const url = this.apiRoot + this.endpoints.workflowSpec
       .replace('{spec_id}', specId);
+
+    return this.httpClient
+      .delete<null>(url)
+      .pipe(catchError(this._handleError));
+  }
+
+  /** Add a Workflow Specification */
+  addWorkflowSpecCategory(newCat: WorkflowSpecCategory): Observable<WorkflowSpecCategory> {
+    const url = this.apiRoot + this.endpoints.workflowSpecCategoryList;
+
+    return this.httpClient
+      .post<WorkflowSpecCategory>(url, newCat)
+      .pipe(catchError(this._handleError));
+  }
+
+  /** Update a Workflow Specification */
+  getWorkflowSpecCategory(catId: string): Observable<WorkflowSpecCategory> {
+    const url = this.apiRoot + this.endpoints.workflowSpecCategory
+      .replace('{cat_id}', catId);
+
+    return this.httpClient
+      .get<WorkflowSpecCategory>(url)
+      .pipe(catchError(this._handleError));
+  }
+
+  /** Update a Workflow Specification */
+  updateWorkflowSpecCategory(catId: string, newCat: WorkflowSpecCategory): Observable<WorkflowSpecCategory> {
+    const url = this.apiRoot + this.endpoints.workflowSpecCategory
+      .replace('{cat_id}', catId);
+
+    return this.httpClient
+      .put<WorkflowSpecCategory>(url, newCat)
+      .pipe(catchError(this._handleError));
+  }
+
+  /** Update a Workflow Specification */
+  deleteWorkflowSpecCategory(catId: string): Observable<null> {
+    const url = this.apiRoot + this.endpoints.workflowSpecCategory
+      .replace('{cat_id}', catId);
 
     return this.httpClient
       .delete<null>(url)
