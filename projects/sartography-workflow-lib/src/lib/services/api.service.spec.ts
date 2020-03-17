@@ -9,13 +9,14 @@ import {mockErrorResponse, mockUpdatingResponse} from '../testing/mocks/study-st
 import {mockStudies, mockStudy0, newRandomStudy} from '../testing/mocks/study.mocks';
 import {mockTask0} from '../testing/mocks/task.mocks';
 import {mockUser} from '../testing/mocks/user.mocks';
+import {mockWorkflowSpecCategories, mockWorkflowSpecCategory0} from '../testing/mocks/workflow-spec-category.mocks';
 import {mockWorkflowSpec0, mockWorkflowSpecs} from '../testing/mocks/workflow-spec.mocks';
 import {mockWorkflowTask0} from '../testing/mocks/workflow-task.mocks';
 import {mockWorkflow0, mockWorkflows} from '../testing/mocks/workflow.mocks';
 import {FileMeta, FileParams} from '../types/file';
 import {Study} from '../types/study';
 import {UserParams} from '../types/user';
-import {WorkflowSpec} from '../types/workflow';
+import {WorkflowSpec, WorkflowSpecCategory} from '../types/workflow';
 import {ApiService} from './api.service';
 
 describe('ApiService', () => {
@@ -153,7 +154,7 @@ describe('ApiService', () => {
     req.flush(mockTask0);
   });
 
-  it('should get workflow specs', () => {
+  it('should list workflow specifications', () => {
     service.getWorkflowSpecList().subscribe(data => {
       expect(data.length).toBeGreaterThan(0);
       expect(data[0].display_name).toEqual(mockWorkflowSpecs[0].display_name);
@@ -482,5 +483,65 @@ describe('ApiService', () => {
     expect(req.request.method).toEqual('GET');
     req.error(mockErrorResponse, {status: 42, statusText: 'waaaa'});
   });
+
+  it('should list workflow spec categories', () => {
+    service.getWorkflowSpecCategoryList().subscribe(data => {
+      expect(data.length).toBeGreaterThan(0);
+      expect(data[0].display_name).toEqual(mockWorkflowSpecCategories[0].display_name);
+      expect(data[1].display_name).toEqual(mockWorkflowSpecCategories[1].display_name);
+    });
+
+    const req = httpMock.expectOne(`apiRoot/workflow-specification-category`);
+    expect(req.request.method).toEqual('GET');
+    req.flush(mockWorkflowSpecCategories);
+  });
+
+  it('should get one workflow spec category', () => {
+    service.getWorkflowSpecCategory(mockWorkflowSpecCategory0.id).subscribe(data => {
+      expect(data).toBeTruthy();
+      expect(data.id).toEqual(mockWorkflowSpecCategory0.id);
+    });
+
+    const req = httpMock.expectOne(`apiRoot/workflow-specification-category/${mockWorkflowSpecCategory0.id}`);
+    expect(req.request.method).toEqual('GET');
+    req.flush(mockWorkflowSpecCategory0);
+  });
+
+  it('should add a workflow spec category', () => {
+    service.addWorkflowSpecCategory(mockWorkflowSpecCategory0).subscribe(data => {
+      expect(data).toBeTruthy();
+      expect(data.id).toEqual(mockWorkflowSpecCategory0.id);
+    });
+
+    const req = httpMock.expectOne(`apiRoot/workflow-specification-category`);
+    expect(req.request.method).toEqual('POST');
+    req.flush(mockWorkflowSpecCategory0);
+  });
+
+  it('should update a workflow spec category', () => {
+    const modifiedCat: WorkflowSpecCategory = createClone()(mockWorkflowSpecCategory0);
+    modifiedCat.display_name = 'New name';
+
+    service.updateWorkflowSpecCategory(mockWorkflowSpecCategory0.id, modifiedCat).subscribe(data => {
+      expect(data).toBeTruthy();
+      expect(data.id).toEqual(mockWorkflowSpecCategory0.id);
+      expect(data.display_name).toEqual(modifiedCat.display_name);
+    });
+
+    const req = httpMock.expectOne(`apiRoot/workflow-specification-category/${mockWorkflowSpecCategory0.id}`);
+    expect(req.request.method).toEqual('PUT');
+    req.flush(modifiedCat);
+  });
+
+  it('should delete a workflow spec category', () => {
+    service.deleteWorkflowSpecCategory(mockWorkflowSpecCategory0.id).subscribe(data => {
+      expect(data).toBeNull();
+    });
+
+    const req = httpMock.expectOne(`apiRoot/workflow-specification-category/${mockWorkflowSpecCategory0.id}`);
+    expect(req.request.method).toEqual('DELETE');
+    req.flush(null);
+  });
+
 
 });

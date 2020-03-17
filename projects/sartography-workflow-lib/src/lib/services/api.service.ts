@@ -140,7 +140,7 @@ export class ApiService {
       .pipe(catchError(this._handleError));
   }
 
-  /** Update a Workflow Specification */
+  /** Get a Workflow Specification */
   getWorkflowSpecification(specId: string): Observable<WorkflowSpec> {
     const url = this.apiRoot + this.endpoints.workflowSpec
       .replace('{spec_id}', specId);
@@ -160,13 +160,22 @@ export class ApiService {
       .pipe(catchError(this._handleError));
   }
 
-  /** Update a Workflow Specification */
+  /** Delete a Workflow Specification */
   deleteWorkflowSpecification(specId: string): Observable<null> {
     const url = this.apiRoot + this.endpoints.workflowSpec
       .replace('{spec_id}', specId);
 
     return this.httpClient
       .delete<null>(url)
+      .pipe(catchError(this._handleError));
+  }
+
+  /** Get all Workflow Spec Categories */
+  getWorkflowSpecCategoryList(): Observable<WorkflowSpecCategory[]> {
+    const url = this.apiRoot + this.endpoints.workflowSpecCategoryList;
+
+    return this.httpClient
+      .get<WorkflowSpecCategory[]>(url)
       .pipe(catchError(this._handleError));
   }
 
@@ -179,7 +188,7 @@ export class ApiService {
       .pipe(catchError(this._handleError));
   }
 
-  /** Update a Workflow Specification */
+  /** Get a Workflow Spec Category */
   getWorkflowSpecCategory(catId: number): Observable<WorkflowSpecCategory> {
     const url = this.apiRoot + this.endpoints.workflowSpecCategory
       .replace('{cat_id}', catId.toString());
@@ -189,7 +198,7 @@ export class ApiService {
       .pipe(catchError(this._handleError));
   }
 
-  /** Update a Workflow Specification */
+  /** Update a Workflow Spec Category */
   updateWorkflowSpecCategory(catId: number, newCat: WorkflowSpecCategory): Observable<WorkflowSpecCategory> {
     const url = this.apiRoot + this.endpoints.workflowSpecCategory
       .replace('{cat_id}', catId.toString());
@@ -199,7 +208,7 @@ export class ApiService {
       .pipe(catchError(this._handleError));
   }
 
-  /** Update a Workflow Specification */
+  /** Delete a Workflow Spec Category */
   deleteWorkflowSpecCategory(catId: number): Observable<null> {
     const url = this.apiRoot + this.endpoints.workflowSpecCategory
       .replace('{cat_id}', catId.toString());
