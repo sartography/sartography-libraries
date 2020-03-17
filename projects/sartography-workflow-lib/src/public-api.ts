@@ -17,6 +17,7 @@ export * from './lib/testing/mocks/study.mocks';
 export * from './lib/testing/mocks/task.mocks';
 export * from './lib/testing/mocks/user.mocks';
 export * from './lib/testing/mocks/workflow-spec.mocks';
+export * from './lib/testing/mocks/workflow-spec-category.mocks';
 export * from './lib/testing/mocks/workflow-task.mocks';
 export * from './lib/testing/mocks/workflow.mocks';
 export * from './lib/types/app-environment';
