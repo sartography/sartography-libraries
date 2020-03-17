@@ -12,6 +12,7 @@ export * from './lib/static/bpmn';
 export * from './lib/static/dmn';
 export * from './lib/testing/mocks/environment.mocks';
 export * from './lib/testing/mocks/file.mocks';
+export * from './lib/testing/mocks/stats.mocks';
 export * from './lib/testing/mocks/study-status.mocks';
 export * from './lib/testing/mocks/study.mocks';
 export * from './lib/testing/mocks/task.mocks';
