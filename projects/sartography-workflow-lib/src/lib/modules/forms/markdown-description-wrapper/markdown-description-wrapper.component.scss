@@ -1,0 +1,10 @@
+@import "../config";
+
+.markdown-description {
+  margin-top: -3rem;
+  margin-bottom: 4rem;
+  padding: 0.7rem;
+  border: none;
+  border-radius: 5px;
+  background-color: $brand-gray-tint-4;
+}

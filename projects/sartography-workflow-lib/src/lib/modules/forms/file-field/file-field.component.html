@@ -1,0 +1,17 @@
+<div [ngClass]="{'file-name': true, 'file-is-selected': !!selectedFile}" fxLayout="row" fxLayoutAlign="start center">
+  <div (click)="fileInput.click()" fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="20px">
+    <mat-icon>folder_open</mat-icon>
+    <span>{{getFileName()}}</span>
+  </div>
+  <button (click)="removeFile()" *ngIf="selectedFileMeta" color="warn" mat-icon-button>
+    <mat-icon>delete</mat-icon>
+  </button>
+  <input
+    #fileInput
+    (change)="onFileSelected($event)"
+    [formlyAttributes]="field"
+    accept=".docx,.gif,.jpg,.pdf,.png,.svg,.xlsx,.zip" hidden
+    id="file"
+    type="file"
+  >
+</div>

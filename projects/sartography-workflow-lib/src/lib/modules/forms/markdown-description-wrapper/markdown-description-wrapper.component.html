@@ -1,0 +1,6 @@
+<ng-container #fieldComponent></ng-container>
+<div *ngIf="to.markdownDescription" class="markdown-description">
+  <markdown>
+    {{to.markdownDescription | unescapeLineBreaks}}
+  </markdown>
+</div>

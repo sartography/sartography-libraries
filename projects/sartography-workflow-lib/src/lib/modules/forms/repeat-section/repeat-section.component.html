@@ -1,0 +1,46 @@
+<div
+  fxLayout="column"
+  fxLayoutGap="1em"
+  class="container"
+  *ngIf="field && field.fieldArray"
+>
+  <mat-card *ngFor="let f of field.fieldGroup; let i = index;" class="repeat">
+    <mat-card-content fxLayout="row">
+      <div fxFlex="70">
+        <lib-form-printout [field]="f"></lib-form-printout>
+      </div>
+      <div
+        fxFlex="30"
+        fxLayout="row"
+        fxLayoutAlign="end start"
+      >
+        <button
+          mat-icon-button
+          type="button"
+          (click)="openDialog(i, f)"
+        >
+          <mat-icon>edit</mat-icon>
+        </button>
+        <button
+          mat-icon-button
+          type="button"
+          (click)="remove(i)"
+        >
+          <mat-icon>close</mat-icon>
+        </button>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</div>
+
+<div class="repeat-action" *ngIf="field && field.templateOptions">
+  <button
+    mat-flat-button
+    color="accent"
+    type="button"
+    (click)="openDialog(field.fieldGroup ? field.fieldGroup.length : 0)"
+  >
+    <mat-icon>add</mat-icon>
+    {{ field.templateOptions.description || 'Add ' + field.templateOptions.label }}
+  </button>
+</div>

@@ -1,0 +1,10 @@
+@import "../config";
+
+mat-card {
+  margin-bottom: 2rem;
+  border: 1px solid $brand-gray-tint-2;
+
+  mat-card-content {
+    padding: 1rem;
+  }
+}

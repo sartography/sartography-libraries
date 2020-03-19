@@ -2,6 +2,15 @@
   "$schema": "../../node_modules/ng-packagr/ng-package.schema.json",
   "dest": "../../dist/sartography-workflow-lib",
   "lib": {
-    "entryFile": "src/public-api.ts"
+    "entryFile": "src/public-api.ts",
+    "umdModuleIds": {
+      "@ngx-formly/core": "ngxFormlyCore",
+      "@ngx-formly/material": "ngxFormlyMaterial",
+      "@ngx-formly/material/datepicker": "ngxFormlyMaterialDatepicker",
+      "ngx-file-drop": "ngxFileDrop",
+      "ngx-markdown": "ngxMarkdown",
+      "ngx-device-detector": "ngxDeviceDetector",
+      "rfdc": "rfdc"
+    }
   }
 }

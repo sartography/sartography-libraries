@@ -1,0 +1,116 @@
+<div
+  [ngClass]="{'hover': dropZoneHover}"
+  class="mat-typography"
+  id="fileUpload"
+>
+  <ngx-file-drop
+    (onFileDrop)="dropped($event)"
+    (onFileLeave)="fileLeave($event)"
+    (onFileOver)="fileOver($event)"
+    accept=".docx,.gif,.jpg,.pdf,.png,.svg,.xlsx,.zip"
+    class="file-upload"
+    dropZoneLabel="Drop files here"
+    id="dropZoneContainer"
+  >
+    <ng-template let-openFileSelector="openFileSelector" ngx-file-drop-content-tmp>
+      <div id="dropFilesInstructions" fxLayout="column" fxLayoutAlign="center center">
+        <mat-icon>cloud_upload</mat-icon>
+        <h3>Drag & drop <strong>{{to.label}}</strong> files here</h3>
+        <p *ngIf="to.description">{{to.description}}</p>
+        <button mat-flat-button color="primary" (click)="openFileSelector()" type="button">Browse Files</button>
+      </div>
+    </ng-template>
+  </ngx-file-drop>
+  <div
+    *ngIf="updateFileMetasSubject | async"
+    id="fileQueueContainer"
+  >
+    <h4 id="uploaded_files_table_heading">Uploaded files</h4>
+    <table
+      [dataSource]="updateFileMetasSubject"
+      class="mat-elevation-z8"
+      mat-table
+      aria-describedby="uploaded_files_table_heading"
+    >
+      <ng-container matColumnDef="type">
+        <th
+          *matHeaderCellDef
+          mat-header-cell
+          id="uploaded_files_type"
+        >Type
+        </th>
+        <td
+          *matCellDef="let fileMeta"
+          mat-cell
+        >
+          <img [alt]="fileMeta.type" [src]="getFileIcon(fileMeta)"/>
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="name">
+        <th
+          *matHeaderCellDef
+          mat-header-cell
+          id="uploaded_files_name"
+        >Name
+        </th>
+        <td
+          *matCellDef="let fileMeta"
+          mat-cell
+        > {{truncate((fileMeta.name), 60)}} </td>
+      </ng-container>
+      <ng-container matColumnDef="size">
+        <th
+          *matHeaderCellDef
+          mat-header-cell
+          id="uploaded_files_size"
+        >Size
+        </th>
+        <td
+          *matCellDef="let fileMeta"
+          mat-cell
+        > {{formatSize(fileMeta.file.size)}} </td>
+      </ng-container>
+      <ng-container matColumnDef="lastModifiedDate">
+        <th
+          *matHeaderCellDef
+          mat-header-cell
+          id="uploaded_files_date"
+        >Date Uploaded
+        </th>
+        <td
+          *matCellDef="let fileMeta"
+          mat-cell
+        > {{fileMeta.last_updated | date:'short'}} </td>
+      </ng-container>
+      <ng-container matColumnDef="actions">
+        <th
+          *matHeaderCellDef
+          mat-header-cell
+          id="uploaded_files_actions"
+        >Actions
+        </th>
+        <td
+          *matCellDef="let fileMeta"
+          mat-cell
+        >
+          <button
+            (click)="removeFile($event, fileMeta)"
+            color="warn"
+            mat-icon-button
+          >
+            <mat-icon>delete</mat-icon>
+          </button>
+        </td>
+      </ng-container>
+
+      <tr
+        *matHeaderRowDef="displayedColumns"
+        mat-header-row
+      ></tr>
+      <tr
+        *matRowDef="let row; columns: displayedColumns;"
+        mat-row
+      ></tr>
+    </table>
+  </div>
+</div>

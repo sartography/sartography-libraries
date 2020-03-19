@@ -1,0 +1,56 @@
+@import "../config";
+
+.center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+#dropFilesInstructions {
+  color: $brand-accent;
+  padding-top: 2rem;
+  padding-bottom: 2rem;
+  margin: 2rem;
+}
+
+#fileQueueContainer {
+  padding-top: 1em;
+  padding-bottom: 1em;
+  transition: 300ms ease opacity;
+
+  table {
+    width: 100%;
+  }
+}
+
+::ng-deep #dropZoneContainer.file-upload {
+  width: 100%;
+
+  .ngx-file-drop__drop-zone {
+    transition: all 300ms ease-in-out;
+    border: 4px dotted $brand-gray-tint-2;
+    border-radius: 6px;
+    padding: 40px;
+    margin-top: 1rem;
+
+    &:hover {
+      border: 4px dotted $brand-gray-tint-1;
+    }
+
+    .ngx-file-drop__content {
+      width: 100%;
+    }
+  }
+}
+
+.hover { background-color: #CCCCCC; }
+
+#dropZoneContainer {
+}
+
+::ng-deep .mat-form-field-should-float {
+  ::ng-deep #dropZoneContainer.file-upload .ngx-file-drop__drop-zone {
+    margin-top: 0;
+  }
+}

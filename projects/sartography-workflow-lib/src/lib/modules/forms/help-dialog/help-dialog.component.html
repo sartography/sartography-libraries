@@ -1,0 +1,11 @@
+<div class="mat-typography">
+  <h1 mat-dialog-title>{{data.title}}</h1>
+  <div mat-dialog-content>
+    <markdown>
+      {{data.text | unescapeLineBreaks}}
+    </markdown>
+  </div>
+  <div mat-dialog-actions>
+    <button (click)="onNoClick()" mat-button>Ok</button>
+  </div>
+</div>
