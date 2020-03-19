@@ -11,6 +11,7 @@ import {FileParams} from '../../../types/file';
 export class FileBaseComponent extends FieldType implements OnInit {
   protected studyId: number;
   protected workflowId: number;
+  protected workflowSpecId: string;
   protected taskId: string;
   protected fileParams: FileParams;
 
@@ -20,9 +21,23 @@ export class FileBaseComponent extends FieldType implements OnInit {
   ) {
     super();
     this.route.paramMap.subscribe(paramMap => {
-      this.studyId = parseInt(paramMap.get('study_id'), 10);
-      this.workflowId = parseInt(paramMap.get('workflow_id'), 10);
-      this.taskId = paramMap.get('task_id');
+
+      if (paramMap.has('study_id')) {
+        this.studyId = parseInt(paramMap.get('study_id'), 10);
+      }
+
+      if (paramMap.has('workflow_id')) {
+        this.workflowId = parseInt(paramMap.get('workflow_id'), 10);
+      }
+
+      if (paramMap.has('task_id')) {
+        this.taskId = paramMap.get('task_id');
+      }
+
+      if (paramMap.has('workflow_spec_id')) {
+        this.workflowSpecId = paramMap.get('workflow_spec_id');
+      }
+
     });
   }
 
@@ -30,6 +45,7 @@ export class FileBaseComponent extends FieldType implements OnInit {
     super.ngOnInit();
     this.fileParams = {
       study_id: this.studyId,
+      workflow_spec_id: this.workflowSpecId,
       workflow_id: this.workflowId,
       task_id: this.taskId,
       form_field_key: this.field.key
