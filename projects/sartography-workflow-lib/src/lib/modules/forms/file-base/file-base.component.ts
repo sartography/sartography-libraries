@@ -21,7 +21,7 @@ export class FileBaseComponent extends FieldType implements OnInit {
   ) {
     super();
     this.route.paramMap.subscribe(paramMap => {
-
+      console.log('paramMap', paramMap);
       if (paramMap.has('study_id')) {
         this.studyId = parseInt(paramMap.get('study_id'), 10);
       }
@@ -37,7 +37,6 @@ export class FileBaseComponent extends FieldType implements OnInit {
       if (paramMap.has('workflow_spec_id')) {
         this.workflowSpecId = paramMap.get('workflow_spec_id');
       }
-
     });
   }
 

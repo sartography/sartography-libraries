@@ -3,6 +3,7 @@ import {ActivatedRoute} from '@angular/router';
 import {ApiService} from '../../../services/api.service';
 import {FileMeta} from '../../../types/file';
 import {getFileType} from '../../../util/file-type';
+import {isNumberDefined} from '../../../util/is-number-defined';
 import {FileBaseComponent} from '../file-base/file-base.component';
 
 @Component({
@@ -23,6 +24,10 @@ export class FileFieldComponent extends FileBaseComponent implements OnInit {
 
   ngOnInit(): void {
     super.ngOnInit();
+
+    if (this.field && this.field.defaultValue) {
+      this.selectedFile = this.field.defaultValue as File;
+    }
   }
 
   onFileSelected($event: Event) {
@@ -45,11 +50,27 @@ export class FileFieldComponent extends FileBaseComponent implements OnInit {
       name: file.name,
       type: getFileType(file),
       file,
-      study_id: this.studyId,
-      workflow_id: this.workflowId,
-      task_id: this.taskId,
-      form_field_key: this.field.key,
     };
+
+    if (isNumberDefined(this.studyId)) {
+      fileMeta.study_id = this.studyId;
+    }
+
+    if (isNumberDefined(this.workflowId)) {
+      fileMeta.workflow_id = this.workflowId;
+    }
+
+    if (this.workflowSpecId) {
+      fileMeta.workflow_spec_id = this.workflowSpecId;
+    }
+
+    if (this.taskId) {
+      fileMeta.task_id = this.taskId;
+    }
+
+    if (this.field.key) {
+      fileMeta.form_field_key = this.field.key;
+    }
 
     this.api.addFileMeta(this.fileParams, fileMeta).subscribe(fm => {
       fm.file = this.selectedFile;

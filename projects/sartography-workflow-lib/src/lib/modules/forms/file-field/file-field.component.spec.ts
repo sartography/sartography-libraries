@@ -11,7 +11,9 @@ import {FormlyFieldConfigCache} from '@ngx-formly/core/lib/components/formly.fie
 import {of} from 'rxjs';
 import {ApiService} from '../../../services/api.service';
 import {MockEnvironment} from '../../../testing/mocks/environment.mocks';
-import {mockFileMeta0} from '../../../testing/mocks/file.mocks';
+import {mockFileMeta0, mockFileMeta1} from '../../../testing/mocks/file.mocks';
+import {mockWorkflowSpec0} from '../../../testing/mocks/workflow-spec.mocks';
+import {FileBaseComponent} from '../file-base/file-base.component';
 import {FileFieldComponent} from './file-field.component';
 
 describe('FileFieldComponent', () => {
@@ -40,12 +42,16 @@ describe('FileFieldComponent', () => {
         NoopAnimationsModule,
         ReactiveFormsModule,
       ],
-      declarations: [FileFieldComponent],
+      declarations: [
+        FileBaseComponent,
+        FileFieldComponent
+      ],
       providers: [
         ApiService,
         {
           provide: ActivatedRoute,
           useValue: {paramMap: of(convertToParamMap({study_id: '0', workflow_id: '0', task_id: '0'}))},
+          // useValue: {paramMap: of(convertToParamMap({workflow_spec_id: mockWorkflowSpec0.id}))},
         },
         {provide: 'APP_ENVIRONMENT', useClass: MockEnvironment},
       ]
@@ -59,7 +65,7 @@ describe('FileFieldComponent', () => {
     builder = formlyBuilder;
     field = {
       key: 'hi',
-      defaultValue: 'Hello there.'
+      defaultValue: mockFileMeta1.file
     };
     builder.buildForm(form, [field], {}, {});
   }));
@@ -71,7 +77,10 @@ describe('FileFieldComponent', () => {
     component.field = field;
     fixture.detectChanges();
 
+    expect(component.selectedFile).toEqual(mockFileMeta1.file);
+
     const fmsReq = httpMock.expectOne('apiRoot/file?study_id=0&workflow_id=0&task_id=0&form_field_key=hi');
+    // const fmsReq = httpMock.expectOne(`apiRoot/file?workflow_spec_id=${mockWorkflowSpec0.id}&form_field_key=hi`);
     expect(fmsReq.request.method).toEqual('GET');
     fmsReq.flush([mockFileMeta0]);
 
@@ -128,5 +137,9 @@ describe('FileFieldComponent', () => {
     expect(component.selectedFileMeta).toBeUndefined();
     expect(component.selectedFile).toBeUndefined();
     expect(loadFilesSpy).toHaveBeenCalled();
+  });
+
+  it('should set default value', () => {
+    expect(component.selectedFile).toEqual(mockFileMeta0.file);
   });
 });
