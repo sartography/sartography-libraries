@@ -400,7 +400,7 @@ describe('ApiService', () => {
     };
 
     service.updateFileData(modifiedFileMeta).subscribe(data => {
-      const file = data as File;
+      const file = data as FileMeta;
       expect(file.name).toEqual(modifiedFileMeta.name);
       expect(file.type).toEqual(modifiedFileMeta.content_type);
     });

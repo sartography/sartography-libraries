@@ -293,14 +293,14 @@ export class ApiService {
   }
 
   /** Update the File Data for specific File Metadata */
-  updateFileData(fileMeta: FileMeta): Observable<Blob> {
+  updateFileData(fileMeta: FileMeta): Observable<FileMeta> {
     const url = this.apiRoot + this.endpoints.fileData
       .replace('{file_id}', fileMeta.id.toString());
     const formData = new FormData();
     formData.append('file', fileMeta.file);
 
     return this.httpClient
-      .put(url, formData, {responseType: 'blob'})
+      .put<FileMeta>(url, formData)
       .pipe(catchError(this._handleError));
   }
 
