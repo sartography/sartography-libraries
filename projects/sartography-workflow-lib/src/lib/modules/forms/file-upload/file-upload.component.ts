@@ -1,4 +1,4 @@
-import {Component} from '@angular/core';
+import {Component, EventEmitter, Output} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
 import {FileSystemFileEntry, NgxFileDropEntry} from 'ngx-file-drop';
 import {ReplaySubject} from 'rxjs';
@@ -13,6 +13,7 @@ import {FileBaseComponent} from '../file-base/file-base.component';
   styleUrls: ['./file-upload.component.scss']
 })
 export class FileUploadComponent extends FileBaseComponent {
+  @Output() filesUpdated: EventEmitter<FileMeta[]> = new EventEmitter<FileMeta[]>();
   droppedFiles: NgxFileDropEntry[] = [];
   fileMetas = new Set<FileMeta>();
   updateFileMetasSubject = new ReplaySubject<FileMeta[]>();
@@ -119,6 +120,7 @@ export class FileUploadComponent extends FileBaseComponent {
     }
 
     this.updateFileMetasSubject.next(fileMetasArray);
+    this.filesUpdated.emit(fileMetasArray);
   }
 
   loadFiles() {

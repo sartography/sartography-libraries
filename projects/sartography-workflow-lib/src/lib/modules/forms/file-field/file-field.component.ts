@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
 import {ApiService} from '../../../services/api.service';
 import {FileMeta} from '../../../types/file';
@@ -14,6 +14,9 @@ import {FileBaseComponent} from '../file-base/file-base.component';
 export class FileFieldComponent extends FileBaseComponent implements OnInit {
   selectedFile: File;
   selectedFileMeta: FileMeta;
+  @Input() files: FileMeta[];
+  @Output() fileAdded: EventEmitter<FileMeta> = new EventEmitter<FileMeta>();
+  @Output() fileRemoved: EventEmitter<FileMeta> = new EventEmitter<FileMeta>();
 
   constructor(
     protected api: ApiService,
@@ -72,6 +75,8 @@ export class FileFieldComponent extends FileBaseComponent implements OnInit {
       fileMeta.form_field_key = this.field.key;
     }
 
+    this.fileAdded.emit(fileMeta);
+
     this.api.addFileMeta(this.fileParams, fileMeta).subscribe(fm => {
       fm.file = this.selectedFile;
       this.selectedFileMeta = fm;
@@ -81,6 +86,8 @@ export class FileFieldComponent extends FileBaseComponent implements OnInit {
 
   removeFile() {
     if (this.selectedFileMeta) {
+      this.fileRemoved.emit(this.selectedFileMeta);
+
       this.api.deleteFileMeta(this.selectedFileMeta.id).subscribe(() => {
         this.selectedFile = undefined;
         this.selectedFileMeta = undefined;
@@ -91,17 +98,16 @@ export class FileFieldComponent extends FileBaseComponent implements OnInit {
 
   loadFiles() {
     this.api.getFileMetas(this.fileParams).subscribe(fms => {
-      fms.forEach(fm => {
-        this.api.getFileData(fm.id).subscribe(blob => {
-          const file = new File([blob], fm.name, {type: fm.type, lastModified: new Date(fm.last_updated).getTime()});
-          fm.file = file;
-          this.selectedFileMeta = fm;
-          this.selectedFile = file;
-          if (this.model && this.formControl) {
-            this.model[this.field.key] = fm.id;
-            this.formControl.setValue(fm.id);
-          }
-        });
+      const fm = fms[0];
+      this.api.getFileData(fm.id).subscribe(blob => {
+        const file = new File([blob], fm.name, {type: fm.type, lastModified: new Date(fm.last_updated).getTime()});
+        fm.file = file;
+        this.selectedFileMeta = fm;
+        this.selectedFile = file;
+        if (this.model && this.formControl) {
+          this.model[this.field.key] = fm.id;
+          this.formControl.setValue(fm.id);
+        }
       });
     });
   }
