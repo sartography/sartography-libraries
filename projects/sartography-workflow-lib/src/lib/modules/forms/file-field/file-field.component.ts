@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
 import {ApiService} from '../../../services/api.service';
 import {FileMeta} from '../../../types/file';
@@ -14,9 +14,6 @@ import {FileBaseComponent} from '../file-base/file-base.component';
 export class FileFieldComponent extends FileBaseComponent implements OnInit {
   selectedFile: File;
   selectedFileMeta: FileMeta;
-  @Input() files: FileMeta[];
-  @Output() fileAdded: EventEmitter<FileMeta> = new EventEmitter<FileMeta>();
-  @Output() fileRemoved: EventEmitter<FileMeta> = new EventEmitter<FileMeta>();
 
   constructor(
     protected api: ApiService,
@@ -75,8 +72,6 @@ export class FileFieldComponent extends FileBaseComponent implements OnInit {
       fileMeta.form_field_key = this.field.key;
     }
 
-    this.fileAdded.emit(fileMeta);
-
     this.api.addFileMeta(this.fileParams, fileMeta).subscribe(fm => {
       fm.file = this.selectedFile;
       this.selectedFileMeta = fm;
@@ -86,8 +81,6 @@ export class FileFieldComponent extends FileBaseComponent implements OnInit {
 
   removeFile() {
     if (this.selectedFileMeta) {
-      this.fileRemoved.emit(this.selectedFileMeta);
-
       this.api.deleteFileMeta(this.selectedFileMeta.id).subscribe(() => {
         this.selectedFile = undefined;
         this.selectedFileMeta = undefined;

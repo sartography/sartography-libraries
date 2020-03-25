@@ -12,7 +12,6 @@ import {of} from 'rxjs';
 import {ApiService} from '../../../services/api.service';
 import {MockEnvironment} from '../../../testing/mocks/environment.mocks';
 import {mockFileMeta0, mockFileMeta1} from '../../../testing/mocks/file.mocks';
-import {mockWorkflowSpec0} from '../../../testing/mocks/workflow-spec.mocks';
 import {FileBaseComponent} from '../file-base/file-base.component';
 import {FileFieldComponent} from './file-field.component';
 
