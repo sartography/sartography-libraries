@@ -15,7 +15,7 @@ export interface WorkflowSpec {
   primary_process_id?: string;
   category_id?: number;
   category?: WorkflowSpecCategory;
-  is_status?: boolean;
+  is_master_spec?: boolean;
 }
 
 export interface WorkflowSpecCategory {
