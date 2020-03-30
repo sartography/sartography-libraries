@@ -22,6 +22,7 @@ export interface WorkflowSpecCategory {
   id: number;
   name: string;
   display_name: string;
+  display_order: number;
 }
 
 export interface Workflow {
