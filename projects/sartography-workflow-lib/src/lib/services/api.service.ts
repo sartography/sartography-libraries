@@ -26,6 +26,7 @@ export class ApiService {
     workflowListForStudy: '/study/{study_id}/workflows',
     workflowSpecList: '/workflow-specification',
     workflowSpec: '/workflow-specification/{spec_id}',
+    workflowSpecValidate: '/workflow-specification/{spec_id}/validate',
     workflowSpecCategoryList: '/workflow-specification-category',
     workflowSpecCategory: '/workflow-specification-category/{cat_id}',
     fileList: '/file',
@@ -147,6 +148,16 @@ export class ApiService {
 
     return this.httpClient
       .get<WorkflowSpec>(url)
+      .pipe(catchError(this._handleError));
+  }
+
+  /** Validate a Workflow Specification */
+  validateWorkflowSpecification(specId: string): Observable<ApiError> {
+    const url = this.apiRoot + this.endpoints.workflowSpecValidate
+      .replace('{spec_id}', specId);
+
+    return this.httpClient
+      .get<ApiError>(url)
       .pipe(catchError(this._handleError));
   }
 
