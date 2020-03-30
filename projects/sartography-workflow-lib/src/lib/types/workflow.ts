@@ -13,8 +13,8 @@ export interface WorkflowSpec {
   display_name: string;
   description: string;
   primary_process_id?: string;
-  workflow_spec_category_id?: number;
-  workflow_spec_category?: WorkflowSpecCategory;
+  category_id?: number;
+  category?: WorkflowSpecCategory;
   is_status?: boolean;
 }
 
