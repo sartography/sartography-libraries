@@ -1,4 +1,5 @@
 import {ProtocolBuilderRequiredDocs, ProtocolBuilderRequirement, ProtocolBuilderStatus, Study} from '../../types/study';
+import {mockWorkflowSpecCategories} from './workflow-spec-category.mocks';
 
 export const mockStudy0: Study = {
   id: 0,
@@ -9,6 +10,7 @@ export const mockStudy0: Study = {
   sponsor: 'Sirius Cybernetics Corporation',
   title: 'Phase III Trial of Genuine People Personalities (GPP) Autonomous Intelligent Emotional Agents for Interstellar Spacecraft',
   inactive: false,
+  categories: mockWorkflowSpecCategories,
 };
 
 export const mockStudy1: Study = {
@@ -20,6 +22,7 @@ export const mockStudy1: Study = {
   sponsor: 'CamTim',
   title: 'Pilot Study of Fjord Placement for Single Fraction Outcomes to Cortisol Susceptibility',
   inactive: false,
+  categories: mockWorkflowSpecCategories,
 };
 
 export const mockStudies: Study[] = [

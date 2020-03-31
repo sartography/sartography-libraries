@@ -1,28 +1,26 @@
 import {WorkflowStats} from '../../types/stats';
-import {mockWorkflow0, mockWorkflow1} from './workflow.mocks';
+import {WorkflowState, WorkflowStatus} from '../../types/workflow';
 
 export const mockWorkflowStats0: WorkflowStats = {
+  completed_tasks: 0,
+  description: 'Do all the things',
+  display_name: 'Everything',
   id: 0,
-  study_id: mockWorkflow0.study_id,
-  workflow_id: mockWorkflow0.id,
-  workflow_spec_id: mockWorkflow0.workflow_spec_id,
-  spec_version: 'v1',
-  num_tasks_total: 10,
-  num_tasks_complete: 0,
-  num_tasks_incomplete: 0,
-  last_updated: new Date(),
+  name: 'all_things',
+  state: WorkflowState.REQUIRED,
+  status: WorkflowStatus.USER_INPUT_REQUIRED,
+  total_tasks: 5,
 };
 
 export const mockWorkflowStats1: WorkflowStats = {
+  completed_tasks: 0,
+  description: 'Do a few things',
+  display_name: 'Some things',
   id: 1,
-  study_id: mockWorkflow1.study_id,
-  workflow_id: mockWorkflow1.id,
-  workflow_spec_id: mockWorkflow1.workflow_spec_id,
-  spec_version: 'v1',
-  num_tasks_total: 10,
-  num_tasks_complete: 0,
-  num_tasks_incomplete: 0,
-  last_updated: new Date(),
+  name: 'few_things',
+  state: WorkflowState.REQUIRED,
+  status: WorkflowStatus.USER_INPUT_REQUIRED,
+  total_tasks: 10,
 };
 
 export const mockWorkflowStats: WorkflowStats[] = [

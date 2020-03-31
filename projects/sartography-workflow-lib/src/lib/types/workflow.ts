@@ -1,3 +1,4 @@
+import {WorkflowStats} from './stats';
 import {WorkflowTask} from './workflow-task';
 
 export enum WorkflowStatus {
@@ -31,17 +32,6 @@ export interface WorkflowSpecCategory {
   display_name: string;
   display_order: number;
   workflows?: WorkflowStats[];
-}
-
-export interface WorkflowStats {
-  completed_tasks: number;
-  description: string;
-  display_name: string;
-  id: number;
-  name: string;
-  state: WorkflowState;
-  status: WorkflowStatus;
-  total_tasks: 0;
 }
 
 export interface Workflow {
