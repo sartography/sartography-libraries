@@ -88,6 +88,5 @@ export const newRandomStudy = (): Study => {
     sponsor: _randomWords(2),
     title: _randomWords(10),
     inactive: false,
-    requirements: _randomRequirements(),
   };
 };

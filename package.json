@@ -11,7 +11,7 @@
     "e2e": "ng e2e",
     "patch-version": "cd projects/sartography-workflow-lib && npm version patch && cd ../..",
     "republish": "ng build sartography-workflow-lib && cd dist/sartography-workflow-lib && npm publish && cd ../..",
-    "bump": "npm run patch-version && npm run republish",
+    "bump": "npm run lint && npm run patch-version && npm run republish",
     "ci": "npm run lint && npm run test:coverage && npm run build"
   },
   "private": true,

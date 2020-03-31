@@ -1,10 +1,17 @@
 import {WorkflowTask} from './workflow-task';
 
 export enum WorkflowStatus {
-  NEW = 'new',
+  NOT_STARTED = 'not_started',
   USER_INPUT_REQUIRED = 'user_input_required',
   WAITING = 'waiting',
   COMPLETE = 'complete',
+}
+
+export enum WorkflowState {
+  HIDDEN = 'hidden',
+  DISABLED = 'disabled',
+  REQUIRED = 'required',
+  OPTIONAL = 'optional',
 }
 
 export interface WorkflowSpec {
@@ -23,6 +30,18 @@ export interface WorkflowSpecCategory {
   name: string;
   display_name: string;
   display_order: number;
+  workflows?: WorkflowStats[];
+}
+
+export interface WorkflowStats {
+  completed_tasks: number;
+  description: string;
+  display_name: string;
+  id: number;
+  name: string;
+  state: WorkflowState;
+  status: WorkflowStatus;
+  total_tasks: 0;
 }
 
 export interface Workflow {

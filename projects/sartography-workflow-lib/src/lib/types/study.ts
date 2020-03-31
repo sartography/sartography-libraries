@@ -1,3 +1,6 @@
+import {ApiError} from './api';
+import {WorkflowSpecCategory} from './workflow';
+
 export enum ProtocolBuilderStatus {
   DRAFT = 'draft',
   IN_PROCESS = 'in_process',
@@ -54,15 +57,16 @@ export interface ProtocolBuilderRequirement {
 }
 
 export interface Study {
-  id: number;
-  title: string;
-  last_updated?: Date;
-  protocol_builder_status?: ProtocolBuilderStatus;
-  primary_investigator_id?: string;
-  sponsor?: string;
+  categories?: WorkflowSpecCategory[];
   hsr_number?: string;
-  ind_number?: string;
+  id: number;
   inactive?: boolean;
-  requirements?: ProtocolBuilderRequirement[];
-  investigator_uids?: string[];
+  ind_number?: string;
+  last_updated?: Date;
+  primary_investigator_id?: string;
+  protocol_builder_status?: ProtocolBuilderStatus;
+  sponsor?: string;
+  title: string;
+  user_uid?: string;
+  warnings?: ApiError[];
 }
