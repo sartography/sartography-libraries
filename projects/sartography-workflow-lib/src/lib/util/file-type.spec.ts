@@ -1,5 +1,7 @@
+import {HttpHeaders, HttpResponse} from '@angular/common/http';
+import {mockFileMeta0} from '../testing/mocks/file.mocks';
 import {FileType} from '../types/file';
-import {getFileIcon, getFileType} from './file-type';
+import {getFileIcon, getFileType, newFileFromResponse} from './file-type';
 
 const files = {
   jpgFile: new File([], 'jfjdfdfdsjdfskdfaslfdsd.jpg'),
@@ -39,4 +41,19 @@ describe('getFileIcon', () => {
       expect(getFileIcon(f)).toBeTruthy();
     });
   });
+});
+
+describe('newFileFromResponse', () => {
+  it('should return a File for a given FileMeta and HTTP response', () => {
+    const mockHeaders = new HttpHeaders()
+      .append('last-modified', mockFileMeta0.file.lastModified.toString())
+      .append('content-type', mockFileMeta0.file.type);
+    expect(newFileFromResponse(
+      mockFileMeta0,
+      new HttpResponse<ArrayBuffer>({
+        body: new ArrayBuffer(8),
+        headers: mockHeaders
+      }
+    ))).toEqual(mockFileMeta0.file);
+  })
 });
