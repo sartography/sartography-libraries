@@ -60,7 +60,7 @@ export * from './lib/types/workflow-task';
 
 // Utilities
 export * from './lib/util/diagram-type';
-export {getFileIcon, getFileType} from './lib/util/file-type';
+export {getFileIcon, getFileType, newFileFromResponse} from './lib/util/file-type';
 export * from './lib/util/is-number-defined';
 export * from './lib/util/is-signed-in';
 export * from './lib/util/scroll-to-top';

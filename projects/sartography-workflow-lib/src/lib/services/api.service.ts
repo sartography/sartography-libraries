@@ -291,12 +291,12 @@ export class ApiService {
   }
 
   /** Get the File Data for specific File Metadata */
-  getFileData(fileId: number): Observable<Blob> {
+  getFileData(fileId: number): Observable<HttpResponse<ArrayBuffer>> {
     const url = this.apiRoot + this.endpoints.fileData
       .replace('{file_id}', fileId.toString());
 
     return this.httpClient
-      .get(url, {responseType: 'blob'})
+      .get(url, {observe: 'response', responseType: 'arraybuffer'})
       .pipe(catchError(this._handleError));
   }
 

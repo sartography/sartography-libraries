@@ -1,4 +1,5 @@
-import {FileType} from '../types/file';
+import {HttpResponse} from '@angular/common/http';
+import {FileMeta, FileType} from '../types/file';
 
 export const getFileType = (file: File): FileType => {
   let key: FileType;
@@ -33,4 +34,13 @@ const stringToFileType = (s: string, separator: string): FileType | undefined =>
 
 export const getFileIcon = (file: File): string => {
   return `/assets/icons/file_types/${getFileType(file)}.svg`;
+};
+
+export const newFileFromResponse = (fm: FileMeta, response: HttpResponse<ArrayBuffer>): File => {
+  const options: FilePropertyBag = {
+    type: fm.type,
+    lastModified: new Date(response.headers.get('lastModified')).getTime(),
+  };
+
+  return new File([response.body], fm.name, options);
 };

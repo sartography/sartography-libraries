@@ -2,7 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
 import {ApiService} from '../../../services/api.service';
 import {FileMeta} from '../../../types/file';
-import {getFileType} from '../../../util/file-type';
+import {getFileType, newFileFromResponse} from '../../../util/file-type';
 import {isNumberDefined} from '../../../util/is-number-defined';
 import {FileBaseComponent} from '../file-base/file-base.component';
 
@@ -93,8 +93,8 @@ export class FileFieldComponent extends FileBaseComponent implements OnInit {
     this.api.getFileMetas(this.fileParams).subscribe(fms => {
       const fm = fms[0];
       if (fm && isNumberDefined(fm.id)) {
-        this.api.getFileData(fm.id).subscribe(blob => {
-          const file = new File([blob], fm.name, {type: fm.type, lastModified: new Date(fm.last_updated).getTime()});
+        this.api.getFileData(fm.id).subscribe(response => {
+          const file = newFileFromResponse(fm, response);
           fm.file = file;
           this.selectedFileMeta = fm;
           this.selectedFile = file;

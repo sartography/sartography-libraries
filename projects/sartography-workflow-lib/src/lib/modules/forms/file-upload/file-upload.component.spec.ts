@@ -1,3 +1,4 @@
+import {HttpHeaders} from '@angular/common/http';
 import {HttpClientTestingModule, HttpTestingController} from '@angular/common/http/testing';
 import {async, ComponentFixture, inject, TestBed} from '@angular/core/testing';
 import {FormGroup, FormsModule, ReactiveFormsModule} from '@angular/forms';
@@ -79,7 +80,10 @@ describe('FileUploadComponent', () => {
     mockFileMetas.forEach((fm, i) => {
       const fReq = httpMock.expectOne(`apiRoot/file/${fm.id}/data`);
       expect(fReq.request.method).toEqual('GET');
-      fReq.flush(new Blob([], {type: mockFileMetas[i].file.type}));
+      const mockHeaders = new HttpHeaders()
+        .append('last-modified', mockFileMetas[i].file.lastModified.toString())
+        .append('content-type', mockFileMetas[i].file.type);
+      fReq.flush(new ArrayBuffer(8), {headers: mockHeaders});
     });
 
     expect((component as any).fileMetas).toEqual(new Set(mockFileMetas));

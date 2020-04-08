@@ -4,7 +4,7 @@ import {FileSystemFileEntry, NgxFileDropEntry} from 'ngx-file-drop';
 import {ReplaySubject} from 'rxjs';
 import {ApiService} from '../../../services/api.service';
 import {FileMeta} from '../../../types/file';
-import {getFileIcon, getFileType} from '../../../util/file-type';
+import {getFileIcon, getFileType, newFileFromResponse} from '../../../util/file-type';
 import {FileBaseComponent} from '../file-base/file-base.component';
 
 @Component({
@@ -126,12 +126,8 @@ export class FileUploadComponent extends FileBaseComponent {
   loadFiles() {
     this.api.getFileMetas(this.fileParams).subscribe(fms => {
       fms.forEach(fm => {
-        this.api.getFileData(fm.id).subscribe(blob => {
-          const options: FilePropertyBag = {
-            type: fm.type,
-            lastModified: new Date(fm.last_updated).getTime()
-          };
-          fm.file = new File([blob], fm.name, options);
+        this.api.getFileData(fm.id).subscribe(response => {
+          fm.file = newFileFromResponse(fm, response)
           this.fileMetas.add(fm);
           if (this.fileMetas.size === fms.length) {
             this.updateFileList();

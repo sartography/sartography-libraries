@@ -1,4 +1,4 @@
-import {HttpResponse} from '@angular/common/http';
+import {HttpHeaders, HttpResponse} from '@angular/common/http';
 import {HttpClientTestingModule, HttpTestingController} from '@angular/common/http/testing';
 import {TestBed} from '@angular/core/testing';
 import createClone from 'rfdc';
@@ -354,15 +354,17 @@ describe('ApiService', () => {
   });
 
   it('should get file data for a given file', () => {
-    service.getFileData(mockFileMeta0.id).subscribe((data: File) => {
-      expect(data.type).toEqual(mockFileMeta0.file.type);
-      expect(data.name).toEqual(mockFileMeta0.file.name);
-      expect(data.size).toEqual(mockFileMeta0.file.size);
+    service.getFileData(mockFileMeta0.id).subscribe((response: HttpResponse<ArrayBuffer>) => {
+      expect(response.headers.get('content-type')).toEqual(mockFileMeta0.file.type);
+      expect(response.headers.get('last-modified')).toEqual(mockFileMeta0.file.lastModified.toString());
     });
 
     const req = httpMock.expectOne(`apiRoot/file/${mockFileMeta0.id}/data`);
     expect(req.request.method).toEqual('GET');
-    req.event(new HttpResponse<File>({body: mockFileMeta0.file}));
+    const mockHeaders = new HttpHeaders()
+      .append('last-modified', mockFileMeta0.file.lastModified.toString())
+      .append('content-type', mockFileMeta0.file.type);
+    req.flush(new ArrayBuffer(8), {headers: mockHeaders});
   });
 
   it('should update file data for a given file', () => {

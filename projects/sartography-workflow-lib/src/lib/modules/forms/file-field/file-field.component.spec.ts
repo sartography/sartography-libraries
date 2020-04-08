@@ -1,3 +1,4 @@
+import {HttpHeaders, HttpResponse} from '@angular/common/http';
 import {HttpClientTestingModule, HttpTestingController} from '@angular/common/http/testing';
 import {async, ComponentFixture, inject, TestBed} from '@angular/core/testing';
 import {FormGroup, FormsModule, ReactiveFormsModule} from '@angular/forms';
@@ -85,7 +86,10 @@ describe('FileFieldComponent', () => {
 
     const fReq = httpMock.expectOne(`apiRoot/file/${mockFileMeta0.id}/data`);
     expect(fReq.request.method).toEqual('GET');
-    fReq.flush(mockFileMeta0.file);
+    const mockHeaders = new HttpHeaders()
+      .append('last-modified', mockFileMeta0.file.lastModified.toString())
+      .append('content-type', mockFileMeta0.file.type);
+    fReq.flush(new ArrayBuffer(8), {headers: mockHeaders});
 
     expect(component.selectedFile).toEqual(mockFileMeta0.file);
     expect(component.selectedFileMeta).toEqual(mockFileMeta0);
