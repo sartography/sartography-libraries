@@ -53,7 +53,6 @@ export interface FileMeta {
   content_type: string;
   file: File;
   id?: number;
-  last_updated?: Date;
   name: string;
   primary?: boolean;
   type: FileType;
