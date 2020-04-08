@@ -47,7 +47,7 @@ describe('newFileFromResponse', () => {
   it('should return a File for a given FileMeta and HTTP response', () => {
     const mockHeaders = new HttpHeaders()
       .append('last-modified', mockFileMeta0.file.lastModified.toString())
-      .append('content-type', mockFileMeta0.file.type);
+      .append('content-type', mockFileMeta0.content_type);
     expect(newFileFromResponse(
       mockFileMeta0,
       new HttpResponse<ArrayBuffer>({

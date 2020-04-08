@@ -38,7 +38,7 @@ export const getFileIcon = (file: File): string => {
 
 export const newFileFromResponse = (fm: FileMeta, response: HttpResponse<ArrayBuffer>): File => {
   const options: FilePropertyBag = {
-    type: fm.type,
+    type: fm.content_type,
     lastModified: new Date(response.headers.get('last-modified')).getTime(),
   };
 
