@@ -20,26 +20,43 @@ export class ApiService {
   apiRoot: string;
 
   endpoints = {
-    studyList: '/study',
-    study: '/study/{study_id}',
-    studyStatus: '/study-update/{study_id}',
-    workflowListForStudy: '/study/{study_id}/workflows',
-    workflowSpecList: '/workflow-specification',
-    workflowSpec: '/workflow-specification/{spec_id}',
-    workflowSpecValidate: '/workflow-specification/{spec_id}/validate',
-    workflowSpecCategoryList: '/workflow-specification-category',
-    workflowSpecCategory: '/workflow-specification-category/{cat_id}',
+    // Files
     fileList: '/file',
     file: '/file/{file_id}',
     fileData: '/file/{file_id}/data',
-    workflow: '/workflow/{workflow_id}',
-    workflowStats: '/workflow/{workflow_id}/stats',
-    taskListAllForWorkflow: '/workflow/{workflow_id}/all_tasks',
-    taskListForWorkflow: '/workflow/{workflow_id}/tasks',
-    taskForWorkflow: '/workflow/{workflow_id}/task/{task_id}',
-    taskDataForWorkflow: '/workflow/{workflow_id}/task/{task_id}/data',
+    referenceFileList: '/reference_file',
+    referenceFile: '/reference_file/{name}',
+
+    // Configurator Tools
+    listScripts: '/list_scripts',
+    renderDocx: 'render_docx',
+    renderMarkdown: 'render_markdown',
+
+    // Users
     fakeSession: '/sso_backdoor',
     user: '/user',
+
+    // Studies
+    studyList: '/study',
+    study: '/study/{study_id}',
+
+    // Study Status
+    studyStatus: '/study-update/{study_id}',
+
+    // Workflow Specifications
+    workflowSpecList: '/workflow-specification',
+    workflowSpec: '/workflow-specification/{spec_id}',
+    workflowSpecValidate: '/workflow-specification/{spec_id}/validate',
+
+    // Workflow Specification Category
+    workflowSpecCategoryList: '/workflow-specification-category',
+    workflowSpecCategory: '/workflow-specification-category/{cat_id}',
+
+    // Workflows and Tasks
+    workflow: '/workflow/{workflow_id}',
+    workflowStats: '/workflow/{workflow_id}/stats',
+    taskForWorkflow: '/workflow/{workflow_id}/task/{task_id}',
+    taskDataForWorkflow: '/workflow/{workflow_id}/task/{task_id}/data',
   };
 
   constructor(
@@ -100,26 +117,6 @@ export class ApiService {
       .replace('{study_id}', studyId.toString());
 
     return this.httpClient.get<HttpResponse<any>>(url, {observe: 'response'})
-      .pipe(catchError(this._handleError));
-  }
-
-  /** Add a Workflow to a specific Study */
-  addWorkflowForStudy(studyId: number, workflowSpecId: string): Observable<Workflow[]> {
-    const url = this.apiRoot + this.endpoints.workflowListForStudy
-      .replace('{study_id}', studyId.toString());
-
-    return this.httpClient
-      .post<Workflow[]>(url, {id: workflowSpecId})
-      .pipe(catchError(this._handleError));
-  }
-
-  /** List all Workflows for a Study */
-  getWorkflowListForStudy(studyId: number): Observable<Workflow[]> {
-    const url = this.apiRoot + this.endpoints.workflowListForStudy
-      .replace('{study_id}', studyId.toString());
-
-    return this.httpClient
-      .get<Workflow[]>(url)
       .pipe(catchError(this._handleError));
   }
 

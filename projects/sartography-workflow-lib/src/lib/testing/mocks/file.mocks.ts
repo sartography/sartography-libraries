@@ -13,7 +13,7 @@ export const mockFileMeta0: FileMeta = {
   workflow_spec_id: mockWorkflowSpec0.id,
   task_id: mockTask0.id,
   study_id: mockStudy0.id,
-  version: '1.0',
+  latest_version: '1.0',
   last_updated: new Date('2020-01-23T12:34:12.345Z'),
 };
 
@@ -26,7 +26,7 @@ export const mockFileMeta1: FileMeta = {
   workflow_spec_id: mockWorkflowSpec0.id,
   task_id: mockTask0.id,
   study_id: mockStudy0.id,
-  version: '1.0',
+  latest_version: '1.0',
   last_updated: new Date('2020-01-23T12:34:12.345Z'),
 };
 
@@ -39,7 +39,7 @@ export const mockFileMeta2: FileMeta = {
   workflow_spec_id: mockWorkflowSpec0.id,
   task_id: mockTask0.id,
   study_id: mockStudy0.id,
-  version: '1.0',
+  latest_version: '1.0',
   last_updated: new Date('2020-01-23T12:34:12.345Z'),
 };
 
@@ -52,7 +52,7 @@ export const mockFileMeta3: FileMeta = {
   workflow_spec_id: mockWorkflowSpec0.id,
   task_id: mockTask0.id,
   study_id: mockStudy0.id,
-  version: '1.0',
+  latest_version: '1.0',
   last_updated: new Date('2020-01-23T12:34:12.345Z'),
 };
 
@@ -65,7 +65,7 @@ export const mockFileMetaTask0: FileMeta = {
   workflow_id: mockWorkflow0.id,
   study_id: mockWorkflow0.study_id,
   task_id: mockTask0.id,
-  version: '1.0',
+  latest_version: '1.0',
   last_updated: new Date('2020-01-23T12:34:12.345Z'),
 };
 

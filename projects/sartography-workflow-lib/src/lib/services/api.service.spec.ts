@@ -117,18 +117,6 @@ describe('ApiService', () => {
     req.flush(null, mockUpdatingResponse);
   });
 
-  it('should add workflow to study', () => {
-    service.addWorkflowForStudy(mockWorkflow0.study_id, mockWorkflow0.workflow_spec_id).subscribe(data => {
-      expect(data.length).toBeGreaterThan(0);
-      expect(data[0].study_id).toEqual(mockWorkflow0.study_id);
-      expect(data[0].workflow_spec_id).toEqual(mockWorkflow0.workflow_spec_id);
-    });
-
-    const req = httpMock.expectOne(`apiRoot/study/${mockWorkflow0.study_id}/workflows`);
-    expect(req.request.method).toEqual('POST');
-    req.flush([mockWorkflow0]);
-  });
-
   it('should get tasks for a given workflow', () => {
     service.getWorkflow(mockWorkflow0.id).subscribe(data => {
       expect(data.user_tasks.length).toBeGreaterThan(0);
@@ -164,18 +152,6 @@ describe('ApiService', () => {
     const req = httpMock.expectOne(`apiRoot/workflow-specification`);
     expect(req.request.method).toEqual('GET');
     req.flush(mockWorkflowSpecs);
-  });
-
-  it('should get workflows for a given study', () => {
-    service.getWorkflowListForStudy(mockWorkflow0.study_id).subscribe(data => {
-      expect(data.length).toBeGreaterThan(0);
-      expect(data[0].study_id).toEqual(mockWorkflows[0].study_id);
-      expect(data[0].workflow_spec_id).toEqual(mockWorkflows[0].workflow_spec_id);
-    });
-
-    const req = httpMock.expectOne(`apiRoot/study/${mockWorkflow0.study_id}/workflows`);
-    expect(req.request.method).toEqual('GET');
-    req.flush(mockWorkflows);
   });
 
   it('should get one workflow', () => {
