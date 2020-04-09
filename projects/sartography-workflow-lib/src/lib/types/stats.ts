@@ -1,14 +1,17 @@
 import {WorkflowState, WorkflowStatus} from './workflow';
 
 export interface WorkflowStats {
-  completed_tasks: number;
-  description: string;
-  display_name: string;
   id: number;
   name: string;
+  display_name: string;
+  description: string;
+  spec_version: string;
+  category_id: number;
   state: WorkflowState;
   status: WorkflowStatus;
   total_tasks: number;
+  completed_tasks: number;
+  display_order: number;
 }
 
 export interface TaskEvent {

@@ -12,6 +12,7 @@ export const mockWorkflowSpec0: WorkflowSpec = {
   description: 'Do all the things',
   category_id: 0,
   category: mockWorkflowSpecCategory0,
+  display_order: 1,
 };
 export const mockWorkflowSpec1: WorkflowSpec = {
   id: 'few_things',
@@ -20,6 +21,7 @@ export const mockWorkflowSpec1: WorkflowSpec = {
   description: 'Do a few things',
   category_id: 1,
   category: mockWorkflowSpecCategory1,
+  display_order: 0,
 };
 export const mockWorkflowSpec2: WorkflowSpec = {
   id: 'one_thing',
@@ -28,6 +30,7 @@ export const mockWorkflowSpec2: WorkflowSpec = {
   description: 'Do just one thing',
   category_id: 2,
   category: mockWorkflowSpecCategory2,
+  display_order: 2,
 };
 
 export const mockWorkflowSpecs: WorkflowSpec[] = [

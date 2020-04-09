@@ -24,6 +24,7 @@ export interface WorkflowSpec {
   category_id?: number;
   category?: WorkflowSpecCategory;
   is_master_spec?: boolean;
+  display_order?: number;
 }
 
 export interface WorkflowSpecCategory {
