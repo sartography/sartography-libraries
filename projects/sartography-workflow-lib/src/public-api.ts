@@ -63,5 +63,6 @@ export * from './lib/util/diagram-type';
 export {getFileIcon, getFileType, newFileFromResponse} from './lib/util/file-type';
 export * from './lib/util/is-number-defined';
 export * from './lib/util/is-signed-in';
+export {moveArrayElementUp, moveArrayElementDown, swapArrayElements} from './lib/util/move-array-element';
 export * from './lib/util/scroll-to-top';
 export * from './lib/util/string-clean';
