@@ -45,7 +45,6 @@ export interface Workflow {
   last_task?: WorkflowTask;
   next_task?: WorkflowTask;
   user_tasks?: WorkflowTask[];
-  is_active?: boolean;
   is_latest_spec?: boolean;
   spec_version?: string;
 }
