@@ -2,19 +2,17 @@ import {ApiError} from './api';
 import {WorkflowSpecCategory} from './workflow';
 
 export enum ProtocolBuilderStatus {
-  DRAFT = 'draft',
-  IN_PROCESS = 'in_process',
-  IN_REVIEW = 'in_review',
-  REVIEW_COMPLETE = 'review_complete',
-  INACTIVE = 'inactive',
+  ACTIVE = 'active',
+  HOLD = 'hold',
+  OPEN = 'open',
+  ABANDONED = 'abandoned',
 }
 
 export enum ProtocolBuilderStatusLabels {
-  DRAFT = 'New',
-  IN_PROCESS = 'Prepping for IRB review',
-  IN_REVIEW = 'Out for IRB review',
-  REVIEW_COMPLETE = 'IRB review complete',
-  INACTIVE = 'Inactive',
+  ACTIVE = 'Active',
+  HOLD = 'Hold',
+  OPEN = 'Open to Enrollment',
+  ABANDONED = 'Abandoned',
 }
 
 export const ProtocolBuilderRequiredDocs = {

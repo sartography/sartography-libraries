@@ -1,4 +1,4 @@
-import {BpmnFormJson} from './json';
+import {BpmnFormJson, BpmnFormJsonFieldProperty} from './json';
 
 export enum WorkflowTaskState {
   FUTURE = 'FUTURE',
@@ -30,4 +30,5 @@ export interface WorkflowTask {
   type: WorkflowTaskType;
   form: BpmnFormJson;
   data: any;
+  properties?: BpmnFormJsonFieldProperty[];
 }
