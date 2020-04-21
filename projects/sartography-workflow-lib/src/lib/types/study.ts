@@ -2,6 +2,7 @@ import {ApiError} from './api';
 import {WorkflowSpecCategory} from './workflow';
 
 export enum ProtocolBuilderStatus {
+  INCOMPLETE = 'incomplete',
   ACTIVE = 'active',
   HOLD = 'hold',
   OPEN = 'open',
@@ -9,6 +10,7 @@ export enum ProtocolBuilderStatus {
 }
 
 export enum ProtocolBuilderStatusLabels {
+  INCOMPLETE = 'Incomplete',
   ACTIVE = 'Active',
   HOLD = 'Hold',
   OPEN = 'Open to Enrollment',
