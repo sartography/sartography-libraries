@@ -39,7 +39,15 @@ describe('ToFormlyPipe', () => {
           {
             id: 'markdown_description',
             value: '# Heading 2\nThis is some markdown text!'
-          }
+          },
+          {
+            id: 'max_length',
+            value: '200',
+          },
+          {
+            id: 'min_length',
+            value: '5',
+          },
         ]
       }
     ];
@@ -54,6 +62,8 @@ describe('ToFormlyPipe', () => {
     expect(after[0].templateOptions.placeholder).toEqual(before[0].properties[3].value);
     expect(after[0].templateOptions.description).toEqual(before[0].properties[4].value);
     expect(after[0].templateOptions.markdownDescription).toEqual(before[0].properties[5].value);
+    expect(after[0].templateOptions.maxLength).toEqual(200);
+    expect(after[0].templateOptions.minLength).toEqual(5);
   });
 
   it('converts read only field to Formly readonly property', () => {
@@ -177,8 +187,12 @@ describe('ToFormlyPipe', () => {
     const before: BpmnFormJsonField[] = [
       {
         id: 'random_number',
-        label: 'Pick a number. Any number',
-        type: 'long'
+        label: 'Pick a number between 1 and 999',
+        type: 'long',
+        properties: [
+          {id: 'min', value: '1'},
+          {id: 'max', value: '999'},
+        ],
       }
     ];
     const after = pipe.transform(before);

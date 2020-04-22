@@ -189,6 +189,18 @@ export class ToFormlyPipe implements PipeTransform {
       if (field.properties && isIterable(field.properties) && (field.properties.length > 0)) {
         for (const p of field.properties) {
           switch (p.id) {
+            case 'max_length':
+              resultField.templateOptions.maxLength = parseInt(p.value, 10);
+              break;
+            case 'min_length':
+              resultField.templateOptions.minLength = parseInt(p.value, 10);
+              break;
+            case 'max':
+              resultField.templateOptions.max = parseInt(p.value, 10);
+              break;
+            case 'min':
+              resultField.templateOptions.min = parseInt(p.value, 10);
+              break;
             case 'group':
               resultField.templateOptions.groupName = p.value;
               break;
