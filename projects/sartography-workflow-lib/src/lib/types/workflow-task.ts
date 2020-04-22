@@ -21,14 +21,25 @@ export enum WorkflowTaskType {
   USER_TASK = 'UserTask',
 }
 
-export interface WorkflowTask {
+export class WorkflowTask {
+  data: any;
+  documentation: string;
+  form: BpmnFormJson;
   id: string;
   name: string;
-  title: string;
-  documentation: string;
-  state: WorkflowTaskState;
-  type: WorkflowTaskType;
-  form: BpmnFormJson;
-  data: any;
   properties?: BpmnFormJsonFieldProperty[];
+  state: WorkflowTaskState;
+  title: string;
+  type: WorkflowTaskType;
+
+  display_name?(): string {
+    if (this.properties) {
+      const displayNameProp = this.properties.find(p => p.id === 'display_name');
+      if (displayNameProp) {
+        return displayNameProp.value;
+      }
+    }
+
+    return this.title || this.name;
+  }
 }

@@ -52,6 +52,7 @@ export * from './lib/types/file';
 export * from './lib/types/irb';
 export * from './lib/types/json';
 export * from './lib/types/links';
+export * from './lib/types/script-info';
 export * from './lib/types/study';
 export * from './lib/types/task';
 export * from './lib/types/user';

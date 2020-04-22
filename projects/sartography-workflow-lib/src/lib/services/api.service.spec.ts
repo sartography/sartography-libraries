@@ -7,12 +7,11 @@ import {mockFileMeta0, mockFileMetas, mockFileMetaTask0} from '../testing/mocks/
 import {mockWorkflowStats0} from '../testing/mocks/stats.mocks';
 import {mockErrorResponse, mockUpdatingResponse} from '../testing/mocks/study-status.mocks';
 import {mockStudies, mockStudy0, newRandomStudy} from '../testing/mocks/study.mocks';
-import {mockTask0} from '../testing/mocks/task.mocks';
 import {mockUser} from '../testing/mocks/user.mocks';
 import {mockWorkflowSpecCategories, mockWorkflowSpecCategory0} from '../testing/mocks/workflow-spec-category.mocks';
 import {mockWorkflowSpec0, mockWorkflowSpecs} from '../testing/mocks/workflow-spec.mocks';
 import {mockWorkflowTask0} from '../testing/mocks/workflow-task.mocks';
-import {mockWorkflow0, mockWorkflows} from '../testing/mocks/workflow.mocks';
+import {mockWorkflow0} from '../testing/mocks/workflow.mocks';
 import {FileMeta, FileParams} from '../types/file';
 import {Study} from '../types/study';
 import {UserParams} from '../types/user';
@@ -130,16 +129,16 @@ describe('ApiService', () => {
 
   it('should get one task', () => {
     const workflowId = mockWorkflow0.id;
-    const taskId = mockTask0.id;
+    const taskId = mockWorkflowTask0.id;
 
     service.getTaskForWorkflow(workflowId, taskId).subscribe(data => {
       expect(data).toBeTruthy();
-      expect(data.name).toEqual(mockTask0.name);
+      expect(data.name).toEqual(mockWorkflowTask0.name);
     });
 
     const req = httpMock.expectOne(`apiRoot/workflow/${workflowId}/task/${taskId}`);
     expect(req.request.method).toEqual('GET');
-    req.flush(mockTask0);
+    req.flush(mockWorkflowTask0);
   });
 
   it('should list workflow specifications', () => {
@@ -259,7 +258,7 @@ describe('ApiService', () => {
     const params: FileParams = {
       study_id: mockStudy0.id,
       workflow_id: mockWorkflow0.id,
-      task_id: mockTask0.id
+      task_id: mockWorkflowTask0.id
     };
     service.getFileMetas(params).subscribe(data => {
       expect(data.length).toBeGreaterThan(0);
@@ -281,7 +280,7 @@ describe('ApiService', () => {
       for (const fileMeta of data) {
         expect(fileMeta.workflow_id).toEqual(mockWorkflow0.id);
         expect(fileMeta.study_id).toEqual(mockWorkflow0.study_id);
-        expect(fileMeta.task_id).toEqual(mockTask0.id);
+        expect(fileMeta.task_id).toEqual(mockWorkflowTask0.id);
       }
     });
 
@@ -306,7 +305,7 @@ describe('ApiService', () => {
     const params: FileParams = {
       study_id: mockStudy0.id,
       workflow_id: mockWorkflow0.id,
-      task_id: mockTask0.id
+      task_id: mockWorkflowTask0.id
     };
     service.addFileMeta(params, mockFileMeta0).subscribe(data => {
       expect(data.workflow_spec_id).toEqual(mockFileMeta0.workflow_spec_id);

@@ -5,6 +5,7 @@ import {catchError} from 'rxjs/operators';
 import {ApiError} from '../types/api';
 import {AppEnvironment} from '../types/app-environment';
 import {FileMeta, FileParams} from '../types/file';
+import {ScriptInfo} from '../types/script-info';
 import {WorkflowStats} from '../types/stats';
 import {Study} from '../types/study';
 import {User, UserParams} from '../types/user';
@@ -28,9 +29,9 @@ export class ApiService {
     referenceFile: '/reference_file/{name}',
 
     // Configurator Tools
-    listScripts: '/list_scripts',
-    renderDocx: 'render_docx',
-    renderMarkdown: 'render_markdown',
+    scriptList: '/list_scripts',
+    renderDocx: '/render_docx',
+    renderMarkdown: '/render_markdown',
 
     // Users
     fakeSession: '/sso_backdoor',
@@ -349,6 +350,15 @@ export class ApiService {
       .replace('{task_id}', taskId);
 
     return this.httpClient.put<Workflow>(url, data)
+      .pipe(catchError(this._handleError));
+  }
+
+  /** listScripts */
+  listScripts(): Observable<ScriptInfo[]> {
+    const url = this.apiRoot + this.endpoints.scriptList;
+
+    return this.httpClient
+      .get<ScriptInfo[]>(url)
       .pipe(catchError(this._handleError));
   }
 
