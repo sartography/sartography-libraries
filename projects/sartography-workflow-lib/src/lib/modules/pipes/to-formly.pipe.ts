@@ -211,7 +211,8 @@ export class ToFormlyPipe implements PipeTransform {
               resultField.hideExpression = p.value;
               break;
             case 'value_expression':
-              resultField.expressionProperties.defaultValue = p.value;
+              const modelKey = `model.${resultField.key}`
+              resultField.expressionProperties[modelKey] = `${modelKey} || (${p.value})`;
               break;
             case 'label_expression':
               resultField.expressionProperties['templateOptions.label'] = p.value;
