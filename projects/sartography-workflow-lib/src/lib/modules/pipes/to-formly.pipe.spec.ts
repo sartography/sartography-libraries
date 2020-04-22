@@ -29,6 +29,10 @@ describe('ToFormlyPipe', () => {
             value: 'model.has_grail ? "What shall we do now?" : "What is your quest?"'
           },
           {
+            id: 'value_expression',
+            value: 'model.has_grail ? "Take a nap" : "I seek the Holy Grail!"'
+          },
+          {
             id: 'placeholder',
             value: 'State your quest here, in a complete sentence.'
           },
@@ -59,9 +63,10 @@ describe('ToFormlyPipe', () => {
     expect(after[0].hideExpression).toEqual(before[0].properties[0].value);
     expect(after[0].expressionProperties['templateOptions.required']).toEqual(before[0].properties[1].value);
     expect(after[0].expressionProperties['templateOptions.label']).toEqual(before[0].properties[2].value);
-    expect(after[0].templateOptions.placeholder).toEqual(before[0].properties[3].value);
-    expect(after[0].templateOptions.description).toEqual(before[0].properties[4].value);
-    expect(after[0].templateOptions.markdownDescription).toEqual(before[0].properties[5].value);
+    expect(after[0].expressionProperties['templateOptions.defaultValue']).toEqual(before[0].properties[3].value);
+    expect(after[0].templateOptions.placeholder).toEqual(before[0].properties[4].value);
+    expect(after[0].templateOptions.description).toEqual(before[0].properties[5].value);
+    expect(after[0].templateOptions.markdownDescription).toEqual(before[0].properties[6].value);
     expect(after[0].templateOptions.maxLength).toEqual(200);
     expect(after[0].templateOptions.minLength).toEqual(5);
   });
