@@ -5,9 +5,9 @@
   [formlyAttributes]="field"
   [placeholder]="to.placeholder"
 >
-<mat-autocomplete #auto="matAutocomplete">
-  <option
+<mat-autocomplete autoActiveFirstOption #auto="matAutocomplete">
+  <mat-option
     *ngFor="let lookupData of filter | async"
     [value]="lookupData.value"
-  >{{lookupData.label}}</option>
+  >{{lookupData.label}} ({{lookupData.value}})</mat-option>
 </mat-autocomplete>
