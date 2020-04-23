@@ -1,10 +1,38 @@
+import {HttpClientTestingModule, HttpTestingController} from '@angular/common/http/testing';
+import {async, TestBed} from '@angular/core/testing';
+import {ApiService} from '../../services/api.service';
+import {MockEnvironment} from '../../testing/mocks/environment.mocks';
+import {FileParams} from '../../types/file';
 import {BpmnFormJsonField} from '../../types/json';
 import {ToFormlyPipe} from './to-formly.pipe';
 
 describe('ToFormlyPipe', () => {
-  const pipe = new ToFormlyPipe();
+  let httpMock: HttpTestingController;
+  let pipe: ToFormlyPipe;
+  let apiService: ApiService;
 
-  it('create an instance', () => {
+  beforeEach(async(() => {
+    TestBed.configureTestingModule({
+      imports: [
+        HttpClientTestingModule
+      ],
+      declarations: [
+        ToFormlyPipe,
+      ],
+      providers: [
+        ApiService,
+        {provide: 'APP_ENVIRONMENT', useClass: MockEnvironment},
+      ]
+    });
+  }));
+
+  beforeEach(() => {
+    httpMock = TestBed.inject(HttpTestingController);
+    apiService = TestBed.inject(ApiService);
+    pipe = new ToFormlyPipe(apiService);
+  });
+
+  it('should create a pipe instance', () => {
     expect(pipe).toBeTruthy();
   });
 
@@ -15,6 +43,16 @@ describe('ToFormlyPipe', () => {
         label: 'What is your quest?',
         type: 'string',
         default_value: 'I seek the Holy Grail!',
+        validation: [
+          {
+            name: 'max_length',
+            config: '200',
+          },
+          {
+            name: 'min_length',
+            config: '5',
+          },
+        ],
         properties: [
           {
             id: 'hide_expression',
@@ -43,14 +81,6 @@ describe('ToFormlyPipe', () => {
           {
             id: 'markdown_description',
             value: '# Heading 2\nThis is some markdown text!'
-          },
-          {
-            id: 'max_length',
-            value: '200',
-          },
-          {
-            id: 'min_length',
-            value: '5',
           },
         ]
       }
@@ -196,9 +226,9 @@ describe('ToFormlyPipe', () => {
         id: 'random_number',
         label: 'Pick a number between 1 and 999',
         type: 'long',
-        properties: [
-          {id: 'min', value: '1'},
-          {id: 'max', value: '999'},
+        validation: [
+          {name: 'min', config: '1'},
+          {name: 'max', config: '999'},
         ],
       }
     ];
@@ -207,6 +237,8 @@ describe('ToFormlyPipe', () => {
     expect(after[0].type).toEqual('input');
     expect(after[0].templateOptions.type).toEqual('number');
     expect(after[0].templateOptions.label).toEqual(before[0].label);
+    expect(after[0].templateOptions.min).toEqual(1);
+    expect(after[0].templateOptions.max).toEqual(999);
   });
 
   it('converts file field to Formly file field', () => {
@@ -292,7 +324,7 @@ describe('ToFormlyPipe', () => {
   it('converts URL field to Formly URL field', () => {
     const before: BpmnFormJsonField[] = [
       {
-        id: 'mobile_num',
+        id: 'tps_report',
         label: 'TPS Report',
         type: 'url'
       }
@@ -302,6 +334,29 @@ describe('ToFormlyPipe', () => {
     expect(after[0].type).toEqual('input');
     expect(after[0].templateOptions.type).toEqual('url');
     expect(after[0].templateOptions.label).toEqual(before[0].label);
+  });
+
+  it('converts autocomplete field to Formly autocomplete field', () => {
+    const before: BpmnFormJsonField[] = [
+      {
+        id: 'ingredients',
+        label: 'Find Ingredient',
+        type: 'autocomplete',
+        properties: [
+          {id: 'enum.options.limit', value: '5'},
+        ]
+      }
+    ];
+    const fileParams: FileParams = {
+      workflow_id: 123,
+      task_id: '456',
+      form_field_key: 'ingredients',
+    }
+    const after = pipe.transform(before, fileParams);
+    expect(after[0].key).toEqual(before[0].id);
+    expect(after[0].type).toEqual('autocomplete');
+    expect(after[0].templateOptions.label).toEqual(before[0].label);
+    expect(after[0].templateOptions.filter).toBeTruthy();
   });
 
   it('converts group names into Formly field groups', async () => {

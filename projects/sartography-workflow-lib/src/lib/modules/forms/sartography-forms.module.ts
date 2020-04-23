@@ -1,11 +1,13 @@
 import {CommonModule} from '@angular/common';
 import {Injectable, NgModule} from '@angular/core';
 import {FlexLayoutModule} from '@angular/flex-layout';
-import {FormsModule} from '@angular/forms';
+import {FormsModule, ReactiveFormsModule} from '@angular/forms';
+import {MatAutocompleteModule} from '@angular/material/autocomplete';
 import {MatButtonModule} from '@angular/material/button';
 import {MatCardModule} from '@angular/material/card';
 import {MatDialogModule} from '@angular/material/dialog';
 import {MatIconModule} from '@angular/material/icon';
+import {MatInputModule} from '@angular/material/input';
 import {MatTableModule} from '@angular/material/table';
 import {FormlyModule} from '@ngx-formly/core';
 import {FormlyMaterialModule} from '@ngx-formly/material';
@@ -13,6 +15,7 @@ import {FormlyMatDatepickerModule} from '@ngx-formly/material/datepicker';
 import {NgxFileDropModule} from 'ngx-file-drop';
 import {MarkdownModule} from 'ngx-markdown';
 import {SartographyPipesModule} from '../pipes/sartography-pipes.module';
+import {AutocompleteFieldComponent} from './autocomplete-field/autocomplete-field.component';
 import {FileBaseComponent} from './file-base/file-base.component';
 import {FileFieldComponent} from './file-field/file-field.component';
 import {FileUploadComponent} from './file-upload/file-upload.component';
@@ -42,6 +45,7 @@ export class AppFormlyConfig {
       showError: ShowError,
     },
     types: [
+      {name: 'autocomplete', component: AutocompleteFieldComponent, wrappers: ['form-field']},
       {name: 'file', component: FileFieldComponent, wrappers: ['form-field']},
       {name: 'files', component: FileUploadComponent, wrappers: ['form-field']},
       {name: 'repeat', component: RepeatSectionComponent},
@@ -75,6 +79,7 @@ export class AppFormlyConfig {
 
 @NgModule({
   declarations: [
+    AutocompleteFieldComponent,
     FileBaseComponent,
     FileFieldComponent,
     FileUploadComponent,
@@ -93,18 +98,21 @@ export class AppFormlyConfig {
     FormlyMatDatepickerModule,
     FormlyMaterialModule,
     FormlyModule.forRoot(AppFormlyConfig.config),
-    FormlyModule.forRoot(AppFormlyConfig.config),
     FormsModule,
     MarkdownModule.forRoot(),
+    MatAutocompleteModule,
     MatButtonModule,
     MatCardModule,
     MatDialogModule,
     MatIconModule,
+    MatInputModule,
     MatTableModule,
     NgxFileDropModule,
+    ReactiveFormsModule,
     SartographyPipesModule,
   ],
   exports: [
+    AutocompleteFieldComponent,
     FileBaseComponent,
     FileFieldComponent,
     FileUploadComponent,

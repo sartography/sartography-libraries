@@ -1,7 +1,10 @@
 import {Pipe, PipeTransform} from '@angular/core';
 import {FormlyFieldConfig} from '@ngx-formly/core';
 import {isIterable} from 'rxjs/internal-compatibility';
+import {ApiService} from '../../services/api.service';
+import {FileParams} from '../../types/file';
 import {BpmnFormJsonField} from '../../types/json';
+import {of} from 'rxjs';
 
 
 /***
@@ -96,8 +99,10 @@ import {BpmnFormJsonField} from '../../types/json';
   name: 'toFormly'
 })
 export class ToFormlyPipe implements PipeTransform {
+  constructor(private apiService?: ApiService) {
+  }
 
-  transform(value: BpmnFormJsonField[], ...args: any[]): FormlyFieldConfig[] {
+  transform(value: BpmnFormJsonField[], fileParams?: FileParams, ...args: any[]): FormlyFieldConfig[] {
     const result: FormlyFieldConfig[] = [];
     for (const field of value) {
       const resultField: FormlyFieldConfig = {
@@ -105,6 +110,10 @@ export class ToFormlyPipe implements PipeTransform {
         templateOptions: {},
         expressionProperties: {},
       };
+
+      if (fileParams) {
+        fileParams.form_field_key = field.id;
+      }
 
       // Convert bpmnjs field type to Formly field type
       switch (field.type) {
@@ -168,6 +177,10 @@ export class ToFormlyPipe implements PipeTransform {
         case 'file':
           resultField.type = 'file';
           break;
+        case 'autocomplete':
+          resultField.type = 'autocomplete';
+          resultField.templateOptions.filter = (query: string) => this.apiService.lookupFieldOptions(query, fileParams);
+          break;
         default:
           console.error('Field type is not supported.');
           resultField.type = field.type;
@@ -179,8 +192,22 @@ export class ToFormlyPipe implements PipeTransform {
       // Convert bpmnjs field validations to Formly field requirements
       if (field.validation && isIterable(field.validation) && (field.validation.length > 0)) {
         for (const v of field.validation) {
-          if (v.name === 'required') {
-            resultField.templateOptions.required = this._stringToBool(v.config);
+          switch (v.name) {
+            case 'required':
+              resultField.templateOptions.required = this._stringToBool(v.config);
+              break;
+            case 'max_length':
+              resultField.templateOptions.maxLength = parseInt(v.config, 10);
+              break;
+            case 'min_length':
+              resultField.templateOptions.minLength = parseInt(v.config, 10);
+              break;
+            case 'max':
+              resultField.templateOptions.max = parseInt(v.config, 10);
+              break;
+            case 'min':
+              resultField.templateOptions.min = parseInt(v.config, 10);
+              break;
           }
         }
       }
@@ -189,18 +216,6 @@ export class ToFormlyPipe implements PipeTransform {
       if (field.properties && isIterable(field.properties) && (field.properties.length > 0)) {
         for (const p of field.properties) {
           switch (p.id) {
-            case 'max_length':
-              resultField.templateOptions.maxLength = parseInt(p.value, 10);
-              break;
-            case 'min_length':
-              resultField.templateOptions.minLength = parseInt(p.value, 10);
-              break;
-            case 'max':
-              resultField.templateOptions.max = parseInt(p.value, 10);
-              break;
-            case 'min':
-              resultField.templateOptions.min = parseInt(p.value, 10);
-              break;
             case 'group':
               resultField.templateOptions.groupName = p.value;
               break;

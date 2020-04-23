@@ -1,0 +1,10 @@
+<input
+  matInput
+  [matAutocomplete]="auto"
+  [formControl]="formControl"
+  [formlyAttributes]="field"
+  [placeholder]="to.placeholder"
+>
+<mat-autocomplete #auto="matAutocomplete">
+  <option *ngFor="let value of filter | async" [value]="value">{{value}}</option>
+</mat-autocomplete>
