@@ -71,3 +71,10 @@ export interface FileParams {
   task_id?: string;
   form_field_key?: string;
 }
+
+export interface LookupData {
+  id: number;
+  value: string;
+  label: string;
+  data: any;
+}

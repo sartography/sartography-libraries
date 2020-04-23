@@ -3,6 +3,7 @@ import {MatInput} from '@angular/material/input';
 import {FieldType} from '@ngx-formly/material';
 import {Observable} from 'rxjs';
 import {startWith, switchMap} from 'rxjs/operators';
+import {LookupData} from '../../../types/file';
 
 @Component({
   selector: 'lib-autocomplete-field',
@@ -11,17 +12,16 @@ import {startWith, switchMap} from 'rxjs/operators';
 })
 export class AutocompleteFieldComponent extends FieldType implements OnInit {
   @ViewChild(MatInput) formFieldControl: MatInput;
-  filter: Observable<any>;
+  filter: Observable<LookupData[]>;
 
   ngOnInit(): void {
     super.ngOnInit();
 
     if (this.to.filter) {
-      this.filter = this.formControl.valueChanges.pipe(
+      this.filter = this.formControl.valueChanges.pipe<string, LookupData[]>(
         startWith(''),
-        switchMap(term => this.to.filter(term)),
+        switchMap<string, Observable<LookupData[]>>(term => this.to.filter(term)),
       );
     }
   }
-
 }

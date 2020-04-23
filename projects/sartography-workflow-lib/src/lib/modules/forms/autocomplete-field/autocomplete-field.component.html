@@ -6,5 +6,8 @@
   [placeholder]="to.placeholder"
 >
 <mat-autocomplete #auto="matAutocomplete">
-  <option *ngFor="let value of filter | async" [value]="value">{{value}}</option>
+  <option
+    *ngFor="let lookupData of filter | async"
+    [value]="lookupData.value"
+  >{{lookupData.label}}</option>
 </mat-autocomplete>

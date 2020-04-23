@@ -4,7 +4,7 @@ import {Observable, of, throwError} from 'rxjs';
 import {catchError} from 'rxjs/operators';
 import {ApiError} from '../types/api';
 import {AppEnvironment} from '../types/app-environment';
-import {FileMeta, FileParams} from '../types/file';
+import {FileMeta, FileParams, LookupData} from '../types/file';
 import {ScriptInfo} from '../types/script-info';
 import {WorkflowStats} from '../types/stats';
 import {Study} from '../types/study';
@@ -421,7 +421,7 @@ export class ApiService {
   }
 
   /** lookupFieldOptions */
-  lookupFieldOptions(query: string, fileParams: FileParams, limit = 5) {
+  lookupFieldOptions(query: string, fileParams: FileParams, limit = 5): Observable<LookupData[]> {
     const url = this.apiRoot + this.endpoints.fieldOptionsLookup
       .replace('{workflow_id}', fileParams.workflow_id.toString())
       .replace('{task_id}', fileParams.task_id)
@@ -433,7 +433,7 @@ export class ApiService {
       .append('limit', limit.toString());
 
     return this.httpClient
-      .get<ScriptInfo[]>(url, {params})
+      .get<LookupData[]>(url, {params})
       .pipe(catchError(this._handleError));
   }
 }
