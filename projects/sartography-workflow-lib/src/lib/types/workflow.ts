@@ -48,3 +48,8 @@ export interface Workflow {
   is_latest_spec?: boolean;
   spec_version?: string;
 }
+
+export interface WorkflowResetParams {
+  soft_reset: boolean;
+  hard_reset: boolean;
+}

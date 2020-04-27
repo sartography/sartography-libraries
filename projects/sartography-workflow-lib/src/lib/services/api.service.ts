@@ -9,7 +9,7 @@ import {ScriptInfo} from '../types/script-info';
 import {WorkflowStats} from '../types/stats';
 import {Study} from '../types/study';
 import {User, UserParams} from '../types/user';
-import {Workflow, WorkflowSpec, WorkflowSpecCategory} from '../types/workflow';
+import {Workflow, WorkflowResetParams, WorkflowSpec, WorkflowSpecCategory} from '../types/workflow';
 import {WorkflowTask} from '../types/workflow-task';
 import {isSignedIn} from '../util/is-signed-in';
 
@@ -315,12 +315,13 @@ export class ApiService {
   }
 
   /** Get a specific Workflow */
-  getWorkflow(workflowId: number): Observable<Workflow> {
+  getWorkflow(workflowId: number, params: WorkflowResetParams): Observable<Workflow> {
+    const queryString = params ? this._paramsToQueryString(params) : '';
     const url = this.apiRoot + this.endpoints.workflow
       .replace('{workflow_id}', workflowId.toString());
 
     return this.httpClient
-      .get<Workflow>(url)
+      .get<Workflow>(url + queryString)
       .pipe(catchError(this._handleError));
   }
 
@@ -376,7 +377,7 @@ export class ApiService {
   /** openSession */
   openSession(userParams: UserParams) {
     if (!this.environment.production) {
-      const queryString = this._userParamsToQueryString(userParams);
+      const queryString = this._paramsToQueryString(userParams);
       this.openUrl(this.apiRoot + this.endpoints.fakeSession + queryString);
     } else {
       return this.getUser();
@@ -408,12 +409,12 @@ export class ApiService {
     return throwError(error.message || 'Could not complete your request; please try again later.');
   }
 
-  /** Construct HeaderParams from UserParams object. Only adds params that have been set. */
-  private _userParamsToQueryString(userParams: UserParams): string {
+  /** Construct Query String Params from UserParams or WorkflowResetParams object. Only adds params that have been set. */
+  private _paramsToQueryString(params: UserParams|WorkflowResetParams): string {
     let queryString = '?';
-    const keys = Object.keys(userParams);
+    const keys = Object.keys(params);
     keys.forEach((k, i) => {
-      const val = userParams[k];
+      const val = params[k];
       if ((val !== undefined) && (val !== null)) {
         queryString += k + '=' + encodeURIComponent(val.toString());
       }
