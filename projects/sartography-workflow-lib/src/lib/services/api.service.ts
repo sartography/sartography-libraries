@@ -315,7 +315,7 @@ export class ApiService {
   }
 
   /** Get a specific Workflow */
-  getWorkflow(workflowId: number, params: WorkflowResetParams): Observable<Workflow> {
+  getWorkflow(workflowId: number, params?: WorkflowResetParams): Observable<Workflow> {
     const queryString = params ? this._paramsToQueryString(params) : '';
     const url = this.apiRoot + this.endpoints.workflow
       .replace('{workflow_id}', workflowId.toString());

@@ -418,7 +418,7 @@ describe('ApiService', () => {
       email_address: 'bbf2f@droidsmithery.anzelia.edu',
     };
     const queryString = '?uid=bbf2f&first_name=Babu&last_name=Frik&email_address=bbf2f%40droidsmithery.anzelia.edu';
-    const queryStringSpy = spyOn((service as any), '_userParamsToQueryString').and.callThrough();
+    const queryStringSpy = spyOn((service as any), '_paramsToQueryString').and.callThrough();
     const openUrlSpy = spyOn(service, 'openUrl').and.stub();
     service.openSession(userParams);
     expect(queryStringSpy).toHaveBeenCalledWith(userParams);
@@ -426,7 +426,7 @@ describe('ApiService', () => {
   });
 
   it('should get user from existing session on production', () => {
-    const queryStringSpy = spyOn((service as any), '_userParamsToQueryString').and.stub();
+    const queryStringSpy = spyOn((service as any), '_paramsToQueryString').and.stub();
     const openUrlSpy = spyOn(service, 'openUrl').and.stub();
     (service as any).environment.production = true;
     service.openSession(mockUser);

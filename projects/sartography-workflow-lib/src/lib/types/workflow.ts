@@ -50,6 +50,6 @@ export interface Workflow {
 }
 
 export interface WorkflowResetParams {
-  soft_reset: boolean;
-  hard_reset: boolean;
+  soft_reset?: boolean;
+  hard_reset?: boolean;
 }
