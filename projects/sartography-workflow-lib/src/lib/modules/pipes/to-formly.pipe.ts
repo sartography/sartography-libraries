@@ -4,7 +4,6 @@ import {isIterable} from 'rxjs/internal-compatibility';
 import {ApiService} from '../../services/api.service';
 import {FileParams} from '../../types/file';
 import {BpmnFormJsonField} from '../../types/json';
-import {of} from 'rxjs';
 
 
 /***
@@ -111,10 +110,6 @@ export class ToFormlyPipe implements PipeTransform {
         expressionProperties: {},
       };
 
-      if (fileParams) {
-        fileParams.form_field_key = field.id;
-      }
-
       // Convert bpmnjs field type to Formly field type
       switch (field.type) {
         case 'enum':
@@ -178,6 +173,10 @@ export class ToFormlyPipe implements PipeTransform {
           resultField.type = 'file';
           break;
         case 'autocomplete':
+          if (fileParams) {
+            fileParams.form_field_key = field.id;
+          }
+
           resultField.type = 'autocomplete';
           resultField.templateOptions.filter = (query: string) => this.apiService
             .lookupFieldOptions(query, fileParams);

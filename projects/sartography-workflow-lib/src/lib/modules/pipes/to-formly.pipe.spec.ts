@@ -339,13 +339,23 @@ describe('ToFormlyPipe', () => {
   it('converts autocomplete field to Formly autocomplete field', () => {
     const before: BpmnFormJsonField[] = [
       {
+        id: 'title',
+        label: 'Recipe title',
+        type: 'input',
+      },
+      {
         id: 'ingredients',
         label: 'Find Ingredient',
         type: 'autocomplete',
         properties: [
           {id: 'enum.options.limit', value: '5'},
         ]
-      }
+      },
+      {
+        id: 'instructions',
+        label: 'Write some instructions on making this recipe',
+        type: 'textarea',
+      },
     ];
     const fileParams: FileParams = {
       workflow_id: 123,
@@ -353,10 +363,14 @@ describe('ToFormlyPipe', () => {
       form_field_key: 'ingredients',
     }
     const after = pipe.transform(before, fileParams);
-    expect(after[0].key).toEqual(before[0].id);
-    expect(after[0].type).toEqual('autocomplete');
-    expect(after[0].templateOptions.label).toEqual(before[0].label);
-    expect(after[0].templateOptions.filter).toBeTruthy();
+    expect(after[1].key).toEqual(before[1].id);
+    expect(after[1].type).toEqual('autocomplete');
+    expect(after[1].templateOptions.label).toEqual(before[1].label);
+    expect(after[1].templateOptions.filter).toBeTruthy();
+
+    // Should not set filter for other fields
+    expect(after[0].templateOptions.filter).toBeUndefined();
+    expect(after[2].templateOptions.filter).toBeUndefined();
   });
 
   it('converts group names into Formly field groups', async () => {
