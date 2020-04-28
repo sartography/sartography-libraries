@@ -1,13 +1,14 @@
 <input
+  type="text"
   matInput
   [matAutocomplete]="auto"
   [formControl]="formControl"
   [formlyAttributes]="field"
   [placeholder]="to.placeholder"
 >
-<mat-autocomplete autoActiveFirstOption #auto="matAutocomplete">
+<mat-autocomplete autoActiveFirstOption #auto="matAutocomplete" [displayWith]="displayFn">
   <mat-option
     *ngFor="let lookupData of filter | async"
-    [value]="lookupData.value"
+    [value]="lookupData"
   >{{lookupData.label}} ({{lookupData.value}})</mat-option>
 </mat-autocomplete>
