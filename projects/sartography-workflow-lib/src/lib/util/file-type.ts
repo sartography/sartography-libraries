@@ -1,7 +1,7 @@
 import {HttpResponse} from '@angular/common/http';
 import {FileMeta, FileType} from '../types/file';
 
-export const getFileType = (file: File): FileType => {
+export const getFileType = (file: File|FileMeta): FileType => {
   let key: FileType;
 
   if (file.type) {
@@ -32,7 +32,7 @@ const stringToFileType = (s: string, separator: string): FileType | undefined =>
   }
 };
 
-export const getFileIcon = (file: File): string => {
+export const getFileIcon = (file: File|FileMeta): string => {
   return `/assets/icons/file_types/${getFileType(file)}.svg`;
 };
 
