@@ -9,6 +9,6 @@
 <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete" [displayWith]="displayFn">
   <mat-option
     *ngFor="let lookupData of filter | async"
-    [value]="lookupData.value"
+    [value]="lookupData"
   >{{lookupData.label}}</mat-option>
 </mat-autocomplete>
