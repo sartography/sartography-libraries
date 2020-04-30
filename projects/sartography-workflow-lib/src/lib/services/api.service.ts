@@ -58,6 +58,7 @@ export class ApiService {
     workflowStats: '/workflow/{workflow_id}/stats',
     taskForWorkflow: '/workflow/{workflow_id}/task/{task_id}',
     taskDataForWorkflow: '/workflow/{workflow_id}/task/{task_id}/data',
+    setCurrentTaskForWorkflow: '/workflow/{workflow_id}/task/{task_id}/set_token',
     fieldOptionsLookup: '/workflow/{workflow_id}/task/{task_id}/lookup/{field_id}',
   };
 
@@ -352,6 +353,16 @@ export class ApiService {
       .replace('{task_id}', taskId);
 
     return this.httpClient.put<Workflow>(url, data)
+      .pipe(catchError(this._handleError));
+  }
+
+  /** Update Task Data for a specific Workflow Task */
+  setCurrentTaskForWorkflow(workflowId: number, taskId: string): Observable<Workflow> {
+    const url = this.apiRoot + this.endpoints.setCurrentTaskForWorkflow
+      .replace('{workflow_id}', workflowId.toString())
+      .replace('{task_id}', taskId);
+
+    return this.httpClient.put<Workflow>(url, {})
       .pipe(catchError(this._handleError));
   }
 

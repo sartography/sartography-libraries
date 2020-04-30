@@ -32,6 +32,9 @@ export class WorkflowTask {
   title: string;
   type: WorkflowTaskType;
 
+  // tslint:disable-next-line:variable-name
+  process_name?: string;
+
   display_name?(): string {
     if (this.properties) {
       const displayNameProp = this.properties.find(p => p.id === 'display_name');

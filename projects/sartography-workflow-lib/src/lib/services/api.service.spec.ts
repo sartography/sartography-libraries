@@ -409,6 +409,17 @@ describe('ApiService', () => {
     req.flush(mockWorkflow0);
   });
 
+  it('should set current Task for a given Workflow', () => {
+    service.setCurrentTaskForWorkflow(mockWorkflow0.id, mockWorkflowTask0.id).subscribe(workflow => {
+      expect(workflow.id).toEqual(mockWorkflow0.id);
+      expect(workflow.status).toEqual(mockWorkflow0.status);
+    });
+
+    const req = httpMock.expectOne(`apiRoot/workflow/${mockWorkflow0.id}/task/${mockWorkflowTask0.id}/set_token`);
+    expect(req.request.method).toEqual('PUT');
+    req.flush(mockWorkflow0);
+  });
+
   it('should open a new session when testing', () => {
     localStorage.removeItem('token');
     const userParams: UserParams = {
