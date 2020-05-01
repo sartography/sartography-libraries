@@ -222,6 +222,9 @@ export class ToFormlyPipe implements PipeTransform {
             case 'repeat':
               resultField.templateOptions.repeatSectionName = p.value;
               break;
+            case 'repeat_hide_expression':
+              resultField.templateOptions.repeatSectionHideExpression = p.value;
+              break;
             case 'hide_expression':
               resultField.hideExpression = p.value;
               break;
@@ -374,6 +377,7 @@ export class ToFormlyPipe implements PipeTransform {
             templateOptions: {
               label: repeatSectionName,
             },
+            hideExpression: field.templateOptions.repeatSectionHideExpression,
             fieldArray: {
               fieldGroup: [field],
             },
