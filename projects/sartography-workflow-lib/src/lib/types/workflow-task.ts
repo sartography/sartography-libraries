@@ -41,8 +41,16 @@ export class WorkflowTask {
       if (displayNameProp) {
         return displayNameProp.value;
       }
+    } else if (this.title) {
+      // Remove the first word from the title, which will most likely be a verb.
+      const firstWordRemoved = this.title.split(' ').slice(1).join(' ');
+
+      if (firstWordRemoved) {
+        return this.title.split(' ').slice(1).join(' ');
+      }
     }
 
-    return this.title || this.name;
+    // If all else fails, just use the BPMN Task ID.
+    return this.name;
   }
 }
