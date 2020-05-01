@@ -1,8 +1,9 @@
 <div
   *ngIf="field && field.fieldArray"
-  [ngClass]="{'container': true, 'hidden': field.templateOptions.hidden}"
+  [ngClass]="{'container': true}"
   fxLayout="column"
   fxLayoutGap="1em"
+  [fxHide]="shouldHide()"
 >
   <mat-card *ngFor="let f of field.fieldGroup; let i = index;" class="repeat">
     <mat-card-content fxLayout="row">
