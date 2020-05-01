@@ -91,6 +91,7 @@ export class FileFieldComponent extends FileBaseComponent implements OnInit {
 
   loadFiles() {
     this.api.getFileMetas(this.fileParams).subscribe(fms => {
+      console.log('fileMetas', fms);
       const fm = fms[0];
       if (fm && isNumberDefined(fm.id)) {
         this.api.getFileData(fm.id).subscribe(response => {

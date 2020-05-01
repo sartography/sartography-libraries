@@ -30,11 +30,17 @@ import {PanelWrapperComponent} from './panel-wrapper/panel-wrapper.component';
 import {RepeatSectionDialogComponent} from './repeat-section-dialog/repeat-section-dialog.component';
 import {RepeatSectionComponent} from './repeat-section/repeat-section.component';
 import {
-  EmailValidator, EmailValidatorMessage, MaxValidationMessage, MinValidationMessage,
-  MulticheckboxValidator, MulticheckboxValidatorMessage,
-  PhoneValidator, PhoneValidatorMessage,
+  EmailValidator,
+  EmailValidatorMessage,
+  MaxValidationMessage,
+  MinValidationMessage,
+  MulticheckboxValidator,
+  MulticheckboxValidatorMessage,
+  PhoneValidator,
+  PhoneValidatorMessage,
   ShowError,
-  UrlValidator, UrlValidatorMessage
+  UrlValidator,
+  UrlValidatorMessage
 } from './validators/formly.validator';
 
 
