@@ -330,8 +330,11 @@ export class ToFormlyPipe implements PipeTransform {
           };
 
           if (field.templateOptions.repeatSectionName) {
+            // Move the repeat section (if any) out of the field and into the new group
             newGroup.templateOptions.repeatSectionName = field.templateOptions.repeatSectionName;
+            newGroup.templateOptions.repeatSectionHideExpression = field.templateOptions.repeatSectionHideExpression;
             delete field.templateOptions.repeatSectionName;
+            delete field.templateOptions.repeatSectionHideExpression;
           }
 
           newGroup.templateOptions.groupName = groupName;
@@ -385,6 +388,7 @@ export class ToFormlyPipe implements PipeTransform {
           };
 
           newGroup.templateOptions.repeatSectionName = repeatSectionName;
+          delete field.templateOptions.repeatSectionHideExpression;
           delete field.templateOptions.repeatSectionName;
           grouped.push(newGroup);
         }

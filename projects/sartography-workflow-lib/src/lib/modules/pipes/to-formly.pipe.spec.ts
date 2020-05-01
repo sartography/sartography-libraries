@@ -443,6 +443,7 @@ describe('ToFormlyPipe', () => {
         type: 'string',
         properties: [
           {id: 'repeat', value: 'Contact'},
+          {id: 'repeat_hide_expression', value: 'model.favorite_number > 0'},
           {id: 'group', value: 'Full Name'},
         ]
       },
@@ -485,6 +486,7 @@ describe('ToFormlyPipe', () => {
     // Repeat Section
     expect(after[0].key).toEqual('contact');
     expect(after[0].templateOptions.label).toEqual(before[0].properties[0].value);
+    expect(after[0].hideExpression).toBeDefined();
     expect(after[0].fieldArray).toBeDefined();
     expect(after[0].fieldArray.fieldGroup).toBeDefined();
 
