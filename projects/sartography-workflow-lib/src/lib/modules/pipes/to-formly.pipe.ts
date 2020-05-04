@@ -126,6 +126,7 @@ export class ToFormlyPipe implements PipeTransform {
         case 'textarea':
           resultField.type = 'textarea';
           resultField.defaultValue = field.default_value;
+          resultField.templateOptions.rows = 5;
           break;
         case 'long':
           resultField.type = 'input';
