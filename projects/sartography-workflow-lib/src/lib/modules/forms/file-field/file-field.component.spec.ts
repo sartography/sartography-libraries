@@ -67,7 +67,7 @@ describe('FileFieldComponent', () => {
       key: 'hi',
       defaultValue: mockFileMeta1.file
     };
-    builder.buildForm(form, [field], {}, {});
+    builder.buildForm(form, [field], {hi: mockFileMeta0.id}, {});
   }));
 
   beforeEach(() => {
@@ -79,10 +79,10 @@ describe('FileFieldComponent', () => {
 
     expect(component.selectedFile).toEqual(mockFileMeta1.file);
 
-    const fmsReq = httpMock.expectOne('apiRoot/file?study_id=0&workflow_id=0&task_id=0&form_field_key=hi');
+    const fmsReq = httpMock.expectOne('apiRoot/file/' + mockFileMeta0.id);
     // const fmsReq = httpMock.expectOne(`apiRoot/file?workflow_spec_id=${mockWorkflowSpec0.id}&form_field_key=hi`);
     expect(fmsReq.request.method).toEqual('GET');
-    fmsReq.flush([mockFileMeta0]);
+    fmsReq.flush(mockFileMeta0);
 
     const fReq = httpMock.expectOne(`apiRoot/file/${mockFileMeta0.id}/data`);
     expect(fReq.request.method).toEqual('GET');

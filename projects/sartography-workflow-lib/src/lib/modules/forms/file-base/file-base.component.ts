@@ -6,13 +6,14 @@ import {FileParams} from '../../../types/file';
 
 @Component({
   selector: 'lib-file-base',
-  template: '',
+  templateUrl: './file-base.component.html',
+  styleUrls: ['./file-base.component.scss']
 })
 export class FileBaseComponent extends FieldType implements OnInit {
   protected studyId: number;
   protected workflowId: number;
   protected workflowSpecId: string;
-  protected taskId: string;
+  protected fileId: number;
   protected fileParams: FileParams;
 
   constructor(
@@ -21,17 +22,12 @@ export class FileBaseComponent extends FieldType implements OnInit {
   ) {
     super();
     this.route.paramMap.subscribe(paramMap => {
-      console.log('paramMap', paramMap);
       if (paramMap.has('study_id')) {
         this.studyId = parseInt(paramMap.get('study_id'), 10);
       }
 
       if (paramMap.has('workflow_id')) {
         this.workflowId = parseInt(paramMap.get('workflow_id'), 10);
-      }
-
-      if (paramMap.has('task_id')) {
-        this.taskId = paramMap.get('task_id');
       }
 
       if (paramMap.has('workflow_spec_id')) {
@@ -44,11 +40,11 @@ export class FileBaseComponent extends FieldType implements OnInit {
     super.ngOnInit();
     this.fileParams = {
       study_id: this.studyId,
-      workflow_spec_id: this.workflowSpecId,
       workflow_id: this.workflowId,
-      task_id: this.taskId,
-      form_field_key: this.field.key
+      form_field_key: this.key,
     };
+
+    this.fileId = this.model && this.model.hasOwnProperty(this.key) ? this.model[this.key] : null;
     this.loadFiles();
   }
 
