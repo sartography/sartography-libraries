@@ -36,17 +36,19 @@ export class WorkflowTask {
   process_name?: string;
 
   display_name?(): string {
-    if (this.properties) {
+    if (this.properties && this.properties.length > 0) {
       const displayNameProp = this.properties.find(p => p.id === 'display_name');
       if (displayNameProp) {
         return displayNameProp.value;
       }
-    } else if (this.title) {
-      // Remove the first word from the title, which will most likely be a verb.
-      const firstWordRemoved = this.title.split(' ').slice(1).join(' ');
+    }
 
-      if (firstWordRemoved) {
-        return this.title.split(' ').slice(1).join(' ');
+    if (this.title && this.title.length > 0) {
+      // Remove the first word from the title, which will most likely be a verb.
+      const array = this.title.split(' ');
+
+      if (array && array.length > 1) {
+        return array.slice(1).join(' ');
       }
     }
 
