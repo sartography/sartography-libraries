@@ -1,7 +1,7 @@
 import {HttpClient, HttpParams, HttpResponse} from '@angular/common/http';
 import {Inject, Injectable} from '@angular/core';
 import {Observable, of, throwError} from 'rxjs';
-import {catchError} from 'rxjs/operators';
+import {catchError, map} from 'rxjs/operators';
 import {ApiError} from '../types/api';
 import {AppEnvironment} from '../types/app-environment';
 import {FileMeta, FileParams, LookupData} from '../types/file';
@@ -373,6 +373,15 @@ export class ApiService {
     return this.httpClient
       .get<ScriptInfo[]>(url)
       .pipe(catchError(this._handleError));
+  }
+
+  /** isSignedIn */
+  isSignedIn(): boolean {
+    if (this.environment.production) {
+      return true;
+    } else {
+      return isSignedIn();
+    }
   }
 
   /** getUser */

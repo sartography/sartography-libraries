@@ -21,13 +21,14 @@ import {ApiService} from './api.service';
 describe('ApiService', () => {
   let httpMock: HttpTestingController;
   let service: ApiService;
+  const mockEnvironment = new MockEnvironment();
 
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [HttpClientTestingModule],
       providers: [
         ApiService,
-        {provide: 'APP_ENVIRONMENT', useClass: MockEnvironment},
+        {provide: 'APP_ENVIRONMENT', useValue: mockEnvironment},
       ]
     });
 
@@ -531,5 +532,20 @@ describe('ApiService', () => {
     req.flush(null);
   });
 
+  it('should check whether the user is signed in', () => {
+    mockEnvironment.production = true;
+    localStorage.setItem('token', 'some value');
+    expect(service.isSignedIn()).toBeTrue();
+
+    localStorage.removeItem('token');
+    expect(service.isSignedIn()).toBeTrue();
+
+    mockEnvironment.production = false;
+    localStorage.setItem('token', 'some value');
+    expect(service.isSignedIn()).toBeTrue();
+
+    localStorage.removeItem('token');
+    expect(service.isSignedIn()).toBeFalse();
+  });
 
 });
