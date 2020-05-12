@@ -422,6 +422,7 @@ describe('ApiService', () => {
   });
 
   it('should open a new session when testing', () => {
+    mockEnvironment.production = false;
     localStorage.removeItem('token');
     const userParams: UserParams = {
       uid: 'bbf2f',

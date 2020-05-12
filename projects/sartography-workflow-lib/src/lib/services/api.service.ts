@@ -387,7 +387,10 @@ export class ApiService {
   /** getUser */
   getUser(): Observable<User> {
     if (isSignedIn()) {
-      return this.httpClient.get<User>(this.apiRoot + this.endpoints.user)
+      const url = this.apiRoot + this.endpoints.user;
+      console.log('getUser url', url);
+      return this.httpClient
+        .get<User>(url)
         .pipe(catchError(this._handleError));
     } else {
       return of(null);
