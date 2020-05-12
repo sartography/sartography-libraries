@@ -3,7 +3,7 @@ import {AppEnvironment} from '../../types/app-environment';
 
 @Injectable()
 export class MockEnvironment implements AppEnvironment {
-  homeRoute = '';
+  homeRoute = 'home';
   production = false;
   api = 'apiRoot';
   irbUrl = 'irbUrl';
