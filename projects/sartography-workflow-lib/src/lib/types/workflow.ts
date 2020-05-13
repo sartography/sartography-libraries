@@ -1,5 +1,6 @@
 import {WorkflowStats} from './stats';
 import {WorkflowTask} from './workflow-task';
+import { TaskState } from 'sartography-workflow-lib/lib/types/task';
 
 export enum WorkflowStatus {
   NOT_STARTED = 'not_started',
@@ -39,6 +40,7 @@ export interface Workflow {
   id: number;
   bpmn_workflow_json: string;
   status: WorkflowStatus;
+  navigation: WorkflowNavItem[];
   study_id: number;
   workflow_spec_id: string;
   workflow_spec?: WorkflowSpec;
@@ -47,4 +49,15 @@ export interface Workflow {
   user_tasks?: WorkflowTask[];
   is_latest_spec?: boolean;
   spec_version?: string;
+}
+
+export interface WorkflowNavItem {
+  id: number;
+  name: string;
+  description: string;
+  backtracks: boolean;
+  level: number;
+  indent: number;
+  childcount: number;
+  state: TaskState;
 }
