@@ -1,6 +1,9 @@
 import {HttpClientTestingModule, HttpTestingController} from '@angular/common/http/testing';
-import {async, ComponentFixture, TestBed} from '@angular/core/testing';
+import {async, ComponentFixture, inject, TestBed} from '@angular/core/testing';
+import {FormGroup} from '@angular/forms';
 import {ActivatedRoute, convertToParamMap} from '@angular/router';
+import {FormlyConfig, FormlyFormBuilder, FormlyModule} from '@ngx-formly/core';
+import {FormlyFieldConfigCache} from '@ngx-formly/core/lib/components/formly.field.config';
 import {of} from 'rxjs';
 import {ApiService} from '../../../services/api.service';
 import {MockEnvironment} from '../../../testing/mocks/environment.mocks';
@@ -10,10 +13,15 @@ describe('FileBaseComponent', () => {
   let component: FileBaseComponent;
   let fixture: ComponentFixture<FileBaseComponent>;
   let httpMock: HttpTestingController;
+  let builder: FormlyFormBuilder;
+  let form: FormGroup;
+  let field: FormlyFieldConfigCache;
+  let config: FormlyConfig;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [
+        FormlyModule.forRoot(),
         HttpClientTestingModule,
       ],
       declarations: [FileBaseComponent],
@@ -21,12 +29,22 @@ describe('FileBaseComponent', () => {
         ApiService,
         {
           provide: ActivatedRoute,
-          useValue: {paramMap: of(convertToParamMap({study_id: '0', workflow_id: '0', task_id: '0'}))},
+          useValue: {paramMap: of(convertToParamMap({study_id: '0', workflow_id: '0', task_id: 'whatever'}))},
         },
         {provide: 'APP_ENVIRONMENT', useClass: MockEnvironment},
       ]
     })
       .compileComponents();
+  }));
+
+  beforeEach(inject([FormlyFormBuilder, FormlyConfig], (formlyBuilder: FormlyFormBuilder, formlyConfig: FormlyConfig) => {
+    form = new FormGroup({});
+    config = formlyConfig;
+    builder = formlyBuilder;
+    field = {
+      key: 'hi'
+    };
+    builder.buildForm(form, [field], {hi: 123}, {});
   }));
 
   beforeEach(() => {
@@ -39,5 +57,14 @@ describe('FileBaseComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+    expect(component.key).toEqual('hi');
+    expect((component as any).fileId).toEqual(null);
+
+    const fp = (component as any).fileParams;
+    expect(fp).toBeTruthy();
+    expect(fp.study_id).toEqual(0);
+    expect(fp.workflow_id).toEqual(0);
+    expect(fp.form_field_key).toEqual('hi');
   });
+
 });

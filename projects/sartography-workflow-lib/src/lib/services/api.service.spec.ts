@@ -21,13 +21,14 @@ import {ApiService} from './api.service';
 describe('ApiService', () => {
   let httpMock: HttpTestingController;
   let service: ApiService;
+  const mockEnvironment = new MockEnvironment();
 
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [HttpClientTestingModule],
       providers: [
         ApiService,
-        {provide: 'APP_ENVIRONMENT', useClass: MockEnvironment},
+        {provide: 'APP_ENVIRONMENT', useValue: mockEnvironment},
       ]
     });
 
@@ -409,7 +410,19 @@ describe('ApiService', () => {
     req.flush(mockWorkflow0);
   });
 
+  it('should set current Task for a given Workflow', () => {
+    service.setCurrentTaskForWorkflow(mockWorkflow0.id, mockWorkflowTask0.id).subscribe(workflow => {
+      expect(workflow.id).toEqual(mockWorkflow0.id);
+      expect(workflow.status).toEqual(mockWorkflow0.status);
+    });
+
+    const req = httpMock.expectOne(`apiRoot/workflow/${mockWorkflow0.id}/task/${mockWorkflowTask0.id}/set_token`);
+    expect(req.request.method).toEqual('PUT');
+    req.flush(mockWorkflow0);
+  });
+
   it('should open a new session when testing', () => {
+    mockEnvironment.production = false;
     localStorage.removeItem('token');
     const userParams: UserParams = {
       uid: 'bbf2f',
@@ -418,7 +431,7 @@ describe('ApiService', () => {
       email_address: 'bbf2f@droidsmithery.anzelia.edu',
     };
     const queryString = '?uid=bbf2f&first_name=Babu&last_name=Frik&email_address=bbf2f%40droidsmithery.anzelia.edu';
-    const queryStringSpy = spyOn((service as any), '_userParamsToQueryString').and.callThrough();
+    const queryStringSpy = spyOn((service as any), '_paramsToQueryString').and.callThrough();
     const openUrlSpy = spyOn(service, 'openUrl').and.stub();
     service.openSession(userParams);
     expect(queryStringSpy).toHaveBeenCalledWith(userParams);
@@ -426,7 +439,7 @@ describe('ApiService', () => {
   });
 
   it('should get user from existing session on production', () => {
-    const queryStringSpy = spyOn((service as any), '_userParamsToQueryString').and.stub();
+    const queryStringSpy = spyOn((service as any), '_paramsToQueryString').and.stub();
     const openUrlSpy = spyOn(service, 'openUrl').and.stub();
     (service as any).environment.production = true;
     service.openSession(mockUser);
@@ -520,5 +533,20 @@ describe('ApiService', () => {
     req.flush(null);
   });
 
+  it('should check whether the user is signed in', () => {
+    mockEnvironment.production = true;
+    localStorage.setItem('token', 'some value');
+    expect(service.isSignedIn()).toBeTrue();
+
+    localStorage.removeItem('token');
+    expect(service.isSignedIn()).toBeTrue();
+
+    mockEnvironment.production = false;
+    localStorage.setItem('token', 'some value');
+    expect(service.isSignedIn()).toBeTrue();
+
+    localStorage.removeItem('token');
+    expect(service.isSignedIn()).toBeFalse();
+  });
 
 });

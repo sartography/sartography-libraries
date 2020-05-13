@@ -1,7 +1,7 @@
 import {HttpClient, HttpParams, HttpResponse} from '@angular/common/http';
 import {Inject, Injectable} from '@angular/core';
 import {Observable, of, throwError} from 'rxjs';
-import {catchError} from 'rxjs/operators';
+import {catchError, map} from 'rxjs/operators';
 import {ApiError} from '../types/api';
 import {AppEnvironment} from '../types/app-environment';
 import {FileMeta, FileParams, LookupData} from '../types/file';
@@ -9,7 +9,7 @@ import {ScriptInfo} from '../types/script-info';
 import {WorkflowStats} from '../types/stats';
 import {Study} from '../types/study';
 import {User, UserParams} from '../types/user';
-import {Workflow, WorkflowSpec, WorkflowSpecCategory} from '../types/workflow';
+import {Workflow, WorkflowResetParams, WorkflowSpec, WorkflowSpecCategory} from '../types/workflow';
 import {WorkflowTask} from '../types/workflow-task';
 import {isSignedIn} from '../util/is-signed-in';
 
@@ -58,6 +58,7 @@ export class ApiService {
     workflowStats: '/workflow/{workflow_id}/stats',
     taskForWorkflow: '/workflow/{workflow_id}/task/{task_id}',
     taskDataForWorkflow: '/workflow/{workflow_id}/task/{task_id}/data',
+    setCurrentTaskForWorkflow: '/workflow/{workflow_id}/task/{task_id}/set_token',
     fieldOptionsLookup: '/workflow/{workflow_id}/task/{task_id}/lookup/{field_id}',
   };
 
@@ -315,12 +316,13 @@ export class ApiService {
   }
 
   /** Get a specific Workflow */
-  getWorkflow(workflowId: number): Observable<Workflow> {
+  getWorkflow(workflowId: number, params?: WorkflowResetParams): Observable<Workflow> {
+    const queryString = params ? this._paramsToQueryString(params) : '';
     const url = this.apiRoot + this.endpoints.workflow
       .replace('{workflow_id}', workflowId.toString());
 
     return this.httpClient
-      .get<Workflow>(url)
+      .get<Workflow>(url + queryString)
       .pipe(catchError(this._handleError));
   }
 
@@ -354,6 +356,16 @@ export class ApiService {
       .pipe(catchError(this._handleError));
   }
 
+  /** Update Task Data for a specific Workflow Task */
+  setCurrentTaskForWorkflow(workflowId: number, taskId: string): Observable<Workflow> {
+    const url = this.apiRoot + this.endpoints.setCurrentTaskForWorkflow
+      .replace('{workflow_id}', workflowId.toString())
+      .replace('{task_id}', taskId);
+
+    return this.httpClient.put<Workflow>(url, {})
+      .pipe(catchError(this._handleError));
+  }
+
   /** listScripts */
   listScripts(): Observable<ScriptInfo[]> {
     const url = this.apiRoot + this.endpoints.scriptList;
@@ -363,10 +375,22 @@ export class ApiService {
       .pipe(catchError(this._handleError));
   }
 
+  /** isSignedIn */
+  isSignedIn(): boolean {
+    if (this.environment.production) {
+      return true;
+    } else {
+      return isSignedIn();
+    }
+  }
+
   /** getUser */
   getUser(): Observable<User> {
     if (isSignedIn()) {
-      return this.httpClient.get<User>(this.apiRoot + this.endpoints.user)
+      const url = this.apiRoot + this.endpoints.user;
+      console.log('getUser url', url);
+      return this.httpClient
+        .get<User>(url)
         .pipe(catchError(this._handleError));
     } else {
       return of(null);
@@ -376,7 +400,7 @@ export class ApiService {
   /** openSession */
   openSession(userParams: UserParams) {
     if (!this.environment.production) {
-      const queryString = this._userParamsToQueryString(userParams);
+      const queryString = this._paramsToQueryString(userParams);
       this.openUrl(this.apiRoot + this.endpoints.fakeSession + queryString);
     } else {
       return this.getUser();
@@ -408,12 +432,12 @@ export class ApiService {
     return throwError(error.message || 'Could not complete your request; please try again later.');
   }
 
-  /** Construct HeaderParams from UserParams object. Only adds params that have been set. */
-  private _userParamsToQueryString(userParams: UserParams): string {
+  /** Construct Query String Params from UserParams or WorkflowResetParams object. Only adds params that have been set. */
+  private _paramsToQueryString(params: UserParams|WorkflowResetParams): string {
     let queryString = '?';
-    const keys = Object.keys(userParams);
+    const keys = Object.keys(params);
     keys.forEach((k, i) => {
-      const val = userParams[k];
+      const val = params[k];
       if ((val !== undefined) && (val !== null)) {
         queryString += k + '=' + encodeURIComponent(val.toString());
       }

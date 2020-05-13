@@ -1,8 +1,8 @@
 import {Component, OnInit} from '@angular/core';
-import {FieldArrayType, FormlyFieldConfig} from '@ngx-formly/core';
 import {MatDialog} from '@angular/material/dialog';
-import {RepeatSectionDialogComponent} from '../repeat-section-dialog/repeat-section-dialog.component';
+import {FieldArrayType, FormlyFieldConfig} from '@ngx-formly/core';
 import createClone from 'rfdc';
+import {RepeatSectionDialogComponent} from '../repeat-section-dialog/repeat-section-dialog.component';
 
 @Component({
   selector: 'lib-repeat-section',
@@ -42,5 +42,17 @@ export class RepeatSectionComponent extends FieldArrayType implements OnInit {
         super.add(i, model);
       }
     });
+  }
+
+  shouldHide(): boolean {
+    if (
+      this.field &&
+      this.field.hideExpression &&
+      typeof (this.field.hideExpression) === 'function'
+    ) {
+      return !!(this.field.hideExpression(this.model, this.formState, this.field));
+    } else {
+      return false;
+    }
   }
 }

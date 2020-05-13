@@ -276,19 +276,24 @@ describe('ToFormlyPipe', () => {
         label: 'Write a short novel that sardonically recounts the story of your life from the perspective of your best frenemy.',
         type: 'textarea',
         properties: [
-          {id: 'rows', value: '5'},
+          {id: 'rows', value: '7'},
           {id: 'cols', value: '3'},
           {id: 'autosize', value: 'true'},
         ]
       }
     ];
-    const after = pipe.transform(before);
-    expect(after[0].key).toEqual(before[0].id);
-    expect(after[0].type).toEqual('textarea');
-    expect(after[0].templateOptions.label).toEqual(before[0].label);
-    expect(after[0].templateOptions.rows).toEqual(5);
-    expect(after[0].templateOptions.cols).toEqual(3);
-    expect(after[0].templateOptions.autosize).toEqual(true);
+    const after1 = pipe.transform(before);
+    expect(after1[0].key).toEqual(before[0].id);
+    expect(after1[0].type).toEqual('textarea');
+    expect(after1[0].templateOptions.label).toEqual(before[0].label);
+    expect(after1[0].templateOptions.rows).toEqual(7);
+    expect(after1[0].templateOptions.cols).toEqual(3);
+    expect(after1[0].templateOptions.autosize).toEqual(true);
+
+    // Default to 5 rows
+    before[0].properties.shift();
+    const after2 = pipe.transform(before);
+    expect(after2[0].templateOptions.rows).toEqual(5);
   });
 
   it('converts tel field to Formly phone number field', () => {
@@ -339,13 +344,23 @@ describe('ToFormlyPipe', () => {
   it('converts autocomplete field to Formly autocomplete field', () => {
     const before: BpmnFormJsonField[] = [
       {
+        id: 'title',
+        label: 'Recipe title',
+        type: 'input',
+      },
+      {
         id: 'ingredients',
         label: 'Find Ingredient',
         type: 'autocomplete',
         properties: [
           {id: 'enum.options.limit', value: '5'},
         ]
-      }
+      },
+      {
+        id: 'instructions',
+        label: 'Write some instructions on making this recipe',
+        type: 'textarea',
+      },
     ];
     const fileParams: FileParams = {
       workflow_id: 123,
@@ -353,10 +368,14 @@ describe('ToFormlyPipe', () => {
       form_field_key: 'ingredients',
     }
     const after = pipe.transform(before, fileParams);
-    expect(after[0].key).toEqual(before[0].id);
-    expect(after[0].type).toEqual('autocomplete');
-    expect(after[0].templateOptions.label).toEqual(before[0].label);
-    expect(after[0].templateOptions.filter).toBeTruthy();
+    expect(after[1].key).toEqual(before[1].id);
+    expect(after[1].type).toEqual('autocomplete');
+    expect(after[1].templateOptions.label).toEqual(before[1].label);
+    expect(after[1].templateOptions.filter).toBeTruthy();
+
+    // Should not set filter for other fields
+    expect(after[0].templateOptions.filter).toBeUndefined();
+    expect(after[2].templateOptions.filter).toBeUndefined();
   });
 
   it('converts group names into Formly field groups', async () => {
@@ -429,6 +448,7 @@ describe('ToFormlyPipe', () => {
         type: 'string',
         properties: [
           {id: 'repeat', value: 'Contact'},
+          {id: 'repeat_hide_expression', value: 'model.favorite_number > 0'},
           {id: 'group', value: 'Full Name'},
         ]
       },
@@ -471,6 +491,7 @@ describe('ToFormlyPipe', () => {
     // Repeat Section
     expect(after[0].key).toEqual('contact');
     expect(after[0].templateOptions.label).toEqual(before[0].properties[0].value);
+    expect(after[0].hideExpression).toBeDefined();
     expect(after[0].fieldArray).toBeDefined();
     expect(after[0].fieldArray.fieldGroup).toBeDefined();
 

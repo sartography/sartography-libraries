@@ -1,8 +1,9 @@
 <div
+  *ngIf="field && field.fieldArray"
+  [ngClass]="{'container': true}"
   fxLayout="column"
   fxLayoutGap="1em"
-  class="container"
-  *ngIf="field && field.fieldArray"
+  [fxHide]="shouldHide()"
 >
   <mat-card *ngFor="let f of field.fieldGroup; let i = index;" class="repeat">
     <mat-card-content fxLayout="row">
@@ -15,16 +16,16 @@
         fxLayoutAlign="end start"
       >
         <button
+          (click)="openDialog(i, f)"
           mat-icon-button
           type="button"
-          (click)="openDialog(i, f)"
         >
           <mat-icon>edit</mat-icon>
         </button>
         <button
+          (click)="remove(i)"
           mat-icon-button
           type="button"
-          (click)="remove(i)"
         >
           <mat-icon>close</mat-icon>
         </button>
@@ -33,12 +34,12 @@
   </mat-card>
 </div>
 
-<div class="repeat-action" *ngIf="field && field.templateOptions">
+<div *ngIf="field && field.templateOptions" class="repeat-action">
   <button
-    mat-flat-button
-    color="accent"
-    type="button"
     (click)="openDialog(field.fieldGroup ? field.fieldGroup.length : 0)"
+    color="accent"
+    mat-flat-button
+    type="button"
   >
     <mat-icon>add</mat-icon>
     {{ field.templateOptions.description || 'Add ' + field.templateOptions.label }}

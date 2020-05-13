@@ -60,14 +60,6 @@ export class FileFieldComponent extends FileBaseComponent implements OnInit {
       fileMeta.workflow_id = this.workflowId;
     }
 
-    if (this.workflowSpecId) {
-      fileMeta.workflow_spec_id = this.workflowSpecId;
-    }
-
-    if (this.taskId) {
-      fileMeta.task_id = this.taskId;
-    }
-
     if (this.field.key) {
       fileMeta.form_field_key = this.field.key;
     }
@@ -90,9 +82,8 @@ export class FileFieldComponent extends FileBaseComponent implements OnInit {
   }
 
   loadFiles() {
-    this.api.getFileMetas(this.fileParams).subscribe(fms => {
-      const fm = fms[0];
-      if (fm && isNumberDefined(fm.id)) {
+    if (isNumberDefined(this.fileId)) {
+      this.api.getFileMeta(this.fileId).subscribe(fm => {
         this.api.getFileData(fm.id).subscribe(response => {
           const file = newFileFromResponse(fm, response);
           fm.file = file;
@@ -103,7 +94,7 @@ export class FileFieldComponent extends FileBaseComponent implements OnInit {
             this.formControl.setValue(fm.id);
           }
         });
-      }
-    });
+      });
+    }
   }
 }

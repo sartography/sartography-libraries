@@ -44,11 +44,17 @@ export interface Workflow {
   study_id: number;
   workflow_spec_id: string;
   workflow_spec?: WorkflowSpec;
+  parent_task?: WorkflowTask;
   last_task?: WorkflowTask;
   next_task?: WorkflowTask;
   user_tasks?: WorkflowTask[];
   is_latest_spec?: boolean;
   spec_version?: string;
+}
+
+export interface WorkflowResetParams {
+  soft_reset?: boolean;
+  hard_reset?: boolean;
 }
 
 export interface WorkflowNavItem {

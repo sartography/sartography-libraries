@@ -21,10 +21,14 @@ export class AutocompleteFieldComponent extends FieldType implements OnInit {
       this.filter = this.formControl.valueChanges.pipe<string, LookupData[]>(
         startWith(''),
         switchMap<string, Observable<LookupData[]>>(term => {
-          console.log('term', term);
           return this.to.filter(term);
         }),
       );
     }
   }
+
+  displayFn(lookupData: LookupData): string {
+    return lookupData && lookupData.label ? lookupData.label : '';
+  }
+
 }

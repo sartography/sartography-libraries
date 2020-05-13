@@ -4,7 +4,6 @@ import {isIterable} from 'rxjs/internal-compatibility';
 import {ApiService} from '../../services/api.service';
 import {FileParams} from '../../types/file';
 import {BpmnFormJsonField} from '../../types/json';
-import {of} from 'rxjs';
 
 
 /***
@@ -111,10 +110,6 @@ export class ToFormlyPipe implements PipeTransform {
         expressionProperties: {},
       };
 
-      if (fileParams) {
-        fileParams.form_field_key = field.id;
-      }
-
       // Convert bpmnjs field type to Formly field type
       switch (field.type) {
         case 'enum':
@@ -131,6 +126,7 @@ export class ToFormlyPipe implements PipeTransform {
         case 'textarea':
           resultField.type = 'textarea';
           resultField.defaultValue = field.default_value;
+          resultField.templateOptions.rows = 5;
           break;
         case 'long':
           resultField.type = 'input';
@@ -178,6 +174,10 @@ export class ToFormlyPipe implements PipeTransform {
           resultField.type = 'file';
           break;
         case 'autocomplete':
+          if (fileParams) {
+            fileParams.form_field_key = field.id;
+          }
+
           resultField.type = 'autocomplete';
           resultField.templateOptions.filter = (query: string) => this.apiService
             .lookupFieldOptions(query, fileParams);
@@ -222,6 +222,9 @@ export class ToFormlyPipe implements PipeTransform {
               break;
             case 'repeat':
               resultField.templateOptions.repeatSectionName = p.value;
+              break;
+            case 'repeat_hide_expression':
+              resultField.templateOptions.repeatSectionHideExpression = p.value;
               break;
             case 'hide_expression':
               resultField.hideExpression = p.value;
@@ -328,8 +331,11 @@ export class ToFormlyPipe implements PipeTransform {
           };
 
           if (field.templateOptions.repeatSectionName) {
+            // Move the repeat section (if any) out of the field and into the new group
             newGroup.templateOptions.repeatSectionName = field.templateOptions.repeatSectionName;
+            newGroup.templateOptions.repeatSectionHideExpression = field.templateOptions.repeatSectionHideExpression;
             delete field.templateOptions.repeatSectionName;
+            delete field.templateOptions.repeatSectionHideExpression;
           }
 
           newGroup.templateOptions.groupName = groupName;
@@ -375,6 +381,7 @@ export class ToFormlyPipe implements PipeTransform {
             templateOptions: {
               label: repeatSectionName,
             },
+            hideExpression: field.templateOptions.repeatSectionHideExpression,
             fieldArray: {
               fieldGroup: [field],
             },
@@ -382,6 +389,7 @@ export class ToFormlyPipe implements PipeTransform {
           };
 
           newGroup.templateOptions.repeatSectionName = repeatSectionName;
+          delete field.templateOptions.repeatSectionHideExpression;
           delete field.templateOptions.repeatSectionName;
           grouped.push(newGroup);
         }

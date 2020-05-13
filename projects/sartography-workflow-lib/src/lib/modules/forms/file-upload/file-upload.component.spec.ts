@@ -71,9 +71,12 @@ describe('FileUploadComponent', () => {
     fixture = TestBed.createComponent(FileUploadComponent);
     component = fixture.componentInstance;
     component.field = field;
+    (component as any).data = {
+      hi: 123,
+    };
     fixture.detectChanges();
 
-    const fmsReq = httpMock.expectOne('apiRoot/file?study_id=0&workflow_id=0&task_id=0&form_field_key=hi');
+    const fmsReq = httpMock.expectOne('apiRoot/file?study_id=0&workflow_id=0&form_field_key=hi');
     expect(fmsReq.request.method).toEqual('GET');
     fmsReq.flush(mockFileMetas);
 
