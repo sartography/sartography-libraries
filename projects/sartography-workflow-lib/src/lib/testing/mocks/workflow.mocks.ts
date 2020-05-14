@@ -12,6 +12,7 @@ export const mockWorkflow0: Workflow = {
   last_task: mockWorkflowTask0,
   next_task: mockWorkflowTask1,
   user_tasks: mockWorkflowTasks,
+  navigation: []
 };
 
 export const mockWorkflow1: Workflow = {
@@ -23,6 +24,7 @@ export const mockWorkflow1: Workflow = {
   last_task: mockWorkflowTask0,
   next_task: mockWorkflowTask1,
   user_tasks: mockWorkflowTasks,
+  navigation: []
 };
 
 export const mockWorkflows: Workflow[] = [

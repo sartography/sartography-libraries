@@ -1,6 +1,5 @@
 import {WorkflowStats} from './stats';
-import {WorkflowTask} from './workflow-task';
-import { TaskState } from 'sartography-workflow-lib/lib/types/task';
+import {WorkflowTask, WorkflowTaskState} from './workflow-task';
 
 export enum WorkflowStatus {
   NOT_STARTED = 'not_started',
@@ -65,5 +64,5 @@ export interface WorkflowNavItem {
   level: number;
   indent: number;
   childcount: number;
-  state: TaskState;
+  state: WorkflowTaskState;
 }

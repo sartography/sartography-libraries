@@ -1,7 +1,7 @@
 import {FileMeta, FileType} from '../../types/file';
 import {mockStudy0} from './study.mocks';
-import {mockTask0} from './task.mocks';
 import {mockWorkflowSpec0} from './workflow-spec.mocks';
+import {mockWorkflowTask0} from './workflow-task.mocks';
 import {mockWorkflow0} from './workflow.mocks';
 
 const timeCode = new Date('2020-01-23T12:34:12.345Z').getTime();
@@ -15,7 +15,7 @@ export const mockFileMeta0: FileMeta = {
   }),
   type: FileType.BPMN,
   workflow_spec_id: mockWorkflowSpec0.id,
-  task_id: mockTask0.id,
+  task_id: mockWorkflowTask0.id,
   study_id: mockStudy0.id,
   latest_version: '1.0',
 };
@@ -30,7 +30,7 @@ export const mockFileMeta1: FileMeta = {
   }),
   type: FileType.BPMN,
   workflow_spec_id: mockWorkflowSpec0.id,
-  task_id: mockTask0.id,
+  task_id: mockWorkflowTask0.id,
   study_id: mockStudy0.id,
   latest_version: '1.0',
 };
@@ -45,7 +45,7 @@ export const mockFileMeta2: FileMeta = {
   }),
   type: FileType.BPMN,
   workflow_spec_id: mockWorkflowSpec0.id,
-  task_id: mockTask0.id,
+  task_id: mockWorkflowTask0.id,
   study_id: mockStudy0.id,
   latest_version: '1.0',
 };
@@ -60,7 +60,7 @@ export const mockFileMeta3: FileMeta = {
   }),
   type: FileType.BPMN,
   workflow_spec_id: mockWorkflowSpec0.id,
-  task_id: mockTask0.id,
+  task_id: mockWorkflowTask0.id,
   study_id: mockStudy0.id,
   latest_version: '1.0',
 };
@@ -76,7 +76,7 @@ export const mockFileMetaTask0: FileMeta = {
   type: FileType.DOCX,
   workflow_id: mockWorkflow0.id,
   study_id: mockWorkflow0.study_id,
-  task_id: mockTask0.id,
+  task_id: mockWorkflowTask0.id,
   latest_version: '1.0',
 };
 
