@@ -390,14 +390,10 @@ export class ApiService {
 
   /** getUser */
   getUser(): Observable<User> {
-    if (isSignedIn()) {
-      const url = this.apiRoot + this.endpoints.user;
-      return this.httpClient
-        .get<User>(url)
-        .pipe(catchError(this._handleError));
-    } else {
-      return of(null);
-    }
+    const url = this.apiRoot + this.endpoints.user;
+    return this.httpClient
+      .get<User>(url)
+      .pipe(catchError(this._handleError));
   }
 
   /** openSession */
