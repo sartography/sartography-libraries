@@ -376,24 +376,25 @@ export class ApiService {
   }
 
   /** isSignedIn */
-  isSignedIn(): Observable<boolean> {
+  isSignedIn(): boolean {
     if (this.environment.production) {
-      const url = this.apiRoot + this.endpoints.user;
-      return this.httpClient
-        .get<User>(url)
-        .pipe(map(u => !!u))
-        .pipe(catchError(this._handleError));
+      return true;
     } else {
-      return of(isSignedIn());
+      return isSignedIn();
     }
   }
 
   /** getUser */
   getUser(): Observable<User> {
-    const url = this.apiRoot + this.endpoints.user;
-    return this.httpClient
-      .get<User>(url)
-      .pipe(catchError(this._handleError));
+    if (isSignedIn()) {
+      const url = this.apiRoot + this.endpoints.user;
+      console.log('getUser url', url);
+      return this.httpClient
+        .get<User>(url)
+        .pipe(catchError(this._handleError));
+    } else {
+      return of(null);
+    }
   }
 
   /** openSession */
