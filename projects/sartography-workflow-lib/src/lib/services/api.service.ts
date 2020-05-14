@@ -376,11 +376,15 @@ export class ApiService {
   }
 
   /** isSignedIn */
-  isSignedIn(): boolean {
+  isSignedIn(): Observable<boolean> {
     if (this.environment.production) {
-      return true;
+      const url = this.apiRoot + this.endpoints.user;
+      return this.httpClient
+        .get<User>(url)
+        .pipe(map(u => !!u))
+        .pipe(catchError(this._handleError));
     } else {
-      return isSignedIn();
+      return of(isSignedIn());
     }
   }
 
@@ -388,7 +392,6 @@ export class ApiService {
   getUser(): Observable<User> {
     if (isSignedIn()) {
       const url = this.apiRoot + this.endpoints.user;
-      console.log('getUser url', url);
       return this.httpClient
         .get<User>(url)
         .pipe(catchError(this._handleError));

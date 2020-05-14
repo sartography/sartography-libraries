@@ -536,17 +536,23 @@ describe('ApiService', () => {
   it('should check whether the user is signed in', () => {
     mockEnvironment.production = true;
     localStorage.setItem('token', 'some value');
-    expect(service.isSignedIn()).toBeTrue();
+    service.isSignedIn().subscribe(result => expect(result).toBeTrue());
+    const req = httpMock.expectOne('apiRoot/user');
+    expect(req.request.method).toEqual('GET');
+    req.flush(mockUser);
 
     localStorage.removeItem('token');
-    expect(service.isSignedIn()).toBeTrue();
+    service.isSignedIn().subscribe(result => expect(result).toBeTrue());
+    const req2 = httpMock.expectOne('apiRoot/user');
+    expect(req2.request.method).toEqual('GET');
+    req2.flush(mockUser);
 
     mockEnvironment.production = false;
     localStorage.setItem('token', 'some value');
-    expect(service.isSignedIn()).toBeTrue();
+    service.isSignedIn().subscribe(result => expect(result).toBeTrue());
 
     localStorage.removeItem('token');
-    expect(service.isSignedIn()).toBeFalse();
+    service.isSignedIn().subscribe(result => expect(result).toBeFalse());
   });
 
 });
