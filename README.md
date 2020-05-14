@@ -3,6 +3,9 @@
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 8.3.15.
 
 ## Re-publishing the library to npm
+Run `npm run bump`.
+
+You only need to do this if you run into an issue during the bump, if you fix it, you can then republish it.
 Run `npm run republish`.
 
 ## Development server
