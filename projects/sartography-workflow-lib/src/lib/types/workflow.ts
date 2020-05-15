@@ -58,7 +58,7 @@ export interface WorkflowResetParams {
 
 export interface WorkflowNavItem {
   id: number;
-  task_id: string;
+  taskid: string;
   name: string;
   description: string;
   backtracks: boolean;
