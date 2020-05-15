@@ -23,7 +23,7 @@ export enum WorkflowTaskType {
 
 const DISPLAY_NAME_PROP = 'display_name';
 
-export class WorkflowTask {
+export interface WorkflowTask {
   data: any;
   documentation: string;
   form: BpmnFormJson;
@@ -33,8 +33,8 @@ export class WorkflowTask {
   state: WorkflowTaskState;
   title: string;
   type: WorkflowTaskType;
-  processName: string;
-  multiInstanceType: string;
-  multiInstanceCount: number;
-  multiInstanceIndex: number;
+  process_name: string;
+  multi_instance_type: string;
+  multi_instance_count: number;
+  multi_instance_index: number;
 }

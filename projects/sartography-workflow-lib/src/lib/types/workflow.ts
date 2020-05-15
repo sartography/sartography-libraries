@@ -55,15 +55,15 @@ export interface WorkflowResetParams {
 
 export interface WorkflowNavItem {
   id: number;
-  taskid: string;
+  task_id?: string;
   name: string;
-  title: string;
-  state: WorkflowTaskState;
+  title?: string;
+  state?: WorkflowTaskState;
   backtracks?: boolean;
   level: number
   indent: number
-  childCount: number
-  isDecision?: boolean
+  child_count: number
+  is_decision?: boolean
   task?: WorkflowTask
 }
 
