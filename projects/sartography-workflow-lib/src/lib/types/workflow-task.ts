@@ -21,9 +21,9 @@ export enum WorkflowTaskType {
   USER_TASK = 'UserTask',
 }
 
-export class WorkflowTask {
-  DISPLAY_NAME_PROP = 'display_name';
+const DISPLAY_NAME_PROP = 'display_name';
 
+export class WorkflowTask {
   data: any;
   documentation: string;
   form: BpmnFormJson;
@@ -33,28 +33,8 @@ export class WorkflowTask {
   state: WorkflowTaskState;
   title: string;
   type: WorkflowTaskType;
-
-  // tslint:disable-next-line:variable-name
-  process_name?: string;
-
-  display_name?(): string {
-    if (this.properties && this.DISPLAY_NAME_PROP in this.properties) {
-      const displayNameProp = this.properties[this.DISPLAY_NAME_PROP];
-      if (displayNameProp) {
-        return displayNameProp.value;
-      }
-    }
-
-    if (this.title && this.title.length > 0) {
-      // Remove the first word from the title, which will most likely be a verb.
-      const array = this.title.split(' ');
-
-      if (array && array.length > 1) {
-        return array.slice(1).join(' ');
-      }
-    }
-
-    // If all else fails, just use the BPMN Task ID.
-    return this.name;
-  }
+  processName: string;
+  multiInstanceType: string;
+  multiInstanceCount: number;
+  multiInstanceIndex: number;
 }

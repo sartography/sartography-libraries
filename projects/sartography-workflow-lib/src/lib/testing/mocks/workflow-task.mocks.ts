@@ -8,6 +8,10 @@ export const mockWorkflowTask0: WorkflowTask = {
   state: WorkflowTaskState.WAITING,
   type: WorkflowTaskType.USER_TASK,
   data: {},
+  multiInstanceCount: 0,
+  multiInstanceIndex: 0,
+  multiInstanceType: '',
+  processName: '',
   form: {
     key: 'Create a beautiful little sunset.',
     fields: [
@@ -35,6 +39,10 @@ export const mockWorkflowTask1: WorkflowTask = {
   state: WorkflowTaskState.READY,
   type: WorkflowTaskType.USER_TASK,
   data: {},
+  multiInstanceCount: 0,
+  multiInstanceIndex: 0,
+  multiInstanceType: '',
+  processName: '',
   form: {
     key: 'Form 0.0.0.0',
     fields: [

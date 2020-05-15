@@ -117,10 +117,10 @@ describe('ApiService', () => {
     req.flush(null, mockUpdatingResponse);
   });
 
-  it('should get tasks for a given workflow', () => {
+  it('should get navigation for a given workflow', () => {
     service.getWorkflow(mockWorkflow0.id).subscribe(data => {
-      expect(data.user_tasks.length).toBeGreaterThan(0);
-      data.user_tasks.forEach(t => expect(t).toBeDefined());
+      expect(data.navigation.length).toBeGreaterThan(0);
+      data.navigation.forEach(t => expect(t).toBeDefined());
     });
 
     const req = httpMock.expectOne(`apiRoot/workflow/${mockWorkflow0.id}`);
