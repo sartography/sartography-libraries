@@ -64,6 +64,6 @@ export interface WorkflowNavItem {
   backtracks: boolean;
   level: number;
   indent: number;
-  childcount: number;
+  child_count: number;
   state: WorkflowTaskState;
 }

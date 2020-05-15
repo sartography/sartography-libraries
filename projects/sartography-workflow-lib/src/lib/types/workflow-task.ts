@@ -22,12 +22,14 @@ export enum WorkflowTaskType {
 }
 
 export class WorkflowTask {
+  DISPLAY_NAME_PROP = 'display_name';
+
   data: any;
   documentation: string;
   form: BpmnFormJson;
   id: string;
   name: string;
-  properties?: BpmnFormJsonFieldProperty[];
+  properties?: object;
   state: WorkflowTaskState;
   title: string;
   type: WorkflowTaskType;
@@ -36,8 +38,8 @@ export class WorkflowTask {
   process_name?: string;
 
   display_name?(): string {
-    if (this.properties && this.properties.length > 0) {
-      const displayNameProp = this.properties.find(p => p.id === 'display_name');
+    if (this.properties && this.DISPLAY_NAME_PROP in this.properties) {
+      const displayNameProp = this.properties[this.DISPLAY_NAME_PROP];
       if (displayNameProp) {
         return displayNameProp.value;
       }
