@@ -369,26 +369,29 @@ export class ToFormlyPipe implements PipeTransform {
 
         // look for existing group
         const repeatSectionName = field.templateOptions.repeatSectionName;
-        const group = grouped.find(g => g.templateOptions.repeatSectionName === repeatSectionName);
+        const group = grouped.find(g => {
+          const to = (g.fieldGroup && g.fieldGroup[0] && g.fieldGroup[0].templateOptions);
+          return (to && to.repeatSectionName === repeatSectionName);
+        });
 
         if (group) {
-          group.fieldArray.fieldGroup.push(field);
+          group.fieldGroup[0].fieldArray.fieldGroup.push(field);
         } else {
           // if not found, add the group, then add it to the grouped array
           const newGroup: FormlyFieldConfig = {
-            key: this._toSnakeCase(repeatSectionName),
-            type: 'repeat',
-            templateOptions: {
-              label: repeatSectionName,
-            },
             hideExpression: field.templateOptions.repeatSectionHideExpression,
-            fieldArray: {
-              fieldGroup: [field],
-            },
-            wrappers: ['panel'],
+            fieldGroup: [
+              {
+                key: this._toSnakeCase(repeatSectionName),
+                wrappers: ['panel'],
+                type: 'repeat',
+                templateOptions: { label: repeatSectionName },
+                fieldArray: { fieldGroup: [field] },
+              }
+            ]
           };
 
-          newGroup.templateOptions.repeatSectionName = repeatSectionName;
+          newGroup.fieldGroup[0].templateOptions.repeatSectionName = repeatSectionName;
           delete field.templateOptions.repeatSectionHideExpression;
           delete field.templateOptions.repeatSectionName;
           grouped.push(newGroup);
@@ -400,7 +403,7 @@ export class ToFormlyPipe implements PipeTransform {
     });
 
     grouped.forEach(field => {
-      if (field.templateOptions.repeatSectionName) {
+      if (field.templateOptions && field.templateOptions.repeatSectionName) {
         delete field.templateOptions.repeatSectionName;
       }
     });
