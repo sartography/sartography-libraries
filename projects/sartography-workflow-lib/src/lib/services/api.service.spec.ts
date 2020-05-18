@@ -3,7 +3,8 @@ import {HttpClientTestingModule, HttpTestingController} from '@angular/common/ht
 import {TestBed} from '@angular/core/testing';
 import createClone from 'rfdc';
 import {MockEnvironment} from '../testing/mocks/environment.mocks';
-import {mockFileMeta0, mockFileMetas, mockFileMetaTask0} from '../testing/mocks/file.mocks';
+import {mockFileMeta0, mockFileMetaReference0, mockFileMetas, mockFileMetaTask0} from '../testing/mocks/file.mocks';
+import {mockScriptInfos} from '../testing/mocks/script-info.mocks';
 import {mockWorkflowStats0} from '../testing/mocks/stats.mocks';
 import {mockErrorResponse, mockUpdatingResponse} from '../testing/mocks/study-status.mocks';
 import {mockStudies, mockStudy0, newRandomStudy} from '../testing/mocks/study.mocks';
@@ -397,6 +398,66 @@ describe('ApiService', () => {
     expect(req.request.method).toEqual('DELETE');
     req.flush(null);
   });
+
+  it('should list script info', () => {
+    service.listScripts().subscribe(s => {
+      expect(s.length).toEqual(mockScriptInfos.length);
+    });
+
+    const req = httpMock.expectOne(`apiRoot/list_scripts`);
+    expect(req.request.method).toEqual('GET');
+    req.flush(mockScriptInfos);
+  });
+
+  it('should get reference files', () => {
+    service.listReferenceFiles().subscribe(files => {
+      expect(files.length).toEqual(1);
+      expect(files[0].name).toEqual(mockFileMetaReference0.name);
+    });
+
+    const req = httpMock.expectOne(`apiRoot/reference_file`);
+    expect(req.request.method).toEqual('GET');
+    req.flush([mockFileMetaReference0]);
+  });
+
+  it('should get a specific reference file', () => {
+    service.getReferenceFile(mockFileMetaReference0.name).subscribe((response: HttpResponse<ArrayBuffer>) => {
+      expect(response.headers.get('content-type')).toEqual(mockFileMetaReference0.file.type);
+      expect(response.headers.get('last-modified')).toEqual(mockFileMetaReference0.file.lastModified.toString());
+    });
+
+    const req = httpMock.expectOne(`apiRoot/reference_file/${mockFileMetaReference0.name}`);
+    expect(req.request.method).toEqual('GET');
+    const mockHeaders = new HttpHeaders()
+      .append('last-modified', mockFileMetaReference0.file.lastModified.toString())
+      .append('content-type', mockFileMetaReference0.file.type);
+    req.flush(new ArrayBuffer(8), {headers: mockHeaders});
+  });
+
+  it('should update a specific reference file', () => {
+    const newTimeCode = new Date('2020-01-23T12:34:12.345Z').getTime();
+    const newFile: File = new File(
+      ['new file bits'],
+      'some_ref_file.xlsx',
+      {
+        type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+        lastModified: newTimeCode,
+      }
+    );
+
+    service.updateReferenceFile(mockFileMetaReference0.name, newFile).subscribe((response: HttpResponse<ArrayBuffer>) => {
+      expect(response.headers.get('content-type')).toEqual(newFile.type);
+      expect(response.headers.get('last-modified')).toEqual(newTimeCode.toString());
+    });
+
+    const req = httpMock.expectOne(`apiRoot/reference_file/${mockFileMetaReference0.name}`);
+    expect(req.request.method).toEqual('PUT');
+    const mockHeaders = new HttpHeaders()
+      .append('last-modified', newFile.lastModified.toString())
+      .append('content-type', newFile.type);
+    req.flush(new ArrayBuffer(8), {headers: mockHeaders});
+  });
+
 
   it('should update Task data for a given Workflow', () => {
     const newData = {process_id: 'abc123'};

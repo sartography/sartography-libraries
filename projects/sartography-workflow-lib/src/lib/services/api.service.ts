@@ -252,7 +252,6 @@ export class ApiService {
   addFileMeta(fileParams: FileParams, fileMeta: FileMeta): Observable<FileMeta> {
     const url = this.apiRoot + this.endpoints.fileList;
     const params = this._fileParamsToHttpParams(fileParams);
-
     const formData = new FormData();
     formData.append('file', fileMeta.file);
 
@@ -363,6 +362,37 @@ export class ApiService {
       .replace('{task_id}', taskId);
 
     return this.httpClient.put<Workflow>(url, {})
+      .pipe(catchError(this._handleError));
+  }
+
+  /** listReferenceFiles */
+  listReferenceFiles(): Observable<FileMeta[]> {
+    const url = this.apiRoot + this.endpoints.referenceFileList;
+
+    return this.httpClient
+      .get<FileMeta[]>(url)
+      .pipe(catchError(this._handleError));
+  }
+
+  /** getReferenceFile */
+  getReferenceFile(name: string): Observable<HttpResponse<ArrayBuffer>> {
+    const url = this.apiRoot + this.endpoints.referenceFile
+      .replace('{name}', name);
+
+    return this.httpClient
+      .get(url, {observe: 'response', responseType: 'arraybuffer'})
+      .pipe(catchError(this._handleError));
+  }
+
+  /** updateReferenceFile */
+  updateReferenceFile(name: string, newFile: File): Observable<HttpResponse<ArrayBuffer>> {
+    const url = this.apiRoot + this.endpoints.referenceFile
+      .replace('{name}', name);
+    const formData = new FormData();
+    formData.append('file', newFile);
+
+    return this.httpClient
+      .put(url, formData, {observe: 'response', responseType: 'arraybuffer'})
       .pipe(catchError(this._handleError));
   }
 

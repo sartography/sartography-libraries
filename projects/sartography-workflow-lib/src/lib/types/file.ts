@@ -62,6 +62,10 @@ export interface FileMeta {
   study_id?: number;
   task_id?: string;
   form_field_key?: string;
+  is_reference?: boolean;
+  irb_doc_code?: string;
+  primary_process_id?: string;
+  is_status?: boolean;
 }
 
 export interface FileParams {
