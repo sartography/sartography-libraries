@@ -174,13 +174,11 @@ export class ToFormlyPipe implements PipeTransform {
           resultField.type = 'file';
           break;
         case 'autocomplete':
-          if (fileParams) {
-            fileParams.form_field_key = field.id;
-          }
-
+          const fieldFileParams = Object.assign({}, fileParams || {});
+          fieldFileParams.form_field_key = field.id;
           resultField.type = 'autocomplete';
           resultField.templateOptions.filter = (query: string) => this.apiService
-            .lookupFieldOptions(query, fileParams);
+            .lookupFieldOptions(query, fieldFileParams);
           break;
         default:
           console.error('Field type is not supported.');
