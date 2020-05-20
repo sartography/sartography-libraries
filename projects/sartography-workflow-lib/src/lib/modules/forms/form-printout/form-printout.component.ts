@@ -1,3 +1,4 @@
+import {formatDate} from '@angular/common';
 import {Component, Input} from '@angular/core';
 import {FormlyFieldConfig} from '@ngx-formly/core';
 
@@ -24,7 +25,7 @@ export class FormPrintoutComponent {
     if (this.field.fieldGroup) {
       let selectLabel: string;
       this.field.fieldGroup.forEach(f => {
-        if (f.type === 'select' || f.type === 'multicheckbox' || f.type === 'radio') {
+        if (['select', 'multicheckbox', 'radio'].includes(f.type)) {
           const opts = f.templateOptions.options as SelectFieldOption[];
           opts.forEach(o => {
             if (!this._isOther(o.value) && !this._isOther(o.label)) {
@@ -48,6 +49,10 @@ export class FormPrintoutComponent {
       if (selectLabel) {
         return selectLabel;
       }
+    }
+
+    if (this.field.type === 'datepicker') {
+      return formatDate(val, 'mediumDate', 'en-us');
     }
 
     // If the value is not human-readable, at least strip the key name off the front of it.
