@@ -1,7 +1,7 @@
 import {HttpClientTestingModule, HttpTestingController} from '@angular/common/http/testing';
 import {async, ComponentFixture, inject, TestBed} from '@angular/core/testing';
 import {FormGroup} from '@angular/forms';
-import {ActivatedRoute, convertToParamMap} from '@angular/router';
+import {ActivatedRoute, convertToParamMap, Router} from '@angular/router';
 import {FormlyConfig, FormlyFormBuilder, FormlyModule} from '@ngx-formly/core';
 import {FormlyFieldConfigCache} from '@ngx-formly/core/lib/components/formly.field.config';
 import {of} from 'rxjs';
@@ -17,6 +17,7 @@ describe('FileBaseComponent', () => {
   let form: FormGroup;
   let field: FormlyFieldConfigCache;
   let config: FormlyConfig;
+  const mockRouter = {navigate: jasmine.createSpy('navigate')};
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -32,6 +33,7 @@ describe('FileBaseComponent', () => {
           useValue: {paramMap: of(convertToParamMap({study_id: '0', workflow_id: '0', task_id: 'whatever'}))},
         },
         {provide: 'APP_ENVIRONMENT', useClass: MockEnvironment},
+        {provide: Router, useValue: mockRouter},
       ]
     })
       .compileComponents();

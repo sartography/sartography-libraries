@@ -5,7 +5,7 @@ import {FormGroup, FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {MatFormFieldModule} from '@angular/material/form-field';
 import {MatIconModule} from '@angular/material/icon';
 import {MatTableModule} from '@angular/material/table';
-import {ActivatedRoute, convertToParamMap} from '@angular/router';
+import {ActivatedRoute, convertToParamMap, Router} from '@angular/router';
 import {FormlyConfig, FormlyFormBuilder, FormlyModule} from '@ngx-formly/core';
 import {FormlyFieldConfigCache} from '@ngx-formly/core/lib/components/formly.field.config';
 import {FileSystemFileEntry, NgxFileDropEntry, NgxFileDropModule} from 'ngx-file-drop';
@@ -23,6 +23,7 @@ describe('FileUploadComponent', () => {
   let form: FormGroup;
   let field: FormlyFieldConfigCache;
   let config: FormlyConfig;
+  const mockRouter = {navigate: jasmine.createSpy('navigate')};
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -50,6 +51,8 @@ describe('FileUploadComponent', () => {
           useValue: {paramMap: of(convertToParamMap({study_id: '0', workflow_id: '0', task_id: '0'}))},
         },
         {provide: 'APP_ENVIRONMENT', useClass: MockEnvironment},
+        {provide: Router, useValue: mockRouter},
+
       ]
     })
       .compileComponents();

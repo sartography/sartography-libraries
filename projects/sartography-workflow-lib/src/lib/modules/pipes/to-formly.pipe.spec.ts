@@ -5,11 +5,13 @@ import {MockEnvironment} from '../../testing/mocks/environment.mocks';
 import {FileParams} from '../../types/file';
 import {BpmnFormJsonField} from '../../types/json';
 import {ToFormlyPipe} from './to-formly.pipe';
+import {Router} from "@angular/router";
 
 describe('ToFormlyPipe', () => {
   let httpMock: HttpTestingController;
   let pipe: ToFormlyPipe;
   let apiService: ApiService;
+  const mockRouter = {navigate: jasmine.createSpy('navigate')};
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -22,6 +24,7 @@ describe('ToFormlyPipe', () => {
       providers: [
         ApiService,
         {provide: 'APP_ENVIRONMENT', useClass: MockEnvironment},
+        {provide: Router, useValue: mockRouter},
       ]
     });
   }));

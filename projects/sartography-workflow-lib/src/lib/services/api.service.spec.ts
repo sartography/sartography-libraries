@@ -17,23 +17,39 @@ import {Study} from '../types/study';
 import {UserParams} from '../types/user';
 import {WorkflowSpec, WorkflowSpecCategory} from '../types/workflow';
 import {ApiService} from './api.service';
+import {RouterTestingModule} from '@angular/router/testing';
+import {Router} from '@angular/router';
+import {SessionRedirectComponent} from '../components/session-redirect/session-redirect.component';
 
 describe('ApiService', () => {
   let httpMock: HttpTestingController;
+  let location: Location;
   let service: ApiService;
   const mockEnvironment = new MockEnvironment();
+  const mockRouter = {
+    createUrlTree: jasmine.createSpy('createUrlTree'),
+    navigate: jasmine.createSpy('navigate')};
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule],
+      declarations: [SessionRedirectComponent],
+      imports: [HttpClientTestingModule, RouterTestingModule.withRoutes([
+        {
+          path: 'session/:token',
+          component: SessionRedirectComponent
+        }
+      ])],
       providers: [
         ApiService,
         {provide: 'APP_ENVIRONMENT', useValue: mockEnvironment},
+        {provide: Router, useValue: mockRouter},
+        {provide: Location, useValue: location},
       ]
     });
 
     httpMock = TestBed.inject(HttpTestingController);
     service = TestBed.inject(ApiService);
+    location = TestBed.inject(Location);
   });
 
   afterEach(() => {
@@ -433,7 +449,7 @@ describe('ApiService', () => {
     const queryString = '?uid=bbf2f&first_name=Babu&last_name=Frik&email_address=bbf2f%40droidsmithery.anzelia.edu';
     const queryStringSpy = spyOn((service as any), '_paramsToQueryString').and.callThrough();
     const openUrlSpy = spyOn(service, 'openUrl').and.stub();
-    service.openSession(userParams);
+    service.redirectToLogin(userParams);
     expect(queryStringSpy).toHaveBeenCalledWith(userParams);
     expect(openUrlSpy).toHaveBeenCalledWith('apiRoot/sso_backdoor' + queryString);
   });
@@ -442,7 +458,7 @@ describe('ApiService', () => {
     const queryStringSpy = spyOn((service as any), '_paramsToQueryString').and.stub();
     const openUrlSpy = spyOn(service, 'openUrl').and.stub();
     (service as any).environment.production = true;
-    service.openSession(mockUser);
+    service.redirectToLogin(mockUser);
     expect(queryStringSpy).not.toHaveBeenCalled();
     expect(openUrlSpy).not.toHaveBeenCalled();
   });

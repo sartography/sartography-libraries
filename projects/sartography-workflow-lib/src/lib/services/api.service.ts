@@ -12,6 +12,8 @@ import {User, UserParams} from '../types/user';
 import {Workflow, WorkflowResetParams, WorkflowSpec, WorkflowSpecCategory} from '../types/workflow';
 import {WorkflowTask} from '../types/workflow-task';
 import {isSignedIn} from '../util/is-signed-in';
+import {Router, UrlSerializer} from '@angular/router';
+import {Location} from '@angular/common';
 
 
 @Injectable({
@@ -35,6 +37,7 @@ export class ApiService {
 
     // Users
     fakeSession: '/sso_backdoor',
+    realSession: '/login',
     user: '/user',
 
     // Studies
@@ -64,8 +67,9 @@ export class ApiService {
 
   constructor(
     @Inject('APP_ENVIRONMENT') private environment: AppEnvironment,
-    private httpClient: HttpClient
-  ) {
+    private httpClient: HttpClient,
+    private router: Router,
+    private location: Location) {
     this.apiRoot = environment.api;
   }
 
@@ -398,17 +402,19 @@ export class ApiService {
   }
 
   /** openSession */
-  openSession(userParams: UserParams) {
+  redirectToLogin(returnUrl: string, userParams?: UserParams, ) {
     if (!this.environment.production) {
       const queryString = this._paramsToQueryString(userParams);
       this.openUrl(this.apiRoot + this.endpoints.fakeSession + queryString);
     } else {
-      return this.getUser();
+      // Redirect the users browser to the login api, passing it the redirect url.
+      const httpParams = new HttpParams().set('redirect', returnUrl);
+      this.openUrl(this.apiRoot + this.endpoints.realSession + '?' + httpParams.toString());
     }
   }
 
-  openUrl(url: string) {
-    location.href = url;
+  openUrl(url) {
+    location.href = url
   }
 
   /** lookupFieldOptions */
