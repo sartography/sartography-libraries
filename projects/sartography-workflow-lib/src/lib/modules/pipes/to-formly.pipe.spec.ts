@@ -461,7 +461,7 @@ describe('ToFormlyPipe', () => {
         type: 'string',
         properties: [
           {id: 'repeat', value: 'Contact'},
-          {id: 'group', value: 'Address'},
+          {id: 'group', value: 'Contact'},
         ]
       },
       {
@@ -470,7 +470,7 @@ describe('ToFormlyPipe', () => {
         type: 'string',
         properties: [
           {id: 'repeat', value: 'Contact'},
-          {id: 'group', value: 'Address'},
+          {id: 'group', value: 'Contact'},
         ]
       },
       {
@@ -492,25 +492,32 @@ describe('ToFormlyPipe', () => {
     expect(after.length).toEqual(2);
 
     // Repeat Section
-    expect(after[0].key).toEqual('contact');
-    expect(after[0].templateOptions.label).toEqual(before[0].properties[0].value);
     expect(after[0].hideExpression).toBeDefined();
-    expect(after[0].fieldArray).toBeDefined();
-    expect(after[0].fieldArray.fieldGroup).toBeDefined();
+    expect(after[0].fieldGroup).toBeDefined();
+    expect(after[0].fieldGroup.length).toEqual(1);
+
+    const repeatSection = after[0].fieldGroup[0];
+    expect(repeatSection.key).toEqual('contact');
+    expect(repeatSection.templateOptions.label).toEqual(before[0].properties[0].value);
+    expect(repeatSection.fieldArray).toBeDefined();
+    expect(repeatSection.fieldArray.fieldGroup).toBeDefined();
+    expect(repeatSection.fieldArray.fieldGroup.length).toEqual(2);
 
     // Repeat Section - Group 1
-    expect(after[0].fieldArray.fieldGroup[0].key).toEqual('full_name');
-    expect(after[0].fieldArray.fieldGroup[0]).toBeDefined();
-    expect(after[0].fieldArray.fieldGroup[0].fieldGroup[0]).toBeDefined();
-    expect(after[0].fieldArray.fieldGroup[0].fieldGroup[0].templateOptions.label).toEqual(before[0].label);
-    expect(after[0].fieldArray.fieldGroup[0].fieldGroup[1].templateOptions.label).toEqual(before[3].label);
+    const repeatGroup1 = repeatSection.fieldArray.fieldGroup[0];
+    expect(repeatGroup1.key).toEqual('full_name');
+    expect(repeatGroup1).toBeDefined();
+    expect(repeatGroup1.fieldGroup[0]).toBeDefined();
+    expect(repeatGroup1.fieldGroup[0].templateOptions.label).toEqual(before[0].label);
+    expect(repeatGroup1.fieldGroup[1].templateOptions.label).toEqual(before[3].label);
 
     // Repeat Section - Group 2
-    expect(after[0].fieldArray.fieldGroup[1].key).toEqual('address');
-    expect(after[0].fieldArray.fieldGroup[1]).toBeDefined();
-    expect(after[0].fieldArray.fieldGroup[1].fieldGroup[0]).toBeDefined();
-    expect(after[0].fieldArray.fieldGroup[1].fieldGroup[0].templateOptions.label).toEqual(before[1].label);
-    expect(after[0].fieldArray.fieldGroup[1].fieldGroup[1].templateOptions.label).toEqual(before[2].label);
+    const repeatGroup2 = repeatSection.fieldArray.fieldGroup[1];
+    expect(repeatGroup2.key).toEqual('contact');
+    expect(repeatGroup2).toBeDefined();
+    expect(repeatGroup2.fieldGroup[0]).toBeDefined();
+    expect(repeatGroup2.fieldGroup[0].templateOptions.label).toEqual(before[1].label);
+    expect(repeatGroup2.fieldGroup[1].templateOptions.label).toEqual(before[2].label);
 
     // Last item has no group
     expect(after[1].key).toEqual(before[4].id);

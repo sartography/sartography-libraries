@@ -1,4 +1,9 @@
-<ng-container *ngFor="let f of field.fieldGroup">
-  <lib-form-printout *ngIf="f.fieldGroup && (f.fieldGroup.length > 0)" [field]="f"></lib-form-printout>
-  <p *ngIf="!f.fieldGroup && getModelValue(f.key)">{{getModelValue(f.key)}}</p>
+<ng-container *ngIf="field.fieldGroup && (field.fieldGroup.length > 0); else displayValue">
+  <lib-form-printout *ngFor="let f of field.fieldGroup" [field]="f"></lib-form-printout>
 </ng-container>
+<ng-template #displayValue>
+  <p *ngIf="getModelValue(field.key) && getModelValue(field.key) !== ''">
+    {{field.templateOptions.label}}:
+    <strong>{{getModelValue(field.key)}}</strong>
+  </p>
+</ng-template>

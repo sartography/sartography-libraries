@@ -80,6 +80,28 @@ export const mockFileMetaTask0: FileMeta = {
   latest_version: '1.0',
 };
 
+export const mockFileMetaReference0: FileMeta = {
+  workflow_spec_id: null,
+  workflow_id: null,
+  latest_version: '1',
+  is_reference: true,
+  content_type: 'application/vnd.ms-excel',
+  study_id: null,
+  irb_doc_code: null,
+  form_field_key: null,
+  primary: false,
+  id: 122,
+  type: FileType.XLSX,
+  task_id: null,
+  primary_process_id: null,
+  is_status: null,
+  name: 'irb_documents.xlsx',
+  file: new File([], 'irb_documents.xlsx', {
+    type: 'application/vnd.ms-excel',
+    lastModified: timeCode,
+  }),
+};
+
 export const mockFileMetas: FileMeta[] = [
   mockFileMeta0,
   mockFileMeta1,

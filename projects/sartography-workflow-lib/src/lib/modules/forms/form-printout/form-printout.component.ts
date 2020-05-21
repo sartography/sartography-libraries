@@ -1,3 +1,4 @@
+import {formatDate} from '@angular/common';
 import {Component, Input} from '@angular/core';
 import {FormlyFieldConfig} from '@ngx-formly/core';
 
@@ -18,36 +19,40 @@ export class FormPrintoutComponent {
   }
 
   getModelValue(key: string) {
+    console.log('getModelValue for field label:', this.field.templateOptions.label);
     let val = this.field.model[key];
 
     // If this is a select field, get the human-readable label for it
-    if (this.field.fieldGroup) {
+    if (['select', 'multicheckbox', 'radio'].includes(this.field.type)) {
       let selectLabel: string;
-      this.field.fieldGroup.forEach(f => {
-        if (f.type === 'select' || f.type === 'multicheckbox' || f.type === 'radio') {
-          const opts = f.templateOptions.options as SelectFieldOption[];
-          opts.forEach(o => {
-            if (!this._isOther(o.value) && !this._isOther(o.label)) {
-              if (
-                o.value === val ||
-                (
-                  !!val &&
-                  typeof val === 'object' &&
-                  Object.getPrototypeOf(val) === Object.getPrototypeOf({}) &&
-                  val.hasOwnProperty(o.value) &&
-                  val[o.value] === true
-                )
-              ) {
-                selectLabel = selectLabel === undefined ? o.label : selectLabel + ', ' + o.label;
-              }
-            }
-          });
+      const opts = this.field.templateOptions.options as SelectFieldOption[];
+      opts.forEach(o => {
+        if (!this._isOther(o.value) && !this._isOther(o.label)) {
+          if (
+            o.value === val ||
+            (
+              !!val &&
+              typeof val === 'object' &&
+              Object.getPrototypeOf(val) === Object.getPrototypeOf({}) &&
+              val.hasOwnProperty(o.value) &&
+              val[o.value] === true
+            )
+          ) {
+            selectLabel = selectLabel === undefined ? o.label : selectLabel + ', ' + o.label;
+          }
         }
       });
 
       if (selectLabel) {
+        console.log('selectLabel', selectLabel);
         return selectLabel;
       }
+    }
+
+    if (this.field.type === 'datepicker') {
+      const displayDate = formatDate(val, 'mediumDate', 'en-us');
+      console.log('displayDate', displayDate);
+      return displayDate;
     }
 
     // If the value is not human-readable, at least strip the key name off the front of it.
@@ -62,11 +67,16 @@ export class FormPrintoutComponent {
     if (keyEndsWithOther) {
       const parentKey = key.replace(otherPattern, '');
       const parentVal = this.field.model[parentKey];
-      return this._isOther(parentVal) || otherPattern.test(parentVal) ? val : null;
+      const displayVal = this._isOther(parentVal) || otherPattern.test(parentVal) ? val : null;
+
+      console.log('displayVal', displayVal);
+      return displayVal;
     } else {
 
       // It's a human-readable value. Just return it now, unless the value is "Other".
-      return this._isOther(val) ? null : val;
+      const otherVal = this._isOther(val) ? null : val;
+      console.log('otherVal', otherVal);
+      return otherVal;
     }
   }
 

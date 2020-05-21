@@ -50,7 +50,7 @@ export class RepeatSectionComponent extends FieldArrayType implements OnInit {
       this.field.hideExpression &&
       typeof (this.field.hideExpression) === 'function'
     ) {
-      return !!(this.field.hideExpression(this.model, this.formState, this.field));
+      return !!(this.field.hideExpression(this.field.parent && this.field.parent.model, this.formState, this.field));
     } else {
       return false;
     }
