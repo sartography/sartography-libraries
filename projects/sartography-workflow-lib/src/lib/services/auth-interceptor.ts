@@ -1,11 +1,14 @@
-/** Intercepts all calls to the backend and assigns an authorization code so we know who this nice person is. */
+import {HttpHandler, HttpInterceptor, HttpRequest} from '@angular/common/http';
+import {Injectable} from '@angular/core';
 
-import { HttpHandler, HttpInterceptor, HttpRequest } from '@angular/common/http';
-import { Injectable } from '@angular/core';
-
+/**
+ * Intercepts all calls to the backend and assigns an
+ * authorization code so we know who this nice person is.
+ */
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {
-  constructor() { }
+  constructor() {
+  }
 
   intercept(req: HttpRequest<any>, next: HttpHandler) {
     // Get the auth token from the service.

@@ -1,11 +1,11 @@
 import {HttpClientTestingModule, HttpTestingController} from '@angular/common/http/testing';
 import {async, TestBed} from '@angular/core/testing';
+import {Router} from '@angular/router';
 import {ApiService} from '../../services/api.service';
 import {MockEnvironment} from '../../testing/mocks/environment.mocks';
 import {FileParams} from '../../types/file';
 import {BpmnFormJsonField} from '../../types/json';
 import {ToFormlyPipe} from './to-formly.pipe';
-import {Router} from "@angular/router";
 
 describe('ToFormlyPipe', () => {
   let httpMock: HttpTestingController;

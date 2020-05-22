@@ -1,7 +1,10 @@
 import {HttpHeaders, HttpResponse} from '@angular/common/http';
 import {HttpClientTestingModule, HttpTestingController} from '@angular/common/http/testing';
 import {TestBed} from '@angular/core/testing';
+import {Router} from '@angular/router';
+import {RouterTestingModule} from '@angular/router/testing';
 import createClone from 'rfdc';
+import {SessionRedirectComponent} from '../components/session-redirect/session-redirect.component';
 import {MockEnvironment} from '../testing/mocks/environment.mocks';
 import {mockFileMeta0, mockFileMetaReference0, mockFileMetas, mockFileMetaTask0} from '../testing/mocks/file.mocks';
 import {mockScriptInfos} from '../testing/mocks/script-info.mocks';
@@ -18,9 +21,6 @@ import {Study} from '../types/study';
 import {UserParams} from '../types/user';
 import {WorkflowSpec, WorkflowSpecCategory} from '../types/workflow';
 import {ApiService} from './api.service';
-import {RouterTestingModule} from '@angular/router/testing';
-import {Router} from '@angular/router';
-import {SessionRedirectComponent} from '../components/session-redirect/session-redirect.component';
 
 describe('ApiService', () => {
   let httpMock: HttpTestingController;
@@ -29,7 +29,8 @@ describe('ApiService', () => {
   const mockEnvironment = new MockEnvironment();
   const mockRouter = {
     createUrlTree: jasmine.createSpy('createUrlTree'),
-    navigate: jasmine.createSpy('navigate')};
+    navigate: jasmine.createSpy('navigate')
+  };
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -510,7 +511,7 @@ describe('ApiService', () => {
     const queryString = '?uid=bbf2f&first_name=Babu&last_name=Frik&email_address=bbf2f%40droidsmithery.anzelia.edu';
     const queryStringSpy = spyOn((service as any), '_paramsToQueryString').and.callThrough();
     const openUrlSpy = spyOn(service, 'openUrl').and.stub();
-    service.redirectToLogin(userParams);
+    service.redirectToLogin('frontendUrl', userParams);
     expect(queryStringSpy).toHaveBeenCalledWith(userParams);
     expect(openUrlSpy).toHaveBeenCalledWith('apiRoot/sso_backdoor' + queryString);
   });
@@ -519,9 +520,9 @@ describe('ApiService', () => {
     const queryStringSpy = spyOn((service as any), '_paramsToQueryString').and.stub();
     const openUrlSpy = spyOn(service, 'openUrl').and.stub();
     (service as any).environment.production = true;
-    service.redirectToLogin(mockUser);
+    service.redirectToLogin('frontendUrl', mockUser);
     expect(queryStringSpy).not.toHaveBeenCalled();
-    expect(openUrlSpy).not.toHaveBeenCalled();
+    expect(openUrlSpy).toHaveBeenCalled();
   });
 
   it('should get user', () => {
