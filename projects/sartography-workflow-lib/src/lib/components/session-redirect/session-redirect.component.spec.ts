@@ -41,13 +41,6 @@ describe('SessionRedirectComponent', () => {
     fixture = TestBed.createComponent(SessionRedirectComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
-
-    localStorage.setItem('token', 'some_token');
-    const goPrevUrlSpy = spyOn(component, 'goPrevUrl').and.callThrough();
-    const sReq = httpMock.expectOne('apiRoot/user');
-    expect(sReq.request.method).toEqual('GET');
-    sReq.flush(mockUser);
-    expect(goPrevUrlSpy).toHaveBeenCalled();
   });
 
   afterEach(() => {
@@ -56,5 +49,21 @@ describe('SessionRedirectComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+    localStorage.setItem('token', 'some_token');
+    const goPrevUrlSpy = spyOn(component, 'goPrevUrl').and.stub();
+    const sReq = httpMock.expectOne('apiRoot/user');
+    expect(sReq.request.method).toEqual('GET');
+    sReq.flush(mockUser);
+    expect(goPrevUrlSpy).toHaveBeenCalled();
   });
+
+  it('should go to previous URL', () => {
+    localStorage.setItem('token', 'some_token');
+    const openUrlSpy = spyOn((component as any).api, 'openUrl').and.stub();
+    const sReq = httpMock.expectOne('apiRoot/user');
+    expect(sReq.request.method).toEqual('GET');
+    sReq.flush(mockUser);
+    expect(openUrlSpy).toHaveBeenCalled();
+  });
+
 });

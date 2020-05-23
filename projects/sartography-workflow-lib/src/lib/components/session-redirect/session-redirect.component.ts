@@ -32,8 +32,7 @@ export class SessionRedirectComponent {
 
   goPrevUrl() {
     const prevUrl = localStorage.getItem('prev_url') || '/';
-    this.router.navigateByUrl(prevUrl).then(() => {
-      localStorage.removeItem('prev_url');
-    });
+    localStorage.removeItem('prev_url');
+    this.api.openUrl(prevUrl);
   }
 }
