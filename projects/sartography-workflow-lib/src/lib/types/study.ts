@@ -57,7 +57,7 @@ export interface ProtocolBuilderRequirement {
 }
 
 export interface Study {
-  id: number;
+  id?: number;
   title: string;
   categories?: WorkflowSpecCategory[];
   hsr_number?: string;
