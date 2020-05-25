@@ -38,7 +38,7 @@ export class ErrorInterceptor implements HttpInterceptor {
           console.log('ErrorInterceptor redirecting to /');
 
           // We're not on production, so just redirect to the fake login screen.
-          this.apiService.openUrl('/');
+          this.apiService.openUrl('/sign-in');
         }
       }
 

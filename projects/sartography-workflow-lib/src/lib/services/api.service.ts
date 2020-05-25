@@ -44,9 +44,6 @@ export class ApiService {
     studyList: '/study',
     study: '/study/{study_id}',
 
-    // Study Status
-    studyStatus: '/study-update/{study_id}',
-
     // Workflow Specifications
     workflowSpecList: '/workflow-specification',
     workflowSpec: '/workflow-specification/{spec_id}',
@@ -115,15 +112,6 @@ export class ApiService {
 
     return this.httpClient
       .post<Study>(url, study)
-      .pipe(catchError(this._handleError));
-  }
-
-  /** Get status of a specific Study */
-  getStudyStatus(studyId: number): Observable<HttpResponse<any>> {
-    const url = this.apiRoot + this.endpoints.studyStatus
-      .replace('{study_id}', studyId.toString());
-
-    return this.httpClient.get<HttpResponse<any>>(url, {observe: 'response'})
       .pipe(catchError(this._handleError));
   }
 

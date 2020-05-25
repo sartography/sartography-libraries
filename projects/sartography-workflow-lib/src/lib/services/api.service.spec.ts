@@ -124,17 +124,6 @@ describe('ApiService', () => {
     req.flush(modifiedStudy);
   });
 
-  it('should get updating study status', () => {
-    service.getStudyStatus(mockStudy0.id).subscribe(response => {
-      expect(response.status).toEqual(mockUpdatingResponse.status);
-      expect(response.statusText).toEqual(mockUpdatingResponse.statusText);
-    });
-
-    const req = httpMock.expectOne(`apiRoot/study-update/${mockStudy0.id}`);
-    expect(req.request.method).toEqual('GET');
-    req.flush(null, mockUpdatingResponse);
-  });
-
   it('should get navigation for a given workflow', () => {
     service.getWorkflow(mockWorkflow0.id).subscribe(data => {
       expect(data.navigation.length).toBeGreaterThan(0);

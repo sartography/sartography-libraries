@@ -57,16 +57,16 @@ export interface ProtocolBuilderRequirement {
 }
 
 export interface Study {
+  id: number;
+  title: string;
   categories?: WorkflowSpecCategory[];
   hsr_number?: string;
-  id: number;
   inactive?: boolean;
   ind_number?: string;
   last_updated?: Date;
   primary_investigator_id?: string;
   protocol_builder_status?: ProtocolBuilderStatus;
   sponsor?: string;
-  title: string;
   user_uid?: string;
   warnings?: ApiError[];
 }
