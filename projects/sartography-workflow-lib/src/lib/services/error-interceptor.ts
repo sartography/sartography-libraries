@@ -33,7 +33,9 @@ export class ErrorInterceptor implements HttpInterceptor {
           // get the url of the page the user is currently on, and save it in
           // local storage.
           localStorage.setItem('prev_url', location.href);
-          this.apiService.redirectToLogin(location.origin + '/session');
+          const url = location.origin + '/' + this.environment.baseHref + '/session';
+          console.log('We\'re asking the backend to return control back to:' + url);
+          this.apiService.redirectToLogin(url);
         } else {
           console.log('ErrorInterceptor redirecting to /');
 
