@@ -15,6 +15,7 @@ import {MockEnvironment} from '../../../testing/mocks/environment.mocks';
 import {mockFileMeta0, mockFileMeta1} from '../../../testing/mocks/file.mocks';
 import {FileBaseComponent} from '../file-base/file-base.component';
 import {FileFieldComponent} from './file-field.component';
+import {APP_BASE_HREF} from '@angular/common';
 
 describe('FileFieldComponent', () => {
   let component: FileFieldComponent;
@@ -55,6 +56,7 @@ describe('FileFieldComponent', () => {
           // useValue: {paramMap: of(convertToParamMap({workflow_spec_id: mockWorkflowSpec0.id}))},
         },
         {provide: 'APP_ENVIRONMENT', useClass: MockEnvironment},
+        {provide: APP_BASE_HREF, useValue: ''},
         {provide: Router, useValue: mockRouter},
       ]
     })

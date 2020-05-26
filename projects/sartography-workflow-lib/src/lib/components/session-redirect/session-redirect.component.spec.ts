@@ -8,6 +8,7 @@ import {ApiService} from '../../services/api.service';
 import {MockEnvironment} from '../../testing/mocks/environment.mocks';
 import {mockUser} from '../../testing/mocks/user.mocks';
 import {SessionRedirectComponent} from './session-redirect.component';
+import {APP_BASE_HREF} from '@angular/common';
 
 describe('SessionRedirectComponent', () => {
   let component: SessionRedirectComponent;
@@ -23,6 +24,7 @@ describe('SessionRedirectComponent', () => {
       ],
       providers: [
         {provide: 'APP_ENVIRONMENT', useClass: MockEnvironment},
+        {provide: APP_BASE_HREF, useValue: ''},
         {
           provide: ActivatedRoute,
           useValue: {

@@ -8,6 +8,7 @@ import {of} from 'rxjs';
 import {ApiService} from '../../../services/api.service';
 import {MockEnvironment} from '../../../testing/mocks/environment.mocks';
 import {FileBaseComponent} from './file-base.component';
+import {APP_BASE_HREF} from '@angular/common';
 
 describe('FileBaseComponent', () => {
   let component: FileBaseComponent;
@@ -34,6 +35,7 @@ describe('FileBaseComponent', () => {
         },
         {provide: 'APP_ENVIRONMENT', useClass: MockEnvironment},
         {provide: Router, useValue: mockRouter},
+        {provide: APP_BASE_HREF, useValue: ''},
       ]
     })
       .compileComponents();

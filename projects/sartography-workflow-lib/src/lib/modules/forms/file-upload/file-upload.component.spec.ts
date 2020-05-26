@@ -14,6 +14,7 @@ import {ApiService} from '../../../services/api.service';
 import {MockEnvironment} from '../../../testing/mocks/environment.mocks';
 import {mockFileMeta0, mockFileMetas} from '../../../testing/mocks/file.mocks';
 import {FileUploadComponent} from './file-upload.component';
+import {APP_BASE_HREF} from '@angular/common';
 
 describe('FileUploadComponent', () => {
   let component: FileUploadComponent;
@@ -51,6 +52,7 @@ describe('FileUploadComponent', () => {
           useValue: {paramMap: of(convertToParamMap({study_id: '0', workflow_id: '0', task_id: '0'}))},
         },
         {provide: 'APP_ENVIRONMENT', useClass: MockEnvironment},
+        {provide: APP_BASE_HREF, useValue: ''},
         {provide: Router, useValue: mockRouter},
 
       ]

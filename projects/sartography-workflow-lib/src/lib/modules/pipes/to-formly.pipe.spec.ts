@@ -6,6 +6,7 @@ import {MockEnvironment} from '../../testing/mocks/environment.mocks';
 import {FileParams} from '../../types/file';
 import {BpmnFormJsonField} from '../../types/json';
 import {ToFormlyPipe} from './to-formly.pipe';
+import {APP_BASE_HREF} from '@angular/common';
 
 describe('ToFormlyPipe', () => {
   let httpMock: HttpTestingController;
@@ -24,6 +25,7 @@ describe('ToFormlyPipe', () => {
       providers: [
         ApiService,
         {provide: 'APP_ENVIRONMENT', useClass: MockEnvironment},
+        {provide: APP_BASE_HREF, useValue: ''},
         {provide: Router, useValue: mockRouter},
       ]
     });

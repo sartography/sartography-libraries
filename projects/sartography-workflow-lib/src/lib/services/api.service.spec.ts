@@ -21,6 +21,7 @@ import {Study} from '../types/study';
 import {UserParams} from '../types/user';
 import {WorkflowSpec, WorkflowSpecCategory} from '../types/workflow';
 import {ApiService} from './api.service';
+import {APP_BASE_HREF} from '@angular/common';
 
 describe('ApiService', () => {
   let httpMock: HttpTestingController;
@@ -44,6 +45,7 @@ describe('ApiService', () => {
       providers: [
         ApiService,
         {provide: 'APP_ENVIRONMENT', useValue: mockEnvironment},
+        {provide: APP_BASE_HREF, useValue: ''},
         {provide: Router, useValue: mockRouter},
         {provide: Location, useValue: location},
       ]
@@ -488,28 +490,11 @@ describe('ApiService', () => {
     req.flush(mockWorkflow0);
   });
 
-  it('should open a new session when testing', () => {
-    mockEnvironment.production = false;
-    localStorage.removeItem('token');
-    const userParams: UserParams = {
-      uid: 'bbf2f',
-      first_name: 'Babu',
-      last_name: 'Frik',
-      email_address: 'bbf2f@droidsmithery.anzelia.edu',
-    };
-    const queryString = '?uid=bbf2f&first_name=Babu&last_name=Frik&email_address=bbf2f%40droidsmithery.anzelia.edu';
-    const queryStringSpy = spyOn((service as any), '_paramsToQueryString').and.callThrough();
-    const openUrlSpy = spyOn(service, 'openUrl').and.stub();
-    service.redirectToLogin('frontendUrl', userParams);
-    expect(queryStringSpy).toHaveBeenCalledWith(userParams);
-    expect(openUrlSpy).toHaveBeenCalledWith('apiRoot/sso_backdoor' + queryString);
-  });
-
   it('should get user from existing session on production', () => {
     const queryStringSpy = spyOn((service as any), '_paramsToQueryString').and.stub();
     const openUrlSpy = spyOn(service, 'openUrl').and.stub();
     (service as any).environment.production = true;
-    service.redirectToLogin('frontendUrl', mockUser);
+    service.redirectToLogin();
     expect(queryStringSpy).not.toHaveBeenCalled();
     expect(openUrlSpy).toHaveBeenCalled();
   });
