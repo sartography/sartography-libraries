@@ -420,9 +420,9 @@ export class ApiService {
   }
 
   /** openSession */
-  redirectToLogin(returnUrl: string, userParams?: UserParams, ) {
+  redirectToLogin(returnUrl: string) {
     if (!this.environment.production) {
-      const queryString = this._paramsToQueryString(userParams);
+      const queryString = this._paramsToQueryString({uid:'dhf8r'});
       this.openUrl(this.apiRoot + this.endpoints.fakeSession + queryString);
     } else {
       // Redirect the users browser to the login api, passing it the redirect url.

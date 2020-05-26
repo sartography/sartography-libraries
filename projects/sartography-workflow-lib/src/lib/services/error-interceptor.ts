@@ -25,23 +25,11 @@ export class ErrorInterceptor implements HttpInterceptor {
         // auto logout if 401 or 403 response returned from API
         localStorage.removeItem('currentUser');
 
-        // Redirect users through the login process, passing in the url back
-        // to the session endpoint, so we can capture the token and save it.
-        if (this.environment.production) {
-          console.log('ErrorInterceptor redirecting to API login');
-
-          // get the url of the page the user is currently on, and save it in
-          // local storage.
-          localStorage.setItem('prev_url', location.href);
-          const url = location.origin + '/' + this.environment.baseHref + '/session';
-          console.log('We\'re asking the backend to return control back to:' + url);
-          this.apiService.redirectToLogin(url);
-        } else {
-          console.log('ErrorInterceptor redirecting to /');
-
-          // We're not on production, so just redirect to the fake login screen.
-          this.apiService.openUrl('/sign-in');
-        }
+        // get the url of the page the user is currently on, and save it in
+        // local storage.
+        localStorage.setItem('prev_url', location.href);
+        const url = location.origin + '/' + this.environment.baseHref + '/session';
+        this.apiService.redirectToLogin(url);
       }
 
       const error = err.error.message || err.statusText;
