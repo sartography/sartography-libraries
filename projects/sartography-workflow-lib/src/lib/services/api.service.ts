@@ -13,7 +13,7 @@ import {Workflow, WorkflowResetParams, WorkflowSpec, WorkflowSpecCategory} from 
 import {WorkflowTask} from '../types/workflow-task';
 import {isSignedIn} from '../util/is-signed-in';
 import {Router, UrlSerializer} from '@angular/router';
-import {Location} from '@angular/common';
+import {APP_BASE_HREF, Location} from '@angular/common';
 
 
 @Injectable({
@@ -64,6 +64,7 @@ export class ApiService {
 
   constructor(
     @Inject('APP_ENVIRONMENT') private environment: AppEnvironment,
+    @Inject(APP_BASE_HREF) public baseHref: string,
     private httpClient: HttpClient,
     private router: Router,
     private location: Location) {
@@ -420,13 +421,17 @@ export class ApiService {
   }
 
   /** openSession */
-  redirectToLogin(returnUrl: string) {
+  redirectToLogin() {
+    // get the url of the page the user is currently on, and save it in
+    // local storage.
+    localStorage.setItem('prev_url', location.href);
+    const returnUrl = location.origin + this.baseHref + '/session';
+    console.log('Should return to ' + returnUrl);
+    let httpParams = new HttpParams().set('redirect', returnUrl);
     if (!this.environment.production) {
-      const queryString = this._paramsToQueryString({uid:'dhf8r'});
-      this.openUrl(this.apiRoot + this.endpoints.fakeSession + queryString);
+      httpParams = httpParams.set('uid', 'dhf8r');
+      this.openUrl(this.apiRoot + this.endpoints.fakeSession + '?' + httpParams.toString());
     } else {
-      // Redirect the users browser to the login api, passing it the redirect url.
-      const httpParams = new HttpParams().set('redirect', returnUrl);
       this.openUrl(this.apiRoot + this.endpoints.realSession + '?' + httpParams.toString());
     }
   }

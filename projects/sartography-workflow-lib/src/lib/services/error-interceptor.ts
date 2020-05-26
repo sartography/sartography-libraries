@@ -24,12 +24,7 @@ export class ErrorInterceptor implements HttpInterceptor {
 
         // auto logout if 401 or 403 response returned from API
         localStorage.removeItem('currentUser');
-
-        // get the url of the page the user is currently on, and save it in
-        // local storage.
-        localStorage.setItem('prev_url', location.href);
-        const url = location.origin + '/' + this.environment.baseHref + '/session';
-        this.apiService.redirectToLogin(url);
+        this.apiService.redirectToLogin();
       }
 
       const error = err.error.message || err.statusText;

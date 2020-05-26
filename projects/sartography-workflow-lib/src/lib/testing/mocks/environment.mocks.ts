@@ -7,5 +7,4 @@ export class MockEnvironment implements AppEnvironment {
   production = false;
   api = 'apiRoot';
   irbUrl = 'irbUrl';
-  baseHref = '/';
 }
