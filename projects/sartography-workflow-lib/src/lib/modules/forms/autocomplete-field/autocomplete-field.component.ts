@@ -1,4 +1,5 @@
 import {Component, OnInit, ViewChild} from '@angular/core';
+import {ErrorStateMatcher} from '@angular/material/core';
 import {MatInput} from '@angular/material/input';
 import {FieldType} from '@ngx-formly/material';
 import {Observable} from 'rxjs';
@@ -30,5 +31,4 @@ export class AutocompleteFieldComponent extends FieldType implements OnInit {
   displayFn(lookupData: LookupData): string {
     return lookupData && lookupData.label ? lookupData.label : '';
   }
-
 }

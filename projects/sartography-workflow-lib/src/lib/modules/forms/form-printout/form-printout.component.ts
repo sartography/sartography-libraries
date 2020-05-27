@@ -19,7 +19,6 @@ export class FormPrintoutComponent {
   }
 
   getModelValue(key: string) {
-    console.log('getModelValue for field label:', this.field.templateOptions.label);
     let val = this.field.model[key];
 
     // If this is a select field, get the human-readable label for it
@@ -44,14 +43,12 @@ export class FormPrintoutComponent {
       });
 
       if (selectLabel) {
-        console.log('selectLabel', selectLabel);
         return selectLabel;
       }
     }
 
     if (this.field.type === 'datepicker') {
       const displayDate = formatDate(val, 'mediumDate', 'en-us');
-      console.log('displayDate', displayDate);
       return displayDate;
     }
 
@@ -68,14 +65,11 @@ export class FormPrintoutComponent {
       const parentKey = key.replace(otherPattern, '');
       const parentVal = this.field.model[parentKey];
       const displayVal = this._isOther(parentVal) || otherPattern.test(parentVal) ? val : null;
-
-      console.log('displayVal', displayVal);
       return displayVal;
     } else {
 
       // It's a human-readable value. Just return it now, unless the value is "Other".
       const otherVal = this._isOther(val) ? null : val;
-      console.log('otherVal', otherVal);
       return otherVal;
     }
   }

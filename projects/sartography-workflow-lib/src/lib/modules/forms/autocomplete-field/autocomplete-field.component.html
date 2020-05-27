@@ -6,7 +6,11 @@
   [formlyAttributes]="field"
   [placeholder]="to.placeholder"
 >
-<mat-autocomplete autoActiveFirstOption #auto="matAutocomplete" [displayWith]="displayFn">
+<mat-autocomplete
+  autoActiveFirstOption
+  #auto="matAutocomplete"
+  [displayWith]="displayFn"
+>
   <mat-option
     *ngFor="let lookupData of filter | async"
     [value]="lookupData"

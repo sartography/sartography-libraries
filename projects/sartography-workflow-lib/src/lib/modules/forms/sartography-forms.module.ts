@@ -30,6 +30,7 @@ import {PanelWrapperComponent} from './panel-wrapper/panel-wrapper.component';
 import {RepeatSectionDialogComponent} from './repeat-section-dialog/repeat-section-dialog.component';
 import {RepeatSectionComponent} from './repeat-section/repeat-section.component';
 import {
+  AutocompleteValidator, AutocompleteValidatorMessage,
   EmailValidator,
   EmailValidatorMessage,
   MaxValidationMessage,
@@ -61,12 +62,14 @@ export class AppFormlyConfig {
       {name: 'email', validation: EmailValidator},
       {name: 'url', validation: UrlValidator},
       {name: 'multicheckbox', validation: MulticheckboxValidator},
+      {name: 'autocomplete', validation: AutocompleteValidator},
     ],
     validationMessages: [
       {name: 'phone', message: PhoneValidatorMessage},
       {name: 'email', message: EmailValidatorMessage},
       {name: 'url', message: UrlValidatorMessage},
       {name: 'multicheckbox', message: MulticheckboxValidatorMessage},
+      {name: 'autocomplete', message: AutocompleteValidatorMessage},
       {name: 'required', message: 'This field is required.'},
       {name: 'min', message: MinValidationMessage},
       {name: 'max', message: MaxValidationMessage},

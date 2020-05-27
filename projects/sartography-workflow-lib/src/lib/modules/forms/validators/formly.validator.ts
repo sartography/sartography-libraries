@@ -60,3 +60,11 @@ export function ShowError(field: FieldType) {
       (field.field && field.field.validation && field.field.validation.show)
     );
 }
+
+export function AutocompleteValidator(control: FormControl): ValidationErrors {
+  return (typeof control.value === 'object') ? null : {autocomplete: true};
+}
+
+export function AutocompleteValidatorMessage(err, field: FormlyFieldConfig) {
+  return 'Not a valid selection. Please edit your entry and choose an option from the displayed list.';
+}
