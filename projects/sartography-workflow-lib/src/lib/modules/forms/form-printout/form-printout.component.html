@@ -2,8 +2,12 @@
   <lib-form-printout *ngFor="let f of field.fieldGroup" [field]="f"></lib-form-printout>
 </ng-container>
 <ng-template #displayValue>
-  <p *ngIf="getModelValue(field.key) && getModelValue(field.key) !== ''">
-    {{field.templateOptions.label}}:
-    <strong>{{getModelValue(field.key)}}</strong>
-  </p>
+  <ng-container *ngIf="getModelValue(field.key) && getModelValue(field.key) !== ''">
+    <p>
+      {{field.templateOptions.label}}:
+      <strong>
+        {{field.type === 'autocomplete' ? field.model[field.key].label : getModelValue(field.key)}}
+      </strong>
+    </p>
+  </ng-container>
 </ng-template>
