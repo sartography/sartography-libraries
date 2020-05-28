@@ -1,6 +1,6 @@
 {
   "name": "sartography-workflow-lib",
-  "version": "0.0.197",
+  "version": "0.0.201",
   "peerDependencies": {
     "@angular/common": "^8.2.14",
     "@angular/core": "^8.2.14",
@@ -8,6 +8,7 @@
     "@ngx-formly/material": "^5.5.13",
     "ngx-device-detector": "^1.4.1",
     "ngx-file-drop": "^8.0.8",
-    "ngx-markdown": "^9.0.0"
+    "ngx-markdown": "^9.0.0",
+    "@yellowspot/ng-truncate": "^1.5.1"
   }
 }

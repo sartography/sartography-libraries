@@ -12,6 +12,7 @@ import {MatTableModule} from '@angular/material/table';
 import {FormlyModule} from '@ngx-formly/core';
 import {FormlyMaterialModule} from '@ngx-formly/material';
 import {FormlyMatDatepickerModule} from '@ngx-formly/material/datepicker';
+import {TruncateModule} from '@yellowspot/ng-truncate';
 import {NgxFileDropModule} from 'ngx-file-drop';
 import {MarkdownModule} from 'ngx-markdown';
 import {SartographyPipesModule} from '../pipes/sartography-pipes.module';
@@ -119,6 +120,7 @@ export class AppFormlyConfig {
     NgxFileDropModule,
     ReactiveFormsModule,
     SartographyPipesModule,
+    TruncateModule,
   ],
   exports: [
     AutocompleteFieldComponent,

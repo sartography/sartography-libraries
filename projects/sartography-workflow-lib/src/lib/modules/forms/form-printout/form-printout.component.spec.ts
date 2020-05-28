@@ -5,6 +5,7 @@ import {FormlyConfig, FormlyFormBuilder, FormlyModule} from '@ngx-formly/core';
 import {FormlyFieldConfigCache} from '@ngx-formly/core/lib/components/formly.field.config';
 import {FormlyMaterialModule} from '@ngx-formly/material';
 import {FormlyMatDatepickerModule} from '@ngx-formly/material/datepicker';
+import {TruncateModule} from '@yellowspot/ng-truncate';
 import {mockFormlyFieldConfig, mockFormlyFieldModel} from '../../../testing/mocks/form.mocks';
 import {FormPrintoutComponent} from './form-printout.component';
 
@@ -23,6 +24,7 @@ describe('FormPrintoutComponent', () => {
         FormlyMaterialModule,
         FormlyMatDatepickerModule,
         MatNativeDateModule,
+        TruncateModule,
       ],
       declarations: [FormPrintoutComponent]
     })

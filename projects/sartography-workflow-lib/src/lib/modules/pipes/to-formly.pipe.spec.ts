@@ -358,7 +358,7 @@ describe('ToFormlyPipe', () => {
         label: 'Find Ingredient',
         type: 'autocomplete',
         properties: [
-          {id: 'enum.options.limit', value: '5'},
+          {id: 'autocomplete_num', value: '15'},
         ]
       },
       {
@@ -369,10 +369,11 @@ describe('ToFormlyPipe', () => {
     ];
     const fileParams: FileParams = {
       workflow_id: 123,
-      task_id: '456',
       form_field_key: 'ingredients',
     }
+    const _getAutocompleteNumResultsSpy = spyOn((pipe as any), '_getAutocompleteNumResults').and.callThrough();
     const after = pipe.transform(before, fileParams);
+    expect(_getAutocompleteNumResultsSpy).toHaveBeenCalledWith(before[1], 5);
     expect(after[1].key).toEqual(before[1].id);
     expect(after[1].type).toEqual('autocomplete');
     expect(after[1].templateOptions.label).toEqual(before[1].label);
@@ -381,6 +382,40 @@ describe('ToFormlyPipe', () => {
     // Should not set filter for other fields
     expect(after[0].templateOptions.filter).toBeUndefined();
     expect(after[2].templateOptions.filter).toBeUndefined();
+  });
+
+  it('should get the number of autocomplete results', () => {
+    const expectedNum = 15;
+    const defaultNum = 5;
+    const before: BpmnFormJsonField = {
+      id: 'ingredients',
+      label: 'Find Ingredient',
+      type: 'autocomplete',
+      properties: [
+        {id: 'autocomplete_num', value: `${expectedNum}`},
+      ]
+    };
+    const actualNum = (pipe as any)._getAutocompleteNumResults(before, defaultNum);
+    expect(actualNum).toEqual(expectedNum);
+
+    const before2: BpmnFormJsonField = {
+      id: 'ingredients',
+      label: 'Find Ingredient',
+      type: 'autocomplete',
+    };
+    const actualNum2 = (pipe as any)._getAutocompleteNumResults(before2, defaultNum);
+    expect(actualNum2).toEqual(defaultNum);
+
+    const before3: BpmnFormJsonField = {
+      id: 'ingredients',
+      label: 'Find Ingredient',
+      type: 'autocomplete',
+      properties: [
+        {id: 'some_id', value: 'some_value'},
+      ]
+    };
+    const actualNum3 = (pipe as any)._getAutocompleteNumResults(before3, defaultNum);
+    expect(actualNum3).toEqual(defaultNum);
   });
 
   it('converts group names into Formly field groups', async () => {

@@ -6,7 +6,7 @@
     <p>
       {{field.templateOptions.label}}:
       <strong>
-        {{field.type === 'autocomplete' ? field.model[field.key].label : getModelValue(field.key)}}
+        {{field.type === 'autocomplete' ? field.model[field.key].label : getModelValue(field.key) | truncate: 50}}
       </strong>
     </p>
   </ng-container>

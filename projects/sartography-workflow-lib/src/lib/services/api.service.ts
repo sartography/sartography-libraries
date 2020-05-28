@@ -444,7 +444,6 @@ export class ApiService {
   lookupFieldOptions(query: string, fileParams: FileParams, limit = 5): Observable<LookupData[]> {
     const url = this.apiRoot + this.endpoints.fieldOptionsLookup
       .replace('{workflow_id}', fileParams.workflow_id.toString())
-      .replace('{task_id}', fileParams.task_id)
       .replace('{field_id}', fileParams.form_field_key);
 
     // Initialize Params Object

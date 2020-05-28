@@ -72,7 +72,6 @@ export interface FileParams {
   workflow_spec_id?: string;
   workflow_id?: number;
   study_id?: number;
-  task_id?: string;
   form_field_key?: string;
 }
 

@@ -177,8 +177,9 @@ export class ToFormlyPipe implements PipeTransform {
           const fieldFileParams = Object.assign({}, fileParams || {});
           fieldFileParams.form_field_key = field.id;
           resultField.type = 'autocomplete';
+          const limit = this._getAutocompleteNumResults(field, 5);
           resultField.templateOptions.filter = (query: string) => this.apiService
-            .lookupFieldOptions(query, fieldFileParams);
+            .lookupFieldOptions(query, fieldFileParams, limit);
           resultField.validators = {validation: ['autocomplete']};
           break;
         default:
@@ -356,7 +357,6 @@ export class ToFormlyPipe implements PipeTransform {
     return grouped;
   }
 
-
   /** Convert repeating section names into actual Formly repeating sections */
   private _makeRepeats(fields: FormlyFieldConfig[]) {
     const grouped: FormlyFieldConfig[] = [];
@@ -384,8 +384,8 @@ export class ToFormlyPipe implements PipeTransform {
                 key: this._toSnakeCase(repeatSectionName),
                 wrappers: ['panel'],
                 type: 'repeat',
-                templateOptions: { label: repeatSectionName },
-                fieldArray: { fieldGroup: [field] },
+                templateOptions: {label: repeatSectionName},
+                fieldArray: {fieldGroup: [field]},
               }
             ]
           };
@@ -410,11 +410,23 @@ export class ToFormlyPipe implements PipeTransform {
     return grouped;
   }
 
-
+  /** Convert the given camelCase string to snake_case format */
   private _toSnakeCase(str: string): string {
     return !str ? '' : String(str)
       .trim()
       .replace(/\W+/gi, '_')
       .toLowerCase();
+  }
+
+  /** Get num_results property from given field, or return the given default if no num_results property found. */
+  private _getAutocompleteNumResults(field: BpmnFormJsonField, defaultNum: number): number {
+    if (field.properties && isIterable(field.properties) && (field.properties.length > 0)) {
+      const numResultsProperty = field.properties.find(p => p.id === 'autocomplete_num');
+      if (numResultsProperty) {
+        return parseInt(numResultsProperty.value, 10);
+      }
+    }
+
+    return defaultNum;
   }
 }
