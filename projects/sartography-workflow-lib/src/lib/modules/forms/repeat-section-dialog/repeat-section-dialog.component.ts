@@ -4,6 +4,7 @@ import {FormlyFieldConfig} from '@ngx-formly/core';
 import {DeviceDetectorService} from 'ngx-device-detector';
 import {RepeatSectionDialogData} from '../../../types/repeat-section-dialog-data';
 import {scrollToFirstInvalidField} from '../../../util/scroll-to-top';
+import createClone from 'rfdc';
 
 @Component({
   selector: 'lib-repeat-section-dialog',
@@ -22,11 +23,12 @@ export class RepeatSectionDialogComponent implements AfterContentInit {
   }
 
   ngAfterContentInit(): void {
-    this.initialModel = JSON.parse(JSON.stringify(this.data.model));
+    // Cache model in case user cancels
+    this.initialModel = createClone({circles: true})(this.data.model);
     this.updateDisableSave();
   }
 
-  updateDisableSave() {
+    updateDisableSave() {
     this.disableSave = !this.noErrors();
   }
 
@@ -37,17 +39,13 @@ export class RepeatSectionDialogComponent implements AfterContentInit {
   }
 
   onNoClick(): void {
-    const isEmpty = Object.keys(this.initialModel).length === 0 && this.initialModel.constructor === Object;
+    const isEmptyObject = Object.keys(this.initialModel).length === 0 && this.initialModel.constructor === Object;
 
-    if (isEmpty) {
+    if (isEmptyObject) {
       this.dialogRef.close(undefined);
     } else {
       // Reset data model to initial state
-      Object.keys(this.initialModel).forEach(k => {
-        this.data.model[k] = this.initialModel[k];
-      });
-
-      this.dialogRef.close(this.data.model);
+      this.dialogRef.close(this.initialModel);
     }
 
   }
@@ -74,7 +72,7 @@ export class RepeatSectionDialogComponent implements AfterContentInit {
     this.highlightRequiredFields(this.data.fields);
 
     if (this.noErrors()) {
-      this.dialogRef.close(JSON.parse(JSON.stringify(this.data.model)));
+      this.dialogRef.close(createClone({circles: true})(this.data.model));
     } else {
       this.onInvalidFields();
     }

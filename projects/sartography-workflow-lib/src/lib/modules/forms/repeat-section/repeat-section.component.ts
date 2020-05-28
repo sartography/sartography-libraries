@@ -2,6 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {MatDialog} from '@angular/material/dialog';
 import {FieldArrayType, FormlyFieldConfig} from '@ngx-formly/core';
 import createClone from 'rfdc';
+import {RepeatSectionDialogData} from '../../../types/repeat-section-dialog-data';
 import {RepeatSectionDialogComponent} from '../repeat-section-dialog/repeat-section-dialog.component';
 
 @Component({
@@ -22,15 +23,17 @@ export class RepeatSectionComponent extends FieldArrayType implements OnInit {
   openDialog(i: number, f?: FormlyFieldConfig) {
     const isEdit = !!f;
     const title = this.field.templateOptions.description || 'Add ' + this.field.templateOptions.label;
+    const dialogData: RepeatSectionDialogData = {
+      title: isEdit ? title.replace(/^Add an|^Add a|^Add/, 'Edit') : title,
+      fields: [createClone()(this.field.fieldArray)],
+      model: isEdit ? this.field.fieldGroup[i].model : {},
+    };
+    const cachedData: RepeatSectionDialogData = createClone({circles: true})(dialogData);
     const dialogRef = this.dialog.open(RepeatSectionDialogComponent, {
       maxWidth: '100vw',
       maxHeight: '100vh',
       minWidth: '70vw',
-      data: {
-        title: isEdit ? title.replace(/^Add an|^Add a|^Add/, 'Edit') : title,
-        fields: [createClone()(this.field.fieldArray)],
-        model: isEdit ? this.field.fieldGroup[i].model : {},
-      }
+      data: cachedData,
     });
 
     dialogRef.afterClosed().subscribe((model: any) => {
