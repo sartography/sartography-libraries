@@ -64,7 +64,7 @@ export class ApiService {
     taskForWorkflow: '/workflow/{workflow_id}/task/{task_id}',
     taskDataForWorkflow: '/workflow/{workflow_id}/task/{task_id}/data',
     setCurrentTaskForWorkflow: '/workflow/{workflow_id}/task/{task_id}/set_token',
-    fieldOptionsLookup: '/workflow/{workflow_id}/task/{task_id}/lookup/{field_id}',
+    fieldOptionsLookup: '/workflow/{workflow_id}/lookup/{field_id}',
   };
 
   constructor(
