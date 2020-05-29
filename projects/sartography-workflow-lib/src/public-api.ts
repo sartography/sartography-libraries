@@ -54,6 +54,7 @@ export * from './lib/types/json';
 export * from './lib/types/links';
 export * from './lib/types/script-info';
 export * from './lib/types/study';
+export * from './lib/types/approval';
 export * from './lib/types/user';
 export * from './lib/types/workflow';
 export * from './lib/types/workflow-task';

@@ -8,6 +8,7 @@ import {FileMeta, FileParams, LookupData} from '../types/file';
 import {ScriptInfo} from '../types/script-info';
 import {WorkflowStats} from '../types/stats';
 import {Study} from '../types/study';
+import {Approval} from '../types/approval';
 import {User, UserParams} from '../types/user';
 import {Workflow, WorkflowResetParams, WorkflowSpec, WorkflowSpecCategory} from '../types/workflow';
 import {WorkflowTask} from '../types/workflow-task';
@@ -43,6 +44,10 @@ export class ApiService {
     // Studies
     studyList: '/study',
     study: '/study/{study_id}',
+
+    // Approvals
+    approvalList: '/approval',
+    approval: '/approval/{approval_id}',
 
     // Workflow Specifications
     workflowSpecList: '/workflow-specification',
@@ -113,6 +118,15 @@ export class ApiService {
 
     return this.httpClient
       .post<Study>(url, study)
+      .pipe(catchError(this._handleError));
+  }
+
+  /** Get all Approvals */
+  getApprovals(): Observable<Approval[]> {
+    const url = this.apiRoot + this.endpoints.approvalList;
+
+    return this.httpClient
+      .get<Approval[]>(url)
       .pipe(catchError(this._handleError));
   }
 
