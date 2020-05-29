@@ -132,6 +132,7 @@ export class ToFormlyPipe implements PipeTransform {
           resultField.type = 'input';
           resultField.templateOptions.type = 'number';
           resultField.defaultValue = parseInt(field.default_value, 10);
+          resultField.validators = {validation: ['number']};
           break;
         case 'url':
           resultField.type = 'input';

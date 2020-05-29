@@ -2,9 +2,9 @@ import {AfterContentInit, Component, Inject} from '@angular/core';
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
 import {FormlyFieldConfig} from '@ngx-formly/core';
 import {DeviceDetectorService} from 'ngx-device-detector';
+import createClone from 'rfdc';
 import {RepeatSectionDialogData} from '../../../types/repeat-section-dialog-data';
 import {scrollToFirstInvalidField} from '../../../util/scroll-to-top';
-import createClone from 'rfdc';
 
 @Component({
   selector: 'lib-repeat-section-dialog',
@@ -28,7 +28,7 @@ export class RepeatSectionDialogComponent implements AfterContentInit {
     this.updateDisableSave();
   }
 
-    updateDisableSave() {
+  updateDisableSave() {
     this.disableSave = !this.noErrors();
   }
 

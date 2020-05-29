@@ -1,5 +1,7 @@
 import {FormControl, ValidationErrors} from '@angular/forms';
 import {FieldType, FormlyFieldConfig} from '@ngx-formly/core';
+import {isIterable} from 'rxjs/internal-compatibility';
+import {isNumberDefined} from '../../../util/is-number-defined';
 import EMAIL_REGEX from './email.regex';
 import PHONE_REGEX from './phone.regex';
 import URL_REGEX from './url.regex';
@@ -61,7 +63,36 @@ export function ShowError(field: FieldType) {
     );
 }
 
+export function NumberValidator(control: FormControl): ValidationErrors {
+  const fields = (control as any)._fields;
+  if (
+    fields &&
+    Array.isArray(fields) &&
+    (fields.length > 0) &&
+    fields[0].templateOptions.required &&
+    !isNumberDefined(control.value)
+  ) {
+    return {required: true};
+  }
+  return (typeof control.value === 'number') ? null : {number: true};
+}
+
+export function NumberValidatorMessage(err, field: FormlyFieldConfig) {
+  return 'Please enter a number.';
+}
+
 export function AutocompleteValidator(control: FormControl): ValidationErrors {
+  const fields = (control as any)._fields;
+
+  if (
+    fields &&
+    Array.isArray(fields) &&
+    (fields.length > 0) &&
+    fields[0].templateOptions.required &&
+    !control.value
+  ) {
+    return {required: true}
+  }
   return (typeof control.value === 'object') ? null : {autocomplete: true};
 }
 

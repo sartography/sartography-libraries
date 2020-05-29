@@ -15,7 +15,7 @@
     <formly-form
       [fields]="data.fields"
       [model]="data.model"
-      (change)="updateDisableSave()"
+      (change)="highlightRequiredFields(data.fields)"
     ></formly-form>
   </div>
   <div mat-dialog-actions>
