@@ -439,7 +439,7 @@ export class ApiService {
     // get the url of the page the user is currently on, and save it in
     // local storage.
     localStorage.setItem('prev_url', location.href);
-    const returnUrl = location.origin + this.baseHref + '/session';
+    const returnUrl = location.origin + this.baseHref + 'session';
     console.log('Should return to ' + returnUrl);
     let httpParams = new HttpParams().set('redirect', returnUrl);
     if (!this.environment.production) {

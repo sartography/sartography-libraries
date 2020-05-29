@@ -3,7 +3,7 @@ import {CUSTOM_ELEMENTS_SCHEMA} from '@angular/core';
 import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 import {ActivatedRoute, convertToParamMap} from '@angular/router';
 import {RouterTestingModule} from '@angular/router/testing';
-import {of} from 'rxjs';
+import {of, Subscription} from 'rxjs';
 import {ApiService} from '../../services/api.service';
 import {MockEnvironment} from '../../testing/mocks/environment.mocks';
 import {mockUser} from '../../testing/mocks/user.mocks';
@@ -28,7 +28,7 @@ describe('SessionRedirectComponent', () => {
         {
           provide: ActivatedRoute,
           useValue: {
-            paramMap: of(convertToParamMap({token: 'some_token'})),
+            queryParamMap: of(convertToParamMap({token: 'some_token'})),
           }
         },
         ApiService
@@ -41,31 +41,30 @@ describe('SessionRedirectComponent', () => {
   beforeEach(() => {
     httpMock = TestBed.inject(HttpTestingController);
     fixture = TestBed.createComponent(SessionRedirectComponent);
+    localStorage.setItem('prev_url', 'some_prev_url');
     component = fixture.componentInstance;
+    const goPrevUrlSpy = spyOn(component, 'goPrevUrl').and.callThrough();
+    const openUrlSpy = spyOn((component as any).api, 'openUrl').and.returnValue(of(null));
     fixture.detectChanges();
+
+    const token = localStorage.getItem('token');
+    expect(token).toEqual('some_token');
+
+    const getUserReq = httpMock.expectOne('apiRoot/user');
+    expect(getUserReq.request.method).toEqual('GET');
+    getUserReq.flush(mockUser);
+
+    expect(goPrevUrlSpy).toHaveBeenCalled();
+    expect(openUrlSpy).toHaveBeenCalled();
   });
 
   afterEach(() => {
+    fixture.destroy();
     httpMock.verify();
   });
 
-  it('should create', () => {
+  it('should get user and go to previous URL', () => {
     expect(component).toBeTruthy();
-    localStorage.setItem('token', 'some_token');
-    const goPrevUrlSpy = spyOn(component, 'goPrevUrl').and.stub();
-    const sReq = httpMock.expectOne('apiRoot/user');
-    expect(sReq.request.method).toEqual('GET');
-    sReq.flush(mockUser);
-    expect(goPrevUrlSpy).toHaveBeenCalled();
-  });
-
-  it('should go to previous URL', () => {
-    localStorage.setItem('token', 'some_token');
-    const openUrlSpy = spyOn((component as any).api, 'openUrl').and.stub();
-    const sReq = httpMock.expectOne('apiRoot/user');
-    expect(sReq.request.method).toEqual('GET');
-    sReq.flush(mockUser);
-    expect(openUrlSpy).toHaveBeenCalled();
   });
 
 });

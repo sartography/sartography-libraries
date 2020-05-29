@@ -1,5 +1,6 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
+import {Subscription} from 'rxjs';
 import {ApiService} from '../../services/api.service';
 
 @Component({
@@ -10,7 +11,7 @@ import {ApiService} from '../../services/api.service';
 export class SessionRedirectComponent implements OnInit, OnDestroy {
 
   token: string;
-  private sub: any;
+  private sub: Subscription;
   private TOKEN_KEY = 'token';
 
   /**
@@ -18,20 +19,25 @@ export class SessionRedirectComponent implements OnInit, OnDestroy {
    * This allows single sign on through Shibboleth.  Token should be passed as
    * a get parameter, not on the path.
    */
-  constructor(private route: ActivatedRoute,
-              private api: ApiService) {}
-
-  ngOnInit() {
-    this.sub = this.route.queryParams.subscribe(params => {
-      this.token = params.token;
-      console.log('Setting Token to:' + this.token);
+  constructor(
+    private route: ActivatedRoute,
+    private api: ApiService
+  ) {
+    this.sub = this.route.queryParamMap.subscribe(paramMap => {
+      this.token = paramMap.get('token');
+      console.log('Setting Token to:', this.token);
       localStorage.setItem('token', this.token);
-      console.log('Token is now set to:' + localStorage.getItem('token'));
+      console.log('Token is now set to:', localStorage.getItem('token'));
       this.api.getUser().subscribe(_ => this.goPrevUrl());
     });
   }
 
+  ngOnInit() {
+    console.log('ngOnInit')
+  }
+
   ngOnDestroy() {
+    console.log('ngOnDestroy')
     this.sub.unsubscribe();
   }
 
