@@ -99,3 +99,45 @@ export function AutocompleteValidator(control: FormControl): ValidationErrors {
 export function AutocompleteValidatorMessage(err, field: FormlyFieldConfig) {
   return 'Not a valid selection. Please edit your entry and choose an option from the displayed list.';
 }
+
+export function FileFieldValidator(control: FormControl): ValidationErrors {
+  console.log('FileFieldValidator control', control);
+  const fields = (control as any)._fields;
+  console.log('FileFieldValidator fields', fields);
+
+  if (
+    fields &&
+    Array.isArray(fields) &&
+    (fields.length > 0) &&
+    fields[0].templateOptions.required &&
+    !control.value
+  ) {
+    return {required: true}
+  }
+  return null;
+}
+
+export function FileFieldValidatorMessage(err, field: FormlyFieldConfig) {
+  return 'Please upload a file.';
+}
+
+export function FileUploadValidator(control: FormControl): ValidationErrors {
+  console.log('FileUploadValidator control', control);
+  const fields = (control as any)._fields;
+  console.log('FileUploadValidator fields', fields);
+
+  if (
+    fields &&
+    Array.isArray(fields) &&
+    (fields.length > 0) &&
+    fields[0].templateOptions.required &&
+    !control.value
+  ) {
+    return {required: true}
+  }
+  return null;
+}
+
+export function FileUploadValidatorMessage(err, field: FormlyFieldConfig) {
+  return 'Please upload a file.';
+}

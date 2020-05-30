@@ -50,10 +50,13 @@ export class RepeatSectionDialogComponent implements AfterContentInit {
 
   }
 
-  highlightRequiredFields(fields: FormlyFieldConfig[]) {
+  highlightRequiredFields(fields: FormlyFieldConfig[], markAsDirty = true) {
     fields.forEach(f => {
       f.formControl.updateValueAndValidity();
-      f.formControl.markAsDirty();
+
+      if (markAsDirty) {
+        f.formControl.markAsDirty();
+      }
 
       if (f.fieldGroup) {
         this.highlightRequiredFields(f.fieldGroup);

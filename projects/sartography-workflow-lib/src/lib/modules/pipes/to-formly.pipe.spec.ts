@@ -486,9 +486,14 @@ describe('ToFormlyPipe', () => {
         id: 'first_name',
         label: 'First Name',
         type: 'string',
+        validation: [
+          {name: 'repeat_required', config: 'true'},
+        ],
         properties: [
           {id: 'repeat', value: 'Contact'},
+          {id: 'repeat_title', value: 'Enter your contact information here'},
           {id: 'repeat_hide_expression', value: 'model.favorite_number > 0'},
+          {id: 'repeat_required_expression', value: 'model.favorite_number === 42'},
           {id: 'group', value: 'Full Name'},
         ]
       },
@@ -535,7 +540,10 @@ describe('ToFormlyPipe', () => {
 
     const repeatSection = after[0].fieldGroup[0];
     expect(repeatSection.key).toEqual('contact');
-    expect(repeatSection.templateOptions.label).toEqual(before[0].properties[0].value);
+    expect(repeatSection.expressionProperties).toBeDefined();
+    expect(repeatSection.templateOptions.label).toEqual(before[0].properties[1].value);
+    expect(repeatSection.templateOptions.buttonLabel).toEqual(before[0].properties[0].value);
+    expect(repeatSection.templateOptions.required).toBeTrue();
     expect(repeatSection.fieldArray).toBeDefined();
     expect(repeatSection.fieldArray.fieldGroup).toBeDefined();
     expect(repeatSection.fieldArray.fieldGroup.length).toEqual(2);

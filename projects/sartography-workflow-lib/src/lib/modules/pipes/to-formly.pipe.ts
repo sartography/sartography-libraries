@@ -170,9 +170,11 @@ export class ToFormlyPipe implements PipeTransform {
           break;
         case 'files':
           resultField.type = 'files';
+          resultField.validators = {validation: ['files']};
           break;
         case 'file':
           resultField.type = 'file';
+          resultField.validators = {validation: ['file']};
           break;
         case 'autocomplete':
           const fieldFileParams = Object.assign({}, fileParams || {});
@@ -197,6 +199,9 @@ export class ToFormlyPipe implements PipeTransform {
           switch (v.name) {
             case 'required':
               resultField.templateOptions.required = this._stringToBool(v.config);
+              break;
+            case 'repeat_required':
+              resultField.templateOptions.repeatSectionRequired = this._stringToBool(v.config);
               break;
             case 'max_length':
               resultField.templateOptions.maxLength = parseInt(v.config, 10);
@@ -224,6 +229,9 @@ export class ToFormlyPipe implements PipeTransform {
             case 'repeat':
               resultField.templateOptions.repeatSectionName = p.value;
               break;
+            case 'repeat_title':
+              resultField.templateOptions.repeatSectionTitle = p.value;
+              break;
             case 'repeat_hide_expression':
               resultField.templateOptions.repeatSectionHideExpression = p.value;
               break;
@@ -236,6 +244,9 @@ export class ToFormlyPipe implements PipeTransform {
               break;
             case 'label_expression':
               resultField.expressionProperties['templateOptions.label'] = p.value;
+              break;
+            case 'repeat_required_expression':
+              resultField.templateOptions.repeatSectionRequiredExpression = p.value;
               break;
             case 'required_expression':
               resultField.expressionProperties['templateOptions.required'] = p.value;
@@ -334,9 +345,14 @@ export class ToFormlyPipe implements PipeTransform {
           if (field.templateOptions.repeatSectionName) {
             // Move the repeat section (if any) out of the field and into the new group
             newGroup.templateOptions.repeatSectionName = field.templateOptions.repeatSectionName;
+            newGroup.templateOptions.repeatSectionTitle = field.templateOptions.repeatSectionTitle;
             newGroup.templateOptions.repeatSectionHideExpression = field.templateOptions.repeatSectionHideExpression;
+            newGroup.templateOptions.repeatSectionRequired = field.templateOptions.repeatSectionRequired;
+            newGroup.templateOptions.repeatSectionRequiredExpression = field.templateOptions.repeatSectionRequiredExpression;
             delete field.templateOptions.repeatSectionName;
             delete field.templateOptions.repeatSectionHideExpression;
+            delete field.templateOptions.repeatSectionRequired;
+            delete field.templateOptions.repeatSectionRequiredExpression;
           }
 
           newGroup.templateOptions.groupName = groupName;
@@ -369,6 +385,7 @@ export class ToFormlyPipe implements PipeTransform {
 
         // look for existing group
         const repeatSectionName = field.templateOptions.repeatSectionName;
+        const repeatSectionTitle = field.templateOptions.repeatSectionTitle;
         const group = grouped.find(g => {
           const to = (g.fieldGroup && g.fieldGroup[0] && g.fieldGroup[0].templateOptions);
           return (to && to.repeatSectionName === repeatSectionName);
@@ -379,20 +396,33 @@ export class ToFormlyPipe implements PipeTransform {
         } else {
           // if not found, add the group, then add it to the grouped array
           const newGroup: FormlyFieldConfig = {
-            hideExpression: field.templateOptions.repeatSectionHideExpression,
             fieldGroup: [
               {
                 key: this._toSnakeCase(repeatSectionName),
                 wrappers: ['panel'],
                 type: 'repeat',
-                templateOptions: {label: repeatSectionName},
+                templateOptions: {
+                  label: repeatSectionTitle || repeatSectionName,
+                  buttonLabel: repeatSectionName,
+                },
                 fieldArray: {fieldGroup: [field]},
               }
             ]
           };
+          delete field.templateOptions.repeatSectionTitle;
+
+          newGroup.hideExpression = field.templateOptions.repeatSectionHideExpression;
+          delete field.templateOptions.repeatSectionHideExpression;
+
+          newGroup.fieldGroup[0].expressionProperties = {
+            'templateOptions.required': field.templateOptions.repeatSectionRequiredExpression,
+          }
+          delete field.templateOptions.repeatSectionRequiredExpression;
+
+          newGroup.fieldGroup[0].templateOptions.required = field.templateOptions.repeatSectionRequired;
+          delete field.templateOptions.repeatSectionRequired;
 
           newGroup.fieldGroup[0].templateOptions.repeatSectionName = repeatSectionName;
-          delete field.templateOptions.repeatSectionHideExpression;
           delete field.templateOptions.repeatSectionName;
           grouped.push(newGroup);
         }
