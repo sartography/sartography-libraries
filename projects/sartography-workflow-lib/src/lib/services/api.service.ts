@@ -37,8 +37,7 @@ export class ApiService {
     renderMarkdown: '/render_markdown',
 
     // Users
-    fakeSession: '/sso_backdoor',
-    realSession: '/login',
+    login: '/login',
     user: '/user',
 
     // Studies
@@ -436,18 +435,17 @@ export class ApiService {
 
   /** openSession */
   redirectToLogin() {
-    // get the url of the page the user is currently on, and save it in
-    // local storage.
+    // get the url of the page the user is currently on, and save it in local storage.
     localStorage.setItem('prev_url', location.href);
     const returnUrl = location.origin + this.baseHref + 'session';
     console.log('Should return to ' + returnUrl);
-    let httpParams = new HttpParams().set('redirect', returnUrl);
+    let httpParams = new HttpParams().set('redirect_url', returnUrl);
+
     if (!this.environment.production) {
       httpParams = httpParams.set('uid', 'dhf8r');
-      this.openUrl(this.apiRoot + this.endpoints.fakeSession + '?' + httpParams.toString());
-    } else {
-      this.openUrl(this.apiRoot + this.endpoints.realSession + '?' + httpParams.toString());
     }
+
+    this.openUrl(this.apiRoot + this.endpoints.login + '?' + httpParams.toString());
   }
 
   openUrl(url) {

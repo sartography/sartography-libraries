@@ -22,7 +22,7 @@ export class RepeatSectionComponent extends FieldArrayType implements OnInit {
 
   openDialog(i: number, f?: FormlyFieldConfig) {
     const isEdit = !!f;
-    const title = this.field.templateOptions.description || 'Add ' + this.field.templateOptions.label;
+    const title = this.field.templateOptions.label || 'Add ' + this.field.templateOptions.buttonLabel;
     const dialogData: RepeatSectionDialogData = {
       title: isEdit ? title.replace(/^Add an|^Add a|^Add/, 'Edit') : title,
       fields: [createClone()(this.field.fieldArray)],
