@@ -1,13 +1,13 @@
 
 export enum ApprovalStatus {
-    WAITING = 'WAITING',
+    PENDING = 'PENDING',
     APPROVED = 'APPROVED',
     DECLINED = 'DECLINED',
     CANCELED = 'CANCELED'
 }
 
 export enum ApprovalStatusLabels {
-    WAITING = 'Waiting',
+    PENDING = 'Pending',
     APPROVED = 'Approved',
     DECLINED = 'Declined',
     CANCELED = 'Canceled'
