@@ -47,6 +47,8 @@ import {
   NumberValidatorMessage,
   PhoneValidator,
   PhoneValidatorMessage,
+  RepeatSectionValidator,
+  RepeatSectionValidatorMessage,
   ShowError,
   UrlValidator,
   UrlValidatorMessage
@@ -74,6 +76,7 @@ export class AppFormlyConfig {
       {name: 'autocomplete', validation: AutocompleteValidator},
       {name: 'file', validation: FileFieldValidator},
       {name: 'files', validation: FileUploadValidator},
+      {name: 'repeat', validation: RepeatSectionValidator},
     ],
     validationMessages: [
       {name: 'phone', message: PhoneValidatorMessage},
@@ -84,6 +87,7 @@ export class AppFormlyConfig {
       {name: 'autocomplete', message: AutocompleteValidatorMessage},
       {name: 'file', message: FileFieldValidatorMessage},
       {name: 'files', message: FileUploadValidatorMessage},
+      {name: 'repeat', message: RepeatSectionValidatorMessage},
       {name: 'required', message: 'This field is required.'},
       {name: 'min', message: MinValidationMessage},
       {name: 'max', message: MaxValidationMessage},

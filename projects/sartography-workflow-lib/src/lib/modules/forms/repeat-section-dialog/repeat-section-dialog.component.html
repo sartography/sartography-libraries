@@ -8,14 +8,14 @@
       <button
         mat-button
         id="highlight-required-fields-in-dialog"
-        (click)="highlightRequiredFields(data.fields, true)"
+        (click)="highlightRequiredFields(data.fields)"
         color="warn"
       >*Required</button>
     </div>
     <formly-form
       [fields]="data.fields"
       [model]="data.model"
-      (change)="highlightRequiredFields(data.fields, false)"
+      (change)="updateDisableSave()"
     ></formly-form>
   </div>
   <div mat-dialog-actions>

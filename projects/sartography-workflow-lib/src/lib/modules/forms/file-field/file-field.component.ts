@@ -60,8 +60,8 @@ export class FileFieldComponent extends FileBaseComponent implements OnInit {
       fileMeta.workflow_id = this.workflowId;
     }
 
-    if (this.field.key) {
-      fileMeta.form_field_key = this.field.key;
+    if (this.key) {
+      fileMeta.form_field_key = this.key;
     }
 
     this.api.addFileMeta(this.fileParams, fileMeta).subscribe(fm => {
@@ -90,7 +90,7 @@ export class FileFieldComponent extends FileBaseComponent implements OnInit {
           this.selectedFileMeta = fm;
           this.selectedFile = file;
           if (this.model && this.formControl) {
-            this.model[this.field.key] = fm.id;
+            this.model[this.key] = fm.id;
             this.formControl.setValue(fm.id);
           }
         });

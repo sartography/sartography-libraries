@@ -405,6 +405,7 @@ export class ToFormlyPipe implements PipeTransform {
                   label: repeatSectionTitle || repeatSectionName,
                   buttonLabel: repeatSectionName,
                 },
+                validators: {validation: ['repeat']},
                 fieldArray: {fieldGroup: [field]},
               }
             ]

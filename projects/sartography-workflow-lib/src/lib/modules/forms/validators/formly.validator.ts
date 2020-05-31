@@ -101,9 +101,7 @@ export function AutocompleteValidatorMessage(err, field: FormlyFieldConfig) {
 }
 
 export function FileFieldValidator(control: FormControl): ValidationErrors {
-  console.log('FileFieldValidator control', control);
   const fields = (control as any)._fields;
-  console.log('FileFieldValidator fields', fields);
 
   if (
     fields &&
@@ -122,9 +120,7 @@ export function FileFieldValidatorMessage(err, field: FormlyFieldConfig) {
 }
 
 export function FileUploadValidator(control: FormControl): ValidationErrors {
-  console.log('FileUploadValidator control', control);
   const fields = (control as any)._fields;
-  console.log('FileUploadValidator fields', fields);
 
   if (
     fields &&
@@ -140,4 +136,23 @@ export function FileUploadValidator(control: FormControl): ValidationErrors {
 
 export function FileUploadValidatorMessage(err, field: FormlyFieldConfig) {
   return 'Please upload a file.';
+}
+
+export function RepeatSectionValidator(control: FormControl): ValidationErrors {
+  const fields = (control as any)._fields;
+
+  if (
+    fields &&
+    Array.isArray(fields) &&
+    (fields.length > 0) &&
+    fields[0].templateOptions.required &&
+    !control.value
+  ) {
+    return {required: true}
+  }
+  return null;
+}
+
+export function RepeatSectionValidatorMessage(err, field: FormlyFieldConfig) {
+  return 'Please add an item.';
 }
