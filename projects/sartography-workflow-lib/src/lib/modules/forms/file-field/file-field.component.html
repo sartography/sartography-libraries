@@ -10,6 +10,7 @@
     #fileInput
     (change)="onFileSelected($event)"
     [formlyAttributes]="field"
+    [formControl]="formControl"
     accept=".docx,.gif,.jpg,.pdf,.png,.svg,.xlsx,.zip" hidden
     id="file"
     type="file"

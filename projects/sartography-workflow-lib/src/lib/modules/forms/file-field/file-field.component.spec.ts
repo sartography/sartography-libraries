@@ -14,6 +14,7 @@ import {ApiService} from '../../../services/api.service';
 import {MockEnvironment} from '../../../testing/mocks/environment.mocks';
 import {mockFileMeta0, mockFileMeta1} from '../../../testing/mocks/file.mocks';
 import {FileBaseComponent} from '../file-base/file-base.component';
+import {FileValueAccessorDirective} from '../file-upload/file-value-accessor.directive';
 import {FileFieldComponent} from './file-field.component';
 import {APP_BASE_HREF} from '@angular/common';
 
@@ -46,7 +47,8 @@ describe('FileFieldComponent', () => {
       ],
       declarations: [
         FileBaseComponent,
-        FileFieldComponent
+        FileFieldComponent,
+        FileValueAccessorDirective,
       ],
       providers: [
         ApiService,
