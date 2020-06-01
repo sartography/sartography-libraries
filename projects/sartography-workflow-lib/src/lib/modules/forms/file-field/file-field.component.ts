@@ -67,6 +67,8 @@ export class FileFieldComponent extends FileBaseComponent implements OnInit {
     this.api.addFileMeta(this.fileParams, fileMeta).subscribe(fm => {
       fm.file = this.selectedFile;
       this.selectedFileMeta = fm;
+      this.model[this.key] = fm.id;
+      this.formControl.setValue(fm.id);
       this.loadFiles();
     });
   }
@@ -76,6 +78,8 @@ export class FileFieldComponent extends FileBaseComponent implements OnInit {
       this.api.deleteFileMeta(this.selectedFileMeta.id).subscribe(() => {
         this.selectedFile = undefined;
         this.selectedFileMeta = undefined;
+        this.model[this.key] = undefined;
+        this.formControl.setValue(undefined);
         this.loadFiles();
       });
     }
