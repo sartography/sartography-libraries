@@ -1,4 +1,5 @@
 import {ApiError} from './api';
+import {Approval} from './approval';
 import {WorkflowSpecCategory} from './workflow';
 
 export enum ProtocolBuilderStatus {
@@ -69,4 +70,5 @@ export interface Study {
   sponsor?: string;
   user_uid?: string;
   warnings?: ApiError[];
+  approvals?: Approval[];
 }

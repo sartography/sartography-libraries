@@ -44,6 +44,7 @@ export class ApiService {
     // Studies
     studyList: '/study',
     study: '/study/{study_id}',
+    studyApprovals: '/study/{study_id}/approvals',
 
     // Approvals
     approvalList: '/approval',
@@ -118,6 +119,16 @@ export class ApiService {
 
     return this.httpClient
       .post<Study>(url, study)
+      .pipe(catchError(this._handleError));
+  }
+
+  /** Get a specific Study */
+  getStudyApprovals(studyId: number): Observable<Approval[]> {
+    const url = this.apiRoot + this.endpoints.studyApprovals
+      .replace('{study_id}', studyId.toString());
+
+    return this.httpClient
+      .get<Approval[]>(url)
       .pipe(catchError(this._handleError));
   }
 
