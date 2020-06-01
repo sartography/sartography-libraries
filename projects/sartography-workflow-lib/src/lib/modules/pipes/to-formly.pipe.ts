@@ -232,6 +232,9 @@ export class ToFormlyPipe implements PipeTransform {
             case 'repeat_title':
               resultField.templateOptions.repeatSectionTitle = p.value;
               break;
+            case 'repeat_edit_only':
+              resultField.templateOptions.repeatSectionEditOnly = this._stringToBool(p.value);
+              break;
             case 'repeat_hide_expression':
               resultField.templateOptions.repeatSectionHideExpression = p.value;
               break;
@@ -346,6 +349,7 @@ export class ToFormlyPipe implements PipeTransform {
             // Move the repeat section (if any) out of the field and into the new group
             newGroup.templateOptions.repeatSectionName = field.templateOptions.repeatSectionName;
             newGroup.templateOptions.repeatSectionTitle = field.templateOptions.repeatSectionTitle;
+            newGroup.templateOptions.repeatSectionEditOnly = field.templateOptions.repeatSectionEditOnly;
             newGroup.templateOptions.repeatSectionHideExpression = field.templateOptions.repeatSectionHideExpression;
             newGroup.templateOptions.repeatSectionRequired = field.templateOptions.repeatSectionRequired;
             newGroup.templateOptions.repeatSectionRequiredExpression = field.templateOptions.repeatSectionRequiredExpression;
@@ -404,6 +408,7 @@ export class ToFormlyPipe implements PipeTransform {
                 templateOptions: {
                   label: repeatSectionTitle || repeatSectionName,
                   buttonLabel: repeatSectionName,
+                  editOnly: field.templateOptions.repeatSectionEditOnly,
                 },
                 validators: {validation: ['repeat']},
                 fieldArray: {fieldGroup: [field]},
@@ -411,6 +416,7 @@ export class ToFormlyPipe implements PipeTransform {
             ]
           };
           delete field.templateOptions.repeatSectionTitle;
+          delete field.templateOptions.repeatSectionEditOnly;
 
           newGroup.hideExpression = field.templateOptions.repeatSectionHideExpression;
           delete field.templateOptions.repeatSectionHideExpression;

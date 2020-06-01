@@ -16,3 +16,10 @@ mat-card.repeat {
 .hidden {
   display: none;
 }
+
+.invalid > mat-error {
+  color: $brand-warning;
+  font-weight: 700;
+  text-align: center;
+  padding: 2rem;
+}

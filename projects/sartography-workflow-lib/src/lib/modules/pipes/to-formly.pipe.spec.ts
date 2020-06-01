@@ -492,6 +492,7 @@ describe('ToFormlyPipe', () => {
         properties: [
           {id: 'repeat', value: 'Contact'},
           {id: 'repeat_title', value: 'Enter your contact information here'},
+          {id: 'repeat_edit_only', value: 'false'},
           {id: 'repeat_hide_expression', value: 'model.favorite_number > 0'},
           {id: 'repeat_required_expression', value: 'model.favorite_number === 42'},
           {id: 'group', value: 'Full Name'},
@@ -543,6 +544,7 @@ describe('ToFormlyPipe', () => {
     expect(repeatSection.expressionProperties).toBeDefined();
     expect(repeatSection.templateOptions.label).toEqual(before[0].properties[1].value);
     expect(repeatSection.templateOptions.buttonLabel).toEqual(before[0].properties[0].value);
+    expect(repeatSection.templateOptions.editOnly).toBeFalse();
     expect(repeatSection.templateOptions.required).toBeTrue();
     expect(repeatSection.fieldArray).toBeDefined();
     expect(repeatSection.fieldArray.fieldGroup).toBeDefined();

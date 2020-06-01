@@ -1,10 +1,11 @@
 <div
   *ngIf="field && field.fieldArray"
-  [ngClass]="{'container': true}"
+  [ngClass]="{'container': true, 'invalid': !field.formControl.valid}"
   fxLayout="column"
   fxLayoutGap="1em"
   [fxHide]="shouldHide()"
 >
+  <mat-error *ngIf="!field.formControl.valid">Please add a valid entry.</mat-error>
   <mat-card *ngFor="let f of field.fieldGroup; let i = index;" class="repeat">
     <mat-card-content fxLayout="row">
       <div fxFlex="70">
@@ -23,6 +24,7 @@
           <mat-icon>edit</mat-icon>
         </button>
         <button
+          *ngIf="!field.templateOptions.editOnly"
           (click)="remove(i)"
           mat-icon-button
           type="button"
@@ -36,6 +38,7 @@
 
 <div *ngIf="field && field.templateOptions" class="repeat-action">
   <button
+    *ngIf="!field.templateOptions.editOnly"
     (click)="openDialog(field.fieldGroup ? field.fieldGroup.length : 0)"
     color="accent"
     mat-flat-button
