@@ -19,7 +19,7 @@ export interface ApprovalFile {
     content_type: string
 }
 
-export interface Approver {
+export interface ApprovalPerson {
     uid: string;
     display_name: string;
     title: string;
@@ -35,5 +35,7 @@ export interface Approval {
     version: number;
     title: string;
     associated_files: ApprovalFile[];
-    approver: Approver;
+    approver: ApprovalPerson;
+    primary_investigator: ApprovalPerson;
+    date_created: Date;
 }
