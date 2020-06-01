@@ -462,13 +462,13 @@ describe('ToFormlyPipe', () => {
     expect(after.length).toEqual(3);
 
     // Group 1
-    expect(after[0].key).toEqual('contact_info');
+    expect(after[0].key).toEqual(before[0].properties[0].value);
     expect(after[0].templateOptions.label).toEqual(before[0].properties[0].value);
     expect(after[0].fieldGroup[0].key).toEqual(before[0].id);
     expect(after[0].fieldGroup[1].key).toEqual(before[3].id);
 
     // Group 2
-    expect(after[1].key).toEqual('address');
+    expect(after[1].key).toEqual(before[1].properties[0].value);
     expect(after[1].templateOptions.label).toEqual(before[1].properties[0].value);
     expect(after[1].fieldGroup[0].key).toEqual(before[1].id);
     expect(after[1].fieldGroup[1].key).toEqual(before[2].id);
@@ -491,6 +491,7 @@ describe('ToFormlyPipe', () => {
         ],
         properties: [
           {id: 'repeat', value: 'Contact'},
+          {id: 'repeat_button_label', value: 'Add Some Contact Info'},
           {id: 'repeat_title', value: 'Enter your contact information here'},
           {id: 'repeat_edit_only', value: 'false'},
           {id: 'repeat_hide_expression', value: 'model.favorite_number > 0'},
@@ -540,10 +541,10 @@ describe('ToFormlyPipe', () => {
     expect(after[0].fieldGroup.length).toEqual(1);
 
     const repeatSection = after[0].fieldGroup[0];
-    expect(repeatSection.key).toEqual('contact');
+    expect(repeatSection.key).toEqual(before[0].properties[0].value);
     expect(repeatSection.expressionProperties).toBeDefined();
-    expect(repeatSection.templateOptions.label).toEqual(before[0].properties[1].value);
-    expect(repeatSection.templateOptions.buttonLabel).toEqual(before[0].properties[0].value);
+    expect(repeatSection.templateOptions.label).toEqual(before[0].properties[2].value);
+    expect(repeatSection.templateOptions.buttonLabel).toEqual(before[0].properties[1].value);
     expect(repeatSection.templateOptions.editOnly).toBeFalse();
     expect(repeatSection.templateOptions.required).toBeTrue();
     expect(repeatSection.fieldArray).toBeDefined();
@@ -552,7 +553,7 @@ describe('ToFormlyPipe', () => {
 
     // Repeat Section - Group 1
     const repeatGroup1 = repeatSection.fieldArray.fieldGroup[0];
-    expect(repeatGroup1.key).toEqual('full_name');
+    expect(repeatGroup1.key).toEqual(before[3].properties[1].value);
     expect(repeatGroup1).toBeDefined();
     expect(repeatGroup1.fieldGroup[0]).toBeDefined();
     expect(repeatGroup1.fieldGroup[0].templateOptions.label).toEqual(before[0].label);
@@ -560,7 +561,7 @@ describe('ToFormlyPipe', () => {
 
     // Repeat Section - Group 2
     const repeatGroup2 = repeatSection.fieldArray.fieldGroup[1];
-    expect(repeatGroup2.key).toEqual('contact');
+    expect(repeatGroup2.key).toEqual(before[1].properties[1].value);
     expect(repeatGroup2).toBeDefined();
     expect(repeatGroup2.fieldGroup[0]).toBeDefined();
     expect(repeatGroup2.fieldGroup[0].templateOptions.label).toEqual(before[1].label);

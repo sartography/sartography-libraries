@@ -227,10 +227,13 @@ export class ToFormlyPipe implements PipeTransform {
               resultField.templateOptions.groupName = p.value;
               break;
             case 'repeat':
-              resultField.templateOptions.repeatSectionName = p.value;
+              resultField.templateOptions.repeatSectionKey = p.value;
               break;
             case 'repeat_title':
               resultField.templateOptions.repeatSectionTitle = p.value;
+              break;
+            case 'repeat_button_label':
+              resultField.templateOptions.repeatSectionButtonLabel = p.value;
               break;
             case 'repeat_edit_only':
               resultField.templateOptions.repeatSectionEditOnly = this._stringToBool(p.value);
@@ -337,7 +340,7 @@ export class ToFormlyPipe implements PipeTransform {
         } else {
           // if not found, add the group, then add it to the grouped array
           const newGroup: FormlyFieldConfig = {
-            key: this._toSnakeCase(groupName),
+            key: groupName,
             templateOptions: {
               label: groupName,
             },
@@ -345,15 +348,18 @@ export class ToFormlyPipe implements PipeTransform {
             wrappers: ['panel'],
           };
 
-          if (field.templateOptions.repeatSectionName) {
+          if (field.templateOptions.repeatSectionKey) {
             // Move the repeat section (if any) out of the field and into the new group
-            newGroup.templateOptions.repeatSectionName = field.templateOptions.repeatSectionName;
+            newGroup.templateOptions.repeatSectionKey = field.templateOptions.repeatSectionKey;
             newGroup.templateOptions.repeatSectionTitle = field.templateOptions.repeatSectionTitle;
+            newGroup.templateOptions.repeatSectionButtonLabel = field.templateOptions.repeatSectionButtonLabel;
             newGroup.templateOptions.repeatSectionEditOnly = field.templateOptions.repeatSectionEditOnly;
             newGroup.templateOptions.repeatSectionHideExpression = field.templateOptions.repeatSectionHideExpression;
             newGroup.templateOptions.repeatSectionRequired = field.templateOptions.repeatSectionRequired;
             newGroup.templateOptions.repeatSectionRequiredExpression = field.templateOptions.repeatSectionRequiredExpression;
-            delete field.templateOptions.repeatSectionName;
+            delete field.templateOptions.repeatSectionKey;
+            delete field.templateOptions.repeatSectionTitle;
+            delete field.templateOptions.repeatSectionButtonLabel;
             delete field.templateOptions.repeatSectionHideExpression;
             delete field.templateOptions.repeatSectionRequired;
             delete field.templateOptions.repeatSectionRequiredExpression;
@@ -385,14 +391,13 @@ export class ToFormlyPipe implements PipeTransform {
     fields.forEach(field => {
 
       // If the field has a group name, add it to its group
-      if (field.templateOptions.repeatSectionName) {
+      if (field.templateOptions.repeatSectionKey) {
 
         // look for existing group
-        const repeatSectionName = field.templateOptions.repeatSectionName;
-        const repeatSectionTitle = field.templateOptions.repeatSectionTitle;
+        const repeatSectionKey = field.templateOptions.repeatSectionKey;
         const group = grouped.find(g => {
           const to = (g.fieldGroup && g.fieldGroup[0] && g.fieldGroup[0].templateOptions);
-          return (to && to.repeatSectionName === repeatSectionName);
+          return (to && to.repeatSectionKey === repeatSectionKey);
         });
 
         if (group) {
@@ -402,12 +407,12 @@ export class ToFormlyPipe implements PipeTransform {
           const newGroup: FormlyFieldConfig = {
             fieldGroup: [
               {
-                key: this._toSnakeCase(repeatSectionName),
+                key: repeatSectionKey,
                 wrappers: ['panel'],
                 type: 'repeat',
                 templateOptions: {
-                  label: repeatSectionTitle || repeatSectionName,
-                  buttonLabel: repeatSectionName,
+                  label: field.templateOptions.repeatSectionTitle,
+                  buttonLabel: field.templateOptions.repeatSectionButtonLabel,
                   editOnly: field.templateOptions.repeatSectionEditOnly,
                 },
                 validators: {validation: ['repeat']},
@@ -415,7 +420,9 @@ export class ToFormlyPipe implements PipeTransform {
               }
             ]
           };
+          delete field.templateOptions.repeatSectionKey;
           delete field.templateOptions.repeatSectionTitle;
+          delete field.templateOptions.repeatSectionButtonLabel;
           delete field.templateOptions.repeatSectionEditOnly;
 
           newGroup.hideExpression = field.templateOptions.repeatSectionHideExpression;
@@ -429,8 +436,8 @@ export class ToFormlyPipe implements PipeTransform {
           newGroup.fieldGroup[0].templateOptions.required = field.templateOptions.repeatSectionRequired;
           delete field.templateOptions.repeatSectionRequired;
 
-          newGroup.fieldGroup[0].templateOptions.repeatSectionName = repeatSectionName;
-          delete field.templateOptions.repeatSectionName;
+          newGroup.fieldGroup[0].templateOptions.repeatSectionKey = repeatSectionKey;
+          delete field.templateOptions.repeatSectionKey;
           grouped.push(newGroup);
         }
       } else {
@@ -440,20 +447,12 @@ export class ToFormlyPipe implements PipeTransform {
     });
 
     grouped.forEach(field => {
-      if (field.templateOptions && field.templateOptions.repeatSectionName) {
-        delete field.templateOptions.repeatSectionName;
+      if (field.templateOptions && field.templateOptions.repeatSectionKey) {
+        delete field.templateOptions.repeatSectionKey;
       }
     });
 
     return grouped;
-  }
-
-  /** Convert the given camelCase string to snake_case format */
-  private _toSnakeCase(str: string): string {
-    return !str ? '' : String(str)
-      .trim()
-      .replace(/\W+/gi, '_')
-      .toLowerCase();
   }
 
   /** Get num_results property from given field, or return the given default if no num_results property found. */
