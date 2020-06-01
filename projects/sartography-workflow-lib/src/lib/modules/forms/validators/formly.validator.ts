@@ -83,17 +83,20 @@ export function NumberValidatorMessage(err, field: FormlyFieldConfig) {
 
 export function AutocompleteValidator(control: FormControl): ValidationErrors {
   const fields = (control as any)._fields;
-
-  if (
+  const isRequired = (
     fields &&
     Array.isArray(fields) &&
     (fields.length > 0) &&
-    fields[0].templateOptions.required &&
-    !control.value
-  ) {
+    fields[0].templateOptions.required
+  );
+
+  if (isRequired && !control.value) {
     return {required: true}
   }
-  return (typeof control.value === 'object') ? null : {autocomplete: true};
+
+  if (control.value) {
+    return (typeof control.value === 'object') ? null : {autocomplete: true};
+  }
 }
 
 export function AutocompleteValidatorMessage(err, field: FormlyFieldConfig) {
