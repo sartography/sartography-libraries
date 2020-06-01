@@ -46,6 +46,7 @@ export interface Workflow {
   next_task?: WorkflowTask;
   is_latest_spec?: boolean;
   spec_version?: string;
+  title?: string;
 }
 
 export interface WorkflowResetParams {
