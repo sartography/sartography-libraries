@@ -1,5 +1,6 @@
 import {CommonModule} from '@angular/common';
 import {NgModule} from '@angular/core';
+import {CleanUpLdapPropertiesPipe} from './clean-up-ldap-properties.pipe';
 import {ToFormlyPipe} from './to-formly.pipe';
 import {UnescapeLineBreaksPipe} from './unescape-line-breaks.pipe';
 
@@ -8,6 +9,7 @@ import {UnescapeLineBreaksPipe} from './unescape-line-breaks.pipe';
   declarations: [
     ToFormlyPipe,
     UnescapeLineBreaksPipe,
+    CleanUpLdapPropertiesPipe,
   ],
   imports: [
     CommonModule,
@@ -15,6 +17,7 @@ import {UnescapeLineBreaksPipe} from './unescape-line-breaks.pipe';
   exports: [
     ToFormlyPipe,
     UnescapeLineBreaksPipe,
+    CleanUpLdapPropertiesPipe,
   ]
 })
 export class SartographyPipesModule {
