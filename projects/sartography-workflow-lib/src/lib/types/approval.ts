@@ -20,10 +20,15 @@ export interface ApprovalFile {
 }
 
 export interface ApprovalPerson {
-    uid: string;
-    display_name: string;
-    title: string;
-    department: string;
+  uid: string;
+  display_name: string;
+  given_name?: string;
+  email_address?: string;
+  telephone_number?: string;
+  title: string;
+  department: string;
+  affiliation?: string;
+  sponsor_type?: string;
 }
 
 export interface Approval {
@@ -36,6 +41,7 @@ export interface Approval {
     title: string;
     associated_files: ApprovalFile[];
     approver: ApprovalPerson;
+    related_approvals: Approval[]
     primary_investigator: ApprovalPerson;
     date_created: Date;
 }
