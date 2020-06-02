@@ -73,7 +73,8 @@ export class ApiService {
     @Inject(APP_BASE_HREF) public baseHref: string,
     private httpClient: HttpClient,
     private router: Router,
-    private location: Location) {
+    private location: Location
+  ) {
     this.apiRoot = environment.api;
   }
 

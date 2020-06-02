@@ -7,5 +7,6 @@ export class MockEnvironment implements AppEnvironment {
   production = false;
   api = 'apiRoot';
   irbUrl = 'irbUrl';
-  title = 'CR Connect'
+  title = 'CR Connect';
+  googleAnalyticsKey = 'some_key';
 }
