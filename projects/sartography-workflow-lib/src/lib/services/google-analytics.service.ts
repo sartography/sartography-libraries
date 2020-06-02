@@ -11,12 +11,14 @@ declare var gtag;
   providedIn: 'root'
 })
 export class GoogleAnalyticsService {
+  analyticsKey: string;
 
   constructor(
-    private router: Router,
     @Inject('APP_ENVIRONMENT') private environment: AppEnvironment,
     @Inject(APP_BASE_HREF) public baseHref: string,
+    private router: Router,
   ) {
+    this.analyticsKey = this.environment.googleAnalyticsKey;
   }
 
   public authEvent(req: HttpRequest<any>) {
@@ -29,17 +31,16 @@ export class GoogleAnalyticsService {
 
   public setUser(uid) {
     gtag('set', {user_id: uid}); // Set the user ID using signed-in user_id.
+    this.event('user-id available', 'authentication', uid)
   }
 
   public init() {
     this.listenForRouteChanges();
 
     try {
-      const analyticsKey = this.environment.googleAnalyticsKey;
-
       const script1 = document.createElement('script');
       script1.async = true;
-      script1.src = 'https://www.googletagmanager.com/gtag/js?id=' + analyticsKey;
+      script1.src = 'https://www.googletagmanager.com/gtag/js?id=' + this.analyticsKey;
       document.head.appendChild(script1);
 
       const script2 = document.createElement('script');
@@ -47,7 +48,7 @@ export class GoogleAnalyticsService {
         window.dataLayer = window.dataLayer || [];
         function gtag(){dataLayer.push(arguments);}
         gtag('js', new Date());
-        gtag('config', '` + analyticsKey + `', {'send_page_view': false});
+        gtag('config', '` + this.analyticsKey + `', {'send_page_view': false});
       `;
       document.head.appendChild(script2);
     } catch (ex) {
