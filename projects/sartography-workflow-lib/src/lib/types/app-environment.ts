@@ -4,4 +4,5 @@ export interface AppEnvironment {
   api: string;
   irbUrl: string;
   title: string;
+  googleAnalyticsKey: string;
 }

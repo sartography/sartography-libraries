@@ -1,5 +1,6 @@
 import {HttpHandler, HttpInterceptor, HttpRequest} from '@angular/common/http';
 import {Injectable} from '@angular/core';
+import {GoogleAnalyticsService} from './google-analytics.service';
 
 /**
  * Intercepts all calls to the backend and assigns an
@@ -7,7 +8,7 @@ import {Injectable} from '@angular/core';
  */
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {
-  constructor() {
+  constructor(private googleAnalyticsService: GoogleAnalyticsService) {
   }
 
   intercept(req: HttpRequest<any>, next: HttpHandler) {
@@ -21,6 +22,8 @@ export class AuthInterceptor implements HttpInterceptor {
         }
       });
     }
+
+    this.googleAnalyticsService.authEvent(req);
 
     // send cloned request with header to the next handler.
     return next.handle(req);
