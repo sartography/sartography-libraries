@@ -133,11 +133,16 @@ export class ApiService {
   }
 
   /** Get all Approvals */
-  getApprovals(): Observable<Approval[]> {
+  getApprovals(everything: boolean = false): Observable<Approval[]> {
+    let params = new HttpParams();
+    if (everything) {
+      params = params.set('everything', 'true');
+    } else {
+      params = params.set('everything', 'false');
+    }
     const url = this.apiRoot + this.endpoints.approvalList;
-
     return this.httpClient
-      .get<Approval[]>(url)
+      .get<Approval[]>(url, {params})
       .pipe(catchError(this._handleError));
   }
 
