@@ -1,4 +1,4 @@
-import {cleanUpFilename, toSnakeCase, trimString} from './string-clean';
+import {cleanUpFilename, makeReadable, toSnakeCase, trimString} from './string-clean';
 
 describe('String Cleaning Utilities', () => {
   const afterTrimming = `I'm tired of wasting letters when punctuation will do, period. -Steve Martin`;
@@ -15,6 +15,10 @@ describe('String Cleaning Utilities', () => {
 
   it('trims non-word characters from a string', () => {
     expect(trimString(beforeTrimming)).toEqual(afterTrimming);
+  });
+
+  it('replaces non-alphanumeric characters in a string with spaces', () => {
+    expect(makeReadable('unreadable-Error_CODE-400')).toEqual('unreadable error code 400');
   });
 
 });

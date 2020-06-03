@@ -23,3 +23,7 @@ export const cleanUpFilename = (str: string, extension: FileType|string): string
 
   return arr.join('.');
 };
+
+export const snakeToSpace = (codeString: string): string => {
+  return codeString.replace(/([^A-Za-z0-9])/g, ' ').toLowerCase();
+}

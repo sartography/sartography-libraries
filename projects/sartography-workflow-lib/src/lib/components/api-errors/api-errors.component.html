@@ -4,9 +4,8 @@
   <button mat-icon-button (click)="dismiss($event)"><mat-icon>close</mat-icon></button>
 </div>
 <mat-list>
-  <mat-list-item *ngFor="let e of apiErrors" class="api-error" [ngStyle]="{'height': 'auto'}">
-    <h3 mat-line *ngIf="e.status_code">{{e.code}}</h3>
-    <h4 mat-line *ngIf="e.code">{{e.status_code}}</h4>
+  <mat-list-item *ngFor="let e of apiErrors" class="api-error">
+    <h4 mat-line *ngIf="e.code" class="title-case">{{snakeToSpace(e.code)}}</h4>
     <div mat-line *ngIf="e.task_name && e.task_id">{{e.task_name}} ({{e.task_id}})</div>
     <div mat-line *ngIf="e.task_id && !e.task_name">Task ID: {{e.task_id}}</div>
     <div mat-line *ngIf="!e.task_id && e.task_name">Task Name: {{e.task_name}}</div>

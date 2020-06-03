@@ -3,7 +3,12 @@
 ::ng-deep mat-list-item.api-error, mat-list-item.api-error:hover {
   border-left: 4px solid $brand-warning;
   background-color: $brand-warning-light;
+  padding: 2rem 1rem;
+  height: inherit;
+  width: inherit;
   cursor: default;
+
+  h4.title-case { text-transform: capitalize; }
 
   .mat-line {
     text-overflow: initial;
