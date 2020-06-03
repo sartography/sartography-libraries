@@ -34,7 +34,8 @@ export class GoogleAnalyticsService {
     this.event('user-id available', 'authentication', uid)
   }
 
-  public init() {
+  public init(analyticsKey) {
+    this.analyticsKey = analyticsKey || this.analyticsKey;
     this.listenForRouteChanges();
 
     try {

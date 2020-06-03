@@ -1,6 +1,7 @@
 import {HttpClientTestingModule, HttpTestingController} from '@angular/common/http/testing';
 import {async, ComponentFixture, inject, TestBed} from '@angular/core/testing';
 import {FormGroup} from '@angular/forms';
+import {MatBottomSheetModule} from '@angular/material/bottom-sheet';
 import {ActivatedRoute, convertToParamMap, Router} from '@angular/router';
 import {FormlyConfig, FormlyFormBuilder, FormlyModule} from '@ngx-formly/core';
 import {FormlyFieldConfigCache} from '@ngx-formly/core/lib/components/formly.field.config';
@@ -25,6 +26,7 @@ describe('FileBaseComponent', () => {
       imports: [
         FormlyModule.forRoot(),
         HttpClientTestingModule,
+        MatBottomSheetModule,
       ],
       declarations: [FileBaseComponent],
       providers: [

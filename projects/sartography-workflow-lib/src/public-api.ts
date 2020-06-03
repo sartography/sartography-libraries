@@ -3,6 +3,7 @@
  */
 
 export * from './lib/sartography-workflow-lib.module';
+export * from './lib/components/api-errors/api-errors.component';
 export * from './lib/components/sartography-workflow-lib.component';
 export * from './lib/components/session-redirect/session-redirect.component';
 
@@ -39,6 +40,7 @@ export * from './lib/static/dmn';
 // Testing Mocks
 export * from './lib/testing/mocks/environment.mocks';
 export * from './lib/testing/mocks/file.mocks';
+export * from './lib/testing/mocks/ngzone.mocks';
 export * from './lib/testing/mocks/stats.mocks';
 export * from './lib/testing/mocks/study-status.mocks';
 export * from './lib/testing/mocks/study.mocks';

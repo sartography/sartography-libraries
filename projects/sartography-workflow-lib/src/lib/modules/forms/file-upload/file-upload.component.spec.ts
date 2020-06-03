@@ -2,6 +2,7 @@ import {HttpHeaders} from '@angular/common/http';
 import {HttpClientTestingModule, HttpTestingController} from '@angular/common/http/testing';
 import {async, ComponentFixture, inject, TestBed} from '@angular/core/testing';
 import {FormGroup, FormsModule, ReactiveFormsModule} from '@angular/forms';
+import {MatBottomSheetModule} from '@angular/material/bottom-sheet';
 import {MatFormFieldModule} from '@angular/material/form-field';
 import {MatIconModule} from '@angular/material/icon';
 import {MatTableModule} from '@angular/material/table';
@@ -36,6 +37,7 @@ describe('FileUploadComponent', () => {
         }),
         FormsModule,
         HttpClientTestingModule,
+        MatBottomSheetModule,
         MatFormFieldModule,
         MatIconModule,
         MatTableModule,
