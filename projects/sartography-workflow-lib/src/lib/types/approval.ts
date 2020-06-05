@@ -1,22 +1,23 @@
-
 export enum ApprovalStatus {
-    PENDING = 'PENDING',
-    APPROVED = 'APPROVED',
-    DECLINED = 'DECLINED',
-    CANCELED = 'CANCELED'
+  AWAITING = 'AWAITING',
+  PENDING = 'PENDING',
+  APPROVED = 'APPROVED',
+  DECLINED = 'DECLINED',
+  CANCELED = 'CANCELED'
 }
 
 export enum ApprovalStatusLabels {
-    PENDING = 'Pending',
-    APPROVED = 'Approved',
-    DECLINED = 'Declined',
-    CANCELED = 'Canceled'
+  AWAITING = 'Awaiting review by another approver',
+  PENDING = 'Pending your approval',
+  APPROVED = 'Approved',
+  DECLINED = 'Declined',
+  CANCELED = 'Canceled'
 }
 
 export interface ApprovalFile {
-    id: number;
-    name: string;
-    content_type: string
+  id: number;
+  name: string;
+  content_type: string
 }
 
 export interface ApprovalPerson {
@@ -32,16 +33,17 @@ export interface ApprovalPerson {
 }
 
 export interface Approval {
-    id: number;
-    study_id: number;
-    workflow_id: number;
-    message: string;
-    status: ApprovalStatus;
-    version: number;
-    title: string;
-    associated_files: ApprovalFile[];
-    approver: ApprovalPerson;
-    related_approvals: Approval[]
-    primary_investigator: ApprovalPerson;
-    date_created: Date;
+  id: number;
+  study_id: number;
+  workflow_id: number;
+  message: string;
+  status: ApprovalStatus;
+  version: number;
+  title: string;
+  associated_files: ApprovalFile[];
+  approver: ApprovalPerson;
+  related_approvals: Approval[];
+  primary_investigator: ApprovalPerson;
+  date_created: Date;
+  date_approved?: Date;
 }
