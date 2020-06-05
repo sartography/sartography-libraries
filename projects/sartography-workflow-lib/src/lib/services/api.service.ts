@@ -8,7 +8,7 @@ import {catchError} from 'rxjs/operators';
 import {ApiErrorsComponent} from '../components/api-errors/api-errors.component';
 import {ApiError} from '../types/api';
 import {AppEnvironment} from '../types/app-environment';
-import {Approval} from '../types/approval';
+import {Approval, ApprovalStatus} from '../types/approval';
 import {FileMeta, FileParams, LookupData} from '../types/file';
 import {ScriptInfo} from '../types/script-info';
 import {WorkflowStats} from '../types/stats';
@@ -136,12 +136,12 @@ export class ApiService {
   }
 
   /** Get all Approvals */
-  getApprovals(everything: boolean = false, asUser = null): Observable<Approval[]> {
+  getApprovals(status?: ApprovalStatus, asUser = null): Observable<Approval[]> {
     let params = new HttpParams();
-    if (everything) {
-      params = params.set('everything', 'true');
+    if (status) {
+      params = params.set('status', status.valueOf());
     } else {
-      params = params.set('everything', 'false');
+      params = params.set('status', ApprovalStatus.PENDING.valueOf());
     }
     if (asUser) {
       params = params.set('as_user', asUser);
