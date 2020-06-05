@@ -2,10 +2,10 @@ import {HttpEvent, HttpHandler, HttpInterceptor, HttpRequest} from '@angular/com
 import {Inject, Injectable, NgZone} from '@angular/core';
 import {MatBottomSheet} from '@angular/material/bottom-sheet';
 import {Router} from '@angular/router';
+import * as Sentry from '@sentry/browser';
 import {Observable, throwError} from 'rxjs';
 import {catchError} from 'rxjs/operators';
 import {ApiErrorsComponent} from '../components/api-errors/api-errors.component';
-import {ApiError} from '../types/api';
 import {AppEnvironment} from '../types/app-environment';
 import {ApiService} from './api.service';
 import {GoogleAnalyticsService} from './google-analytics.service';
@@ -21,6 +21,9 @@ export class ErrorInterceptor implements HttpInterceptor {
     private zone: NgZone,
     public bottomSheet: MatBottomSheet
   ) {
+    if (this.environment.production && this.environment.sentryKey) {
+      Sentry.init({dsn: this.environment.sentryKey});
+    }
   }
 
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
@@ -40,9 +43,17 @@ export class ErrorInterceptor implements HttpInterceptor {
         });
       }
 
-      // Log error to google if possible
-      if (err.error) {
-        this.googleAnalyticsService.errorEvent(err.error);
+      // Display API Error
+      if (err.status !== 401 && err.status !== 403) {
+        // Log the error to Sentry on production
+        if (this.environment.production && this.environment.sentryKey) {
+          Sentry.captureException(err.originalError || err);
+        }
+
+        // Log error to Google Analytics
+        if (err.error) {
+          this.googleAnalyticsService.errorEvent(err.error);
+        }
       }
 
       const errorMessage = err.message || err.statusText;

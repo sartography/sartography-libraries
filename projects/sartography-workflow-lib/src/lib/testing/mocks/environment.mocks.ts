@@ -9,4 +9,5 @@ export class MockEnvironment implements AppEnvironment {
   irbUrl = 'irbUrl';
   title = 'CR Connect';
   googleAnalyticsKey = 'some_key';
+  sentryKey = 'some_key';
 }

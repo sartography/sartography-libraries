@@ -32,7 +32,7 @@ const stringToFileType = (s: string, separator: string): FileType | undefined =>
   }
 };
 
-export const getFileIcon = (file: File|FileMeta, baseHref = '/'): string => {
+export const getFileIcon = (file: File|FileMeta, baseHref = ''): string => {
   return baseHref + `assets/icons/file_types/${getFileType(file)}.svg`;
 };
 
