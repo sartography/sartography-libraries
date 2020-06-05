@@ -30,11 +30,14 @@ export class GoogleAnalyticsService {
   }
 
   public setUser(uid) {
-    gtag('set', {user_id: uid}); // Set the user ID using signed-in user_id.
-    this.event('user-id available', 'authentication', uid)
+    if (gtag) {
+      gtag('set', {user_id: uid}); // Set the user ID using signed-in user_id.
+      this.event('user-id available', 'authentication', uid)
+    }
   }
 
-  public init() {
+  public init(analyticsKey) {
+    this.analyticsKey = analyticsKey || this.analyticsKey;
     this.listenForRouteChanges();
 
     try {
@@ -58,16 +61,18 @@ export class GoogleAnalyticsService {
   }
 
   private event(action: string, category: string, label: string) {
-    gtag('event', action, {
-      event_category: category,
-      event_label: label
-    });
+    if (gtag) {
+      gtag('event', action, {
+        event_category: category,
+        event_label: label
+      });
+    }
   }
 
   private listenForRouteChanges() {
     const analyticsKey = this.environment.googleAnalyticsKey;
     this.router.events.subscribe(event => {
-      if (event instanceof NavigationEnd) {
+      if (gtag && event instanceof NavigationEnd) {
         gtag('config', analyticsKey, {
           page_path: event.urlAfterRedirects,
         });

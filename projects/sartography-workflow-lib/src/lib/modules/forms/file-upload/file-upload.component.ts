@@ -1,8 +1,10 @@
-import {Component, EventEmitter, Output} from '@angular/core';
+import {APP_BASE_HREF} from '@angular/common';
+import {Component, EventEmitter, Inject, Output} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
 import {FileSystemFileEntry, NgxFileDropEntry} from 'ngx-file-drop';
 import {ReplaySubject} from 'rxjs';
 import {ApiService} from '../../../services/api.service';
+import {AppEnvironment} from '../../../types/app-environment';
 import {FileMeta} from '../../../types/file';
 import {getFileIcon, getFileType, newFileFromResponse} from '../../../util/file-type';
 import {FileBaseComponent} from '../file-base/file-base.component';
@@ -26,12 +28,16 @@ export class FileUploadComponent extends FileBaseComponent {
   ];
   dropZoneHover = false;
   getFileIcon = getFileIcon;
+  baseHref = '/';
 
   constructor(
+    @Inject('APP_ENVIRONMENT') private environment: AppEnvironment,
+    @Inject(APP_BASE_HREF) public appBaseHref: string,
     protected api: ApiService,
-    protected route: ActivatedRoute
+    protected route: ActivatedRoute,
   ) {
     super(api, route);
+    this.baseHref = appBaseHref;
   }
 
   dropped(droppedFiles: NgxFileDropEntry[]) {

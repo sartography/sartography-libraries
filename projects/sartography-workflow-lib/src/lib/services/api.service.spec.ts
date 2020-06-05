@@ -1,6 +1,8 @@
+import {APP_BASE_HREF} from '@angular/common';
 import {HttpHeaders, HttpResponse} from '@angular/common/http';
 import {HttpClientTestingModule, HttpTestingController} from '@angular/common/http/testing';
 import {TestBed} from '@angular/core/testing';
+import {MatBottomSheetModule} from '@angular/material/bottom-sheet';
 import {Router} from '@angular/router';
 import {RouterTestingModule} from '@angular/router/testing';
 import createClone from 'rfdc';
@@ -9,7 +11,7 @@ import {MockEnvironment} from '../testing/mocks/environment.mocks';
 import {mockFileMeta0, mockFileMetaReference0, mockFileMetas, mockFileMetaTask0} from '../testing/mocks/file.mocks';
 import {mockScriptInfos} from '../testing/mocks/script-info.mocks';
 import {mockWorkflowStats0} from '../testing/mocks/stats.mocks';
-import {mockErrorResponse, mockUpdatingResponse} from '../testing/mocks/study-status.mocks';
+import {mockErrorResponse} from '../testing/mocks/study-status.mocks';
 import {mockStudies, mockStudy0, newRandomStudy} from '../testing/mocks/study.mocks';
 import {mockUser} from '../testing/mocks/user.mocks';
 import {mockWorkflowSpecCategories, mockWorkflowSpecCategory0} from '../testing/mocks/workflow-spec-category.mocks';
@@ -18,10 +20,8 @@ import {mockWorkflowTask0} from '../testing/mocks/workflow-task.mocks';
 import {mockWorkflow0} from '../testing/mocks/workflow.mocks';
 import {FileMeta, FileParams} from '../types/file';
 import {Study} from '../types/study';
-import {UserParams} from '../types/user';
 import {WorkflowSpec, WorkflowSpecCategory} from '../types/workflow';
 import {ApiService} from './api.service';
-import {APP_BASE_HREF} from '@angular/common';
 
 describe('ApiService', () => {
   let httpMock: HttpTestingController;
@@ -36,12 +36,16 @@ describe('ApiService', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       declarations: [SessionRedirectComponent],
-      imports: [HttpClientTestingModule, RouterTestingModule.withRoutes([
-        {
-          path: 'session/:token',
-          component: SessionRedirectComponent
-        }
-      ])],
+      imports: [
+        HttpClientTestingModule,
+        MatBottomSheetModule,
+        RouterTestingModule.withRoutes([
+          {
+            path: 'session/:token',
+            component: SessionRedirectComponent
+          }
+        ]),
+      ],
       providers: [
         ApiService,
         {provide: 'APP_ENVIRONMENT', useValue: mockEnvironment},
@@ -512,7 +516,7 @@ describe('ApiService', () => {
     httpMock.expectNone(`apiRoot/user`);
   });
 
-  it('should throw an error', () => {
+  it('should handle error', () => {
     const badId = 666;
     service.getStudy(badId).subscribe(
       data => expect(data).toBeNull(),

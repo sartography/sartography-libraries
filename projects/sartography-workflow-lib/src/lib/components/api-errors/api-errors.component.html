@@ -1,0 +1,20 @@
+<div fxLayout="row">
+  <h2>Workflow Errors</h2>
+  <span fxFlex></span>
+  <button mat-icon-button (click)="dismiss($event)"><mat-icon>close</mat-icon></button>
+</div>
+<mat-list>
+  <mat-list-item *ngFor="let e of apiErrors" class="api-error">
+    <h4 mat-line *ngIf="e.code" class="title-case">{{snakeToSpace(e.code)}}</h4>
+    <div mat-line *ngIf="e.task_name && e.task_id">{{e.task_name}} ({{e.task_id}})</div>
+    <div mat-line *ngIf="e.task_id && !e.task_name">Task ID: {{e.task_id}}</div>
+    <div mat-line *ngIf="!e.task_id && e.task_name">Task Name: {{e.task_name}}</div>
+    <div mat-line *ngIf="e.file_name">File: {{e.file_name}}</div>
+    <div mat-line *ngIf="e.tag">Tag: {{e.tag}}</div>
+    <ng-container *ngIf="e.message">
+      <div mat-line>
+        <code *ngIf="e.message">{{e.message}}</code>
+      </div>
+    </ng-container>
+  </mat-list-item>
+</mat-list>

@@ -43,7 +43,7 @@
           *matCellDef="let fileMeta"
           mat-cell
         >
-          <img [alt]="fileMeta.type" [src]="getFileIcon(fileMeta)"/>
+          <img [alt]="fileMeta.type" [src]="getFileIcon(fileMeta, baseHref)"/>
         </td>
       </ng-container>
       <ng-container matColumnDef="name">

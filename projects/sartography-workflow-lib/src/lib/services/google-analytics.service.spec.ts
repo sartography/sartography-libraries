@@ -12,28 +12,41 @@ describe('GoogleAnalyticsService', () => {
   const mockEnvironment = new MockEnvironment();
   const mockRouter = {
     createUrlTree: jasmine.createSpy('createUrlTree'),
-    navigate: jasmine.createSpy('navigate')
+    navigate: jasmine.createSpy('navigate'),
+    events: jasmine.createSpyObj('events', ['subscribe']),
   };
 
   beforeEach(() => TestBed.configureTestingModule({
     declarations: [SessionRedirectComponent],
-    imports: [HttpClientTestingModule, RouterTestingModule.withRoutes([
-      {
-        path: 'session/:token',
-        component: SessionRedirectComponent
-      }
-    ])],
+    imports: [
+      HttpClientTestingModule,
+      RouterTestingModule.withRoutes([
+        {
+          path: 'session/:token',
+          component: SessionRedirectComponent
+        }
+      ])
+    ],
     providers: [
       GoogleAnalyticsService,
       {provide: 'APP_ENVIRONMENT', useValue: mockEnvironment},
       {provide: APP_BASE_HREF, useValue: ''},
       {provide: Router, useValue: mockRouter},
       {provide: Location, useValue: location},
-    ]
+    ],
   }));
 
-  it('should be created', () => {
+  beforeEach(() => {
     service = TestBed.inject(GoogleAnalyticsService);
+  });
+
+  it('should be created', () => {
     expect(service).toBeTruthy();
+    expect(service.analyticsKey).toBeTruthy();
+  });
+
+  it('should set a new analytics key', () => {
+    service.init('new_key');
+    expect(service.analyticsKey).toEqual('new_key');
   });
 });

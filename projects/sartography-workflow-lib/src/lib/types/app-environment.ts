@@ -5,4 +5,5 @@ export interface AppEnvironment {
   irbUrl: string;
   title: string;
   googleAnalyticsKey: string;
+  sentryKey?: string;
 }

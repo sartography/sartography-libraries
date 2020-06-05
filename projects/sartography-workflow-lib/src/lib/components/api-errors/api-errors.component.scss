@@ -1,0 +1,22 @@
+@import "../../styles/config";
+
+::ng-deep .mat-list-base .mat-list-item.api-error,
+::ng-deep .mat-list-base .mat-list-item.api-error:hover {
+  border-left: 4px solid $brand-warning;
+  background-color: $brand-warning-light;
+  padding: 2rem 1rem;
+  height: inherit;
+  width: inherit;
+  cursor: default;
+
+  h4.title-case { text-transform: capitalize; }
+
+  .mat-line {
+    text-overflow: initial;
+    height: auto;
+
+    code {
+      white-space: normal;
+    }
+  }
+}
