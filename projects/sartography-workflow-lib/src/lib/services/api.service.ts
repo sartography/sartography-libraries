@@ -149,6 +149,15 @@ export class ApiService {
       .pipe(catchError(err => this._handleError(err)));
   }
 
+  /** Update a single Approval */
+  updateApproval(approval: Approval): Observable<Approval> {
+    const url = this.apiRoot + this.endpoints.approval
+      .replace('{approval_id}', approval.id.toString());
+    return this.httpClient
+      .put<Approval>(url, approval)
+      .pipe(catchError(err => this._handleError(err)));
+  }
+
   /** Get all Workflow Specifications */
   getWorkflowSpecList(): Observable<WorkflowSpec[]> {
     const url = this.apiRoot + this.endpoints.workflowSpecList;
