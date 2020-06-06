@@ -8,7 +8,7 @@ import {catchError} from 'rxjs/operators';
 import {ApiErrorsComponent} from '../components/api-errors/api-errors.component';
 import {ApiError} from '../types/api';
 import {AppEnvironment} from '../types/app-environment';
-import {Approval, ApprovalStatus} from '../types/approval';
+import {Approval, ApprovalCounts, ApprovalStatus} from '../types/approval';
 import {FileMeta, FileParams, LookupData} from '../types/file';
 import {ScriptInfo} from '../types/script-info';
 import {WorkflowStats} from '../types/stats';
@@ -49,6 +49,7 @@ export class ApiService {
     studyApprovals: '/study/{study_id}/approvals',
 
     // Approvals
+    approvalCounts: '/approval-counts',
     approvalList: '/approval',
     approval: '/approval/{approval_id}',
 
@@ -132,6 +133,19 @@ export class ApiService {
 
     return this.httpClient
       .get<Approval[]>(url)
+      .pipe(catchError(err => this._handleError(err)));
+  }
+
+  /** Get Approval counts by status */
+  getApprovalCounts(asUser: string): Observable<ApprovalCounts>{
+    let params = new HttpParams();
+    if (asUser) {
+      params = params.set('as_user', asUser);
+    }
+
+    const url = this.apiRoot + this.endpoints.approvalCounts;
+    return this.httpClient
+      .get<ApprovalCounts>(url, {params})
       .pipe(catchError(err => this._handleError(err)));
   }
 

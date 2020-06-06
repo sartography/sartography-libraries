@@ -1,14 +1,14 @@
 export enum ApprovalStatus {
-  AWAITING = 'AWAITING',
   PENDING = 'PENDING',
+  AWAITING = 'AWAITING',
   APPROVED = 'APPROVED',
   DECLINED = 'DECLINED',
   CANCELED = 'CANCELED'
 }
 
 export enum ApprovalStatusLabels {
-  AWAITING = 'Awaiting review by another approver',
   PENDING = 'Pending your approval',
+  AWAITING = 'Awaiting review by another approver',
   APPROVED = 'Approved',
   DECLINED = 'Declined',
   CANCELED = 'Canceled'
@@ -46,4 +46,12 @@ export interface Approval {
   primary_investigator: ApprovalPerson;
   date_created: Date;
   date_approved?: Date;
+}
+
+export interface ApprovalCounts {
+  AWAITING: number;
+  PENDING: number;
+  APPROVED: number;
+  DECLINED: number;
+  CANCELED?: number;  // API doesn't return number of canceled approvals
 }
