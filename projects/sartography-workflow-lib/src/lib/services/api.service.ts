@@ -39,8 +39,7 @@ export class ApiService {
     renderMarkdown: '/render_markdown',
 
     // Users
-    fakeSession: '/sso_backdoor',
-    realSession: '/login',
+    login: '/login',
     user: '/user',
 
     // Studies
@@ -489,10 +488,9 @@ export class ApiService {
     let httpParams = new HttpParams().set('redirect', returnUrl);
     if (!this.environment.production) {
       httpParams = httpParams.set('uid', 'dhf8r');
-      this.openUrl(this.apiRoot + this.endpoints.fakeSession + '?' + httpParams.toString());
-    } else {
-      this.openUrl(this.apiRoot + this.endpoints.realSession + '?' + httpParams.toString());
     }
+
+    this.openUrl(this.apiRoot + this.endpoints.login + '?' + httpParams.toString());
   }
 
   openUrl(url) {

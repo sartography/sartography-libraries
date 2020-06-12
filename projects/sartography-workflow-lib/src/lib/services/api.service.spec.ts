@@ -18,6 +18,7 @@ import {mockWorkflowSpecCategories, mockWorkflowSpecCategory0} from '../testing/
 import {mockWorkflowSpec0, mockWorkflowSpecs} from '../testing/mocks/workflow-spec.mocks';
 import {mockWorkflowTask0} from '../testing/mocks/workflow-task.mocks';
 import {mockWorkflow0} from '../testing/mocks/workflow.mocks';
+import {ApprovalCounts} from '../types/approval';
 import {FileMeta, FileParams} from '../types/file';
 import {Study} from '../types/study';
 import {WorkflowSpec, WorkflowSpecCategory} from '../types/workflow';
@@ -602,5 +603,26 @@ describe('ApiService', () => {
     localStorage.removeItem('token');
     expect(service.isSignedIn()).toBeFalse();
   });
+
+  it('should get approvals for one study');
+
+  it('should get approvals counts for one approver', () => {
+    const mockApprovalCounts: ApprovalCounts = {
+      APPROVED: 3,
+      AWAITING: 14,
+      CANCELED: 15,
+      DECLINED: 9,
+      PENDING: 26,
+    };
+    service.getApprovalCounts('dhf8r').subscribe(data => {
+      expect(data).toEqual(mockApprovalCounts);
+    });
+
+    const req = httpMock.expectOne(`apiRoot/approval-counts?as_user=dhf8r`);
+    expect(req.request.method).toEqual('GET');
+    req.flush(mockApprovalCounts);
+  });
+
+  it('should get all approvals for one approver');
 
 });
