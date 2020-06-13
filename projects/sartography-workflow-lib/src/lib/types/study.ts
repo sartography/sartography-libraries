@@ -1,5 +1,6 @@
 import {ApiError} from './api';
 import {Approval} from './approval';
+import {FileMeta} from './file';
 import {WorkflowSpecCategory} from './workflow';
 
 export enum ProtocolBuilderStatus {
@@ -71,4 +72,5 @@ export interface Study {
   user_uid?: string;
   warnings?: ApiError[];
   approvals?: Approval[];
+  files?: FileMeta[];
 }
