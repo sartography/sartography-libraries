@@ -485,7 +485,7 @@ export class ApiService {
     localStorage.setItem('prev_url', location.href);
     const returnUrl = location.origin + this.baseHref + 'session';
     console.log('Should return to ' + returnUrl);
-    let httpParams = new HttpParams().set('redirect', returnUrl);
+    let httpParams = new HttpParams().set('redirect_url', returnUrl);
     if (!this.environment.production) {
       httpParams = httpParams.set('uid', 'dhf8r');
     }
