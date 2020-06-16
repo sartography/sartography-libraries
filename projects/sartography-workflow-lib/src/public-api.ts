@@ -51,6 +51,7 @@ export * from './lib/testing/mocks/workflow-task.mocks';
 export * from './lib/testing/mocks/workflow.mocks';
 
 // Types
+export * from './lib/types/api';
 export * from './lib/types/app-environment';
 export * from './lib/types/file';
 export * from './lib/types/irb';
