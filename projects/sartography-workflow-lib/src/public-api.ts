@@ -23,6 +23,7 @@ export * from './lib/modules/forms/validators/url.validator';
 // Pipes Module
 export * from './lib/modules/pipes/sartography-pipes.module';
 export * from './lib/modules/pipes/clean-up-ldap-properties.pipe';
+export * from './lib/modules/pipes/ordinal.pipe';
 export * from './lib/modules/pipes/to-formly.pipe';
 export * from './lib/modules/pipes/unescape-line-breaks.pipe';
 
