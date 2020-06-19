@@ -118,6 +118,13 @@ export class ToFormlyPipe implements PipeTransform {
           resultField.templateOptions.options = field.options.map(v => {
             return {value: v.id, label: v.name};
           });
+
+          // Store the entire option object as the value of the select field, but, when comparing
+          // the control, Formly will look into the value attribute of the option object, rather than
+          // the value attribute of the field. Yes, it's confusing, but it allows us to access the label
+          // of the option so we can display it later.
+          resultField.templateOptions.valueProp = (option) => option;
+          resultField.templateOptions.compareWith = (o1, o2) => o1.value === o2.value;
           break;
         case 'string':
           resultField.type = 'input';
@@ -291,6 +298,11 @@ export class ToFormlyPipe implements PipeTransform {
                 if (p.value === 'checkbox') {
                   resultField.type = 'multicheckbox';
                   resultField.className = 'vertical-checkbox-group';
+
+                  // valueProp and compareWith don't work with multicheckbox the same way select does
+                  delete resultField.templateOptions.valueProp;
+                  delete resultField.templateOptions.compareWith;
+
                   if (resultField.templateOptions.required) {
                     resultField.validators = {validation: ['multicheckbox']};
                   }

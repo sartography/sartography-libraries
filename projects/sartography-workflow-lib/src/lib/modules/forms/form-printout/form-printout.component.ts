@@ -20,10 +20,11 @@ export class FormPrintoutComponent {
 
   getModelValue(key: string) {
     let val = this.field.model[key];
+    const fType = this.field.type;
 
-    // If this is a select field, get the human-readable label for it
-    if (['select', 'multicheckbox', 'radio'].includes(this.field.type)) {
-      let selectLabel: string;
+    // If this is a radio or checkbox field, get the human-readable label for it
+    if (fType === 'multicheckbox' || fType === 'radio') {
+      const labels = [];
       const opts = this.field.templateOptions.options as SelectFieldOption[];
       opts.forEach(o => {
         if (!this._isOther(o.value) && !this._isOther(o.label)) {
@@ -37,17 +38,22 @@ export class FormPrintoutComponent {
               val[o.value] === true
             )
           ) {
-            selectLabel = selectLabel === undefined ? o.label : selectLabel + ', ' + o.label;
+            labels.push(o.label);
           }
         }
       });
 
-      if (selectLabel) {
-        return selectLabel;
+      if (labels.length > 0) {
+        return labels.join(', ');
       }
     }
 
-    if (this.field.type === 'datepicker') {
+    // Dropdown box has the value stored as an option object
+    if (fType === 'select') {
+      return val.label;
+    }
+
+    if (fType === 'datepicker') {
       const displayDate = formatDate(val, 'mediumDate', 'en-us');
       return displayDate;
     }
