@@ -253,7 +253,7 @@ export class ToFormlyPipe implements PipeTransform {
               resultField.hideExpression = p.value;
 
               // Clears value when hidden (will be the default in Formly v6?)
-              (resultField as any).autoclear = true;
+              (resultField as any).autoClear = true;
               break;
             case 'value_expression':
               const modelKey = `model.${resultField.key}`
@@ -446,7 +446,7 @@ export class ToFormlyPipe implements PipeTransform {
           delete field.templateOptions.repeatSectionHideExpression;
 
           // Clears value when hidden (will be the default in Formly v6?)
-          (newGroup as any).autoclear = true;
+          (newGroup as any).autoClear = true;
 
           newGroup.fieldGroup[0].expressionProperties = {
             'templateOptions.required': field.templateOptions.repeatSectionRequiredExpression,
