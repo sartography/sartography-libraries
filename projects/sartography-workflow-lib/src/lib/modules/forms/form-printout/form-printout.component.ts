@@ -23,7 +23,7 @@ export class FormPrintoutComponent {
     const fType = this.field.type;
 
     // If this is a radio or checkbox field, get the human-readable label for it
-    if (fType === 'multicheckbox' || fType === 'radio') {
+    if (fType === 'multicheckbox' || fType === 'radio' || fType === 'select') {
       const labels = [];
       const opts = this.field.templateOptions.options as SelectFieldOption[];
       opts.forEach(o => {
@@ -48,10 +48,11 @@ export class FormPrintoutComponent {
       }
     }
 
-    // Dropdown box has the value stored as an option object
-    if (fType === 'select') {
-      return val.label;
-    }
+    // TODO: REVISIT THIS SOMETIME WHEN WE CAN TEST IT MORE THOROUGHLY
+    // // Dropdown box has the value stored as an option object
+    // if (fType === 'select') {
+    //   return val.label;
+    // }
 
     if (fType === 'datepicker') {
       const displayDate = formatDate(val, 'mediumDate', 'en-us');
