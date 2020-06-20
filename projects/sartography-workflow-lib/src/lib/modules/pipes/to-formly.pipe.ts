@@ -251,6 +251,9 @@ export class ToFormlyPipe implements PipeTransform {
               break;
             case 'hide_expression':
               resultField.hideExpression = p.value;
+
+              // Clears value when hidden (will be the default in Formly v6?)
+              (resultField as any).autoclear = true;
               break;
             case 'value_expression':
               const modelKey = `model.${resultField.key}`
@@ -302,7 +305,7 @@ export class ToFormlyPipe implements PipeTransform {
 
                   // TODO: REVISIT THIS SOMETIME WHEN WE CAN TEST IT MORE THOROUGHLY
                   // // valueProp and compareWith don't work with multicheckbox the same way select does
-                  // delete resultField.templateOptions.valueProp;  
+                  // delete resultField.templateOptions.valueProp;
                   // delete resultField.templateOptions.compareWith;
 
                   if (resultField.templateOptions.required) {
@@ -441,6 +444,9 @@ export class ToFormlyPipe implements PipeTransform {
 
           newGroup.hideExpression = field.templateOptions.repeatSectionHideExpression;
           delete field.templateOptions.repeatSectionHideExpression;
+
+          // Clears value when hidden (will be the default in Formly v6?)
+          (newGroup as any).autoclear = true;
 
           newGroup.fieldGroup[0].expressionProperties = {
             'templateOptions.required': field.templateOptions.repeatSectionRequiredExpression,
