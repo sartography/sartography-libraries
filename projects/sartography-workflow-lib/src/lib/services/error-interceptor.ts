@@ -37,7 +37,7 @@ export class ErrorInterceptor implements HttpInterceptor {
       }
 
       // Display API Error
-      if (err.status === 400 || err.status === 500) {
+      if (err.status === 400 || err.status === 404 || err.status === 500) {
         this.zone.run(() => {
           this.bottomSheet.open(ApiErrorsComponent, {data: {apiErrors: [err.error]}});
         });
