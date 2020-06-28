@@ -1,11 +1,9 @@
 import {APP_BASE_HREF, Location} from '@angular/common';
 import {HttpClient, HttpParams, HttpResponse} from '@angular/common/http';
-import {Inject, Injectable, NgZone} from '@angular/core';
-import {MatBottomSheet} from '@angular/material/bottom-sheet';
+import {Inject, Injectable} from '@angular/core';
 import {Router} from '@angular/router';
 import {Observable, of, throwError} from 'rxjs';
 import {catchError} from 'rxjs/operators';
-import {ApiErrorsComponent} from '../components/api-errors/api-errors.component';
 import {ApiError} from '../types/api';
 import {AppEnvironment} from '../types/app-environment';
 import {Approval, ApprovalCounts, ApprovalStatus} from '../types/approval';
@@ -136,7 +134,7 @@ export class ApiService {
   }
 
   /** Get Approval counts by status */
-  getApprovalCounts(asUser: string): Observable<ApprovalCounts>{
+  getApprovalCounts(asUser: string): Observable<ApprovalCounts> {
     let params = new HttpParams();
     if (asUser) {
       params = params.set('as_user', asUser);

@@ -21,6 +21,13 @@ export enum WorkflowTaskType {
   USER_TASK = 'UserTask',
 }
 
+export enum MultiInstanceType {
+  NONE = 'none',
+  LOOPING = 'looping',
+  PARALLEL = 'parallel',
+  SEQUENTIAL = 'sequential',
+}
+
 const DISPLAY_NAME_PROP = 'display_name';
 
 export interface WorkflowTask {
@@ -34,7 +41,7 @@ export interface WorkflowTask {
   title: string;
   type: WorkflowTaskType;
   process_name: string;
-  multi_instance_type: string;
+  multi_instance_type: MultiInstanceType;
   multi_instance_count: number;
   multi_instance_index: number;
 }

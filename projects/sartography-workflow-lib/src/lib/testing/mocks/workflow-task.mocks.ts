@@ -1,4 +1,4 @@
-import {WorkflowTask, WorkflowTaskState, WorkflowTaskType} from '../../types/workflow-task';
+import {MultiInstanceType, WorkflowTask, WorkflowTaskState, WorkflowTaskType} from '../../types/workflow-task';
 
 export const mockWorkflowTask0: WorkflowTask = {
   id: '0',
@@ -10,7 +10,7 @@ export const mockWorkflowTask0: WorkflowTask = {
   data: {},
   multi_instance_count: 0,
   multi_instance_index: 0,
-  multi_instance_type: '',
+  multi_instance_type: MultiInstanceType.NONE,
   process_name: '',
   form: {
     key: 'Create a beautiful little sunset.',
@@ -41,7 +41,7 @@ export const mockWorkflowTask1: WorkflowTask = {
   data: {},
   multi_instance_count: 0,
   multi_instance_index: 0,
-  multi_instance_type: '',
+  multi_instance_type: MultiInstanceType.NONE,
   process_name: '',
   form: {
     key: 'Form 0.0.0.0',
