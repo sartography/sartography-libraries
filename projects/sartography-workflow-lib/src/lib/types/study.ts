@@ -4,18 +4,16 @@ import {FileMeta} from './file';
 import {WorkflowSpecCategory} from './workflow';
 
 export enum ProtocolBuilderStatus {
-  INCOMPLETE = 'incomplete',
   ACTIVE = 'active',
-  HOLD = 'hold',
   OPEN = 'open',
+  HOLD = 'hold',
   ABANDONED = 'abandoned',
 }
 
 export enum ProtocolBuilderStatusLabels {
-  INCOMPLETE = 'Incomplete',
-  ACTIVE = 'Active',
-  HOLD = 'Hold',
+  ACTIVE = 'In Progress',
   OPEN = 'Open to Enrollment',
+  HOLD = 'Hold',
   ABANDONED = 'Abandoned',
 }
 
