@@ -365,25 +365,25 @@ export class ToFormlyPipe implements PipeTransform {
             wrappers: ['panel'],
           };
 
-          if (field.templateOptions.repeatSectionKey) {
-            // Move the repeat section (if any) out of the field and into the new group
-            newGroup.templateOptions.repeatSectionKey = field.templateOptions.repeatSectionKey;
-            newGroup.templateOptions.repeatSectionTitle = field.templateOptions.repeatSectionTitle;
-            newGroup.templateOptions.repeatSectionButtonLabel = field.templateOptions.repeatSectionButtonLabel;
-            newGroup.templateOptions.repeatSectionEditOnly = field.templateOptions.repeatSectionEditOnly;
-            newGroup.templateOptions.repeatSectionHideExpression = field.templateOptions.repeatSectionHideExpression;
-            newGroup.templateOptions.repeatSectionRequired = field.templateOptions.repeatSectionRequired;
-            newGroup.templateOptions.repeatSectionRequiredExpression = field.templateOptions.repeatSectionRequiredExpression;
-            delete field.templateOptions.repeatSectionKey;
-            delete field.templateOptions.repeatSectionTitle;
-            delete field.templateOptions.repeatSectionButtonLabel;
-            delete field.templateOptions.repeatSectionHideExpression;
-            delete field.templateOptions.repeatSectionRequired;
-            delete field.templateOptions.repeatSectionRequiredExpression;
-          }
+          // Move repeat section properties (if any) and group name out of the field and into the new group
+          const keys = [
+            'repeatSectionKey',
+            'repeatSectionTitle',
+            'repeatSectionButtonLabel',
+            'repeatSectionEditOnly',
+            'repeatSectionHideExpression',
+            'repeatSectionRequired',
+            'repeatSectionRequiredExpression',
+            'groupName',
+          ];
 
-          newGroup.templateOptions.groupName = groupName;
-          delete field.templateOptions.groupName;
+          keys.forEach(k => {
+            if (field.templateOptions.hasOwnProperty(k)) {
+              newGroup.templateOptions[k] = field.templateOptions[k];
+              delete field.templateOptions[k];
+            }
+          });
+
           grouped.push(newGroup);
         }
       } else {
