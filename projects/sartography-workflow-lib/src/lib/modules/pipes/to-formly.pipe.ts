@@ -357,7 +357,10 @@ export class ToFormlyPipe implements PipeTransform {
         } else {
           // if not found, add the group, then add it to the grouped array
           const newGroup: FormlyFieldConfig = {
-            key: groupName,
+
+            // Leaving key off so Formly doesn't wrap the group model in a nested object
+            // key: groupName,
+
             templateOptions: {
               label: groupName,
             },

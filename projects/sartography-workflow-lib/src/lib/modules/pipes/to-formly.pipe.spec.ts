@@ -464,13 +464,13 @@ describe('ToFormlyPipe', () => {
     expect(after.length).toEqual(3);
 
     // Group 1
-    expect(after[0].key).toEqual(before[0].properties[0].value);
+    expect(after[0].key).toBeUndefined('fieldGroup key should be empty so Formly does not nest the group data model');
     expect(after[0].templateOptions.label).toEqual(before[0].properties[0].value);
     expect(after[0].fieldGroup[0].key).toEqual(before[0].id);
     expect(after[0].fieldGroup[1].key).toEqual(before[3].id);
 
     // Group 2
-    expect(after[1].key).toEqual(before[1].properties[0].value);
+    expect(after[1].key).toBeUndefined('fieldGroup key should be empty so Formly does not nest the group data model');
     expect(after[1].templateOptions.label).toEqual(before[1].properties[0].value);
     expect(after[1].fieldGroup[0].key).toEqual(before[1].id);
     expect(after[1].fieldGroup[1].key).toEqual(before[2].id);
@@ -555,7 +555,7 @@ describe('ToFormlyPipe', () => {
 
     // Repeat Section - Group 1
     const repeatGroup1 = repeatSection.fieldArray.fieldGroup[0];
-    expect(repeatGroup1.key).toEqual(before[3].properties[1].value);
+    expect(repeatGroup1.key).toBeUndefined('fieldGroup key should be empty so Formly does not wrap the group data model');
     expect(repeatGroup1).toBeDefined();
     expect(repeatGroup1.fieldGroup[0]).toBeDefined();
     expect(repeatGroup1.fieldGroup[0].templateOptions.label).toEqual(before[0].label);
@@ -563,7 +563,7 @@ describe('ToFormlyPipe', () => {
 
     // Repeat Section - Group 2
     const repeatGroup2 = repeatSection.fieldArray.fieldGroup[1];
-    expect(repeatGroup2.key).toEqual(before[1].properties[1].value);
+    expect(repeatGroup2.key).toBeUndefined('fieldGroup key should be empty so Formly does not wrap the group data model');
     expect(repeatGroup2).toBeDefined();
     expect(repeatGroup2.fieldGroup[0]).toBeDefined();
     expect(repeatGroup2.fieldGroup[0].templateOptions.label).toEqual(before[1].label);
