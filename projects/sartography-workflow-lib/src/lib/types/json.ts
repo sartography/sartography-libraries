@@ -11,6 +11,7 @@ export interface BpmnFormJsonFieldProperty {
 export interface BpmnFormJsonFieldEnumValue {
   id: string;
   name: string;
+  data?: any;     // Lookup data object, populated by backend LookupService
 }
 
 export interface BpmnFormJsonField {
