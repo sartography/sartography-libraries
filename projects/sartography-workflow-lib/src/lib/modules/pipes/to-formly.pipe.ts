@@ -124,16 +124,15 @@ export class ToFormlyPipe implements PipeTransform {
             return {value: v.id, label: v.name, data: v.data};
           });
 
-          // TODO: REVISIT THIS SOMETIME WHEN WE CAN TEST IT MORE THOROUGHLY
-          // // Store the entire option object as the value of the select field, but, when comparing
-          // // the control, Formly will look into the value attribute of the option object, rather than
-          // // the value attribute of the field. Yes, it's confusing, but it allows us to access the label
-          // // of the option so we can display it later.
-          // resultField.templateOptions.valueProp = (option) => option;
-          // resultField.templateOptions.compareWith = (o1, o2) => o1.value === o2.value;
+          // Store the entire option object as the value of the select field, but, when comparing
+          // the control, Formly will look into the value attribute of the option object, rather than
+          // the value attribute of the field. Yes, it's confusing, but it allows us to access the label
+          // of the option so we can display it later.
+          resultField.templateOptions.valueProp = (option) => option;
+          resultField.templateOptions.compareWith = (o1, o2) => o1.value === o2.value;
 
           // Store the option(s) data in the model when the user changes the field value
-          resultField.templateOptions.change = (f, e) => this._handleEnumChange(f, e);
+          // resultField.templateOptions.change = (f, e) => this._handleEnumChange(f, e);
           break;
         case 'string':
           resultField.type = 'input';
@@ -309,16 +308,8 @@ export class ToFormlyPipe implements PipeTransform {
               if (field.type === 'enum') {
                 if (p.value === 'checkbox') {
                   resultField.type = 'multicheckbox';
+                  resultField.templateOptions.type = 'array';
                   resultField.className = 'vertical-checkbox-group';
-
-                  // TODO: REVISIT THIS SOMETIME WHEN WE CAN TEST IT MORE THOROUGHLY
-                  // // valueProp and compareWith don't work with multicheckbox the same way select does
-                  // delete resultField.templateOptions.valueProp;
-                  // delete resultField.templateOptions.compareWith;
-
-                  if (resultField.templateOptions.required) {
-                    resultField.validators = {validation: ['multicheckbox']};
-                  }
                 }
 
                 if (p.value === 'radio') {
@@ -327,7 +318,7 @@ export class ToFormlyPipe implements PipeTransform {
                 }
 
                 resultField.templateOptions.options = field.options.map(v => {
-                  return {value: v.id, label: v.name};
+                  return {value: v.id, label: v.name, data: v.data};
                 });
               }
               break;
