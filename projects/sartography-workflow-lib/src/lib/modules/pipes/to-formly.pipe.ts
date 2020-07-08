@@ -1,13 +1,13 @@
 import {Pipe, PipeTransform} from '@angular/core';
+import {MatCheckboxChange} from '@angular/material/checkbox';
+import {MatRadioChange} from '@angular/material/radio';
+import {MatSelectChange} from '@angular/material/select';
 import {FormlyFieldConfig} from '@ngx-formly/core';
+import {Observable} from 'rxjs';
 import {isIterable} from 'rxjs/internal-compatibility';
 import {ApiService} from '../../services/api.service';
 import {FileParams} from '../../types/file';
 import {BpmnFormJsonField} from '../../types/json';
-import {MatSelectChange} from '@angular/material/select';
-import {Observable} from 'rxjs';
-import {MatCheckboxChange} from '@angular/material/checkbox';
-import {MatRadioChange} from '@angular/material/radio';
 
 
 /***
@@ -307,7 +307,7 @@ export class ToFormlyPipe implements PipeTransform {
             case 'enum_type':
               if (field.type === 'enum') {
                 if (p.value === 'checkbox') {
-                  resultField.type = 'multicheckbox';
+                  resultField.type = 'multicheckbox_data';
                   resultField.templateOptions.type = 'array';
                   resultField.className = 'vertical-checkbox-group';
                 }
