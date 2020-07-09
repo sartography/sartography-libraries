@@ -1,39 +1,38 @@
-import {MatCheckboxModule} from '@angular/material/checkbox';
+import {ReactiveFormsModule} from '@angular/forms';
+import {MatRadioModule} from '@angular/material/radio';
 import {NoopAnimationsModule} from '@angular/platform-browser/animations';
 import {FormlyFieldConfig, FormlyModule} from '@ngx-formly/core';
 import {FormlySelectModule} from '@ngx-formly/core/select';
-import {FormlyMatFormFieldModule} from '@ngx-formly/material/form-field';
 import {createFormlyFieldComponent} from '../../../testing/formly/component-factory';
-import {MulticheckboxDataFieldComponent} from './multicheckbox-data-field.component';
+import {RadioDataFieldComponent} from './radio-data-field.component';
 
 
 const renderComponent = (field: FormlyFieldConfig) => {
   return createFormlyFieldComponent(field, {
     declarations: [
-      MulticheckboxDataFieldComponent,
+      RadioDataFieldComponent,
     ],
     imports: [
       FormlyModule.forRoot({
         types: [
-          {name: 'multicheckbox_data', component: MulticheckboxDataFieldComponent},
+          {name: 'radio_data', component: RadioDataFieldComponent},
         ]
       }),
-      FormlyMatFormFieldModule,
-      FormlySelectModule,
-      MatCheckboxModule,
       NoopAnimationsModule,
+      FormlySelectModule,
+      MatRadioModule,
+      ReactiveFormsModule,
     ],
   });
 }
 
-describe('MulticheckboxDataFieldComponent', () => {
-  it('should render multicheckbox type', () => {
+describe('RadioDataFieldComponent', () => {
+  it('should render radio buttons with data', () => {
     const component = renderComponent({
-      key: 'checkbox_field',
-      type: 'multicheckbox_data',
+      key: 'radio_field',
+      type: 'radio_data',
       templateOptions: {
-        label: 'Multicheckbox Data Field',
-        type: 'array',
+        label: 'Radio Data Field',
         options: [
           {value: 'a', label: 'Option A', data: {short_name: 'a', long_name: 'Option A', description: 'A is for apoplanesic'}},
           {value: 'b', label: 'Option B', data: {short_name: 'b', long_name: 'Option B', description: 'B is for blandiloquent'}},
@@ -44,23 +43,18 @@ describe('MulticheckboxDataFieldComponent', () => {
         ],
       },
       model: {
-        checkbox_field: [
-          {value: 'b', label: 'Option B', data: {short_name: 'b', long_name: 'Option B', description: 'B is for blandiloquent'}},
-          {value: 'e', label: 'Option E', data: {short_name: 'e', long_name: 'Option E', description: 'E is for endemoniasmic'}},
-        ]
+        radio_field: {value: 'c', label: 'Option C', data: {short_name: 'c', long_name: 'Option C', description: 'C is for catachthonic'}},
       }
     });
 
-    expect(component.query('lib-multicheckbox-data-field')).not.toBeNull();
-    const checkboxes = component.queryAll('mat-checkbox');
-    expect(checkboxes.length).toEqual(6);
+    expect(component).toBeTruthy();
+    expect(component.query('lib-radio-data-field')).not.toBeNull();
+    const radioButtons = component.queryAll('mat-radio-button');
+    expect(radioButtons.length).toEqual(6);
 
     const value = component.field.form.value;
-    expect(value).toEqual({
-      checkbox_field: [
-        {value: 'b', label: 'Option B', data: {short_name: 'b', long_name: 'Option B', description: 'B is for blandiloquent'}},
-        {value: 'e', label: 'Option E', data: {short_name: 'e', long_name: 'Option E', description: 'E is for endemoniasmic'}},
-      ]
-    });
+    expect(value).toEqual(jasmine.objectContaining({
+      radio_field: {value: 'c', label: 'Option C', data: {short_name: 'c', long_name: 'Option C', description: 'C is for catachthonic'}},
+    }));
   });
 });

@@ -130,9 +130,6 @@ export class ToFormlyPipe implements PipeTransform {
           // of the option so we can display it later.
           resultField.templateOptions.valueProp = (option) => option;
           resultField.templateOptions.compareWith = (o1, o2) => o1.value === o2.value;
-
-          // Store the option(s) data in the model when the user changes the field value
-          // resultField.templateOptions.change = (f, e) => this._handleEnumChange(f, e);
           break;
         case 'string':
           resultField.type = 'input';
@@ -313,13 +310,9 @@ export class ToFormlyPipe implements PipeTransform {
                 }
 
                 if (p.value === 'radio') {
-                  resultField.type = 'radio';
+                  resultField.type = 'radio_data';
                   resultField.className = 'vertical-radio-group';
                 }
-
-                resultField.templateOptions.options = field.options.map(v => {
-                  return {value: v.id, label: v.name, data: v.data};
-                });
               }
               break;
             default:
@@ -487,48 +480,5 @@ export class ToFormlyPipe implements PipeTransform {
     }
 
     return defaultNum;
-  }
-
-  private _handleEnumChange(f, e: MatSelectChange | MatCheckboxChange | MatRadioChange) {
-    console.log('*** enum templateOptions change ***');
-    console.log('field', f);
-    console.log('event', e);
-    const key = f.key + '_data';
-    const options = f.templateOptions.options;
-
-    if (e instanceof MatSelectChange || e instanceof MatRadioChange) {
-      f.model[key] = this._getOptionForValue(e.value, options);
-    } else if (e instanceof MatCheckboxChange) {
-      // Checkbox values are stored in the format
-      // { 'val1': true, 'val2': false }
-
-      // Get options for each value that's true
-      const data = {};
-
-      for (const [k, v] of Object.entries(f.formControl.value)) {
-        if (v) {
-          data[k] = this._getOptionForValue(k, options);
-        }
-      }
-
-      f.model[key] = data;
-    }
-
-    console.log('*** /enum templateOptions change ***');
-  }
-
-  // Gets the matching enum field option for the given value
-  private _getOptionForValue(value: any, options: any[] | Observable<any[]>) {
-    if (Array.isArray(options)) {
-      if (value !== undefined && value !== null) {
-        return options.find(o => o.value === value);
-      }
-    } else if (options instanceof Observable) {
-      options.subscribe(opts => {
-        if (value !== undefined && value !== null) {
-          return opts.find(o => o.value === value);
-        }
-      });
-    }
   }
 }

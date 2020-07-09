@@ -200,12 +200,12 @@ describe('ToFormlyPipe', () => {
 
     before[0].properties.push({id: 'enum_type', value: 'checkbox'});
     const afterMulticheckbox = await pipe.transform(before);
-    expect(afterMulticheckbox[0].type).toEqual('multicheckbox');
+    expect(afterMulticheckbox[0].type).toEqual('multicheckbox_data');
     expect(afterMulticheckbox[0].className).toEqual('vertical-checkbox-group');
 
     before[0].properties[1] = {id: 'enum_type', value: 'radio'};
     const afterRadio = await pipe.transform(before);
-    expect(afterRadio[0].type).toEqual('radio');
+    expect(afterRadio[0].type).toEqual('radio_data');
     expect(afterRadio[0].className).toEqual('vertical-radio-group');
   });
 

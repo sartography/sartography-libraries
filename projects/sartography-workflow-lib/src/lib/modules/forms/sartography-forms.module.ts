@@ -9,6 +9,7 @@ import {MatCheckboxModule} from '@angular/material/checkbox';
 import {MatDialogModule} from '@angular/material/dialog';
 import {MatIconModule} from '@angular/material/icon';
 import {MatInputModule} from '@angular/material/input';
+import {MatRadioModule} from '@angular/material/radio';
 import {MatTableModule} from '@angular/material/table';
 import {FormlyModule} from '@ngx-formly/core';
 import {FormlySelectModule} from '@ngx-formly/core/select';
@@ -31,6 +32,7 @@ import {MarkdownDescriptionWrapperComponent} from './markdown-description-wrappe
 import {markdownDescriptionWrapperExtension} from './markdown-description-wrapper/markdown-description-wrapper.extension';
 import {MulticheckboxDataFieldComponent} from './multicheckbox-data-field/multicheckbox-data-field.component';
 import {PanelWrapperComponent} from './panel-wrapper/panel-wrapper.component';
+import {RadioDataFieldComponent} from './radio-data-field/radio-data-field.component';
 import {RepeatSectionDialogComponent} from './repeat-section-dialog/repeat-section-dialog.component';
 import {RepeatSectionComponent} from './repeat-section/repeat-section.component';
 import {
@@ -69,6 +71,7 @@ export class AppFormlyConfig {
       {name: 'file', component: FileFieldComponent, wrappers: ['form-field']},
       {name: 'files', component: FileUploadComponent, wrappers: ['form-field']},
       {name: 'multicheckbox_data', component: MulticheckboxDataFieldComponent},
+      {name: 'radio_data', component: RadioDataFieldComponent},
       {name: 'repeat', component: RepeatSectionComponent},
     ],
     validators: [
@@ -121,6 +124,7 @@ export class AppFormlyConfig {
     MarkdownDescriptionWrapperComponent,
     MulticheckboxDataFieldComponent,
     PanelWrapperComponent,
+    RadioDataFieldComponent,
     RepeatSectionComponent,
     RepeatSectionDialogComponent,
   ],
@@ -130,21 +134,22 @@ export class AppFormlyConfig {
     FormlyMatDatepickerModule,
     FormlyMaterialModule,
     FormlyModule.forRoot(AppFormlyConfig.config),
+    FormlySelectModule,
     FormsModule,
     MarkdownModule.forRoot(),
     MatAutocompleteModule,
     MatButtonModule,
     MatCardModule,
+    MatCheckboxModule,
     MatDialogModule,
     MatIconModule,
     MatInputModule,
+    MatRadioModule,
     MatTableModule,
     NgxFileDropModule,
     ReactiveFormsModule,
     SartographyPipesModule,
     TruncateModule,
-    MatCheckboxModule,
-    FormlySelectModule,
   ],
   exports: [
     AutocompleteFieldComponent,
@@ -157,6 +162,7 @@ export class AppFormlyConfig {
     MarkdownDescriptionWrapperComponent,
     MulticheckboxDataFieldComponent,
     PanelWrapperComponent,
+    RadioDataFieldComponent,
     RepeatSectionComponent,
     RepeatSectionDialogComponent,
   ],
