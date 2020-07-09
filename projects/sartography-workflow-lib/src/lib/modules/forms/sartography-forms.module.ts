@@ -70,8 +70,8 @@ export class AppFormlyConfig {
       {name: 'autocomplete', component: AutocompleteFieldComponent, wrappers: ['form-field']},
       {name: 'file', component: FileFieldComponent, wrappers: ['form-field']},
       {name: 'files', component: FileUploadComponent, wrappers: ['form-field']},
-      {name: 'multicheckbox_data', component: MulticheckboxDataFieldComponent},
-      {name: 'radio_data', component: RadioDataFieldComponent},
+      {name: 'multicheckbox_data', component: MulticheckboxDataFieldComponent, wrappers: ['form-field']},
+      {name: 'radio_data', component: RadioDataFieldComponent, wrappers: ['form-field']},
       {name: 'repeat', component: RepeatSectionComponent},
     ],
     validators: [

@@ -3,6 +3,7 @@ import {MatRadioModule} from '@angular/material/radio';
 import {NoopAnimationsModule} from '@angular/platform-browser/animations';
 import {FormlyFieldConfig, FormlyModule} from '@ngx-formly/core';
 import {FormlySelectModule} from '@ngx-formly/core/select';
+import {FormlyMatFormFieldModule} from '@ngx-formly/material/form-field';
 import {createFormlyFieldComponent} from '../../../testing/formly/component-factory';
 import {RadioDataFieldComponent} from './radio-data-field.component';
 
@@ -13,14 +14,15 @@ const renderComponent = (field: FormlyFieldConfig) => {
       RadioDataFieldComponent,
     ],
     imports: [
+      FormlyMatFormFieldModule,
       FormlyModule.forRoot({
         types: [
-          {name: 'radio_data', component: RadioDataFieldComponent},
+          {name: 'radio_data', component: RadioDataFieldComponent, wrappers: ['form-field']},
         ]
       }),
-      NoopAnimationsModule,
       FormlySelectModule,
       MatRadioModule,
+      NoopAnimationsModule,
       ReactiveFormsModule,
     ],
   });

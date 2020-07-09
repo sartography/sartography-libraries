@@ -15,7 +15,7 @@ const renderComponent = (field: FormlyFieldConfig) => {
     imports: [
       FormlyModule.forRoot({
         types: [
-          {name: 'multicheckbox_data', component: MulticheckboxDataFieldComponent},
+          {name: 'multicheckbox_data', component: MulticheckboxDataFieldComponent, wrappers: ['form-field']},
         ]
       }),
       FormlyMatFormFieldModule,
@@ -56,11 +56,11 @@ describe('MulticheckboxDataFieldComponent', () => {
     expect(checkboxes.length).toEqual(6);
 
     const value = component.field.form.value;
-    expect(value).toEqual({
+    expect(value).toEqual(jasmine.objectContaining({
       checkbox_field: [
         {value: 'b', label: 'Option B', data: {short_name: 'b', long_name: 'Option B', description: 'B is for blandiloquent'}},
         {value: 'e', label: 'Option E', data: {short_name: 'e', long_name: 'Option E', description: 'E is for endemoniasmic'}},
       ]
-    });
+    }));
   });
 });
