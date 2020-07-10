@@ -7,26 +7,24 @@ import {FormlyFieldRadio} from '@ngx-formly/material/radio';
   templateUrl: './radio-data-field.component.html',
   styleUrls: ['./radio-data-field.component.scss']
 })
-export class RadioDataFieldComponent extends FormlyFieldRadio implements OnInit, AfterViewInit {
-  ngOnInit() {
-    super.ngOnInit();
-    // this.value = this.model[this.key];
-    // this.formControl.patchValue(this.value);
-  }
-
-  ngAfterViewInit() {
-    super.ngAfterViewInit();
-  }
-
+export class RadioDataFieldComponent extends FormlyFieldRadio {
   getSelected() {
-    const storedVal = this.model[this.key].value;
+    if (
+      this.model &&
+      this.key &&
+      this.model.hasOwnProperty(this.key) &&
+      this.model[this.key] &&
+      this.model[this.key].hasOwnProperty('value')
+    ) {
+      const storedVal = this.model[this.key].value;
 
-    if (this.radioGroup) {
-      const radios = this.radioGroup._radios.toArray();
+      if (this.radioGroup) {
+        const radios = this.radioGroup._radios.toArray();
 
-      for (const radio of radios) {
-        if (radio.value.value === storedVal) {
-          return radio;
+        for (const radio of radios) {
+          if (radio.value.value === storedVal) {
+            return radio;
+          }
         }
       }
     }
