@@ -1,0 +1,18 @@
+<mat-radio-group
+  [formControl]="formControl"
+  [formlyAttributes]="field"
+  [required]="to.required"
+  [tabindex]="to.tabindex"
+  [selected]="getSelected()"
+  (change)="selectRadio($event)"
+>
+  <mat-radio-button
+    *ngFor="let option of to.options | formlySelectOptions: field | async; let i = index"
+    [color]="to.color"
+    [id]="id + '_' + i"
+    [labelPosition]="to.labelPosition"
+    [value]="option.value"
+  >
+    {{ option.label }}
+  </mat-radio-button>
+</mat-radio-group>

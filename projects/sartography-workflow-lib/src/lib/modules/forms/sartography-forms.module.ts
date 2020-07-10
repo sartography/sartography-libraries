@@ -5,11 +5,14 @@ import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {MatAutocompleteModule} from '@angular/material/autocomplete';
 import {MatButtonModule} from '@angular/material/button';
 import {MatCardModule} from '@angular/material/card';
+import {MatCheckboxModule} from '@angular/material/checkbox';
 import {MatDialogModule} from '@angular/material/dialog';
 import {MatIconModule} from '@angular/material/icon';
 import {MatInputModule} from '@angular/material/input';
+import {MatRadioModule} from '@angular/material/radio';
 import {MatTableModule} from '@angular/material/table';
 import {FormlyModule} from '@ngx-formly/core';
+import {FormlySelectModule} from '@ngx-formly/core/select';
 import {FormlyMaterialModule} from '@ngx-formly/material';
 import {FormlyMatDatepickerModule} from '@ngx-formly/material/datepicker';
 import {TruncateModule} from '@yellowspot/ng-truncate';
@@ -27,7 +30,9 @@ import {HelpWrapperComponent} from './help-wrapper/help-wrapper.component';
 import {helpWrapperExtension} from './help-wrapper/help-wrapper.extension';
 import {MarkdownDescriptionWrapperComponent} from './markdown-description-wrapper/markdown-description-wrapper.component';
 import {markdownDescriptionWrapperExtension} from './markdown-description-wrapper/markdown-description-wrapper.extension';
+import {MulticheckboxDataFieldComponent} from './multicheckbox-data-field/multicheckbox-data-field.component';
 import {PanelWrapperComponent} from './panel-wrapper/panel-wrapper.component';
+import {RadioDataFieldComponent} from './radio-data-field/radio-data-field.component';
 import {RepeatSectionDialogComponent} from './repeat-section-dialog/repeat-section-dialog.component';
 import {RepeatSectionComponent} from './repeat-section/repeat-section.component';
 import {
@@ -65,6 +70,8 @@ export class AppFormlyConfig {
       {name: 'autocomplete', component: AutocompleteFieldComponent, wrappers: ['form-field']},
       {name: 'file', component: FileFieldComponent, wrappers: ['form-field']},
       {name: 'files', component: FileUploadComponent, wrappers: ['form-field']},
+      {name: 'multicheckbox_data', component: MulticheckboxDataFieldComponent, wrappers: ['form-field']},
+      {name: 'radio_data', component: RadioDataFieldComponent, wrappers: ['form-field']},
       {name: 'repeat', component: RepeatSectionComponent},
     ],
     validators: [
@@ -115,7 +122,9 @@ export class AppFormlyConfig {
     HelpDialogComponent,
     HelpWrapperComponent,
     MarkdownDescriptionWrapperComponent,
+    MulticheckboxDataFieldComponent,
     PanelWrapperComponent,
+    RadioDataFieldComponent,
     RepeatSectionComponent,
     RepeatSectionDialogComponent,
   ],
@@ -125,14 +134,17 @@ export class AppFormlyConfig {
     FormlyMatDatepickerModule,
     FormlyMaterialModule,
     FormlyModule.forRoot(AppFormlyConfig.config),
+    FormlySelectModule,
     FormsModule,
     MarkdownModule.forRoot(),
     MatAutocompleteModule,
     MatButtonModule,
     MatCardModule,
+    MatCheckboxModule,
     MatDialogModule,
     MatIconModule,
     MatInputModule,
+    MatRadioModule,
     MatTableModule,
     NgxFileDropModule,
     ReactiveFormsModule,
@@ -148,7 +160,9 @@ export class AppFormlyConfig {
     HelpDialogComponent,
     HelpWrapperComponent,
     MarkdownDescriptionWrapperComponent,
+    MulticheckboxDataFieldComponent,
     PanelWrapperComponent,
+    RadioDataFieldComponent,
     RepeatSectionComponent,
     RepeatSectionDialogComponent,
   ],

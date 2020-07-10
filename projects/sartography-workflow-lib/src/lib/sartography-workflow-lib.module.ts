@@ -7,6 +7,7 @@ import {MatListModule} from '@angular/material/list';
 import {ApiErrorsComponent} from './components/api-errors/api-errors.component';
 import {SartographyWorkflowLibComponent} from './components/sartography-workflow-lib.component';
 import {SessionRedirectComponent} from './components/session-redirect/session-redirect.component';
+import {FormlyTestComponent} from './testing/formly/component-factory';
 import {MockEnvironment} from './testing/mocks/environment.mocks';
 
 
@@ -15,6 +16,7 @@ import {MockEnvironment} from './testing/mocks/environment.mocks';
     ApiErrorsComponent,
     SartographyWorkflowLibComponent,
     SessionRedirectComponent,
+    FormlyTestComponent,
   ],
   imports: [
     MatListModule,
@@ -27,6 +29,7 @@ import {MockEnvironment} from './testing/mocks/environment.mocks';
     ApiErrorsComponent,
     SartographyWorkflowLibComponent,
     SessionRedirectComponent,
+    FormlyTestComponent,
   ],
   providers: [{provide: 'APP_ENVIRONMENT', useClass: MockEnvironment}]
 })
