@@ -85,4 +85,15 @@ export class FormPrintoutComponent {
     return value && typeof value === 'string' && value.toLowerCase() === 'other';
   }
 
+  isEnumField(field: FormlyFieldConfig) {
+    return ['select', 'radio_data', 'autocomplete'].includes(field.type);
+  }
+
+  addColon(label: string) {
+    if (label[label.length - 1] === ':') {
+      return label;
+    } else {
+      return label + ':';
+    }
+  }
 }

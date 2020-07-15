@@ -4,9 +4,17 @@
 <ng-template #displayValue>
   <ng-container *ngIf="getModelValue(field.key) && getModelValue(field.key) !== ''">
     <p>
-      {{field.templateOptions.label}}:
+      {{addColon(field.templateOptions.label)}}
       <strong>
-        {{field.type === 'autocomplete' ? field.model[field.key].label : getModelValue(field.key) | truncate: 50}}
+        <ng-container *ngIf="isEnumField(field)">{{field.model[field.key].label | truncate: 50}}</ng-container>
+        <ng-container *ngIf="!isEnumField(field)">
+          <ng-container *ngIf="field.type === 'multicheckbox_data'">
+            <ng-container *ngFor="let item of field.model[field.key]"><br />{{item.label | truncate: 50}}</ng-container>
+          </ng-container>
+          <ng-container *ngIf="field.type !== 'multicheckbox_data'">
+            {{getModelValue(field.key) | truncate: 50}}
+          </ng-container>
+        </ng-container>
       </strong>
     </p>
   </ng-container>
