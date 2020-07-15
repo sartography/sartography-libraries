@@ -47,6 +47,7 @@ export interface Workflow {
   is_latest_spec?: boolean;
   spec_version?: string;
   title?: string;
+  redirect?: number;
 }
 
 export interface WorkflowResetParams {
