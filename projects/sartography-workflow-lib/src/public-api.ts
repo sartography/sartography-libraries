@@ -54,13 +54,14 @@ export * from './lib/testing/mocks/workflow.mocks';
 // Types
 export * from './lib/types/api';
 export * from './lib/types/app-environment';
+export * from './lib/types/approval';
 export * from './lib/types/file';
 export * from './lib/types/irb';
 export * from './lib/types/json';
 export * from './lib/types/links';
 export * from './lib/types/script-info';
+export * from './lib/types/stats';
 export * from './lib/types/study';
-export * from './lib/types/approval';
 export * from './lib/types/user';
 export * from './lib/types/workflow';
 export * from './lib/types/workflow-task';

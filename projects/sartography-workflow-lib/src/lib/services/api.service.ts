@@ -9,7 +9,7 @@ import {AppEnvironment} from '../types/app-environment';
 import {Approval, ApprovalCounts, ApprovalStatus} from '../types/approval';
 import {FileMeta, FileParams, LookupData} from '../types/file';
 import {ScriptInfo} from '../types/script-info';
-import {WorkflowStats} from '../types/stats';
+import {TaskEvent, WorkflowStats} from '../types/stats';
 import {Study} from '../types/study';
 import {User, UserParams} from '../types/user';
 import {Workflow, WorkflowResetParams, WorkflowSpec, WorkflowSpecCategory} from '../types/workflow';
@@ -60,6 +60,7 @@ export class ApiService {
     workflowSpecCategory: '/workflow-specification-category/{cat_id}',
 
     // Workflows and Tasks
+    taskEvents: '/task_events',
     workflow: '/workflow/{workflow_id}',
     workflowStats: '/workflow/{workflow_id}/stats',
     taskForWorkflow: '/workflow/{workflow_id}/task/{task_id}',
@@ -360,6 +361,15 @@ export class ApiService {
 
     return this.httpClient
       .put<FileMeta>(url, formData)
+      .pipe(catchError(err => this._handleError(err)));
+  }
+
+  /** Get Task Events */
+  getTaskEvents(): Observable<TaskEvent[]> {
+    const url = this.apiRoot + this.endpoints.taskEvents;
+
+    return this.httpClient
+      .get<TaskEvent[]>(url)
       .pipe(catchError(err => this._handleError(err)));
   }
 
