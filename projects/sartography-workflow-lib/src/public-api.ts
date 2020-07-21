@@ -63,6 +63,7 @@ export * from './lib/types/script-info';
 export * from './lib/types/stats';
 export * from './lib/types/study';
 export * from './lib/types/user';
+export * from './lib/types/task-event';
 export * from './lib/types/workflow';
 export * from './lib/types/workflow-task';
 

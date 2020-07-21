@@ -35,6 +35,20 @@ export interface WorkflowSpecCategory {
   workflows?: WorkflowStats[];
 }
 
+export interface WorkflowMetadata {
+  state: WorkflowState;
+  completed_tasks: number;
+  total_tasks: number;
+  category_id: number;
+  description: string;
+  display_name: string;
+  name: string;
+  id: number;
+  category_display_name: string;
+  status: WorkflowStatus;
+  display_order?: number;
+}
+
 export interface Workflow {
   id: number;
   bpmn_workflow_json: string;

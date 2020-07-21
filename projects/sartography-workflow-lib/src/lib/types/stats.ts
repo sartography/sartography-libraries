@@ -1,4 +1,5 @@
-import {WorkflowState, WorkflowStatus} from './workflow';
+import {Study} from './study';
+import {Workflow, WorkflowState, WorkflowStatus} from './workflow';
 
 export interface WorkflowStats {
   id: number;
@@ -12,16 +13,4 @@ export interface WorkflowStats {
   total_tasks: number;
   completed_tasks: number;
   display_order: number;
-}
-
-export interface TaskEvent {
-  id: number;
-  study_id: number;
-  user_uid: string;
-  workflow_id: number;
-  workflow_spec_id: string;
-  spec_version: string;
-  task_id: string;
-  task_state: string;
-  date: Date;
 }

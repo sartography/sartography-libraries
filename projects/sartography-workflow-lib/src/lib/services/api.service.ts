@@ -9,8 +9,9 @@ import {AppEnvironment} from '../types/app-environment';
 import {Approval, ApprovalCounts, ApprovalStatus} from '../types/approval';
 import {FileMeta, FileParams, LookupData} from '../types/file';
 import {ScriptInfo} from '../types/script-info';
-import {TaskEvent, WorkflowStats} from '../types/stats';
+import {WorkflowStats} from '../types/stats';
 import {Study} from '../types/study';
+import {TaskAction, TaskEvent} from '../types/task-event';
 import {User, UserParams} from '../types/user';
 import {Workflow, WorkflowResetParams, WorkflowSpec, WorkflowSpecCategory} from '../types/workflow';
 import {WorkflowTask} from '../types/workflow-task';
@@ -365,11 +366,11 @@ export class ApiService {
   }
 
   /** Get Task Events */
-  getTaskEvents(): Observable<TaskEvent[]> {
+  getTaskEvents(action: TaskAction): Observable<TaskEvent[]> {
     const url = this.apiRoot + this.endpoints.taskEvents;
-
+    const httpParams = new HttpParams().set('action', action);
     return this.httpClient
-      .get<TaskEvent[]>(url)
+      .get<TaskEvent[]>(url + '?' + httpParams.toString())
       .pipe(catchError(err => this._handleError(err)));
   }
 
