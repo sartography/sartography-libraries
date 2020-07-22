@@ -71,4 +71,5 @@ export interface Study {
   warnings?: ApiError[];
   approvals?: Approval[];
   files?: FileMeta[];
+  enrollment_date?: Date;
 }
