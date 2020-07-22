@@ -13,6 +13,7 @@ export interface TaskEvent {
   task_type: string;
   task_state: string;
   task_lane: string;
+  date: Date;
 }
 
 export enum TaskAction {

@@ -127,8 +127,18 @@ describe('ApiService', () => {
     });
 
     const req = httpMock.expectOne(`apiRoot/study/${mockStudy0.id}`);
-    expect(req.request.method).toEqual('POST');
+    expect(req.request.method).toEqual('PUT');
     req.flush(modifiedStudy);
+  });
+
+  it('should delete a study', () => {
+    service.deleteStudy(mockStudy0.id).subscribe(data => {
+      expect(data).toBeNull();
+    });
+
+    const req = httpMock.expectOne(`apiRoot/study/${mockStudy0.id}`);
+    expect(req.request.method).toEqual('DELETE');
+    req.flush(null);
   });
 
   it('should get navigation for a given workflow', () => {

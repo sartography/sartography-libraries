@@ -121,7 +121,17 @@ export class ApiService {
       .replace('{study_id}', studyId.toString());
 
     return this.httpClient
-      .post<Study>(url, study)
+      .put<Study>(url, study)
+      .pipe(catchError(err => this._handleError(err)));
+  }
+
+  /** Delete a specific Study */
+  deleteStudy(studyId: number): Observable<null> {
+    const url = this.apiRoot + this.endpoints.study
+      .replace('{study_id}', studyId.toString());
+
+    return this.httpClient
+      .delete<null>(url)
       .pipe(catchError(err => this._handleError(err)));
   }
 
