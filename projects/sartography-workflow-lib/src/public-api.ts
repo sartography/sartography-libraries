@@ -46,6 +46,7 @@ export * from './lib/testing/mocks/stats.mocks';
 export * from './lib/testing/mocks/study-status.mocks';
 export * from './lib/testing/mocks/study.mocks';
 export * from './lib/testing/mocks/user.mocks';
+export * from './lib/testing/mocks/workflow-nav.mocks';
 export * from './lib/testing/mocks/workflow-spec-category.mocks';
 export * from './lib/testing/mocks/workflow-spec.mocks';
 export * from './lib/testing/mocks/workflow-task.mocks';

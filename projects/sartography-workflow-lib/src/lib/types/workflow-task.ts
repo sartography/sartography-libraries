@@ -8,6 +8,7 @@ export enum WorkflowTaskState {
   COMPLETED = 'COMPLETED',
   LIKELY = 'LIKELY',
   MAYBE = 'MAYBE',
+  LOCKED = 'LOCKED',
 }
 
 export enum WorkflowTaskType {
