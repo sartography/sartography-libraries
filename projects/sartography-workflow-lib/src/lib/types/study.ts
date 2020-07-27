@@ -72,4 +72,5 @@ export interface Study {
   approvals?: Approval[];
   files?: FileMeta[];
   enrollment_date?: Date;
+  comment?: string;
 }
