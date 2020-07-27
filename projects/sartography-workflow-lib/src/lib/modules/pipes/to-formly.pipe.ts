@@ -7,7 +7,7 @@ import {Observable} from 'rxjs';
 import {isIterable} from 'rxjs/internal-compatibility';
 import {ApiService} from '../../services/api.service';
 import {FileParams} from '../../types/file';
-import {BpmnFormJsonField} from '../../types/json';
+import {BpmnFormJsonField, BpmnFormJsonFieldEnumValue} from '../../types/json';
 
 
 /***
@@ -118,11 +118,27 @@ export class ToFormlyPipe implements PipeTransform {
       switch (field.type) {
         case 'enum':
           resultField.type = 'select';
-          resultField.defaultValue = field.default_value;
-          resultField.templateOptions.options = field.options.map(v => {
+          resultField.templateOptions.options = field.options.map((v: BpmnFormJsonFieldEnumValue) => {
             // Include lookup data object, if available
-            return {value: v.id, label: v.name, data: v.data};
+            const option: any = {value: v.id, label: v.name};
+            if (v.hasOwnProperty('data')) {
+              option.data = v.data;
+            }
+            return option;
           });
+
+          // Store entire options object as default value
+          if (field.hasOwnProperty('default_value')) {
+            if (resultField.templateOptions.options instanceof Observable) {
+              resultField.templateOptions.options.subscribe(options => {
+                resultField.defaultValue = options.find(o => o.value === field.default_value);
+              });
+            } else if (resultField.templateOptions.options instanceof Array) {
+              resultField.defaultValue = resultField.templateOptions.options.find(o => {
+                return o.value === field.default_value;
+              });
+            }
+          }
 
           // Store the entire option object as the value of the select field, but, when comparing
           // the control, Formly will look into the value attribute of the option object, rather than
