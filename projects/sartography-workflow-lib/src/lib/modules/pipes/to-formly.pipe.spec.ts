@@ -203,13 +203,13 @@ describe('ToFormlyPipe', () => {
     const afterMulticheckbox = await pipe.transform(before);
     expect(afterMulticheckbox[0].type).toEqual('multicheckbox_data');
     expect(afterMulticheckbox[0].className).toEqual('vertical-checkbox-group');
-    expect(afterMulticheckbox[0].defaultValue).toEqual(defaultEnumValue);
+    expect(afterMulticheckbox[0].defaultValue).toEqual([defaultEnumValue]);
 
     before[0].properties[1] = {id: 'enum_type', value: 'radio'};
     const afterRadio = await pipe.transform(before);
     expect(afterRadio[0].type).toEqual('radio_data');
     expect(afterRadio[0].className).toEqual('vertical-radio-group');
-    expect(afterMulticheckbox[0].defaultValue).toEqual(defaultEnumValue);
+    expect(afterRadio[0].defaultValue).toEqual(defaultEnumValue);
   });
 
   it('converts date field to Formly date field', async () => {

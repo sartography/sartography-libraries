@@ -1,14 +1,11 @@
 import {Pipe, PipeTransform} from '@angular/core';
-import {MatCheckboxChange} from '@angular/material/checkbox';
-import {MatRadioChange} from '@angular/material/radio';
-import {MatSelectChange} from '@angular/material/select';
 import {FormlyFieldConfig} from '@ngx-formly/core';
+import createClone from 'rfdc';
 import {Observable} from 'rxjs';
 import {isIterable} from 'rxjs/internal-compatibility';
 import {ApiService} from '../../services/api.service';
 import {FileParams} from '../../types/file';
 import {BpmnFormJsonField, BpmnFormJsonFieldEnumValue} from '../../types/json';
-
 
 /***
  * Convert the given BPMN form JSON value to Formly JSON
@@ -323,6 +320,9 @@ export class ToFormlyPipe implements PipeTransform {
                   resultField.type = 'multicheckbox_data';
                   resultField.templateOptions.type = 'array';
                   resultField.className = 'vertical-checkbox-group';
+
+                  // Wrap default value in an array.
+                  resultField.defaultValue = createClone()([resultField.defaultValue]);
                 }
 
                 if (p.value === 'radio') {
