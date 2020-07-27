@@ -1,6 +1,7 @@
 import {ApiError} from './api';
 import {Approval} from './approval';
 import {FileMeta} from './file';
+import {TaskEvent} from './task-event';
 import {WorkflowSpecCategory} from './workflow';
 
 export enum ProtocolBuilderStatus {
@@ -73,4 +74,5 @@ export interface Study {
   files?: FileMeta[];
   enrollment_date?: Date;
   comment?: string;
+  events?: TaskEvent[];
 }
