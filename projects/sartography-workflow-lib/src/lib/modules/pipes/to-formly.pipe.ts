@@ -6,6 +6,7 @@ import {isIterable} from 'rxjs/internal-compatibility';
 import {ApiService} from '../../services/api.service';
 import {FileParams} from '../../types/file';
 import {BpmnFormJsonField, BpmnFormJsonFieldEnumValue} from '../../types/json';
+import * as isEqual from 'lodash.isequal';
 
 /***
  * Convert the given BPMN form JSON value to Formly JSON
@@ -142,7 +143,7 @@ export class ToFormlyPipe implements PipeTransform {
           // the value attribute of the field. Yes, it's confusing, but it allows us to access the label
           // of the option so we can display it later.
           resultField.templateOptions.valueProp = (option) => option;
-          resultField.templateOptions.compareWith = (o1, o2) => o1.value === o2.value;
+          resultField.templateOptions.compareWith = (o1, o2) => isEqual(o1, o2);
           break;
         case 'string':
           resultField.type = 'input';
@@ -323,7 +324,8 @@ export class ToFormlyPipe implements PipeTransform {
 
                   // Wrap default value in an array.
                   if (resultField.hasOwnProperty('defaultValue')) {
-                    resultField.defaultValue = createClone()([resultField.defaultValue]);
+                    const defaultValue = createClone()(resultField.defaultValue);
+                    resultField.defaultValue = [defaultValue];
                   }
                 }
 
