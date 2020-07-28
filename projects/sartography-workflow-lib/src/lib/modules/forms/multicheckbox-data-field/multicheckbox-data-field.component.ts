@@ -54,7 +54,13 @@ export class MulticheckboxDataFieldComponent extends FormlyFieldMultiCheckbox {
       //   ...
       // ]
       for (const val of formVal) {
-        if (val.hasOwnProperty('value') && option.value.hasOwnProperty('value') && val.value === option.value.value) {
+        if (
+          val &&
+          typeof val === 'object' &&
+          val.hasOwnProperty('value') &&
+          option.value.hasOwnProperty('value') &&
+          val.value === option.value.value
+        ) {
           return true;
         }
       }

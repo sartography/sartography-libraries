@@ -3,6 +3,7 @@ import {NoopAnimationsModule} from '@angular/platform-browser/animations';
 import {FormlyFieldConfig, FormlyModule} from '@ngx-formly/core';
 import {FormlySelectModule} from '@ngx-formly/core/select';
 import {FormlyMatFormFieldModule} from '@ngx-formly/material/form-field';
+import createClone from 'rfdc';
 import {createFormlyFieldComponent} from '../../../testing/formly/component-factory';
 import {MulticheckboxDataFieldComponent} from './multicheckbox-data-field.component';
 
@@ -27,29 +28,33 @@ const renderComponent = (field: FormlyFieldConfig) => {
 }
 
 describe('MulticheckboxDataFieldComponent', () => {
-  it('should render multicheckbox type', () => {
-    const component = renderComponent({
-      key: 'checkbox_field',
-      type: 'multicheckbox_data',
-      templateOptions: {
-        label: 'Multicheckbox Data Field',
-        type: 'array',
-        options: [
-          {value: 'a', label: 'Option A', data: {short_name: 'a', long_name: 'Option A', description: 'A is for apoplanesic'}},
-          {value: 'b', label: 'Option B', data: {short_name: 'b', long_name: 'Option B', description: 'B is for blandiloquent'}},
-          {value: 'c', label: 'Option C', data: {short_name: 'c', long_name: 'Option C', description: 'C is for catachthonic'}},
-          {value: 'd', label: 'Option D', data: {short_name: 'd', long_name: 'Option D', description: 'D is for didaskaleinophobic'}},
-          {value: 'e', label: 'Option E', data: {short_name: 'e', long_name: 'Option E', description: 'E is for endemoniasmic'}},
-          {value: 'f', label: 'Option F', data: {short_name: 'f', long_name: 'Option F', description: 'F is for fanfaronic'}},
-        ],
-      },
-      model: {
-        checkbox_field: [
-          {value: 'b', label: 'Option B', data: {short_name: 'b', long_name: 'Option B', description: 'B is for blandiloquent'}},
-          {value: 'e', label: 'Option E', data: {short_name: 'e', long_name: 'Option E', description: 'E is for endemoniasmic'}},
-        ]
-      }
-    });
+  const mockModel = {
+    checkbox_field: [
+      {value: 'b', label: 'Option B', data: {short_name: 'b', long_name: 'Option B', description: 'B is for blandiloquent'}},
+      {value: 'e', label: 'Option E', data: {short_name: 'e', long_name: 'Option E', description: 'E is for endemoniasmic'}},
+    ]
+  };
+
+  const mockField = {
+    key: 'checkbox_field',
+    type: 'multicheckbox_data',
+    defaultValue: [{value: 'a', label: 'Option A', data: {short_name: 'a', long_name: 'Option A', description: 'A is for apoplanesic'}}],
+    templateOptions: {
+      label: 'Multicheckbox Data Field',
+      type: 'array',
+      options: [
+        {value: 'a', label: 'Option A', data: {short_name: 'a', long_name: 'Option A', description: 'A is for apoplanesic'}},
+        {value: 'b', label: 'Option B', data: {short_name: 'b', long_name: 'Option B', description: 'B is for blandiloquent'}},
+        {value: 'c', label: 'Option C', data: {short_name: 'c', long_name: 'Option C', description: 'C is for catachthonic'}},
+        {value: 'd', label: 'Option D', data: {short_name: 'd', long_name: 'Option D', description: 'D is for didaskaleinophobic'}},
+        {value: 'e', label: 'Option E', data: {short_name: 'e', long_name: 'Option E', description: 'E is for endemoniasmic'}},
+        {value: 'f', label: 'Option F', data: {short_name: 'f', long_name: 'Option F', description: 'F is for fanfaronic'}},
+      ],
+    },
+  };
+
+  it('should render multicheckbox type with default value', () => {
+    const component = renderComponent(mockField);
 
     expect(component.query('lib-multicheckbox-data-field')).not.toBeNull();
     const checkboxes = component.queryAll('mat-checkbox');
@@ -58,9 +63,21 @@ describe('MulticheckboxDataFieldComponent', () => {
     const value = component.field.form.value;
     expect(value).toEqual(jasmine.objectContaining({
       checkbox_field: [
-        {value: 'b', label: 'Option B', data: {short_name: 'b', long_name: 'Option B', description: 'B is for blandiloquent'}},
-        {value: 'e', label: 'Option E', data: {short_name: 'e', long_name: 'Option E', description: 'E is for endemoniasmic'}},
+        {value: 'a', label: 'Option A', data: {short_name: 'a', long_name: 'Option A', description: 'A is for apoplanesic'}},
       ]
     }));
+  });
+
+  it('should render multicheckbox type with previously-selected values', () => {
+    const mockFieldWithModel = createClone()(mockField);
+    mockFieldWithModel.model = createClone()(mockModel);
+    const component = renderComponent(mockFieldWithModel);
+
+    expect(component.query('lib-multicheckbox-data-field')).not.toBeNull();
+    const checkboxes = component.queryAll('mat-checkbox');
+    expect(checkboxes.length).toEqual(6);
+
+    const value = component.field.form.value;
+    expect(value).toEqual(jasmine.objectContaining(mockModel));
   });
 });

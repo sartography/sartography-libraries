@@ -1,6 +1,6 @@
 {
   "name": "sartography-workflow-lib",
-  "version": "0.0.334",
+  "version": "0.0.336",
   "peerDependencies": {
     "@angular/common": "^8.2.14",
     "@angular/core": "^8.2.14",
