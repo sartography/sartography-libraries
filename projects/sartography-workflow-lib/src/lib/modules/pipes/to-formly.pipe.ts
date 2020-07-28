@@ -322,7 +322,9 @@ export class ToFormlyPipe implements PipeTransform {
                   resultField.className = 'vertical-checkbox-group';
 
                   // Wrap default value in an array.
-                  resultField.defaultValue = createClone()([resultField.defaultValue]);
+                  if (resultField.hasOwnProperty('defaultValue')) {
+                    resultField.defaultValue = createClone()([resultField.defaultValue]);
+                  }
                 }
 
                 if (p.value === 'radio') {
