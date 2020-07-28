@@ -504,11 +504,9 @@ describe('ApiService', () => {
   });
 
   it('should get user from existing session on production', () => {
-    const queryStringSpy = spyOn((service as any), '_paramsToQueryString').and.stub();
     const openUrlSpy = spyOn(service, 'openUrl').and.stub();
     (service as any).environment.production = true;
     service.redirectToLogin();
-    expect(queryStringSpy).not.toHaveBeenCalled();
     expect(openUrlSpy).toHaveBeenCalled();
   });
 

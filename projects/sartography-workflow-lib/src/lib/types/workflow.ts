@@ -67,6 +67,7 @@ export interface Workflow {
 export interface WorkflowResetParams {
   soft_reset?: boolean;
   hard_reset?: boolean;
+  do_engine_steps?: boolean;
 }
 
 export interface WorkflowNavItem {

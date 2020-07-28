@@ -293,7 +293,7 @@ export class ApiService {
   /** Get all File Metadata for a given Workflow Specification, Workflow Instance, Study, or Task */
   getFileMetas(fileParams: FileParams): Observable<FileMeta[]> {
     const url = this.apiRoot + this.endpoints.fileList;
-    const params = this._fileParamsToHttpParams(fileParams);
+    const params = this._paramsToHttpParams(fileParams);
 
     return this.httpClient
       .get<FileMeta[]>(url, {params})
@@ -312,7 +312,7 @@ export class ApiService {
   /** Add a File and its File Metadata to a Workflow Specification */
   addFileMeta(fileParams: FileParams, fileMeta: FileMeta): Observable<FileMeta> {
     const url = this.apiRoot + this.endpoints.fileList;
-    const params = this._fileParamsToHttpParams(fileParams);
+    const params = this._paramsToHttpParams(fileParams);
     const formData = new FormData();
     formData.append('file', fileMeta.file);
 
@@ -386,7 +386,13 @@ export class ApiService {
 
   /** Get a specific Workflow */
   getWorkflow(workflowId: number, params?: WorkflowResetParams): Observable<Workflow> {
-    const queryString = params ? this._paramsToQueryString(params) : '';
+    let queryString = '';
+
+    if (params) {
+      const httpParams = this._paramsToHttpParams(params);
+      queryString = '?' + httpParams.toString();
+    }
+
     const url = this.apiRoot + this.endpoints.workflow
       .replace('{workflow_id}', workflowId.toString());
 
@@ -536,28 +542,11 @@ export class ApiService {
     return throwError(error.message || 'Could not complete your request; please try again later.');
   }
 
-  /** Construct Query String Params from UserParams or WorkflowResetParams object. Only adds params that have been set. */
-  private _paramsToQueryString(params: UserParams | WorkflowResetParams): string {
-    let queryString = '?';
-    const keys = Object.keys(params);
-    keys.forEach((k, i) => {
-      const val = params[k];
-      if ((val !== undefined) && (val !== null)) {
-        queryString += k + '=' + encodeURIComponent(val.toString());
-      }
-
-      if (i < keys.length - 1) {
-        queryString += '&';
-      }
-    });
-    return queryString;
-  }
-
-  /** Construct HttpParams from FileParams object. Only adds params that have been set. */
-  private _fileParamsToHttpParams(fileParams: FileParams): HttpParams {
+  /** Construct HttpParams from params object. Only adds params that have been set. */
+  private _paramsToHttpParams(params: any): HttpParams {
     const paramsObject = {};
-    Object.keys(fileParams).forEach(k => {
-      const val = fileParams[k];
+    Object.keys(params).forEach(k => {
+      const val = params[k];
       if ((val !== undefined) && (val !== null)) {
         paramsObject[k] = val.toString();
       }
