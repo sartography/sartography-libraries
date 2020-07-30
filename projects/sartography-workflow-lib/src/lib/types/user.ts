@@ -1,6 +1,6 @@
 export interface User {
   id: number;
-  role: string;
+  is_admin?: boolean;
   uid: string;
   email_address?: string;
   display_name?: string;

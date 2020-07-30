@@ -12,7 +12,7 @@ import {ScriptInfo} from '../types/script-info';
 import {WorkflowStats} from '../types/stats';
 import {Study} from '../types/study';
 import {TaskAction, TaskEvent} from '../types/task-event';
-import {User, UserParams} from '../types/user';
+import {User} from '../types/user';
 import {Workflow, WorkflowResetParams, WorkflowSpec, WorkflowSpecCategory} from '../types/workflow';
 import {WorkflowTask} from '../types/workflow-task';
 import {isSignedIn} from '../util/is-signed-in';
@@ -40,6 +40,7 @@ export class ApiService {
     // Users
     login: '/login',
     user: '/user',
+    userList: '/list_users',
 
     // Studies
     studyList: '/study',
@@ -490,13 +491,28 @@ export class ApiService {
     }
   }
 
-  /** getUser */
-  getUser(): Observable<User> {
+  /** listUsers */
+  listUsers(): Observable<User[]> {
+    const url = this.apiRoot + this.endpoints.userList;
+    return this.httpClient
+      .get<User[]>(url)
+      .pipe(catchError(err => this._handleError(err)));
+  }
+
+  /** getUser
+   *
+   *  adminImpersonateUid: string
+   *    If the currently-logged-in user is an admin, will return the user with the given uid. If the uid
+   *    is not provided or invalid, impersonation mode will be turned off.
+   *
+   */
+  getUser(adminImpersonateUid: string): Observable<User> {
     if (isSignedIn()) {
       const url = this.apiRoot + this.endpoints.user;
-      console.log('getUser url', url);
+      const httpParams = new HttpParams().append('admin_impersonate_uid', adminImpersonateUid);
+      const queryString = adminImpersonateUid ? '?' + httpParams.toString() : '';
       return this.httpClient
-        .get<User>(url)
+        .get<User>(url + queryString)
         .pipe(catchError(err => this._handleError(err)));
     } else {
       return of(null);
