@@ -506,7 +506,7 @@ export class ApiService {
    *    is not provided or invalid, impersonation mode will be turned off.
    *
    */
-  getUser(adminImpersonateUid: string): Observable<User> {
+  getUser(adminImpersonateUid?: string): Observable<User> {
     if (isSignedIn()) {
       const url = this.apiRoot + this.endpoints.user;
       const httpParams = new HttpParams().append('admin_impersonate_uid', adminImpersonateUid);
