@@ -45,6 +45,7 @@ export * from './lib/testing/mocks/ngzone.mocks';
 export * from './lib/testing/mocks/stats.mocks';
 export * from './lib/testing/mocks/study-status.mocks';
 export * from './lib/testing/mocks/study.mocks';
+export * from './lib/testing/mocks/task-event.mocks';
 export * from './lib/testing/mocks/user.mocks';
 export * from './lib/testing/mocks/workflow-nav.mocks';
 export * from './lib/testing/mocks/workflow-spec-category.mocks';
