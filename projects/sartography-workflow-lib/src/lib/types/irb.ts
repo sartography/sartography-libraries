@@ -1,4 +1,3 @@
-import {ProtocolBuilderStatus} from './study';
 
 export interface IRBResponse {
   UVAStudyTrackingNumber?: string;
