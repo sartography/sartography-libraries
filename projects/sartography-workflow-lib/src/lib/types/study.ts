@@ -4,17 +4,17 @@ import {FileMeta} from './file';
 import {TaskEvent} from './task-event';
 import {WorkflowSpecCategory} from './workflow';
 
-export enum ProtocolBuilderStatus {
-  ACTIVE = 'active',
-  OPEN = 'open',
+export enum StudyStatus {
+  IN_PROGRESS = 'in_progress',
   HOLD = 'hold',
+  OPEN_FOR_ENROLLMENT = 'open_for_enrollment',
   ABANDONED = 'abandoned',
 }
 
-export enum ProtocolBuilderStatusLabels {
-  ACTIVE = 'In Progress',
-  OPEN = 'Open to Enrollment',
+export enum StudyStatusLabels {
+  IN_PROGRESS = 'In Progress',
   HOLD = 'Hold',
+  OPEN_FOR_ENROLLMENT = 'Open to Enrollment',
   ABANDONED = 'Abandoned',
 }
 
@@ -66,7 +66,7 @@ export interface Study {
   ind_number?: string;
   last_updated?: Date;
   primary_investigator_id?: string;
-  protocol_builder_status?: ProtocolBuilderStatus;
+  status?: StudyStatus;
   sponsor?: string;
   user_uid?: string;
   warnings?: ApiError[];
