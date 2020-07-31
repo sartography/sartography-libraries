@@ -5,9 +5,9 @@ import {TaskEvent} from './task-event';
 import {WorkflowSpecCategory} from './workflow';
 
 export enum StudyStatus {
-  IN_PROGRESS = 'in progress',
+  IN_PROGRESS = 'in_progress',
   HOLD = 'hold',
-  OPEN_FOR_ENROLLMENT = 'open for enrollment',
+  OPEN_FOR_ENROLLMENT = 'open_for_enrollment',
   ABANDONED = 'abandoned',
 }
 
