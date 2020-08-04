@@ -13,12 +13,14 @@ export class MulticheckboxDataFieldComponent extends FormlyFieldMultiCheckbox {
       return;
     }
 
-    const oldValueArray = this.formControl.value || [];
+    // formControl.value will equal [undefined] if no old value exists.
+    const hasOldValue = this.formControl.value && this.formControl.value.length > 0 && (this.formControl.value[0] !== undefined);
+    const oldValueArray = hasOldValue ? this.formControl.value : [];
     const newValueDict = {};
 
     // Dedupe the values, in case wires got crossed somewhere
     for (const oldVal of oldValueArray) {
-      if (!newValueDict.hasOwnProperty(oldVal.value)) {
+      if (oldVal && !newValueDict.hasOwnProperty(oldVal.value)) {
         newValueDict[oldVal.value] = oldVal;
       }
     }

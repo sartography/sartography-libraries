@@ -1,4 +1,5 @@
 import {MatCheckboxModule} from '@angular/material/checkbox';
+import {By} from '@angular/platform-browser';
 import {NoopAnimationsModule} from '@angular/platform-browser/animations';
 import {FormlyFieldConfig, FormlyModule} from '@ngx-formly/core';
 import {FormlySelectModule} from '@ngx-formly/core/select';
@@ -59,9 +60,7 @@ describe('MulticheckboxDataFieldComponent', () => {
     expect(component.query('lib-multicheckbox-data-field')).not.toBeNull();
     const checkboxes = component.queryAll('mat-checkbox');
     expect(checkboxes.length).toEqual(6);
-
-    const value = component.field.form.value;
-    expect(value).toEqual(jasmine.objectContaining({
+    expect(component.field.form.value).toEqual(jasmine.objectContaining({
       checkbox_field: [
         {value: 'a', label: 'Option A', data: {short_name: 'a', long_name: 'Option A', description: 'A is for apoplanesic'}},
       ]
@@ -76,8 +75,21 @@ describe('MulticheckboxDataFieldComponent', () => {
     expect(component.query('lib-multicheckbox-data-field')).not.toBeNull();
     const checkboxes = component.queryAll('mat-checkbox');
     expect(checkboxes.length).toEqual(6);
+    expect(component.field.form.value).toEqual(jasmine.objectContaining(mockModel));
 
-    const value = component.field.form.value;
-    expect(value).toEqual(jasmine.objectContaining(mockModel));
+    // The 2nd and 5th items should be selected.
+    expect(component.field.form.value.checkbox_field.length).toEqual(2);
+
+    // Click the 1st item.
+    const checkbox1 = checkboxes[0].query(By.css('input'));
+    checkbox1.nativeElement.click();
+    component.fixture.detectChanges();
+    expect(component.field.form.value.checkbox_field.length).toEqual(3,'checkbox should be checked.');
+
+    // Click the 2nd item.
+    const checkbox2 = checkboxes[0].query(By.css('input'));
+    checkbox2.nativeElement.click();
+    component.fixture.detectChanges();
+    expect(component.field.form.value.checkbox_field.length).toEqual(2, 'checkbox should be unchecked.');
   });
 });
