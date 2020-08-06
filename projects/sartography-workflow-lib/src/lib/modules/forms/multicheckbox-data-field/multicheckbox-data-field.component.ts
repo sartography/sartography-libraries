@@ -1,12 +1,27 @@
-import {Component} from '@angular/core';
+import {AfterViewInit, Component} from '@angular/core';
 import {FormlyFieldMultiCheckbox} from '@ngx-formly/material/multicheckbox';
+import * as isEqual from 'lodash.isequal';
 
 @Component({
   selector: 'lib-multicheckbox-data-field',
   templateUrl: './multicheckbox-data-field.component.html',
   styleUrls: ['./multicheckbox-data-field.component.scss']
 })
-export class MulticheckboxDataFieldComponent extends FormlyFieldMultiCheckbox {
+export class MulticheckboxDataFieldComponent extends FormlyFieldMultiCheckbox implements AfterViewInit {
+  initialized = false;
+
+  ngAfterViewInit() {
+    super.ngAfterViewInit();
+
+    this.stateChanges.subscribe(sc => {
+      // Only do this the first time
+      if (!this.initialized && isEqual(this.formControl.value, [undefined])) {
+        this.formControl.patchValue(this.model[this.field.key]);
+        this.initialized = true;
+      }
+    });
+  }
+
   onChange(changedVal: any, checked: boolean) {
     if (this.to.type !== 'array') {
       console.error(`MulticheckboxDataFieldComponent must have templateOptions.type set to 'array'`);
@@ -14,7 +29,7 @@ export class MulticheckboxDataFieldComponent extends FormlyFieldMultiCheckbox {
     }
 
     // formControl.value will equal [undefined] if no old value exists.
-    const hasOldValue = this.formControl.value && this.formControl.value.length > 0 && (this.formControl.value[0] !== undefined);
+    const hasOldValue = this.formControl.value && this.formControl.value.length > 0 && !isEqual(this.formControl.value, [undefined]);
     const oldValueArray = hasOldValue ? this.formControl.value : [];
     const newValueDict = {};
 

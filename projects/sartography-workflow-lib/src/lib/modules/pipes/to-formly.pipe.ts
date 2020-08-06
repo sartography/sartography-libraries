@@ -274,8 +274,7 @@ export class ToFormlyPipe implements PipeTransform {
               (resultField as any).autoClear = true;
               break;
             case 'value_expression':
-              const modelKey = `model.${resultField.key}`;
-              resultField.expressionProperties[modelKey] = `${modelKey} || (${p.value})`;
+              resultField.expressionProperties.defaultValue = `model.${resultField.key} = (${p.value})`;
               break;
             case 'label_expression':
               resultField.expressionProperties['templateOptions.label'] = p.value;
@@ -286,10 +285,15 @@ export class ToFormlyPipe implements PipeTransform {
             case 'required_expression':
               resultField.expressionProperties['templateOptions.required'] = p.value;
               break;
+            case 'read_only_expression':
+              resultField.expressionProperties['templateOptions.readonly'] = p.value;
+              resultField.expressionProperties['templateOptions.floatLabel'] = `field.templateOptions.readonly ? 'always' : ''`;
+              resultField.expressionProperties.className = this._readonlyClassName;
+              break;
             case 'read_only':
               resultField.templateOptions.readonly = this._stringToBool(p.value);
               resultField.templateOptions.floatLabel = 'always';
-              resultField.className = 'read-only should-float';
+              resultField.className = this._addClassName(resultField, 'read-only should-float');
               break;
             case 'placeholder':
               resultField.templateOptions.placeholder = p.value;
@@ -312,15 +316,16 @@ export class ToFormlyPipe implements PipeTransform {
               resultField.templateOptions.autosizeMinRows = parseInt(p.value, 10);
               break;
             case 'cols':
-              resultField.className = 'textarea-cols';
+              resultField.className = this._addClassName(resultField, 'textarea-cols');
               resultField.templateOptions.cols = parseInt(p.value, 10);
               break;
             case 'enum_type':
               if (field.type === 'enum') {
                 if (p.value === 'checkbox') {
                   resultField.type = 'multicheckbox_data';
+                  resultField.validators = {validation: ['multicheckbox_data']};
                   resultField.templateOptions.type = 'array';
-                  resultField.className = 'vertical-checkbox-group';
+                  resultField.className = this._addClassName(resultField, 'vertical-checkbox-group');
 
                   // Wrap default value in an array.
                   if (resultField.hasOwnProperty('defaultValue')) {
@@ -331,7 +336,7 @@ export class ToFormlyPipe implements PipeTransform {
 
                 if (p.value === 'radio') {
                   resultField.type = 'radio_data';
-                  resultField.className = 'vertical-radio-group';
+                  resultField.className = this._addClassName(resultField, 'vertical-radio-group');
                 }
               }
               break;
@@ -500,5 +505,30 @@ export class ToFormlyPipe implements PipeTransform {
     }
 
     return defaultNum;
+  }
+
+  // Returns the className string for the given field, with the given className(s) added
+  private _addClassName(field: FormlyFieldConfig, className: string): string {
+    const newClasses = className ? className.split(' ') : [];
+    const oldClasses = field.className ? field.className.split(' ') : [];
+    return Array.from(new Set(oldClasses.concat(newClasses))).join(' ')
+  }
+
+  // Returns the appropriate className string for the given field, depending on its read-only state
+  private _readonlyClassName(model: any, formState: any, field: FormlyFieldConfig) {
+    const readOnlyClasses = ['read-only', 'should-float'];
+    const oldClasses = field.className ? field.className.split(' ') : [];
+    let classes;
+
+    if (field.templateOptions.readonly) {
+      // Add the classes
+      classes = oldClasses.concat(readOnlyClasses);
+    } else {
+      // Remove the classes
+      classes = oldClasses.filter(c => !readOnlyClasses.includes(c));
+    }
+
+    // Convert to set and back again to remove duplicates
+    return Array.from(new Set(classes)).join(' ');
   }
 }

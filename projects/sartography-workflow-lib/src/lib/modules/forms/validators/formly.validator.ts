@@ -5,6 +5,7 @@ import {isNumberDefined} from '../../../util/is-number-defined';
 import EMAIL_REGEX from './email.regex';
 import PHONE_REGEX from './phone.regex';
 import URL_REGEX from './url.regex';
+import * as isEqual from 'lodash.isequal';
 
 export function EmailValidator(control: FormControl): ValidationErrors {
   return !control.value || EMAIL_REGEX.test(control.value) ? null : {email: true};
@@ -42,6 +43,17 @@ export function MulticheckboxValidator(control: FormControl): ValidationErrors {
 }
 
 export function MulticheckboxValidatorMessage(err, field: FormlyFieldConfig) {
+  return 'At least one of these checkboxes must be selected.';
+}
+
+export function MulticheckboxDataFieldValidator(control: FormControl): ValidationErrors {
+  if (control && control.value && control.value.length > 0 && !isEqual(control.value, [undefined])) {
+    return null;
+  }
+  return {required: true};
+}
+
+export function MulticheckboxDataFieldValidatorMessage(err, field: FormlyFieldConfig) {
   return 'At least one of these checkboxes must be selected.';
 }
 
