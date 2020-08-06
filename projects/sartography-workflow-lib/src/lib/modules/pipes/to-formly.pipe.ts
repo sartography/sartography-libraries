@@ -274,7 +274,7 @@ export class ToFormlyPipe implements PipeTransform {
               (resultField as any).autoClear = true;
               break;
             case 'value_expression':
-              resultField.expressionProperties.defaultValue = `model.${resultField.key} = (${p.value})`;
+              resultField.expressionProperties.defaultValue = p.value;
               break;
             case 'label_expression':
               resultField.expressionProperties['templateOptions.label'] = p.value;

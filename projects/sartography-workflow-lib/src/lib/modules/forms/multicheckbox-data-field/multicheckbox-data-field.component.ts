@@ -13,12 +13,12 @@ export class MulticheckboxDataFieldComponent extends FormlyFieldMultiCheckbox im
   ngAfterViewInit() {
     super.ngAfterViewInit();
 
+    // Sometimes we can initialize it here...
+    this._initializeValue();
+
+    // ... but, sometimes, we have to wait for the first state change.
     this.stateChanges.subscribe(sc => {
-      // Only do this the first time
-      if (!this.initialized && isEqual(this.formControl.value, [undefined])) {
-        this.formControl.patchValue(this.model[this.field.key]);
-        this.initialized = true;
-      }
+      this._initializeValue();
     });
   }
 
@@ -84,5 +84,15 @@ export class MulticheckboxDataFieldComponent extends FormlyFieldMultiCheckbox im
     }
 
     return false;
+  }
+
+  private _initializeValue() {
+    // Only do this the first time
+    if (!this.initialized && isEqual(this.formControl.value, [undefined])) {
+      const hasCurrentValue = this.model.hasOwnProperty(this.field.key) && !isEqual(this.model[this.field.key], [undefined]);
+      const defaultValue = hasCurrentValue ? this.model[this.field.key] : this.field.defaultValue;
+      this.formControl.patchValue(defaultValue);
+      this.initialized = true;
+    }
   }
 }
