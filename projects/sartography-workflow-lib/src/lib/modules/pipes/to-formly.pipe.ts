@@ -6,7 +6,7 @@ import {isIterable} from 'rxjs/internal-compatibility';
 import {ApiService} from '../../services/api.service';
 import {FileParams} from '../../types/file';
 import {BpmnFormJsonField, BpmnFormJsonFieldEnumValue} from '../../types/json';
-import * as isEqual from 'lodash.isequal';
+import isEqual from 'lodash.isequal';
 
 /***
  * Convert the given BPMN form JSON value to Formly JSON

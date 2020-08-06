@@ -1,11 +1,10 @@
 import {FormControl, ValidationErrors} from '@angular/forms';
 import {FieldType, FormlyFieldConfig} from '@ngx-formly/core';
-import {isIterable} from 'rxjs/internal-compatibility';
+import isEqual from 'lodash.isequal';
 import {isNumberDefined} from '../../../util/is-number-defined';
 import EMAIL_REGEX from './email.regex';
 import PHONE_REGEX from './phone.regex';
 import URL_REGEX from './url.regex';
-import * as isEqual from 'lodash.isequal';
 
 export function EmailValidator(control: FormControl): ValidationErrors {
   return !control.value || EMAIL_REGEX.test(control.value) ? null : {email: true};
@@ -47,10 +46,21 @@ export function MulticheckboxValidatorMessage(err, field: FormlyFieldConfig) {
 }
 
 export function MulticheckboxDataFieldValidator(control: FormControl): ValidationErrors {
-  if (control && control.value && control.value.length > 0 && !isEqual(control.value, [undefined])) {
+  const fields = (control as any)._fields;
+
+  if (fields && fields[0].templateOptions.required) {
+    if (
+      control.value &&
+      control.value.length > 0 &&
+      !isEqual(control.value, [undefined])
+    ) {
+      return null;
+    } else {
+      return {required: true};
+    }
+  } else {
     return null;
   }
-  return {required: true};
 }
 
 export function MulticheckboxDataFieldValidatorMessage(err, field: FormlyFieldConfig) {

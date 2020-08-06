@@ -1,6 +1,6 @@
 import {AfterViewInit, Component} from '@angular/core';
 import {FormlyFieldMultiCheckbox} from '@ngx-formly/material/multicheckbox';
-import * as isEqual from 'lodash.isequal';
+import isEqual from 'lodash.isequal';
 
 @Component({
   selector: 'lib-multicheckbox-data-field',
