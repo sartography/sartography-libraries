@@ -3,6 +3,7 @@ import {Approval} from './approval';
 import {FileMeta} from './file';
 import {TaskEvent} from './task-event';
 import {WorkflowSpecCategory} from './workflow';
+import {StudyEvent} from './study-event';
 
 export enum StudyStatus {
   IN_PROGRESS = 'in_progress',
@@ -75,4 +76,5 @@ export interface Study {
   enrollment_date?: Date;
   comment?: string;
   events?: TaskEvent[];
+  events_history?: StudyEvent[];
 }
