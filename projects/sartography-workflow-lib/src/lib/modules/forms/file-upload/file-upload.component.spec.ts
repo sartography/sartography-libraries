@@ -54,7 +54,7 @@ describe('FileUploadComponent', () => {
           useValue: {paramMap: of(convertToParamMap({study_id: '0', workflow_id: '0', task_id: '0'}))},
         },
         {provide: 'APP_ENVIRONMENT', useClass: MockEnvironment},
-        {provide: APP_BASE_HREF, useValue: ''},
+        {provide: APP_BASE_HREF, useValue: '/'},
         {provide: Router, useValue: mockRouter},
 
       ]

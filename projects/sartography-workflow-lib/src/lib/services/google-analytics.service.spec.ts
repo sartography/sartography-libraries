@@ -30,7 +30,7 @@ describe('GoogleAnalyticsService', () => {
     providers: [
       GoogleAnalyticsService,
       {provide: 'APP_ENVIRONMENT', useValue: mockEnvironment},
-      {provide: APP_BASE_HREF, useValue: ''},
+      {provide: APP_BASE_HREF, useValue: '/'},
       {provide: Router, useValue: mockRouter},
       {provide: Location, useValue: location},
     ],

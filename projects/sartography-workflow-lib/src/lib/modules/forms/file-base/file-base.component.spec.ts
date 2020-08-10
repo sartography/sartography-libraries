@@ -37,7 +37,7 @@ describe('FileBaseComponent', () => {
         },
         {provide: 'APP_ENVIRONMENT', useClass: MockEnvironment},
         {provide: Router, useValue: mockRouter},
-        {provide: APP_BASE_HREF, useValue: ''},
+        {provide: APP_BASE_HREF, useValue: '/'},
       ]
     })
       .compileComponents();

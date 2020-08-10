@@ -26,7 +26,7 @@ describe('SessionRedirectComponent', () => {
       ],
       providers: [
         {provide: 'APP_ENVIRONMENT', useClass: MockEnvironment},
-        {provide: APP_BASE_HREF, useValue: ''},
+        {provide: APP_BASE_HREF, useValue: '/'},
         {
           provide: ActivatedRoute,
           useValue: {
