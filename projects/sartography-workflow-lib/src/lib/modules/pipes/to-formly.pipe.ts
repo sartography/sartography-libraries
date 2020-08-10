@@ -465,8 +465,9 @@ export class ToFormlyPipe implements PipeTransform {
           newGroup.hideExpression = field.templateOptions.repeatSectionHideExpression;
           delete field.templateOptions.repeatSectionHideExpression;
 
-          // Clears value when hidden (will be the default in Formly v6?)
-          (newGroup as any).autoClear = true;
+          // Hidden field values will be removed on save.
+          // // Clears value when hidden (will be the default in Formly v6?)
+          // (newGroup as any).autoClear = true;
 
           newGroup.fieldGroup[0].expressionProperties = {
             'templateOptions.required': field.templateOptions.repeatSectionRequiredExpression,
