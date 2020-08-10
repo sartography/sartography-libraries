@@ -270,8 +270,9 @@ export class ToFormlyPipe implements PipeTransform {
             case 'hide_expression':
               resultField.hideExpression = p.value;
 
-              // Clears value when hidden (will be the default in Formly v6?)
-              (resultField as any).autoClear = true;
+              // Hidden field values will be removed on save.
+              // // Clears value when hidden (will be the default in Formly v6?)
+              // (resultField as any).autoClear = true;
               break;
             case 'value_expression':
               resultField.expressionProperties.defaultValue = p.value;
