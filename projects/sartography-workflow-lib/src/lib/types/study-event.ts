@@ -12,7 +12,7 @@ export enum StudyEventTypeLabels {
 
 export interface StudyEvent {
   id?: number;
-  create_date: DateTime;
+  create_date: Date;
   status: StudyStatus;
   comment: string;
   event_type: StudyEventType;
