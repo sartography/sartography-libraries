@@ -9,6 +9,7 @@ import {FormlyFieldRadio} from '@ngx-formly/material/radio';
 })
 export class RadioDataFieldComponent extends FormlyFieldRadio {
   getSelected() {
+<<<<<<< Updated upstream
     if (
       this.model &&
       this.key &&
@@ -17,6 +18,12 @@ export class RadioDataFieldComponent extends FormlyFieldRadio {
       this.model[this.key].hasOwnProperty('value')
     ) {
       const storedVal = this.model[this.key].value;
+=======
+    let storedVal = null;
+    if (this.key in this.model) {
+      storedVal = this.model[this.key].value;
+    }
+>>>>>>> Stashed changes
 
       if (this.radioGroup) {
         const radios = this.radioGroup._radios.toArray();

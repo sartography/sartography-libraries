@@ -268,7 +268,13 @@ export class ToFormlyPipe implements PipeTransform {
               break;
             case 'hide_expression':
               resultField.hideExpression = p.value;
-
+              resultField.hideExpression = (model: any, formState: any, field: FormlyFieldConfig) => {
+                // access to the main model can be through `this.model` or `formState` or `model
+                if (formState.mainModel && formState.mainModel.city) {
+                  return formState.mainModel.city !== "123"
+                }
+                return true;
+              },
               // Clears value when hidden (will be the default in Formly v6?)
               (resultField as any).autoClear = true;
               break;
@@ -284,6 +290,7 @@ export class ToFormlyPipe implements PipeTransform {
               break;
             case 'required_expression':
               resultField.expressionProperties['templateOptions.required'] = p.value;
+
               break;
             case 'read_only':
               resultField.templateOptions.readonly = this._stringToBool(p.value);

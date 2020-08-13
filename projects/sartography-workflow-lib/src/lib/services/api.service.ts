@@ -68,6 +68,9 @@ export class ApiService {
     taskDataForWorkflow: '/workflow/{workflow_id}/task/{task_id}/data',
     setCurrentTaskForWorkflow: '/workflow/{workflow_id}/task/{task_id}/set_token',
     fieldOptionsLookup: '/workflow/{workflow_id}/lookup/{field_id}',
+
+    // Tools
+    eval: '/eval',
   };
 
   constructor(
@@ -376,9 +379,13 @@ export class ApiService {
   }
 
   /** Get Task Events */
-  getTaskEvents(action: TaskAction): Observable<TaskEvent[]> {
+  getTaskEvents(action?: TaskAction, studyId?: number, workflowId?: number): Observable<TaskEvent[]> {
     const url = this.apiRoot + this.endpoints.taskEvents;
-    const httpParams = new HttpParams().set('action', action);
+    let httpParams = new HttpParams();
+    if(action) httpParams = httpParams.set('action', action);
+    if(studyId) httpParams = httpParams.set('study', studyId.toString());
+    if(workflowId) httpParams = httpParams.set('workflow', workflowId.toString());
+
     return this.httpClient
       .get<TaskEvent[]>(url + '?' + httpParams.toString())
       .pipe(catchError(err => this._handleError(err)));
@@ -530,6 +537,17 @@ export class ApiService {
     return this.httpClient
       .get<LookupData[]>(url, {params})
       .pipe(catchError(err => this._handleError(err)));
+  }
+
+  /** Evaluate an expression using the api */
+  eval(expression: string, data: any) {
+    const url = this.apiRoot + this.endpoints.eval;
+    const params = new HttpParams()
+      .append('expression', expression);
+
+    return this.httpClient.put<any>(url, data, {params})
+      .pipe(catchError(err => this._handleError(err)));
+
   }
 
   private _handleError(error: ApiError): Observable<never> {
