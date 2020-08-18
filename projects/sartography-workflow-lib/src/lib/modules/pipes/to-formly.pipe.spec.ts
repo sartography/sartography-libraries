@@ -27,7 +27,7 @@ describe('ToFormlyPipe', () => {
       providers: [
         ApiService,
         {provide: 'APP_ENVIRONMENT', useClass: MockEnvironment},
-        {provide: APP_BASE_HREF, useValue: ''},
+        {provide: APP_BASE_HREF, useValue: '/'},
         {provide: Router, useValue: mockRouter},
       ]
     });
@@ -100,9 +100,7 @@ describe('ToFormlyPipe', () => {
     expect(after[0].hideExpression).toEqual(before[0].properties[0].value);
     expect(after[0].expressionProperties['templateOptions.required']).toEqual(before[0].properties[1].value);
     expect(after[0].expressionProperties['templateOptions.label']).toEqual(before[0].properties[2].value);
-
-    const modelKey = `model.${after[0].key}`;
-    expect(after[0].expressionProperties[modelKey]).toEqual(`${modelKey} || (${before[0].properties[3].value})`);
+    expect(after[0].expressionProperties.defaultValue).toContain(before[0].properties[3].value);
     expect(after[0].templateOptions.placeholder).toEqual(before[0].properties[4].value);
     expect(after[0].templateOptions.description).toEqual(before[0].properties[5].value);
     expect(after[0].templateOptions.markdownDescription).toEqual(before[0].properties[6].value);
@@ -595,6 +593,49 @@ describe('ToFormlyPipe', () => {
     expect(after[0].key).toEqual(before[0].id);
     expect(after[0].type).toEqual(before[0].type);
     expect(console.error).toHaveBeenCalled();
+  });
+
+  it('should add and remove read-only class names', () => {
+    const before: BpmnFormJsonField[] = [
+      {
+        id: 'favorite_color',
+        label: 'What is your favorite color?',
+        type: 'enum',
+        default_value: 'red',
+        options: [
+          {id: 'red', name: 'Red'},
+          {id: 'green', name: 'Green'},
+          {id: 'blue', name: 'Blue'},
+        ],
+        properties: [
+          {
+            id: 'read_only_expression',
+            value: 'true'
+          },
+          {
+            id: 'enum_type',
+            value: 'checkbox'
+          },
+        ]
+      }
+    ];
+    const after = pipe.transform(before);
+
+    after[0].expressionProperties['templateOptions.readonly'] = 'true';
+    after[0].templateOptions.readonly = true;
+    expect(after[0].expressionProperties['templateOptions.readonly']).toEqual('true');
+    expect(after[0].templateOptions.readonly).toBeTrue();
+
+    const result1 = (pipe as any)._readonlyClassName({}, {}, after[0]);
+    expect(result1).toEqual('vertical-checkbox-group read-only should-float');
+
+    after[0].expressionProperties['templateOptions.readonly'] = 'false';
+    after[0].templateOptions.readonly = false;
+    expect(after[0].expressionProperties['templateOptions.readonly']).toEqual('false');
+    expect(after[0].templateOptions.readonly).toBeFalse();
+
+    const result2 = (pipe as any)._readonlyClassName({}, {}, after[0]);
+    expect(result2).toEqual('vertical-checkbox-group');
   });
 
 });

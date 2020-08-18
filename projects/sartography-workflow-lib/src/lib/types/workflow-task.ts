@@ -9,6 +9,8 @@ export enum WorkflowTaskState {
   LIKELY = 'LIKELY',
   MAYBE = 'MAYBE',
   LOCKED = 'LOCKED',
+  NOOP = 'NOOP',
+  NONE = 'None',  // FIXME: Why is this not in all caps?
 }
 
 export enum WorkflowTaskType {

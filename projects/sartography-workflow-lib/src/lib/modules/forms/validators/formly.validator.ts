@@ -1,6 +1,6 @@
 import {FormControl, ValidationErrors} from '@angular/forms';
 import {FieldType, FormlyFieldConfig} from '@ngx-formly/core';
-import {isIterable} from 'rxjs/internal-compatibility';
+import isEqual from 'lodash.isequal';
 import {isNumberDefined} from '../../../util/is-number-defined';
 import EMAIL_REGEX from './email.regex';
 import PHONE_REGEX from './phone.regex';
@@ -42,6 +42,28 @@ export function MulticheckboxValidator(control: FormControl): ValidationErrors {
 }
 
 export function MulticheckboxValidatorMessage(err, field: FormlyFieldConfig) {
+  return 'At least one of these checkboxes must be selected.';
+}
+
+export function MulticheckboxDataFieldValidator(control: FormControl): ValidationErrors {
+  const fields = (control as any)._fields;
+
+  if (fields && fields[0].templateOptions.required) {
+    if (
+      control.value &&
+      control.value.length > 0 &&
+      !isEqual(control.value, [undefined])
+    ) {
+      return null;
+    } else {
+      return {required: true};
+    }
+  } else {
+    return null;
+  }
+}
+
+export function MulticheckboxDataFieldValidatorMessage(err, field: FormlyFieldConfig) {
   return 'At least one of these checkboxes must be selected.';
 }
 

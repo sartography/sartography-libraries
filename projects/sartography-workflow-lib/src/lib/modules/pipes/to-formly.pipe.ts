@@ -6,6 +6,7 @@ import {isIterable} from 'rxjs/internal-compatibility';
 import {ApiService} from '../../services/api.service';
 import {FileParams} from '../../types/file';
 import {BpmnFormJsonField, BpmnFormJsonFieldEnumValue} from '../../types/json';
+import isEqual from 'lodash.isequal';
 
 /***
  * Convert the given BPMN form JSON value to Formly JSON
@@ -142,7 +143,7 @@ export class ToFormlyPipe implements PipeTransform {
           // the value attribute of the field. Yes, it's confusing, but it allows us to access the label
           // of the option so we can display it later.
           resultField.templateOptions.valueProp = (option) => option;
-          resultField.templateOptions.compareWith = (o1, o2) => o1.value === o2.value;
+          resultField.templateOptions.compareWith = (o1, o2) => isEqual(o1, o2);
           break;
         case 'string':
           resultField.type = 'input';
@@ -267,20 +268,23 @@ export class ToFormlyPipe implements PipeTransform {
               resultField.templateOptions.repeatSectionHideExpression = p.value;
               break;
             case 'hide_expression':
-              resultField.hideExpression = p.value;
-              resultField.hideExpression = (model: any, formState: any, field: FormlyFieldConfig) => {
-                // access to the main model can be through `this.model` or `formState` or `model
-                if (formState.mainModel && formState.mainModel.city) {
-                  return formState.mainModel.city !== "123"
+//              resultField.hideExpression = p.value;
+              resultField.hideExpression = (model: any, formState: any, fieldConfig: FormlyFieldConfig) => {
+                const hideVariable = field.id + '_hide_epxression';
+                if (!(model.hasOwnProperty(hideVariable))) {
+                  model[hideVariable] = false;
                 }
-                return true;
-              },
-              // Clears value when hidden (will be the default in Formly v6?)
-              (resultField as any).autoClear = true;
+                this.apiService.eval(p.value, formState.mainModel).subscribe( r => {
+                  model[hideVariable] = r
+                });
+                return model[hideVariable]
+              };
+              // Hidden field values will be removed on save.
+              // // Clears value when hidden (will be the default in Formly v6?)
+              // (resultField as any).autoClear = true;
               break;
             case 'value_expression':
-              const modelKey = `model.${resultField.key}`;
-              resultField.expressionProperties[modelKey] = `${modelKey} || (${p.value})`;
+              resultField.expressionProperties.defaultValue = p.value;
               break;
             case 'label_expression':
               resultField.expressionProperties['templateOptions.label'] = p.value;
@@ -292,10 +296,15 @@ export class ToFormlyPipe implements PipeTransform {
               resultField.expressionProperties['templateOptions.required'] = p.value;
 
               break;
+            case 'read_only_expression':
+              resultField.expressionProperties['templateOptions.readonly'] = p.value;
+              resultField.expressionProperties['templateOptions.floatLabel'] = `field.templateOptions.readonly ? 'always' : ''`;
+              resultField.expressionProperties.className = this._readonlyClassName;
+              break;
             case 'read_only':
               resultField.templateOptions.readonly = this._stringToBool(p.value);
               resultField.templateOptions.floatLabel = 'always';
-              resultField.className = 'read-only should-float';
+              resultField.className = this._addClassName(resultField, 'read-only should-float');
               break;
             case 'placeholder':
               resultField.templateOptions.placeholder = p.value;
@@ -318,23 +327,27 @@ export class ToFormlyPipe implements PipeTransform {
               resultField.templateOptions.autosizeMinRows = parseInt(p.value, 10);
               break;
             case 'cols':
-              resultField.className = 'textarea-cols';
+              resultField.className = this._addClassName(resultField, 'textarea-cols');
               resultField.templateOptions.cols = parseInt(p.value, 10);
               break;
             case 'enum_type':
               if (field.type === 'enum') {
                 if (p.value === 'checkbox') {
                   resultField.type = 'multicheckbox_data';
+                  resultField.validators = {validation: ['multicheckbox_data']};
                   resultField.templateOptions.type = 'array';
-                  resultField.className = 'vertical-checkbox-group';
+                  resultField.className = this._addClassName(resultField, 'vertical-checkbox-group');
 
                   // Wrap default value in an array.
-                  resultField.defaultValue = createClone()([resultField.defaultValue]);
+                  if (resultField.hasOwnProperty('defaultValue')) {
+                    const defaultValue = createClone()(resultField.defaultValue);
+                    resultField.defaultValue = [defaultValue];
+                  }
                 }
 
                 if (p.value === 'radio') {
                   resultField.type = 'radio_data';
-                  resultField.className = 'vertical-radio-group';
+                  resultField.className = this._addClassName(resultField, 'vertical-radio-group');
                 }
               }
               break;
@@ -463,8 +476,9 @@ export class ToFormlyPipe implements PipeTransform {
           newGroup.hideExpression = field.templateOptions.repeatSectionHideExpression;
           delete field.templateOptions.repeatSectionHideExpression;
 
-          // Clears value when hidden (will be the default in Formly v6?)
-          (newGroup as any).autoClear = true;
+          // Hidden field values will be removed on save.
+          // // Clears value when hidden (will be the default in Formly v6?)
+          // (newGroup as any).autoClear = true;
 
           newGroup.fieldGroup[0].expressionProperties = {
             'templateOptions.required': field.templateOptions.repeatSectionRequiredExpression,
@@ -503,5 +517,30 @@ export class ToFormlyPipe implements PipeTransform {
     }
 
     return defaultNum;
+  }
+
+  // Returns the className string for the given field, with the given className(s) added
+  private _addClassName(field: FormlyFieldConfig, className: string): string {
+    const newClasses = className ? className.split(' ') : [];
+    const oldClasses = field.className ? field.className.split(' ') : [];
+    return Array.from(new Set(oldClasses.concat(newClasses))).join(' ')
+  }
+
+  // Returns the appropriate className string for the given field, depending on its read-only state
+  private _readonlyClassName(model: any, formState: any, field: FormlyFieldConfig) {
+    const readOnlyClasses = ['read-only', 'should-float'];
+    const oldClasses = field.className ? field.className.split(' ') : [];
+    let classes;
+
+    if (field.templateOptions.readonly) {
+      // Add the classes
+      classes = oldClasses.concat(readOnlyClasses);
+    } else {
+      // Remove the classes
+      classes = oldClasses.filter(c => !readOnlyClasses.includes(c));
+    }
+
+    // Convert to set and back again to remove duplicates
+    return Array.from(new Set(classes)).join(' ');
   }
 }

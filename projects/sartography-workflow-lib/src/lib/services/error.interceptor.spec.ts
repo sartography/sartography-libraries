@@ -42,7 +42,7 @@ describe('ErrorInterceptor', () => {
           }
         },
         {provide: 'APP_ENVIRONMENT', useValue: mockEnvironment},
-        {provide: APP_BASE_HREF, useValue: ''},
+        {provide: APP_BASE_HREF, useValue: '/'},
         {provide: NgZone, useClass: MockNgZone},
         {provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true},
         {provide: Router, useValue: mockRouter},

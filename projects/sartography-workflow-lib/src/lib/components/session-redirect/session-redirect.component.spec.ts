@@ -7,7 +7,7 @@ import {RouterTestingModule} from '@angular/router/testing';
 import {of, Subscription} from 'rxjs';
 import {ApiService} from '../../services/api.service';
 import {MockEnvironment} from '../../testing/mocks/environment.mocks';
-import {mockUser} from '../../testing/mocks/user.mocks';
+import {mockUser0} from '../../testing/mocks/user.mocks';
 import {SessionRedirectComponent} from './session-redirect.component';
 import {APP_BASE_HREF} from '@angular/common';
 
@@ -26,7 +26,7 @@ describe('SessionRedirectComponent', () => {
       ],
       providers: [
         {provide: 'APP_ENVIRONMENT', useClass: MockEnvironment},
-        {provide: APP_BASE_HREF, useValue: ''},
+        {provide: APP_BASE_HREF, useValue: '/'},
         {
           provide: ActivatedRoute,
           useValue: {
@@ -54,7 +54,7 @@ describe('SessionRedirectComponent', () => {
 
     const getUserReq = httpMock.expectOne('apiRoot/user');
     expect(getUserReq.request.method).toEqual('GET');
-    getUserReq.flush(mockUser);
+    getUserReq.flush(mockUser0);
 
     expect(goPrevUrlSpy).toHaveBeenCalled();
     expect(openUrlSpy).toHaveBeenCalled();

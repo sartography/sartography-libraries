@@ -13,7 +13,7 @@ import {mockScriptInfos} from '../testing/mocks/script-info.mocks';
 import {mockWorkflowStats0} from '../testing/mocks/stats.mocks';
 import {mockErrorResponse} from '../testing/mocks/study-status.mocks';
 import {mockStudies, mockStudy0, newRandomStudy} from '../testing/mocks/study.mocks';
-import {mockUser} from '../testing/mocks/user.mocks';
+import {mockUser0} from '../testing/mocks/user.mocks';
 import {mockWorkflowSpecCategories, mockWorkflowSpecCategory0} from '../testing/mocks/workflow-spec-category.mocks';
 import {mockWorkflowSpec0, mockWorkflowSpecs} from '../testing/mocks/workflow-spec.mocks';
 import {mockWorkflowTask0} from '../testing/mocks/workflow-task.mocks';
@@ -50,7 +50,7 @@ describe('ApiService', () => {
       providers: [
         ApiService,
         {provide: 'APP_ENVIRONMENT', useValue: mockEnvironment},
-        {provide: APP_BASE_HREF, useValue: ''},
+        {provide: APP_BASE_HREF, useValue: '/'},
         {provide: Router, useValue: mockRouter},
         {provide: Location, useValue: location},
       ]
@@ -504,20 +504,18 @@ describe('ApiService', () => {
   });
 
   it('should get user from existing session on production', () => {
-    const queryStringSpy = spyOn((service as any), '_paramsToQueryString').and.stub();
     const openUrlSpy = spyOn(service, 'openUrl').and.stub();
     (service as any).environment.production = true;
     service.redirectToLogin();
-    expect(queryStringSpy).not.toHaveBeenCalled();
     expect(openUrlSpy).toHaveBeenCalled();
   });
 
   it('should get user', () => {
     localStorage.setItem('token', 'some_token');
-    service.getUser().subscribe(result => expect(result).toEqual(mockUser));
+    service.getUser().subscribe(result => expect(result).toEqual(mockUser0));
     const req = httpMock.expectOne(`apiRoot/user`);
     expect(req.request.method).toEqual('GET');
-    req.flush(mockUser);
+    req.flush(mockUser0);
     localStorage.removeItem('token');
   });
 

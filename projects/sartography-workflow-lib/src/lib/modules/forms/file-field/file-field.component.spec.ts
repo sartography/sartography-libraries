@@ -60,7 +60,7 @@ describe('FileFieldComponent', () => {
           // useValue: {paramMap: of(convertToParamMap({workflow_spec_id: mockWorkflowSpec0.id}))},
         },
         {provide: 'APP_ENVIRONMENT', useClass: MockEnvironment},
-        {provide: APP_BASE_HREF, useValue: ''},
+        {provide: APP_BASE_HREF, useValue: '/'},
         {provide: Router, useValue: mockRouter},
       ]
     })
