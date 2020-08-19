@@ -275,7 +275,8 @@ export class ToFormlyPipe implements PipeTransform {
               // (resultField as any).autoClear = true;
               break;
             case 'value_expression':
-              resultField.expressionProperties.defaultValue = p.value;
+              // Terrible hack to force Formly to dynamically set the default value of a field.
+              resultField.expressionProperties.defaultValue = `(model.hasOwnProperty('${resultField.key}') && (model['${resultField.key}'] !== null)) ? (${p.value}) : (model['${resultField.key}'] = (${p.value}))`;
               break;
             case 'label_expression':
               resultField.expressionProperties['templateOptions.label'] = p.value;
