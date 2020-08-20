@@ -291,7 +291,6 @@ export class ToFormlyPipe implements PipeTransform {
               break;
             case 'required_expression':
               resultField.expressionProperties['templateOptions.required'] = this.getPythonEvalFunction(field, p);
-
               break;
             case 'read_only_expression':
               resultField.expressionProperties['templateOptions.readonly'] = p.value;

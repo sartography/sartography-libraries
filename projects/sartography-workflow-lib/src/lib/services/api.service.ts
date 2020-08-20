@@ -565,10 +565,8 @@ export class ApiService {
   eval(expression: string, data: any): Observable<any> {
     console.log('Evaluating expression ', expression);
     const url = this.apiRoot + this.endpoints.eval;
-    const params = new HttpParams()
-      .append('expression', expression);
-
-    return this.httpClient.put<any>(url, data, {params})
+    const body = {expression, data};
+    return this.httpClient.put<any>(url, body)
       .pipe(debounce(() => timer(10000)),
             catchError(err => this._handleError(err)));
 
