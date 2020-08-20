@@ -2,8 +2,8 @@ import {APP_BASE_HREF, Location} from '@angular/common';
 import {HttpClient, HttpParams, HttpResponse} from '@angular/common/http';
 import {Inject, Injectable} from '@angular/core';
 import {Router} from '@angular/router';
-import {Observable, of, throwError} from 'rxjs';
-import {catchError} from 'rxjs/operators';
+import {Observable, of, throwError, timer} from 'rxjs';
+import {catchError, debounce} from 'rxjs/operators';
 import {ApiError} from '../types/api';
 import {AppEnvironment} from '../types/app-environment';
 import {Approval, ApprovalCounts, ApprovalStatus} from '../types/approval';
@@ -561,14 +561,16 @@ export class ApiService {
       .pipe(catchError(err => this._handleError(err)));
   }
 
-  /** Evaluate an expression using the api */
-  eval(expression: string, data: any) {
+  /** Evaluate an expression using the api, which should return a true or false value */
+  eval(expression: string, data: any): Observable<any> {
+    console.log('Evaluating expression ', expression);
     const url = this.apiRoot + this.endpoints.eval;
     const params = new HttpParams()
       .append('expression', expression);
 
     return this.httpClient.put<any>(url, data, {params})
-      .pipe(catchError(err => this._handleError(err)));
+      .pipe(debounce(() => timer(10000)),
+            catchError(err => this._handleError(err)));
 
   }
 

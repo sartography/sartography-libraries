@@ -1,12 +1,13 @@
 import {Pipe, PipeTransform} from '@angular/core';
 import {FormlyFieldConfig} from '@ngx-formly/core';
 import createClone from 'rfdc';
-import {Observable} from 'rxjs';
+import {Observable, Subject, timer} from 'rxjs';
 import {isIterable} from 'rxjs/internal-compatibility';
 import {ApiService} from '../../services/api.service';
 import {FileParams} from '../../types/file';
 import {BpmnFormJsonField, BpmnFormJsonFieldEnumValue} from '../../types/json';
 import isEqual from 'lodash.isequal';
+import {debounce, debounceTime, distinctUntilChanged, filter, map, switchMap} from 'rxjs/operators';
 
 /***
  * Convert the given BPMN form JSON value to Formly JSON
@@ -96,6 +97,12 @@ import isEqual from 'lodash.isequal';
       ]
     }
  */
+export interface PythonEvaluation {
+  expression: string;
+  data?: any;     // Lookup data object, populated by backend LookupService
+}
+
+
 @Pipe({
   name: 'toFormly'
 })
@@ -268,32 +275,22 @@ export class ToFormlyPipe implements PipeTransform {
               resultField.templateOptions.repeatSectionHideExpression = p.value;
               break;
             case 'hide_expression':
-//              resultField.hideExpression = p.value;
-              resultField.hideExpression = (model: any, formState: any, fieldConfig: FormlyFieldConfig) => {
-                const hideVariable = field.id + '_hide_epxression';
-                if (!(model.hasOwnProperty(hideVariable))) {
-                  model[hideVariable] = false;
-                }
-                this.apiService.eval(p.value, formState.mainModel).subscribe( r => {
-                  model[hideVariable] = r
-                });
-                return model[hideVariable]
-              };
+              resultField.hideExpression = this.getPythonEvalFunction(field, p);
               // Hidden field values will be removed on save.
               // // Clears value when hidden (will be the default in Formly v6?)
               // (resultField as any).autoClear = true;
               break;
             case 'value_expression':
-              resultField.expressionProperties.defaultValue = p.value;
+              resultField.expressionProperties.defaultValue = this.getPythonEvalFunction(field, p);
               break;
             case 'label_expression':
-              resultField.expressionProperties['templateOptions.label'] = p.value;
+              resultField.expressionProperties['templateOptions.label'] = this.getPythonEvalFunction(field, p);
               break;
             case 'repeat_required_expression':
-              resultField.templateOptions.repeatSectionRequiredExpression = p.value;
+              resultField.templateOptions.repeatSectionRequiredExpression = this.getPythonEvalFunction(field, p);
               break;
             case 'required_expression':
-              resultField.expressionProperties['templateOptions.required'] = p.value;
+              resultField.expressionProperties['templateOptions.required'] = this.getPythonEvalFunction(field, p);
 
               break;
             case 'read_only_expression':
@@ -505,6 +502,45 @@ export class ToFormlyPipe implements PipeTransform {
     });
 
     return grouped;
+  }
+
+  /** Returns a function that can be used in template options and hide expressions that will
+   * evaluate a python expression using an api endpoint eventually updating the assigned variable
+   * to the correct value.
+   */
+  private getPythonEvalFunction(field, p, defaultValue = false) {
+    return (model: any, formState: any, fieldConfig: FormlyFieldConfig) => {
+
+      // Establish some variables to be added to the form state.
+      const variable = field.id + '_hide_expression';  // The actual value we want to return
+      const variableSubject = field.id + '_hide_expression_subject'; // A subject to add api calls to.
+      const variableSubscription = field.id + '_hide_expression_subscription'; // a debouced subscription.
+      const dataState = field.id + '_hide_expression_data';
+
+      // Do this only the first time it is called to establish some subjects and subscriptions.
+      // Set up a variable that can be returned, and a variable subject that can be debounced,
+      // calls to the api will eventually end up in the formState[variable]
+      if (!(formState.hasOwnProperty(variable))) {
+        formState[variable] = defaultValue;
+        formState[variableSubject] = new Subject<PythonEvaluation>();  // To debouce on this function
+        formState[variableSubscription] = formState[variableSubject].pipe(
+          debounceTime(250),
+          switchMap((subj: PythonEvaluation) => this.apiService.eval(subj.expression, subj.data)))
+          .subscribe(data => {
+            console.log('Updating Variable to ', data.result);
+            formState[variable] = data.result
+          });
+      }
+
+      // We need this check so that we don't repeatedly query the api if the data model changed and we have
+      // new information to act upon.
+      if (formState[dataState] !== JSON.stringify(model)) {
+        formState[dataState] = JSON.stringify(model);  // Deep copy of model and store it for comparison
+        formState[variableSubject].next({expression: p.value, data: model});
+      }
+      // We immediately return the variable, but it might change due to the above observable.
+      return formState[variable]
+    };
   }
 
   /** Get num_results property from given field, or return the given default if no num_results property found. */

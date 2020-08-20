@@ -636,7 +636,7 @@ describe('ApiService', () => {
   it('should call the api to evaluate python', () => {
     service.eval('x == 2', {x: 2}).subscribe(data => {
       expect(data).toBeTruthy();
-      expect(data).toEqual({result: true});
+      expect(data).toEqual(true);
     });
 
     const req = httpMock.expectOne(`apiRoot/eval?expression=x%20==%202`);
