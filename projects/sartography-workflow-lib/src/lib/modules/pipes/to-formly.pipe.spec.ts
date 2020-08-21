@@ -63,19 +63,19 @@ describe('ToFormlyPipe', () => {
         properties: [
           {
             id: 'hide_expression',
-            value: 'model.full_name !== "Arthur, King of the Britons"'
+            value: 'full_name !== "Arthur, King of the Britons"'
           },
           {
             id: 'required_expression',
-            value: 'model.favorite_color !== "blue" || model.favorite_color !== "yellow"'
+            value: 'favorite_color !== "blue" || favorite_color !== "yellow"'
           },
           {
             id: 'label_expression',
-            value: 'model.has_grail ? "What shall we do now?" : "What is your quest?"'
+            value: 'has_grail ? "What shall we do now?" : "What is your quest?"'
           },
           {
             id: 'value_expression',
-            value: 'model.has_grail ? "Take a nap" : "I seek the Holy Grail!"'
+            value: 'has_grail ? "Take a nap" : "I seek the Holy Grail!"'
           },
           {
             id: 'placeholder',
@@ -97,10 +97,10 @@ describe('ToFormlyPipe', () => {
     expect(after[0].type).toEqual('input');
     expect(after[0].defaultValue).toEqual(before[0].default_value);
     expect(after[0].templateOptions.label).toEqual(before[0].label);
-    expect(after[0].hideExpression).toEqual(before[0].properties[0].value);
-    expect(after[0].expressionProperties['templateOptions.required']).toEqual(before[0].properties[1].value);
-    expect(after[0].expressionProperties['templateOptions.label']).toEqual(before[0].properties[2].value);
-    expect(after[0].expressionProperties.defaultValue).toContain(before[0].properties[3].value);
+    expect(after[0].hideExpression).toEqual(jasmine.any(Function));
+    expect(after[0].expressionProperties['templateOptions.required']).toEqual(jasmine.any(Function));
+    expect(after[0].expressionProperties['templateOptions.label']).toEqual(jasmine.any(Function));
+    expect(after[0].expressionProperties.defaultValue).toEqual(jasmine.any(Function));
     expect(after[0].templateOptions.placeholder).toEqual(before[0].properties[4].value);
     expect(after[0].templateOptions.description).toEqual(before[0].properties[5].value);
     expect(after[0].templateOptions.markdownDescription).toEqual(before[0].properties[6].value);
@@ -497,8 +497,8 @@ describe('ToFormlyPipe', () => {
           {id: 'repeat_button_label', value: 'Add Some Contact Info'},
           {id: 'repeat_title', value: 'Enter your contact information here'},
           {id: 'repeat_edit_only', value: 'false'},
-          {id: 'repeat_hide_expression', value: 'model.favorite_number > 0'},
-          {id: 'repeat_required_expression', value: 'model.favorite_number === 42'},
+          {id: 'repeat_hide_expression', value: 'favorite_number > 0'},
+          {id: 'repeat_required_expression', value: 'favorite_number === 42'},
           {id: 'group', value: 'Full Name'},
         ]
       },

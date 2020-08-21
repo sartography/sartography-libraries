@@ -5,7 +5,7 @@ import {Observable, Subject, timer} from 'rxjs';
 import {isIterable} from 'rxjs/internal-compatibility';
 import {ApiService} from '../../services/api.service';
 import {FileParams} from '../../types/file';
-import {BpmnFormJsonField, BpmnFormJsonFieldEnumValue} from '../../types/json';
+import {BpmnFormJsonField, BpmnFormJsonFieldEnumValue, BpmnFormJsonFieldProperty} from '../../types/json';
 import isEqual from 'lodash.isequal';
 import {debounce, debounceTime, distinctUntilChanged, filter, map, switchMap} from 'rxjs/operators';
 
@@ -272,7 +272,7 @@ export class ToFormlyPipe implements PipeTransform {
               resultField.templateOptions.repeatSectionEditOnly = this._stringToBool(p.value);
               break;
             case 'repeat_hide_expression':
-              resultField.templateOptions.repeatSectionHideExpression = p.value;
+              resultField.templateOptions.repeatSectionHideExpression = this.getPythonEvalFunction(field, p);
               break;
             case 'hide_expression':
               resultField.hideExpression = this.getPythonEvalFunction(field, p);
@@ -293,7 +293,7 @@ export class ToFormlyPipe implements PipeTransform {
               resultField.expressionProperties['templateOptions.required'] = this.getPythonEvalFunction(field, p);
               break;
             case 'read_only_expression':
-              resultField.expressionProperties['templateOptions.readonly'] = p.value;
+              resultField.expressionProperties['templateOptions.readonly'] = this.getPythonEvalFunction(field, p);
               resultField.expressionProperties['templateOptions.floatLabel'] = `field.templateOptions.readonly ? 'always' : ''`;
               resultField.expressionProperties.className = this._readonlyClassName;
               break;
@@ -507,38 +507,37 @@ export class ToFormlyPipe implements PipeTransform {
    * evaluate a python expression using an api endpoint eventually updating the assigned variable
    * to the correct value.
    */
-  private getPythonEvalFunction(field, p, defaultValue = false) {
+  private getPythonEvalFunction(field: BpmnFormJsonField, p: BpmnFormJsonFieldProperty, defaultValue = false) {
     return (model: any, formState: any, fieldConfig: FormlyFieldConfig) => {
-
       // Establish some variables to be added to the form state.
-      const variable = field.id + '_hide_expression';  // The actual value we want to return
-      const variableSubject = field.id + '_hide_expression_subject'; // A subject to add api calls to.
-      const variableSubscription = field.id + '_hide_expression_subscription'; // a debouced subscription.
-      const dataState = field.id + '_hide_expression_data';
+      const variableKey = field.id + '_' + p.id;  // The actual value we want to return
+      const variableSubjectKey = field.id + '_' + p.id + '_subject'; // A subject to add api calls to.
+      const variableSubscriptionKey = field.id + '_' + p.id + '_subscription'; // a debounced subscription.
+      const dataStateKey = field.id + '_' + p.id + '_data';
 
       // Do this only the first time it is called to establish some subjects and subscriptions.
       // Set up a variable that can be returned, and a variable subject that can be debounced,
       // calls to the api will eventually end up in the formState[variable]
-      if (!(formState.hasOwnProperty(variable))) {
-        formState[variable] = defaultValue;
-        formState[variableSubject] = new Subject<PythonEvaluation>();  // To debouce on this function
-        formState[variableSubscription] = formState[variableSubject].pipe(
+      if (!(formState.hasOwnProperty(variableKey))) {
+        formState[variableKey] = defaultValue;
+        formState[variableSubjectKey] = new Subject<PythonEvaluation>();  // To debounce on this function
+        formState[variableSubscriptionKey] = formState[variableSubjectKey].pipe(
           debounceTime(250),
           switchMap((subj: PythonEvaluation) => this.apiService.eval(subj.expression, subj.data)))
           .subscribe(data => {
             console.log('Updating Variable to ', data.result);
-            formState[variable] = data.result
+            formState[variableKey] = data.result
           });
       }
 
       // We need this check so that we don't repeatedly query the api if the data model changed and we have
       // new information to act upon.
-      if (formState[dataState] !== JSON.stringify(model)) {
-        formState[dataState] = JSON.stringify(model);  // Deep copy of model and store it for comparison
-        formState[variableSubject].next({expression: p.value, data: model});
+      if (formState[dataStateKey] !== JSON.stringify(model)) {
+        formState[dataStateKey] = JSON.stringify(model);  // Deep copy of model and store it for comparison
+        formState[variableSubjectKey].next({expression: p.value, data: model});
       }
       // We immediately return the variable, but it might change due to the above observable.
-      return formState[variable]
+      return formState[variableKey]
     };
   }
 

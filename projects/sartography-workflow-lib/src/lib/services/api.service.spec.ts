@@ -636,10 +636,10 @@ describe('ApiService', () => {
   it('should call the api to evaluate python', () => {
     service.eval('x == 2', {x: 2}).subscribe(data => {
       expect(data).toBeTruthy();
-      expect(data).toEqual(true);
+      expect(data).toEqual({ result: true });
     });
 
-    const req = httpMock.expectOne(`apiRoot/eval?expression=x%20==%202`);
+    const req = httpMock.expectOne(`apiRoot/eval`);
     expect(req.request.method).toEqual('PUT');
     req.flush({result: true});
   });
