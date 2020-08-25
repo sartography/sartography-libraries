@@ -509,6 +509,11 @@ export class ToFormlyPipe implements PipeTransform {
    */
   private getPythonEvalFunction(field: BpmnFormJsonField, p: BpmnFormJsonFieldProperty, defaultValue = false) {
     return (model: any, formState: any, fieldConfig: FormlyFieldConfig) => {
+      console.log('model', model);
+      console.log('formState', formState);
+      console.log('fieldConfig', fieldConfig);
+      console.log('this', this);
+
       // Establish some variables to be added to the form state.
       const variableKey = field.id + '_' + p.id;  // The actual value we want to return
       const variableSubjectKey = field.id + '_' + p.id + '_subject'; // A subject to add api calls to.
@@ -534,7 +539,16 @@ export class ToFormlyPipe implements PipeTransform {
       // new information to act upon.
       if (formState[dataStateKey] !== JSON.stringify(model)) {
         formState[dataStateKey] = JSON.stringify(model);  // Deep copy of model and store it for comparison
+
+        // TODO: Augment the model with all current form field keys and values
+        // loop through fieldConfig.parent.fieldGroup
+        // Get keys for all fields.
+        // Look in model to see if they are there yet.
+        // If not, add them to the model with value of null.
+
+
         formState[variableSubjectKey].next({expression: p.value, data: model});
+        console.log('model', JSON.stringify(model, null, '    '));
       }
       // We immediately return the variable, but it might change due to the above observable.
       return formState[variableKey]
