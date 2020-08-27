@@ -100,7 +100,7 @@ describe('ToFormlyPipe', () => {
     expect(after[0].hideExpression).toEqual(jasmine.any(Function));
     expect(after[0].expressionProperties['templateOptions.required']).toEqual(jasmine.any(Function));
     expect(after[0].expressionProperties['templateOptions.label']).toEqual(jasmine.any(Function));
-    expect(after[0].expressionProperties.defaultValue).toEqual(jasmine.any(Function));
+    expect(after[0].hooks).toEqual({onInit: jasmine.any(Function)});
     expect(after[0].templateOptions.placeholder).toEqual(before[0].properties[4].value);
     expect(after[0].templateOptions.description).toEqual(before[0].properties[5].value);
     expect(after[0].templateOptions.markdownDescription).toEqual(before[0].properties[6].value);
