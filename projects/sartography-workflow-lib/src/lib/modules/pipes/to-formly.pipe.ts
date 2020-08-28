@@ -1,12 +1,14 @@
 import {Pipe, PipeTransform} from '@angular/core';
 import {FormlyFieldConfig} from '@ngx-formly/core';
 import createClone from 'rfdc';
-import {Observable} from 'rxjs';
+import {Observable, of, Subject, timer} from 'rxjs';
 import {isIterable} from 'rxjs/internal-compatibility';
 import {ApiService} from '../../services/api.service';
 import {FileParams} from '../../types/file';
-import {BpmnFormJsonField, BpmnFormJsonFieldEnumValue} from '../../types/json';
+import {BpmnFormJsonField, BpmnFormJsonFieldEnumValue, BpmnFormJsonFieldProperty} from '../../types/json';
 import isEqual from 'lodash.isequal';
+import {catchError, debounce, debounceTime, distinctUntilChanged, filter, map, switchMap} from 'rxjs/operators';
+import {ApiError} from '../../types/api';
 
 /***
  * Convert the given BPMN form JSON value to Formly JSON
@@ -96,6 +98,12 @@ import isEqual from 'lodash.isequal';
       ]
     }
  */
+export interface PythonEvaluation {
+  expression: string;
+  data?: any;     // Lookup data object, populated by backend LookupService
+}
+
+
 @Pipe({
   name: 'toFormly'
 })
@@ -265,30 +273,35 @@ export class ToFormlyPipe implements PipeTransform {
               resultField.templateOptions.repeatSectionEditOnly = this._stringToBool(p.value);
               break;
             case 'repeat_hide_expression':
-              resultField.templateOptions.repeatSectionHideExpression = p.value;
+              resultField.templateOptions.repeatSectionHideExpression = this.getPythonEvalFunction(field, p);
               break;
             case 'hide_expression':
-              resultField.hideExpression = p.value;
-
+              resultField.hideExpression = this.getPythonEvalFunction(field, p);
               // Hidden field values will be removed on save.
               // // Clears value when hidden (will be the default in Formly v6?)
               // (resultField as any).autoClear = true;
               break;
             case 'value_expression':
-              // Terrible hack to force Formly to dynamically set the default value of a field.
-              resultField.expressionProperties.defaultValue = `(model.hasOwnProperty('${resultField.key}') && (model['${resultField.key}'] !== null)) ? (${p.value}) : (model['${resultField.key}'] = (${p.value}))`;
+              resultField.hooks = {
+                onInit(myField) {
+                  const control = myField.formControl;
+                  if (control.value === null && p.value in myField.model) {
+                    control.setValue(myField.model[p.value]);
+                  }
+                }
+              };
               break;
             case 'label_expression':
-              resultField.expressionProperties['templateOptions.label'] = p.value;
+              resultField.expressionProperties['templateOptions.label'] = this.getPythonEvalFunction(field, p);
               break;
             case 'repeat_required_expression':
-              resultField.templateOptions.repeatSectionRequiredExpression = p.value;
+              resultField.templateOptions.repeatSectionRequiredExpression = this.getPythonEvalFunction(field, p);
               break;
             case 'required_expression':
-              resultField.expressionProperties['templateOptions.required'] = p.value;
+              resultField.expressionProperties['templateOptions.required'] = this.getPythonEvalFunction(field, p);
               break;
             case 'read_only_expression':
-              resultField.expressionProperties['templateOptions.readonly'] = p.value;
+              resultField.expressionProperties['templateOptions.readonly'] = this.getPythonEvalFunction(field, p);
               resultField.expressionProperties['templateOptions.floatLabel'] = `field.templateOptions.readonly ? 'always' : ''`;
               resultField.expressionProperties.className = this._readonlyClassName;
               break;
@@ -496,6 +509,70 @@ export class ToFormlyPipe implements PipeTransform {
     });
 
     return grouped;
+  }
+
+  /** Returns a function that can be used in template options and hide expressions that will
+   * evaluate a python expression using an api endpoint eventually updating the assigned variable
+   * to the correct value.
+   * You can pass an optional method, which should be called when the result completes.
+   */
+  private getPythonEvalFunction(field: BpmnFormJsonField, p: BpmnFormJsonFieldProperty, defaultValue = false,
+                                method = null) {
+    return (model: any, formState: any, fieldConfig: FormlyFieldConfig) => {
+
+      // Establish some variables to be added to the form state.
+      const variableKey = field.id + '_' + p.id;  // The actual value we want to return
+      const variableSubjectKey = field.id + '_' + p.id + '_subject'; // A subject to add api calls to.
+      const variableSubscriptionKey = field.id + '_' + p.id + '_subscription'; // a debounced subscription.
+      const dataStateKey = field.id + '_' + p.id + '_data';
+
+      // Do this only the first time it is called to establish some subjects and subscriptions.
+      // Set up a variable that can be returned, and a variable subject that can be debounced,
+      // calls to the api will eventually end up in the formState[variable]
+      console.log('formState', formState);
+      if (!(formState.hasOwnProperty(variableKey))) {
+        formState[variableKey] = defaultValue;
+        formState[variableSubjectKey] = new Subject<PythonEvaluation>();  // To debounce on this function
+        formState[variableSubscriptionKey] = formState[variableSubjectKey].pipe(
+          debounceTime(250),
+          switchMap((subj: PythonEvaluation) => this.apiService.eval(subj.expression, subj.data)))
+          .pipe(
+            // If the api service gets an error, handle it here, but don't error out our subscribers, so we
+            // can make subsequent calls.
+            catchError(err => of([]))
+          )
+          .subscribe(
+            data => {
+              console.log('Updating Variable to ', data.result);
+              // wrap the assignment to the variable in a promise - so that it gets evaluated as a part
+              // of angular's next round of DOM updates, so we avoid modifying the state in the middle of a call.
+              Promise.resolve(null).then(() => formState[variableKey] = data.result);
+            },
+            (error: ApiError) => {
+              console.log(`Failed to update field ${field.id} unable to process expression. ${error.message}`);
+              formState[variableKey] = 'error'
+            }
+            );
+      }
+
+      // We need this check so that we don't repeatedly query the api if the data model changed and we have
+      // new information to act upon.
+      if (formState[dataStateKey] !== JSON.stringify(model) ) {
+        formState[dataStateKey] = JSON.stringify(model);  // Deep copy of model and store it for comparison
+        console.log('model', model);
+        // TODO: Augment the model with all current form field keys and values
+        // loop through fieldConfig.parent.fieldGroup
+        // Get keys for all fields.
+        // Look in model to see if they are there yet.
+        // If not, add them to the model with value of null.
+
+
+        formState[variableSubjectKey].next({expression: p.value, data: model});
+        console.log('model', JSON.stringify(model, null, '    '));
+      }
+      // We immediately return the variable, but it might change due to the above observable.
+      return formState[variableKey]
+    };
   }
 
   /** Get num_results property from given field, or return the given default if no num_results property found. */

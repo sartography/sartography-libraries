@@ -2,8 +2,8 @@ import {APP_BASE_HREF, Location} from '@angular/common';
 import {HttpClient, HttpParams, HttpResponse} from '@angular/common/http';
 import {Inject, Injectable} from '@angular/core';
 import {Router} from '@angular/router';
-import {Observable, of, throwError} from 'rxjs';
-import {catchError} from 'rxjs/operators';
+import {Observable, of, throwError, timer} from 'rxjs';
+import {catchError, debounce} from 'rxjs/operators';
 import {ApiError} from '../types/api';
 import {AppEnvironment} from '../types/app-environment';
 import {Approval, ApprovalCounts, ApprovalStatus} from '../types/approval';
@@ -69,6 +69,9 @@ export class ApiService {
     taskDataForWorkflow: '/workflow/{workflow_id}/task/{task_id}/data',
     setCurrentTaskForWorkflow: '/workflow/{workflow_id}/task/{task_id}/set_token',
     fieldOptionsLookup: '/workflow/{workflow_id}/lookup/{field_id}',
+
+    // Tools
+    eval: '/eval',
   };
 
   constructor(
@@ -377,9 +380,13 @@ export class ApiService {
   }
 
   /** Get Task Events */
-  getTaskEvents(action: TaskAction): Observable<TaskEvent[]> {
+  getTaskEvents(action?: TaskAction, studyId?: number, workflowId?: number): Observable<TaskEvent[]> {
     const url = this.apiRoot + this.endpoints.taskEvents;
-    const httpParams = new HttpParams().set('action', action);
+    let httpParams = new HttpParams();
+    if(action) httpParams = httpParams.set('action', action);
+    if(studyId) httpParams = httpParams.set('study', studyId.toString());
+    if(workflowId) httpParams = httpParams.set('workflow', workflowId.toString());
+
     return this.httpClient
       .get<TaskEvent[]>(url + '?' + httpParams.toString())
       .pipe(catchError(err => this._handleError(err)));
@@ -552,6 +559,17 @@ export class ApiService {
     return this.httpClient
       .get<LookupData[]>(url, {params})
       .pipe(catchError(err => this._handleError(err)));
+  }
+
+  /** Evaluate an expression using the api, which should return a true or false value */
+  eval(expression: string, data: any): Observable<any> {
+    console.log('Evaluating expression ', expression);
+    const url = this.apiRoot + this.endpoints.eval;
+    const body = {expression, data};
+    return this.httpClient.put<any>(url, body)
+      .pipe(debounce(() => timer(10000)),
+            catchError(err => this._handleError(err)));
+
   }
 
   private _handleError(error: ApiError): Observable<never> {
