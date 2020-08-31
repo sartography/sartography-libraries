@@ -6,4 +6,5 @@ export interface ApiError {
   task_name: string;
   file_name: string;
   tag: string;
+  task_data: any;
 }

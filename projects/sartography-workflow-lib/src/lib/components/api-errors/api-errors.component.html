@@ -3,18 +3,26 @@
   <span fxFlex></span>
   <button mat-icon-button (click)="dismiss($event)"><mat-icon>close</mat-icon></button>
 </div>
-<mat-list>
-  <mat-list-item *ngFor="let e of apiErrors" class="api-error">
-    <h4 mat-line *ngIf="e.code" class="title-case">{{snakeToSpace(e.code)}}</h4>
-    <div mat-line *ngIf="e.task_name && e.task_id">{{e.task_name}} ({{e.task_id}})</div>
-    <div mat-line *ngIf="e.task_id && !e.task_name">Task ID: {{e.task_id}}</div>
-    <div mat-line *ngIf="!e.task_id && e.task_name">Task Name: {{e.task_name}}</div>
-    <div mat-line *ngIf="e.file_name">File: {{e.file_name}}</div>
-    <div mat-line *ngIf="e.tag">Tag: {{e.tag}}</div>
-    <ng-container *ngIf="e.message">
-      <div mat-line>
-        <code *ngIf="e.message">{{e.message}} - Please try again</code>
-      </div>
-    </ng-container>
-  </mat-list-item>
-</mat-list>
+
+<mat-accordion>
+  <mat-expansion-panel hideToggle *ngFor="let e of apiErrors" class="api-error">
+    <mat-expansion-panel-header collapsedHeight="120px">
+      <mat-panel-title>
+        <div class="title-section">
+          <h4 *ngIf="e.code" class="title-case">{{snakeToSpace(e.code)}}</h4>
+          <div *ngIf="e.task_name && e.task_id">{{e.task_name}} ({{e.task_id}})</div>
+          <div *ngIf="e.task_id && !e.task_name">Task ID: {{e.task_id}}</div>
+          <div *ngIf="e.task_name && !e.task_id">Task Name: {{e.task_name}}</div>
+          <div *ngIf="e.file_name">File: {{e.file_name}}</div>
+          <div *ngIf="e.tag">Tag: {{e.tag}}</div>
+        </div>
+      </mat-panel-title>
+      <mat-panel-description>
+        {{e.message}}
+      </mat-panel-description>
+    </mat-expansion-panel-header>
+    <div mat-line class="code-viewer-code">
+      <pre><code id="jsonCode" [highlight]="e.task_data | json" [languages]="['json']"></code></pre>
+    </div>
+  </mat-expansion-panel>
+</mat-accordion>
