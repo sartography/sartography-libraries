@@ -1,22 +1,53 @@
 @import "../../styles/config";
 
-::ng-deep .mat-list-base .mat-list-item.api-error,
-::ng-deep .mat-list-base .mat-list-item.api-error:hover {
-  border-left: 4px solid $brand-warning;
-  background-color: $brand-warning-light;
-  padding: 2rem 1rem;
-  height: inherit;
-  width: inherit;
-  cursor: default;
+mat-accordion {
+  mat-expansion-panel-header {
+    border-left: 4px solid $brand-warning;
+    background-color: $brand-warning-light;
+    font-size: .8rem;
+    font-weight: normal;
 
-  h4.title-case { text-transform: capitalize; }
+    mat-panel-title {
+      font-weight: normal;
 
-  .mat-line {
-    text-overflow: initial;
-    height: auto;
+      div.title-section {
+        font-size: .9rem;
 
-    code {
-      white-space: normal;
+        h4.title-case {
+          font-size: .9rem;
+          margin: 0 0 0 15px;
+          text-transform: capitalize;
+        }
+
+        div {
+          margin: 0 0 0 15px;
+          font-size: .8rem;
+        }
+      }
+    }
+
+    mat-panel-description {
+      color: black;
+      font-family: monospace;
+      font-size: .9rem;
+      max-width: 800px;
+    }
+  }
+
+  .code-viewer-container {
+    background-color: transparent;
+  }
+
+  .code-viewer-actions {
+    padding: 1rem;
+    color: white;
+  }
+
+  .code-viewer-code {
+    padding: 0 2rem 2rem 2rem;
+
+    code.hljs {
+      background-color: transparent;
     }
   }
 }

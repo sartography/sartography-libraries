@@ -9,7 +9,14 @@ import {SartographyWorkflowLibComponent} from './components/sartography-workflow
 import {SessionRedirectComponent} from './components/session-redirect/session-redirect.component';
 import {FormlyTestComponent} from './testing/formly/component-factory';
 import {MockEnvironment} from './testing/mocks/environment.mocks';
+import {HIGHLIGHT_OPTIONS, HighlightModule} from 'ngx-highlightjs';
+import * as hljs from 'highlight.js';
+import {MatExpansionModule} from '@angular/material/expansion';
 
+// @dynamic
+export function import_json() {
+  import('node_modules/highlight.js/lib/languages/json.js')
+}
 
 @NgModule({
   declarations: [
@@ -24,6 +31,8 @@ import {MockEnvironment} from './testing/mocks/environment.mocks';
     CommonModule,
     FlexLayoutModule,
     MatButtonModule,
+    HighlightModule,
+    MatExpansionModule
   ],
   exports: [
     ApiErrorsComponent,
@@ -31,7 +40,15 @@ import {MockEnvironment} from './testing/mocks/environment.mocks';
     SessionRedirectComponent,
     FormlyTestComponent,
   ],
-  providers: [{provide: 'APP_ENVIRONMENT', useClass: MockEnvironment}]
+  providers: [
+    {provide: 'APP_ENVIRONMENT', useClass: MockEnvironment},
+    {
+      provide: HIGHLIGHT_OPTIONS,
+      useValue: {
+        languages: import_json()
+      }
+    },
+  ]
 })
 export class SartographyWorkflowLibModule {
 }
