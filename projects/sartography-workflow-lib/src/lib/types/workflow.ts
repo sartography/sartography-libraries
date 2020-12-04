@@ -1,5 +1,5 @@
 import {WorkflowStats} from './stats';
-import {WorkflowTask, WorkflowTaskState} from './workflow-task';
+import {NavItemType, WorkflowTask, WorkflowTaskState, WorkflowTaskType} from './workflow-task';
 
 export enum WorkflowStatus {
   NOT_STARTED = 'not_started',
@@ -73,7 +73,7 @@ export interface WorkflowResetParams {
 export interface WorkflowNavItem {
   spec_id: number;
   name: string;
-  spec_type: string;
+  spec_type: NavItemType;
   indent: number;
   description?: string;
   lane?: string;
