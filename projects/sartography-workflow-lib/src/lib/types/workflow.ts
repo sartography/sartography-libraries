@@ -77,9 +77,10 @@ export interface WorkflowNavItem {
   indent: number;
   description?: string;
   lane?: string;
-  backtracks?: string;
+  backtrack_to?: string;
   task_id?: string;
   state?: WorkflowTaskState;
+  children?: WorkflowNavItem[]
 }
 
 
