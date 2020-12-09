@@ -1,5 +1,5 @@
 import {WorkflowNavItem} from '../../types/workflow';
-import {NavItemType} from "../../types/workflow-task";
+import {NavItemType} from '../../types/workflow-task';
 
 export const mockNav0: WorkflowNavItem[] = [
   {

@@ -29,7 +29,7 @@ export enum WorkflowTaskType {
 export enum NavItemType {
   BUSINESS_RULE_TASK = 'BusinessRuleTask',
   CANCEL_TASK = 'CancelTask',
-  END_EVENT = 'TaskEndEvent',
+  END_EVENT = 'EndEvent',
   MANUAL_TASK = 'ManualTask',
   NONE_TASK = 'NoneTask',
   SCRIPT_TASK = 'ScriptTask',
@@ -39,6 +39,7 @@ export enum NavItemType {
   SEQUENCE_FLOW = 'SequenceFlow',
   EXCLUSIVE_GATEWAM = 'ExclusiveGateway',
   PARALLEL_GATEWAY = 'ParallelGateway',
+  CALL_ACTIVITY = 'CallActivity',
 }
 
 export enum MultiInstanceType {
