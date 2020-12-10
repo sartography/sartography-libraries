@@ -37,7 +37,7 @@ export enum NavItemType {
   START_TASK = 'StartTask',
   USER_TASK = 'UserTask',
   SEQUENCE_FLOW = 'SequenceFlow',
-  EXCLUSIVE_GATEWAM = 'ExclusiveGateway',
+  EXCLUSIVE_GATEWAY = 'ExclusiveGateway',
   PARALLEL_GATEWAY = 'ParallelGateway',
   CALL_ACTIVITY = 'CallActivity',
 }
