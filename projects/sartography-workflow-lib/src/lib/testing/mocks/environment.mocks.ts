@@ -5,6 +5,7 @@ import {AppEnvironment} from '../../types/app-environment';
 export class MockEnvironment implements AppEnvironment {
   homeRoute = 'home';
   production = false;
+  hideDataPane = true;
   api = 'apiRoot';
   irbUrl = 'irbUrl';
   title = 'CR Connect';
