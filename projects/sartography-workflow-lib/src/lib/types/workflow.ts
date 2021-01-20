@@ -64,12 +64,6 @@ export interface Workflow {
   redirect?: number;
 }
 
-export interface WorkflowResetParams {
-  soft_reset?: boolean;
-  hard_reset?: boolean;
-  do_engine_steps?: boolean;
-}
-
 export interface WorkflowNavItem {
   spec_id: number;
   name: string;

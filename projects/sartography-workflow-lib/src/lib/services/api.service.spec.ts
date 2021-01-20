@@ -147,7 +147,7 @@ describe('ApiService', () => {
       data.navigation.forEach(t => expect(t).toBeDefined());
     });
 
-    const req = httpMock.expectOne(`apiRoot/workflow/${mockWorkflow0.id}`);
+    const req = httpMock.expectOne(`apiRoot/workflow/${mockWorkflow0.id}?do_engine_steps=true`);
     expect(req.request.method).toEqual('GET');
     req.flush(mockWorkflow0);
   });
@@ -186,10 +186,50 @@ describe('ApiService', () => {
       expect(data.id).toEqual(workflowId);
     });
 
-    const req = httpMock.expectOne(`apiRoot/workflow/${workflowId}`);
+    const req = httpMock.expectOne(`apiRoot/workflow/${workflowId}?do_engine_steps=true`);
     expect(req.request.method).toEqual('GET');
     req.flush(mockWorkflow0);
   });
+
+  it('should get one workflow without doing engine steps', () => {
+    const workflowId = 0;
+
+    service.getWorkflow(workflowId, false).subscribe(data => {
+      expect(data).toBeTruthy();
+      expect(data.id).toEqual(workflowId);
+    });
+
+    const req = httpMock.expectOne(`apiRoot/workflow/${workflowId}?do_engine_steps=false`);
+    expect(req.request.method).toEqual('GET');
+    req.flush(mockWorkflow0);
+  });
+
+  it('should get reset workflow', () => {
+    const workflowId = 0;
+
+    service.restartWorkflow(workflowId).subscribe(data => {
+      expect(data).toBeTruthy();
+      expect(data.id).toEqual(workflowId);
+    });
+
+    const req = httpMock.expectOne(`apiRoot/workflow/${workflowId}/restart?clear_data=false`);
+    expect(req.request.method).toEqual('GET');
+    req.flush(mockWorkflow0);
+  });
+
+  it('should get reset workflow and clear out data', () => {
+    const workflowId = 0;
+
+    service.restartWorkflow(workflowId, true).subscribe(data => {
+      expect(data).toBeTruthy();
+      expect(data.id).toEqual(workflowId);
+    });
+
+    const req = httpMock.expectOne(`apiRoot/workflow/${workflowId}/restart?clear_data=true`);
+    expect(req.request.method).toEqual('GET');
+    req.flush(mockWorkflow0);
+  });
+
 
   it('should get stats for one workflow', () => {
     const workflowId = 0;

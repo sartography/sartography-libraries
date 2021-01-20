@@ -13,7 +13,7 @@ import {WorkflowStats} from '../types/stats';
 import {Study} from '../types/study';
 import {TaskAction, TaskEvent} from '../types/task-event';
 import {User} from '../types/user';
-import {Workflow, WorkflowResetParams, WorkflowSpec, WorkflowSpecCategory} from '../types/workflow';
+import {Workflow, WorkflowSpec, WorkflowSpecCategory} from '../types/workflow';
 import {WorkflowTask} from '../types/workflow-task';
 import {isSignedIn} from '../util/is-signed-in';
 
@@ -64,6 +64,7 @@ export class ApiService {
     // Workflows and Tasks
     taskEvents: '/task_events',
     workflow: '/workflow/{workflow_id}',
+    workflowRestart: '/workflow/{workflow_id}/restart',
     workflowStats: '/workflow/{workflow_id}/stats',
     taskForWorkflow: '/workflow/{workflow_id}/task/{task_id}',
     taskDataForWorkflow: '/workflow/{workflow_id}/task/{task_id}/data',
@@ -393,19 +394,25 @@ export class ApiService {
   }
 
   /** Get a specific Workflow */
-  getWorkflow(workflowId: number, params?: WorkflowResetParams): Observable<Workflow> {
-    let queryString = '';
-
-    if (params) {
-      const httpParams = this._paramsToHttpParams(params);
-      queryString = '?' + httpParams.toString();
-    }
-
+  getWorkflow(workflowId: number, doEngineSteps: boolean = true): Observable<Workflow> {
+    let params = new HttpParams();
+    params = params.set('do_engine_steps', doEngineSteps.toString());
     const url = this.apiRoot + this.endpoints.workflow
       .replace('{workflow_id}', workflowId.toString());
 
     return this.httpClient
-      .get<Workflow>(url + queryString)
+      .get<Workflow>(url, {params})
+      .pipe(catchError(err => this._handleError(err)));
+  }
+
+  restartWorkflow(workflowId: number, clearData: boolean = false): Observable<Workflow> {
+    let params = new HttpParams();
+    params = params.set('clear_data', clearData.toString());
+    const url = this.apiRoot + this.endpoints.workflowRestart
+      .replace('{workflow_id}', workflowId.toString());
+
+    return this.httpClient
+      .get<Workflow>(url, {params})
       .pipe(catchError(err => this._handleError(err)));
   }
 
