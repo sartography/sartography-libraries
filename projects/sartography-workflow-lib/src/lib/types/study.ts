@@ -70,6 +70,9 @@ export interface Study {
   status?: StudyStatus;
   sponsor?: string;
   user_uid?: string;
+  create_user_display?: string;
+  last_activity_user?: string;
+  last_activity_date?: Date;
   warnings?: ApiError[];
   approvals?: Approval[];
   files?: FileMeta[];
