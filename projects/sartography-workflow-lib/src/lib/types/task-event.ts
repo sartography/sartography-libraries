@@ -6,6 +6,7 @@ export interface TaskEvent {
   study: Study;
   workflow: WorkflowMetadata;
   user_uid: string;
+  user_display?: string;
   action: TaskAction;
   task_id: string;
   task_title: string;
