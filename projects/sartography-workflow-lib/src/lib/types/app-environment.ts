@@ -1,7 +1,7 @@
 export interface AppEnvironment {
   homeRoute: string;
   production: boolean;
-  hideDataPane: boolean;
+  hideDataPane?: boolean;
   api: string;
   irbUrl: string;
   title: string;
