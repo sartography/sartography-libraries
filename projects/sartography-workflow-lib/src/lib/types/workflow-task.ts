@@ -16,7 +16,7 @@ export enum WorkflowTaskState {
 export enum WorkflowTaskType {
   BUSINESS_RULE_TASK = 'BusinessRuleTask',
   CANCEL_TASK = 'CancelTask',
-  END_EVENT = 'TaskEndEvent',
+  END_EVENT = 'EndEvent',
   MANUAL_TASK = 'ManualTask',
   NONE_TASK = 'NoneTask',
   SCRIPT_TASK = 'ScriptTask',
