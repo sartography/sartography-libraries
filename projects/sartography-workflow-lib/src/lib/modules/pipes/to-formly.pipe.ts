@@ -529,7 +529,6 @@ export class ToFormlyPipe implements PipeTransform {
       // Do this only the first time it is called to establish some subjects and subscriptions.
       // Set up a variable that can be returned, and a variable subject that can be debounced,
       // calls to the api will eventually end up in the formState[variable]
-      console.log('formState', formState);
       if (!(formState.hasOwnProperty(variableKey))) {
         formState[variableKey] = defaultValue;
         formState[variableSubjectKey] = new Subject<PythonEvaluation>();  // To debounce on this function
@@ -559,7 +558,6 @@ export class ToFormlyPipe implements PipeTransform {
       // new information to act upon.
       if (formState[dataStateKey] !== JSON.stringify(model) ) {
         formState[dataStateKey] = JSON.stringify(model);  // Deep copy of model and store it for comparison
-        console.log('model', model);
         // TODO: Augment the model with all current form field keys and values
         // loop through fieldConfig.parent.fieldGroup
         // Get keys for all fields.
