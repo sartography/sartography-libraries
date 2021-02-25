@@ -14,4 +14,5 @@ export interface WorkflowStats {
   completed_tasks: number;
   display_order: number;
   is_review? : boolean;
+  message? : string;
 }
