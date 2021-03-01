@@ -14,7 +14,6 @@ export class FileBaseComponent extends FieldType implements OnInit {
   protected workflowId: number;
   protected workflowSpecId: string;
   protected fileId: number;
-  protected taskId: string;
   protected fileParams: FileParams;
 
   constructor(
@@ -35,11 +34,6 @@ export class FileBaseComponent extends FieldType implements OnInit {
         this.workflowSpecId = paramMap.get('workflow_spec_id');
       }
 
-      if (paramMap.has('task_id')) {
-        this.taskId = paramMap.get('task_id');
-      }
-
-
     });
   }
 
@@ -48,7 +42,6 @@ export class FileBaseComponent extends FieldType implements OnInit {
     this.fileParams = {
       study_id: this.studyId,
       workflow_id: this.workflowId,
-      task_id: this.taskId,
       form_field_key: this.key,
     };
 

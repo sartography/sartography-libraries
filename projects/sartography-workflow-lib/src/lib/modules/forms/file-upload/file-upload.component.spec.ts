@@ -83,7 +83,7 @@ describe('FileUploadComponent', () => {
     };
     fixture.detectChanges();
 
-    const fmsReq = httpMock.expectOne('apiRoot/file?study_id=0&workflow_id=0&task_id=0&form_field_key=hi');
+    const fmsReq = httpMock.expectOne('apiRoot/file?study_id=0&workflow_id=0&form_field_key=hi');
     expect(fmsReq.request.method).toEqual('GET');
     fmsReq.flush(mockFileMetas);
 
