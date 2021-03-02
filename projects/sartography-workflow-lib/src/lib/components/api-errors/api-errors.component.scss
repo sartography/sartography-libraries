@@ -31,6 +31,11 @@ mat-accordion {
       font-family: monospace;
       font-size: .9rem;
       max-width: 800px;
+
+      div.hint {
+        font-weight:bold;
+        font-size: 1.2em;
+      }
     }
   }
 
