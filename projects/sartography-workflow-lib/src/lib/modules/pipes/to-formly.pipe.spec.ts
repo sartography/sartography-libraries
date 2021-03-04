@@ -373,7 +373,7 @@ describe('ToFormlyPipe', () => {
     const fileParams: FileParams = {
       workflow_id: 123,
       form_field_key: 'ingredients',
-      task_id: '123412341234'
+      task_spec_name: '123412341234'
     }
     const _getAutocompleteNumResultsSpy = spyOn((pipe as any), '_getAutocompleteNumResults').and.callThrough();
     const after = pipe.transform(before, fileParams);

@@ -5,6 +5,7 @@ export interface ApiError {
   task_id: string;
   task_name: string;
   file_name: string;
+  hint?: string;
   tag: string;
   task_data: any;
 }

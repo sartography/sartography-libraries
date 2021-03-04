@@ -28,7 +28,8 @@ describe('ApiErrorsComponent', () => {
         },
         {provide: MAT_BOTTOM_SHEET_DATA, useValue: {apiErrors: [{
           status_code: 400,
-          code: 'error_code'
+          code: 'error_code',
+          hint: 'You mother was a hampster.'
         }]}},
       ]
 

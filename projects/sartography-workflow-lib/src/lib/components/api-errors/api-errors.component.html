@@ -18,6 +18,7 @@
         </div>
       </mat-panel-title>
       <mat-panel-description>
+        <div class="hint" *ngIf="e.hint">Hint: {{e.hint}}</div>
         {{e.message}}
       </mat-panel-description>
     </mat-expansion-panel-header>
