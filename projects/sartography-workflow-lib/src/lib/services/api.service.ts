@@ -69,8 +69,7 @@ export class ApiService {
     taskForWorkflow: '/workflow/{workflow_id}/task/{task_id}',
     taskDataForWorkflow: '/workflow/{workflow_id}/task/{task_id}/data',
     setCurrentTaskForWorkflow: '/workflow/{workflow_id}/task/{task_id}/set_token',
-    fieldOptionsLookup: '/workflow/{workflow_id}/lookup/{field_id}',
-
+    fieldOptionsLookup: '/workflow/{workflow_id}/lookup/{task_spec_name}/{field_id}',
     // Tools
     eval: '/eval',
   };
@@ -556,7 +555,13 @@ export class ApiService {
   lookupFieldOptions(query: string, fileParams: FileParams, limit = 5): Observable<LookupData[]> {
     const url = this.apiRoot + this.endpoints.fieldOptionsLookup
       .replace('{workflow_id}', fileParams.workflow_id.toString())
+      .replace('{task_spec_name}', fileParams.task_spec_name.toString())
       .replace('{field_id}', fileParams.form_field_key);
+
+    if (fileParams.task_spec_name === null) {
+      return throwError('The task spec name is not defined. Lookups will fail');
+    }
+
 
     // Initialize Params Object
     const params = new HttpParams()

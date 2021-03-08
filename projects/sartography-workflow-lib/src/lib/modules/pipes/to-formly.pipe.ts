@@ -213,6 +213,7 @@ export class ToFormlyPipe implements PipeTransform {
         case 'autocomplete':
           const fieldFileParams = Object.assign({}, fileParams || {});
           fieldFileParams.form_field_key = field.id;
+          console.log('The params for a search are: ', fieldFileParams);
           resultField.type = 'autocomplete';
           const limit = this._getAutocompleteNumResults(field, 5);
           resultField.templateOptions.filter = (query: string) => this.apiService
