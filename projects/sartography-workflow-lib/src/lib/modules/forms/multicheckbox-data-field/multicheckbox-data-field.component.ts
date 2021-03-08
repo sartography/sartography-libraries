@@ -58,7 +58,7 @@ export class MulticheckboxDataFieldComponent extends FormlyFieldMultiCheckbox im
       return;
     }
 
-    const formVal = this.formControl.value || [];
+    let formVal = this.formControl.value || [];
 
     if (option && formVal) {
       // Form value should be stored as an array like:
@@ -70,6 +70,10 @@ export class MulticheckboxDataFieldComponent extends FormlyFieldMultiCheckbox im
       //   },
       //   ...
       // ]
+      if(!this._is_iterable(formVal)) {
+        console.log('Not itterable, fixing', formVal)
+        formVal = [formVal]
+      }
       for (const val of formVal) {
         if (
           val &&
@@ -85,6 +89,15 @@ export class MulticheckboxDataFieldComponent extends FormlyFieldMultiCheckbox im
 
     return false;
   }
+
+  private _is_iterable(obj) {
+    // checks for null and undefined
+    if (obj == null) {
+      return false;
+    }
+    return typeof obj[Symbol.iterator] === 'function';
+  }
+
 
   private _initializeValue() {
     // Only do this the first time

@@ -9,6 +9,7 @@ export const mockStudy0: Study = {
   primary_investigator_id: 'Dr. Tricia Marie McMillan',
   sponsor: 'Sirius Cybernetics Corporation',
   title: 'Phase III Trial of Genuine People Personalities (GPP) Autonomous Intelligent Emotional Agents for Interstellar Spacecraft',
+  short_title: '',
   inactive: false,
   categories: mockWorkflowSpecCategories,
 };
@@ -21,6 +22,7 @@ export const mockStudy1: Study = {
   primary_investigator_id: 'Dr. Slartibartfast Magrathean',
   sponsor: 'CamTim',
   title: 'Pilot Study of Fjord Placement for Single Fraction Outcomes to Cortisol Susceptibility',
+  short_title: '',
   inactive: false,
   categories: mockWorkflowSpecCategories,
 };

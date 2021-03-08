@@ -92,4 +92,40 @@ describe('MulticheckboxDataFieldComponent', () => {
     component.fixture.detectChanges();
     expect(component.field.form.value.checkbox_field.length).toEqual(2, 'checkbox should be unchecked.');
   });
+
+  it('should render multicheckbox type with only one value', () => {
+    const mockFieldSingle = {
+      key: 'checkbox_field',
+      type: 'multicheckbox_data',
+      defaultValue: [{
+        value: 'a',
+        label: 'Option A',
+        data: {short_name: 'a', long_name: 'Option A', description: 'A is for apoplanesic'}
+      }],
+      templateOptions: {
+        label: 'Multicheckbox Data Field',
+        type: 'array',
+        options: [
+          {
+            value: 'a',
+            label: 'Option A',
+            data: {short_name: 'a', long_name: 'Option A', description: 'A is for apoplanesic'}
+          }
+        ]
+      }
+    }
+
+    const component = renderComponent(mockFieldSingle);
+    expect(component.query('lib-multicheckbox-data-field')).not.toBeNull();
+    const checkboxes = component.queryAll('mat-checkbox');
+    expect(checkboxes.length).toEqual(1);
+    expect(component.field.form.value).toEqual(jasmine.objectContaining({
+      checkbox_field: [
+        {value: 'a', label: 'Option A', data: {short_name: 'a', long_name: 'Option A', description: 'A is for apoplanesic'}},
+      ]
+    }));
+  });
+
+
+
 });
