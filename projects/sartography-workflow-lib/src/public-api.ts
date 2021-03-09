@@ -30,6 +30,7 @@ export * from './lib/modules/pipes/unescape-line-breaks.pipe';
 
 // Services
 export * from './lib/services/api.service';
+export * from './lib/services/user.service';
 export * from './lib/services/auth-interceptor';
 export * from './lib/services/error-interceptor';
 export * from './lib/services/google-analytics.service';
