@@ -3,83 +3,72 @@ import {User} from '../types/user';
 import {ApiService} from './api.service';
 
 import {GoogleAnalyticsService} from './google-analytics.service';
+import {BehaviorSubject} from 'rxjs';
+
 
 @Injectable({
   providedIn: 'root'
 })
 export class UserService {
   @Output() userChanged = new EventEmitter<User>();
-  private realUser: User;
-  private impersonatedUser: User;
+  private readonly _user = new BehaviorSubject<User>(undefined);
+  private readonly _isAdmin = new BehaviorSubject(false);
+  private readonly _isImpersonating = new BehaviorSubject(false);
+  private readonly _realUser = new BehaviorSubject<User>(undefined);
+  // we give the option to use observables
+  readonly user$ = this._user.asObservable();
+  readonly realUser$ =this._realUser.asObservable();
+  readonly isImpersonating$ = this._isImpersonating.asObservable();
+  readonly isAdmin$ = this._isAdmin.asObservable();
+
   constructor(private api: ApiService,
               public googleAnalyticsService: GoogleAnalyticsService) {
+    this._loadUser()
   }
 
-  public _loadUser() {
-    this.impersonatedUser = undefined;
+  private _impersonate() {
     const impersonateUid = localStorage.getItem('admin_view_as');
-
-    if (this.isAdmin) {
-      this.api.getUser(impersonateUid || undefined).subscribe(u => {
-        if (this.realUser.uid !== impersonateUid && this.realUser.uid !== u.uid) {
-          this.impersonatedUser = u;
-        } else {
-          this.realUser = u;
-        }
-
-        this._afterUserLoad();
-      }, () => this._onLoginError());
-    } else if (impersonateUid) {
-      // Get the real user first
-      this.api.getUser().subscribe(u => {
-        this.realUser = u;
-
-        // Then impersonate
-        if (this.isAdmin) {
-          this._loadUser();
-        }
-      }, () => this._onLoginError());
+    if ((impersonateUid !== this._realUser.value.uid) && this._isAdmin.value) {
+      this.api.getUser(impersonateUid).subscribe(u => {
+        this._user.next(u);
+        this._isImpersonating.next(true);
+        this._afterUserLoad()
+      }, () => this._onLoginError())
     } else {
-      this.api.getUser().subscribe(u => {
-        this.realUser = u;
-        this._afterUserLoad();
-      }, () => this._onLoginError());
+      this._user.next(this._realUser.value);
+      this._isImpersonating.next(false);
+      this._afterUserLoad();
     }
   }
 
+  private _loadUser() {
+
+    // perahps we don't give a crap about if we are currently defined
+    // when we do this, we want to re-login to extend our token??
+    if (this._realUser.value === undefined) {
+      this.api.getUser().subscribe(u => {
+        this._realUser.next(u);
+        this._isAdmin.next(u.is_admin);
+        this._impersonate();
+      }, () => this._onLoginError());
+    } else {
+      this._impersonate();
+    }
+  }
 
   private _afterUserLoad() {
-    if (this.realUser && this.realUser.uid) {
-      this.googleAnalyticsService.setUser(this.realUser.uid);
+    if (this._realUser.value && this._realUser.value.uid) {
+      this.googleAnalyticsService.setUser(this._realUser.value.uid);
     }
-    this.userChanged.emit(this.user);
-  }
-
-
-  get isAdmin(): boolean {
-    return this.realUser && this.realUser.is_admin;
-  }
-
-  get user(): User {
-    if (this.isAdmin) {
-      const isViewingAs = !!localStorage.getItem('admin_view_as') && this.impersonatedUser;
-      return isViewingAs ? this.impersonatedUser : this.realUser;
-    } else {
-      return this.realUser;
-    }
-  }
-
-  get isImpersonating(): boolean {
-    return !!(localStorage.getItem('admin_view_as') && this.impersonatedUser);
+    this.userChanged.emit(this._user.value);
   }
 
   viewAs(uid: string) {
-    if (this.isAdmin && (uid !== this.realUser.uid)) {
+    if (this._isAdmin.value && (uid !== this._realUser.value.uid)) {
       localStorage.setItem('admin_view_as', uid);
     } else {
       localStorage.removeItem('admin_view_as');
     }
-
     this._loadUser();
   }
 
