@@ -435,12 +435,17 @@ export class ApiService {
       .pipe(catchError(err => this._handleError(err)));
   }
 
-  /** Update Task Data for a specific Workflow Task */
-  updateTaskDataForWorkflow(workflowId: number, taskId: string, data: any): Observable<Workflow> {
-    const url = this.apiRoot + this.endpoints.taskDataForWorkflow
+  /** Update Task Data for a specific Workflow Task
+   * The updateAll flag will cause all remaining tasks in a multistance task to receive the same values.
+   */
+  updateTaskDataForWorkflow(workflowId: number, taskId: string, data: any, updateAll = false): Observable<Workflow> {
+    let url = this.apiRoot + this.endpoints.taskDataForWorkflow
       .replace('{workflow_id}', workflowId.toString())
       .replace('{task_id}', taskId);
 
+    if(updateAll) {
+      url += '?update_all=True'
+    }
     return this.httpClient.put<Workflow>(url, data)
       .pipe(catchError(err => this._handleError(err)));
   }
