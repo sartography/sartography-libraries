@@ -28,7 +28,9 @@ export class UserService {
 
   private _impersonate() {
     const impersonateUid = localStorage.getItem('admin_view_as');
-    if ((impersonateUid !== this._realUser.value.uid) && this._isAdmin.value) {
+    if ((impersonateUid !== null) &&
+        (impersonateUid !== this._realUser.value.uid) &&
+        this._isAdmin.value) {
       this.api.getUser(impersonateUid).subscribe(u => {
         this._user.next(u);
         this._isImpersonating.next(true);
@@ -42,7 +44,7 @@ export class UserService {
   }
 
   private _loadUser() {
-
+    console.log('Hello from _loadUser');
     // perahps we don't give a crap about if we are currently defined
     // when we do this, we want to re-login to extend our token??
     if (this._realUser.value === undefined) {
