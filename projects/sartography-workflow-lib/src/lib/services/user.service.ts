@@ -31,10 +31,10 @@ export class UserService {
     if ((impersonateUid !== null) &&
         (impersonateUid !== this._realUser.value.uid) &&
         this._isAdmin.value) {
-      this.api.getUser(impersonateUid).subscribe(u => {
-        this._user.next(u);
-        this._isImpersonating.next(true);
-        this._afterUserLoad()
+          this.api.getUser(impersonateUid).subscribe(u => {
+            this._user.next(u);
+            this._isImpersonating.next(true);
+            this._afterUserLoad()
       }, () => this._onLoginError())
     } else {
       this._user.next(this._realUser.value);
@@ -44,18 +44,11 @@ export class UserService {
   }
 
   private _loadUser() {
-    console.log('Hello from _loadUser');
-    // perahps we don't give a crap about if we are currently defined
-    // when we do this, we want to re-login to extend our token??
-    if (this._realUser.value === undefined) {
-      this.api.getUser().subscribe(u => {
-        this._realUser.next(u);
-        this._isAdmin.next(u.is_admin);
-        this._impersonate();
-      }, () => this._onLoginError());
-    } else {
+    this.api.getUser().subscribe(u => {
+      this._realUser.next(u);
+      this._isAdmin.next(u.is_admin);
       this._impersonate();
-    }
+    }, () => this._onLoginError());
   }
 
   private _afterUserLoad() {
