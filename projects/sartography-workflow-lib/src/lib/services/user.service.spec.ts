@@ -1,4 +1,4 @@
-import { TestBed, fakeAsync } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
 import { UserService } from './user.service';
 import {ApiService} from './api.service';
 import {APP_BASE_HREF} from '@angular/common';
@@ -65,7 +65,7 @@ describe('UserService', () => {
     const userReq1 = httpMock.expectOne('apiRoot/user');
     expect(userReq1.request.method).toEqual('GET');
     userReq1.flush(mockUser0);
-    // second step - we get back the impersonated user
+    // second step  - we get back the impersonated user
     const userReq = httpMock.expectOne('apiRoot/user?admin_impersonate_uid=rhh8n');
     expect(userReq.request.method).toEqual('GET');
     userReq.flush(mockUser1);
