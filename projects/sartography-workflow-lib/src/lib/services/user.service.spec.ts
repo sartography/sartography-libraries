@@ -32,17 +32,9 @@ describe('UserService', () => {
       ]
     });
     service = TestBed.inject(UserService);
-  });
-
-  beforeEach(() => {
-  localStorage.removeItem('admin_view_as');
-  localStorage.setItem('token', 'some_token');
-  httpMock = TestBed.inject(HttpTestingController);
-  const userReq = httpMock.expectOne('apiRoot/user');
-  expect(userReq.request.method).toEqual('GET');
-  userReq.flush(mockUser0);
-
-
+    localStorage.removeItem('admin_view_as');
+    localStorage.setItem('token', 'some_token');
+    httpMock = TestBed.inject(HttpTestingController);
   });
 
   it('should be created', () => {
@@ -50,6 +42,10 @@ describe('UserService', () => {
   });
 
   it('should load user', () => {
+    const userReq = httpMock.expectOne('apiRoot/user');
+    expect(userReq.request.method).toEqual('GET');
+    userReq.flush(mockUser0);
+
     expect(!!localStorage.getItem( 'admin_view_as')).toBeFalse();
     expect((service as any)._realUser.value).toEqual(mockUser0);
     expect((service as any)._isAdmin.value).toBeTrue();
@@ -58,6 +54,10 @@ describe('UserService', () => {
   });
 
   it('should impersonate user',() => {
+    const userReq = httpMock.expectOne('apiRoot/user');
+    expect(userReq.request.method).toEqual('GET');
+    userReq.flush(mockUser0);
+
     // click on the nav link and then verify user is != realUser
 
     (service as any).viewAs('rhh8n')
@@ -66,9 +66,9 @@ describe('UserService', () => {
     expect(userReq1.request.method).toEqual('GET');
     userReq1.flush(mockUser0);
     // second step  - we get back the impersonated user
-    const userReq = httpMock.expectOne('apiRoot/user?admin_impersonate_uid=rhh8n');
-    expect(userReq.request.method).toEqual('GET');
-    userReq.flush(mockUser1);
+    const userReq2 = httpMock.expectOne('apiRoot/user?admin_impersonate_uid=rhh8n');
+    expect(userReq2.request.method).toEqual('GET');
+    userReq2.flush(mockUser1);
 
     // now we should be impersonating but still admin so we can still switch
     expect(localStorage.getItem( 'admin_view_as')).toEqual('rhh8n')
