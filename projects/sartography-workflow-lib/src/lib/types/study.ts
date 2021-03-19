@@ -87,5 +87,4 @@ export interface StudyAssociate {
   uid: string;
   role?: string;
   access?: string;
-  
 }

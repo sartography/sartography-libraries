@@ -1,12 +1,11 @@
-import { TestBed } from '@angular/core/testing';
-import { UserService } from './user.service';
-import {ApiService} from './api.service';
 import {APP_BASE_HREF} from '@angular/common';
+import {HttpClientTestingModule, HttpTestingController} from '@angular/common/http/testing';
+import {TestBed} from '@angular/core/testing';
 import {Router} from '@angular/router';
 import {MockEnvironment} from '../testing/mocks/environment.mocks';
-import {HttpClientTestingModule, HttpTestingController} from '@angular/common/http/testing';
 import {mockUser0, mockUser1} from '../testing/mocks/user.mocks';
-
+import {ApiService} from './api.service';
+import {UserService} from './user.service';
 
 
 describe('UserService', () => {
@@ -32,17 +31,22 @@ describe('UserService', () => {
       ]
     });
     service = TestBed.inject(UserService);
+    localStorage.removeItem('admin_view_as');
+    localStorage.setItem('token', 'some_token');
   });
 
   beforeEach(() => {
-  localStorage.removeItem('admin_view_as');
-  localStorage.setItem('token', 'some_token');
-  httpMock = TestBed.inject(HttpTestingController);
-  const userReq = httpMock.expectOne('apiRoot/user');
-  expect(userReq.request.method).toEqual('GET');
-  userReq.flush(mockUser0);
+    httpMock = TestBed.inject(HttpTestingController);
+    const userReq = httpMock.expectOne('apiRoot/user');
+    expect(userReq.request.method).toEqual('GET');
+    userReq.flush(mockUser0);
+  });
 
+  afterEach(() => {
+    httpMock.verify();
 
+    localStorage.removeItem('admin_view_as');
+    localStorage.removeItem('token');
   });
 
   it('should be created', () => {
@@ -50,14 +54,14 @@ describe('UserService', () => {
   });
 
   it('should load user', () => {
-    expect(!!localStorage.getItem( 'admin_view_as')).toBeFalse();
+    expect(!!localStorage.getItem('admin_view_as')).toBeFalse();
     expect((service as any)._realUser.value).toEqual(mockUser0);
     expect((service as any)._isAdmin.value).toBeTrue();
     expect((service as any)._isImpersonating.value).toBeFalse();
 
   });
 
-  it('should impersonate user',() => {
+  it('should impersonate user', () => {
     // click on the nav link and then verify user is != realUser
 
     (service as any).viewAs('rhh8n')
@@ -71,13 +75,8 @@ describe('UserService', () => {
     userReq.flush(mockUser1);
 
     // now we should be impersonating but still admin so we can still switch
-    expect(localStorage.getItem( 'admin_view_as')).toEqual('rhh8n')
+    expect(localStorage.getItem('admin_view_as')).toEqual('rhh8n')
     expect((service as any)._isAdmin.value).toBeTrue();
     expect((service as any)._isImpersonating.value).toBeTrue();
-
   });
-
-
-
-
 });
