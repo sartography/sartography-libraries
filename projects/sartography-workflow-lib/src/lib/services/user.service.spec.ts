@@ -18,6 +18,9 @@ describe('UserService', () => {
   };
 
   beforeEach(() => {
+    localStorage.removeItem('admin_view_as');
+    localStorage.setItem('token', 'some_token');
+
     TestBed.configureTestingModule({
       imports: [
         HttpClientTestingModule,
@@ -31,8 +34,6 @@ describe('UserService', () => {
       ]
     });
     service = TestBed.inject(UserService);
-    localStorage.removeItem('admin_view_as');
-    localStorage.setItem('token', 'some_token');
   });
 
   beforeEach(() => {
