@@ -10,7 +10,7 @@ import {Approval, ApprovalCounts, ApprovalStatus} from '../types/approval';
 import {FileMeta, FileParams, LookupData} from '../types/file';
 import {ScriptInfo} from '../types/script-info';
 import {WorkflowStats} from '../types/stats';
-import {Study} from '../types/study';
+import {Study, StudyAssociate} from '../types/study';
 import {TaskAction, TaskEvent} from '../types/task-event';
 import {User} from '../types/user';
 import {Workflow, WorkflowSpec, WorkflowSpecCategory} from '../types/workflow';
@@ -46,6 +46,7 @@ export class ApiService {
     studyList: '/study',
     study: '/study/{study_id}',
     studyApprovals: '/study/{study_id}/approvals',
+    studyAssociates: '/study/{study_id}/associates',
 
     // Approvals
     approvalCounts: '/approval-counts',
@@ -136,6 +137,16 @@ export class ApiService {
 
     return this.httpClient
       .delete<null>(url)
+      .pipe(catchError(err => this._handleError(err)));
+  }
+
+   /** Return all users related to a study and their access + role */
+   getStudyAssociates(studyId: number): Observable<StudyAssociate[]> {
+    const url = this.apiRoot + this.endpoints.studyAssociates
+      .replace('{study_id}', studyId.toString());
+
+    return this.httpClient
+      .get<StudyAssociate[]>(url)
       .pipe(catchError(err => this._handleError(err)));
   }
 

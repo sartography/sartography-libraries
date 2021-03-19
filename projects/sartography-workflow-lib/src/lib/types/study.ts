@@ -1,9 +1,9 @@
-import {ApiError} from './api';
-import {Approval} from './approval';
-import {FileMeta} from './file';
-import {TaskEvent} from './task-event';
-import {WorkflowSpecCategory} from './workflow';
-import {StudyEvent} from './study-event';
+import { ApiError } from './api';
+import { Approval } from './approval';
+import { FileMeta } from './file';
+import { TaskEvent } from './task-event';
+import { WorkflowSpecCategory } from './workflow';
+import { StudyEvent } from './study-event';
 
 export enum StudyStatus {
   IN_PROGRESS = 'in_progress',
@@ -81,4 +81,11 @@ export interface Study {
   comment?: string;
   events?: TaskEvent[];
   events_history?: StudyEvent[];
+}
+
+export interface StudyAssociate {
+  uid: string;
+  role?: string;
+  access?: string;
+  
 }
