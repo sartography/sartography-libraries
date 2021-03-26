@@ -46,6 +46,7 @@ export interface WorkflowMetadata {
   id: number;
   category_display_name: string;
   status: WorkflowStatus;
+  state_message?: string;  // An optional message explaining the state of a workflow.
   display_order?: number;
 }
 
