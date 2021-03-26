@@ -1,5 +1,4 @@
-import {WorkflowStats} from './stats';
-import {NavItemType, WorkflowTask, WorkflowTaskState, WorkflowTaskType} from './workflow-task';
+import {NavItemType, WorkflowTask, WorkflowTaskState} from './workflow-task';
 
 export enum WorkflowStatus {
   NOT_STARTED = 'not_started',
@@ -32,7 +31,7 @@ export interface WorkflowSpecCategory {
   name: string;
   display_name: string;
   display_order: number;
-  workflows?: WorkflowStats[];
+  workflows?: WorkflowMetadata[];
 }
 
 export interface WorkflowMetadata {
@@ -44,11 +43,14 @@ export interface WorkflowMetadata {
   display_name: string;
   name: string;
   id: number;
-  category_display_name: string;
+  spec_version: string;
+  category_display_name?: string;
   status: WorkflowStatus;
   state_message?: string;  // An optional message explaining the state of a workflow.
   display_order?: number;
+  is_review? : boolean;
 }
+
 
 export interface Workflow {
   id: number;

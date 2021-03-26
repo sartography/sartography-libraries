@@ -1,7 +1,6 @@
-import {APP_BASE_HREF, Location} from '@angular/common';
+import {APP_BASE_HREF} from '@angular/common';
 import {HttpClient, HttpParams, HttpResponse} from '@angular/common/http';
 import {Inject, Injectable} from '@angular/core';
-import {Router} from '@angular/router';
 import {Observable, of, throwError, timer} from 'rxjs';
 import {catchError, debounce} from 'rxjs/operators';
 import {ApiError} from '../types/api';
@@ -9,7 +8,6 @@ import {AppEnvironment} from '../types/app-environment';
 import {Approval, ApprovalCounts, ApprovalStatus} from '../types/approval';
 import {FileMeta, FileParams, LookupData} from '../types/file';
 import {ScriptInfo} from '../types/script-info';
-import {WorkflowStats} from '../types/stats';
 import {Study} from '../types/study';
 import {TaskAction, TaskEvent} from '../types/task-event';
 import {User} from '../types/user';
@@ -65,7 +63,6 @@ export class ApiService {
     taskEvents: '/task_events',
     workflow: '/workflow/{workflow_id}',
     workflowRestart: '/workflow/{workflow_id}/restart',
-    workflowStats: '/workflow/{workflow_id}/stats',
     taskForWorkflow: '/workflow/{workflow_id}/task/{task_id}',
     taskDataForWorkflow: '/workflow/{workflow_id}/task/{task_id}/data',
     setCurrentTaskForWorkflow: '/workflow/{workflow_id}/task/{task_id}/set_token',
@@ -78,17 +75,20 @@ export class ApiService {
     @Inject('APP_ENVIRONMENT') private environment: AppEnvironment,
     @Inject(APP_BASE_HREF) public baseHref: string,
     private httpClient: HttpClient,
-    private router: Router,
-    private location: Location,
   ) {
     this.apiRoot = environment.api;
   }
+
+  private static _handleError(error: ApiError): Observable<never> {
+    return throwError(error.message || 'Could not complete your request; please try again later.');
+  }
+
 
   /** Get the string value from a given URL */
   getStringFromUrl(url: string): Observable<string> {
     return this.httpClient
       .get(url, {responseType: 'text'})
-      .pipe(catchError(err => this._handleError(err)));
+      .pipe(catchError(err => ApiService._handleError(err)));
   }
 
   /** Get all Studies */
@@ -97,7 +97,7 @@ export class ApiService {
 
     return this.httpClient
       .get<Study[]>(url)
-      .pipe(catchError(err => this._handleError(err)));
+      .pipe(catchError(err => ApiService._handleError(err)));
   }
 
   /** Add a Study */
@@ -106,7 +106,7 @@ export class ApiService {
 
     return this.httpClient
       .post<Study>(url, study)
-      .pipe(catchError(err => this._handleError(err)));
+      .pipe(catchError(err => ApiService._handleError(err)));
   }
 
   /** Get a specific Study */
@@ -116,7 +116,7 @@ export class ApiService {
 
     return this.httpClient
       .get<Study>(url)
-      .pipe(catchError(err => this._handleError(err)));
+      .pipe(catchError(err => ApiService._handleError(err)));
   }
 
   /** Update a specific Study */
@@ -126,7 +126,7 @@ export class ApiService {
 
     return this.httpClient
       .put<Study>(url, study)
-      .pipe(catchError(err => this._handleError(err)));
+      .pipe(catchError(err => ApiService._handleError(err)));
   }
 
   /** Delete a specific Study */
@@ -136,7 +136,7 @@ export class ApiService {
 
     return this.httpClient
       .delete<null>(url)
-      .pipe(catchError(err => this._handleError(err)));
+      .pipe(catchError(err => ApiService._handleError(err)));
   }
 
   /** Get a specific Study */
@@ -146,7 +146,7 @@ export class ApiService {
 
     return this.httpClient
       .get<Approval[]>(url)
-      .pipe(catchError(err => this._handleError(err)));
+      .pipe(catchError(err => ApiService._handleError(err)));
   }
 
   /** Get Approval counts by status */
@@ -159,7 +159,7 @@ export class ApiService {
     const url = this.apiRoot + this.endpoints.approvalCounts;
     return this.httpClient
       .get<ApprovalCounts>(url, {params})
-      .pipe(catchError(err => this._handleError(err)));
+      .pipe(catchError(err => ApiService._handleError(err)));
   }
 
   /** Get all Approvals */
@@ -176,7 +176,7 @@ export class ApiService {
     const url = this.apiRoot + this.endpoints.approvalList;
     return this.httpClient
       .get<Approval[]>(url, {params})
-      .pipe(catchError(err => this._handleError(err)));
+      .pipe(catchError(err => ApiService._handleError(err)));
   }
 
   /** Update a single Approval */
@@ -185,7 +185,7 @@ export class ApiService {
       .replace('{approval_id}', approval.id.toString());
     return this.httpClient
       .put<Approval>(url, approval)
-      .pipe(catchError(err => this._handleError(err)));
+      .pipe(catchError(err => ApiService._handleError(err)));
   }
 
   /** Get all Workflow Specifications */
@@ -194,7 +194,7 @@ export class ApiService {
 
     return this.httpClient
       .get<WorkflowSpec[]>(url)
-      .pipe(catchError(err => this._handleError(err)));
+      .pipe(catchError(err => ApiService._handleError(err)));
   }
 
   /** Add a Workflow Specification */
@@ -203,7 +203,7 @@ export class ApiService {
 
     return this.httpClient
       .post<WorkflowSpec>(url, newSpec)
-      .pipe(catchError(err => this._handleError(err)));
+      .pipe(catchError(err => ApiService._handleError(err)));
   }
 
   /** Get a Workflow Specification */
@@ -213,7 +213,7 @@ export class ApiService {
 
     return this.httpClient
       .get<WorkflowSpec>(url)
-      .pipe(catchError(err => this._handleError(err)));
+      .pipe(catchError(err => ApiService._handleError(err)));
   }
 
   /** Validate a Workflow Specification */
@@ -223,7 +223,7 @@ export class ApiService {
 
     return this.httpClient
       .get<ApiError[]>(url)
-      .pipe(catchError(err => this._handleError(err)));
+      .pipe(catchError(err => ApiService._handleError(err)));
   }
 
   /** Update a Workflow Specification */
@@ -233,7 +233,7 @@ export class ApiService {
 
     return this.httpClient
       .put<WorkflowSpec>(url, newSpec)
-      .pipe(catchError(err => this._handleError(err)));
+      .pipe(catchError(err => ApiService._handleError(err)));
   }
 
   /** Delete a Workflow Specification */
@@ -243,7 +243,7 @@ export class ApiService {
 
     return this.httpClient
       .delete<null>(url)
-      .pipe(catchError(err => this._handleError(err)));
+      .pipe(catchError(err => ApiService._handleError(err)));
   }
 
   /** Get all Workflow Spec Categories */
@@ -252,7 +252,7 @@ export class ApiService {
 
     return this.httpClient
       .get<WorkflowSpecCategory[]>(url)
-      .pipe(catchError(err => this._handleError(err)));
+      .pipe(catchError(err => ApiService._handleError(err)));
   }
 
   /** Add a Workflow Specification */
@@ -261,7 +261,7 @@ export class ApiService {
 
     return this.httpClient
       .post<WorkflowSpecCategory>(url, newCat)
-      .pipe(catchError(err => this._handleError(err)));
+      .pipe(catchError(err => ApiService._handleError(err)));
   }
 
   /** Get a Workflow Spec Category */
@@ -271,7 +271,7 @@ export class ApiService {
 
     return this.httpClient
       .get<WorkflowSpecCategory>(url)
-      .pipe(catchError(err => this._handleError(err)));
+      .pipe(catchError(err => ApiService._handleError(err)));
   }
 
   /** Update a Workflow Spec Category */
@@ -281,7 +281,7 @@ export class ApiService {
 
     return this.httpClient
       .put<WorkflowSpecCategory>(url, newCat)
-      .pipe(catchError(err => this._handleError(err)));
+      .pipe(catchError(err => ApiService._handleError(err)));
   }
 
   /** Delete a Workflow Spec Category */
@@ -291,7 +291,7 @@ export class ApiService {
 
     return this.httpClient
       .delete<null>(url)
-      .pipe(catchError(err => this._handleError(err)));
+      .pipe(catchError(err => ApiService._handleError(err)));
   }
 
   /** Get all File Metadata for a given Workflow Specification, Workflow Instance, Study, or Task */
@@ -301,7 +301,7 @@ export class ApiService {
 
     return this.httpClient
       .get<FileMeta[]>(url, {params})
-      .pipe(catchError(err => this._handleError(err)));
+      .pipe(catchError(err => ApiService._handleError(err)));
   }
 
   /** Get all Files and their File Metadata for a running workflow */
@@ -310,7 +310,7 @@ export class ApiService {
     const params = new HttpParams().set('workflow_id', workflowId.toString());
     return this.httpClient
       .get<FileMeta[]>(url, {params})
-      .pipe(catchError(err => this._handleError(err)));
+      .pipe(catchError(err => ApiService._handleError(err)));
   }
 
   /** Add a File and its File Metadata to a Workflow Specification */
@@ -322,7 +322,7 @@ export class ApiService {
 
     return this.httpClient
       .post<FileMeta>(url, formData, {params})
-      .pipe(catchError(err => this._handleError(err)));
+      .pipe(catchError(err => ApiService._handleError(err)));
   }
 
   /** Get metadata for one specific File */
@@ -332,7 +332,7 @@ export class ApiService {
 
     return this.httpClient
       .get<FileMeta>(url)
-      .pipe(catchError(err => this._handleError(err)));
+      .pipe(catchError(err => ApiService._handleError(err)));
   }
 
   /** Update File Metadata */
@@ -345,7 +345,7 @@ export class ApiService {
 
     return this.httpClient
       .put<FileMeta>(url, fileMeta)
-      .pipe(catchError(err => this._handleError(err)));
+      .pipe(catchError(err => ApiService._handleError(err)));
   }
 
   deleteFileMeta(fileMetaId: number): Observable<null> {
@@ -354,7 +354,7 @@ export class ApiService {
 
     return this.httpClient
       .delete<null>(url)
-      .pipe(catchError(err => this._handleError(err)));
+      .pipe(catchError(err => ApiService._handleError(err)));
   }
 
   /** Get the File Data for specific File Metadata */
@@ -364,7 +364,7 @@ export class ApiService {
 
     return this.httpClient
       .get(url, {observe: 'response', responseType: 'arraybuffer'})
-      .pipe(catchError(err => this._handleError(err)));
+      .pipe(catchError(err => ApiService._handleError(err)));
   }
 
   /** Update the File Data for specific File Metadata */
@@ -376,7 +376,7 @@ export class ApiService {
 
     return this.httpClient
       .put<FileMeta>(url, formData)
-      .pipe(catchError(err => this._handleError(err)));
+      .pipe(catchError(err => ApiService._handleError(err)));
   }
 
   /** Get Task Events */
@@ -389,7 +389,7 @@ export class ApiService {
 
     return this.httpClient
       .get<TaskEvent[]>(url + '?' + httpParams.toString())
-      .pipe(catchError(err => this._handleError(err)));
+      .pipe(catchError(err => ApiService._handleError(err)));
   }
 
   /** Get a specific Workflow */
@@ -401,7 +401,7 @@ export class ApiService {
 
     return this.httpClient
       .get<Workflow>(url, {params})
-      .pipe(catchError(err => this._handleError(err)));
+      .pipe(catchError(err => ApiService._handleError(err)));
   }
 
   restartWorkflow(workflowId: number, clearData: boolean = false): Observable<Workflow> {
@@ -412,17 +412,7 @@ export class ApiService {
 
     return this.httpClient
       .get<Workflow>(url, {params})
-      .pipe(catchError(err => this._handleError(err)));
-  }
-
-  /** Get a specific Workflow */
-  getWorkflowStats(workflowId: number): Observable<WorkflowStats> {
-    const url = this.apiRoot + this.endpoints.workflowStats
-      .replace('{workflow_id}', workflowId.toString());
-
-    return this.httpClient
-      .get<WorkflowStats>(url)
-      .pipe(catchError(err => this._handleError(err)));
+      .pipe(catchError(err => ApiService._handleError(err)));
   }
 
   /** Get a specific Task for a Workflow */
@@ -432,7 +422,7 @@ export class ApiService {
       .replace('{task_id}', taskId);
 
     return this.httpClient.get<WorkflowTask>(url)
-      .pipe(catchError(err => this._handleError(err)));
+      .pipe(catchError(err => ApiService._handleError(err)));
   }
 
   /** Update Task Data for a specific Workflow Task
@@ -447,7 +437,7 @@ export class ApiService {
       url += '?update_all=True'
     }
     return this.httpClient.put<Workflow>(url, data)
-      .pipe(catchError(err => this._handleError(err)));
+      .pipe(catchError(err => ApiService._handleError(err)));
   }
 
   /** Update Task Data for a specific Workflow Task */
@@ -457,7 +447,7 @@ export class ApiService {
       .replace('{task_id}', taskId);
 
     return this.httpClient.put<Workflow>(url, {})
-      .pipe(catchError(err => this._handleError(err)));
+      .pipe(catchError(err => ApiService._handleError(err)));
   }
 
   /** listReferenceFiles */
@@ -466,7 +456,7 @@ export class ApiService {
 
     return this.httpClient
       .get<FileMeta[]>(url)
-      .pipe(catchError(err => this._handleError(err)));
+      .pipe(catchError(err => ApiService._handleError(err)));
   }
 
   /** getReferenceFile */
@@ -476,7 +466,7 @@ export class ApiService {
 
     return this.httpClient
       .get(url, {observe: 'response', responseType: 'arraybuffer'})
-      .pipe(catchError(err => this._handleError(err)));
+      .pipe(catchError(err => ApiService._handleError(err)));
   }
 
   /** updateReferenceFile */
@@ -488,7 +478,7 @@ export class ApiService {
 
     return this.httpClient
       .put(url, formData, {observe: 'response', responseType: 'arraybuffer'})
-      .pipe(catchError(err => this._handleError(err)));
+      .pipe(catchError(err => ApiService._handleError(err)));
   }
 
   /** listScripts */
@@ -497,7 +487,7 @@ export class ApiService {
 
     return this.httpClient
       .get<ScriptInfo[]>(url)
-      .pipe(catchError(err => this._handleError(err)));
+      .pipe(catchError(err => ApiService._handleError(err)));
   }
 
   /** isSignedIn */
@@ -514,7 +504,7 @@ export class ApiService {
     const url = this.apiRoot + this.endpoints.userList;
     return this.httpClient
       .get<User[]>(url)
-      .pipe(catchError(err => this._handleError(err)));
+      .pipe(catchError(err => ApiService._handleError(err)));
   }
 
   /** getUser
@@ -531,7 +521,7 @@ export class ApiService {
       const queryString = adminImpersonateUid ? '?' + httpParams.toString() : '';
       return this.httpClient
         .get<User>(url + queryString)
-        .pipe(catchError(err => this._handleError(err)));
+        .pipe(catchError(err => ApiService._handleError(err)));
     } else {
       return of(null);
     }
@@ -575,7 +565,7 @@ export class ApiService {
 
     return this.httpClient
       .get<LookupData[]>(url, {params})
-      .pipe(catchError(err => this._handleError(err)));
+      .pipe(catchError(err => ApiService._handleError(err)));
   }
 
   /** Evaluate an expression using the api, which should return a true or false value */
@@ -585,12 +575,8 @@ export class ApiService {
     const body = {expression, data};
     return this.httpClient.put<any>(url, body)
       .pipe(debounce(() => timer(10000)),
-            catchError(err => this._handleError(err)));
+            catchError(err => ApiService._handleError(err)));
 
-  }
-
-  private _handleError(error: ApiError): Observable<never> {
-    return throwError(error.message || 'Could not complete your request; please try again later.');
   }
 
   /** Construct HttpParams from params object. Only adds params that have been set. */
