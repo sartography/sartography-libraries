@@ -147,7 +147,7 @@ export class ApiService {
 
     return this.httpClient
       .get<StudyAssociate[]>(url)
-      .pipe(catchError(err => this._handleError(err)));
+      .pipe(catchError(err => ApiService._handleError(err)));
   }
 
   /** Get a specific Study */
