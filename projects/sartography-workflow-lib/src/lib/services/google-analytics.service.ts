@@ -30,10 +30,10 @@ export class GoogleAnalyticsService {
   }
 
   public setUser(uid) {
-    if (gtag) {
+    if (typeof gtag !== 'undefined') {
       gtag('set', {user_id: uid}); // Set the user ID using signed-in user_id.
-      this.event('user-id available', 'authentication', uid)
     }
+    this.event('user-id available', 'authentication', uid)
   }
 
   public init(analyticsKey) {
@@ -61,7 +61,7 @@ export class GoogleAnalyticsService {
   }
 
   private event(action: string, category: string, label: string) {
-    if (gtag) {
+    if (typeof gtag !== 'undefined') {
       gtag('event', action, {
         event_category: category,
         event_label: label

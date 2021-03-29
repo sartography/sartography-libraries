@@ -45,9 +45,13 @@ export class UserService {
 
   private _loadUser() {
     this.api.getUser().subscribe(u => {
-      this._realUser.next(u);
-      this._isAdmin.next(u.is_admin);
-      this._impersonate();
+      if (u) {
+        this._realUser.next(u);
+        this._isAdmin.next(u.is_admin);
+        this._impersonate();
+      } else {
+        this._onLoginError();
+      }
     }, () => this._onLoginError());
   }
 
@@ -70,6 +74,7 @@ export class UserService {
   private _onLoginError() {
     localStorage.removeItem('admin_view_as');
     localStorage.removeItem('token');
+    this.userChanged.emit(null);
   }
 
 }

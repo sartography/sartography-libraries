@@ -2,7 +2,7 @@ import {Workflow, WorkflowMetadata, WorkflowState, WorkflowStatus} from '../../t
 import {mockStudy0} from './study.mocks';
 import {mockWorkflowSpecCategory0, mockWorkflowSpecCategory1} from './workflow-spec-category.mocks';
 import {mockWorkflowSpec0, mockWorkflowSpec1} from './workflow-spec.mocks';
-import {mockWorkflowTask0, mockWorkflowTask1, mockWorkflowTasks} from './workflow-task.mocks';
+import {mockWorkflowTask1} from './workflow-task.mocks';
 import {mockNav0, mockNav1} from './workflow-nav.mocks';
 
 export const mockWorkflow0: Workflow = {
@@ -42,7 +42,8 @@ export const mockWorkflowMetadata0: WorkflowMetadata = {
   category_display_name: mockWorkflowSpecCategory0.display_name,
   status: WorkflowStatus.USER_INPUT_REQUIRED,
   display_order: 0,
-}
+  spec_version: 'a'
+};
 
 export const mockWorkflowMetadata1: WorkflowMetadata = {
   state: WorkflowState.REQUIRED,
@@ -56,7 +57,8 @@ export const mockWorkflowMetadata1: WorkflowMetadata = {
   category_display_name: mockWorkflowSpecCategory1.display_name,
   status: WorkflowStatus.USER_INPUT_REQUIRED,
   display_order: 1,
-}
+  spec_version: 'a'
+};
 
 export const mockWorkflowMetadata: WorkflowMetadata[] = [
   mockWorkflowMetadata0,

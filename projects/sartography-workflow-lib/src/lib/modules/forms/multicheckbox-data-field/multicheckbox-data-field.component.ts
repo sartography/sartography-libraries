@@ -71,7 +71,6 @@ export class MulticheckboxDataFieldComponent extends FormlyFieldMultiCheckbox im
       //   ...
       // ]
       if(!this._is_iterable(formVal)) {
-        console.log('Not itterable, fixing', formVal)
         formVal = [formVal]
       }
       for (const val of formVal) {

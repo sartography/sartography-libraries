@@ -1,7 +1,6 @@
-import {WorkflowStats} from '../../types/stats';
-import {WorkflowState, WorkflowStatus} from '../../types/workflow';
+import {WorkflowMetadata, WorkflowState, WorkflowStatus} from '../../types/workflow';
 
-export const mockWorkflowStats0: WorkflowStats = {
+export const mockWorkflowMeta0: WorkflowMetadata = {
   id: 0,
   name: 'all_things',
   display_name: 'Everything',
@@ -15,7 +14,7 @@ export const mockWorkflowStats0: WorkflowStats = {
   display_order: 1,
 };
 
-export const mockWorkflowStats1: WorkflowStats = {
+export const mockWorkflowMeta1: WorkflowMetadata = {
   id: 1,
   name: 'few_things',
   display_name: 'Some things',
@@ -29,7 +28,7 @@ export const mockWorkflowStats1: WorkflowStats = {
   display_order: 1,
 };
 
-export const mockWorkflowStats: WorkflowStats[] = [
-  mockWorkflowStats0,
-  mockWorkflowStats1,
+export const mockWorkflowMetas: WorkflowMetadata[] = [
+  mockWorkflowMeta0,
+  mockWorkflowMeta1,
 ];

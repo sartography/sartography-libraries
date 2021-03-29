@@ -10,7 +10,6 @@ import {SessionRedirectComponent} from '../components/session-redirect/session-r
 import {MockEnvironment} from '../testing/mocks/environment.mocks';
 import {mockFileMeta0, mockFileMetaReference0, mockFileMetas, mockFileMetaTask0} from '../testing/mocks/file.mocks';
 import {mockScriptInfos} from '../testing/mocks/script-info.mocks';
-import {mockWorkflowStats0} from '../testing/mocks/stats.mocks';
 import {mockErrorResponse} from '../testing/mocks/study-status.mocks';
 import {mockStudies, mockStudy0, newRandomStudy} from '../testing/mocks/study.mocks';
 import {mockUser0} from '../testing/mocks/user.mocks';
@@ -228,20 +227,6 @@ describe('ApiService', () => {
     const req = httpMock.expectOne(`apiRoot/workflow/${workflowId}/restart?clear_data=true`);
     expect(req.request.method).toEqual('GET');
     req.flush(mockWorkflow0);
-  });
-
-
-  it('should get stats for one workflow', () => {
-    const workflowId = 0;
-
-    service.getWorkflowStats(workflowId).subscribe(data => {
-      expect(data).toBeTruthy();
-      expect(data.id).toEqual(workflowId);
-    });
-
-    const req = httpMock.expectOne(`apiRoot/workflow/${workflowId}/stats`);
-    expect(req.request.method).toEqual('GET');
-    req.flush(mockWorkflowStats0);
   });
 
   it('should get one workflow specification', () => {
