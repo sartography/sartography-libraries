@@ -64,6 +64,7 @@ export interface FileMeta {
   form_field_key?: string;
   is_reference?: boolean;
   irb_doc_code?: string;
+  category?: string;
   primary_process_id?: string;
   is_status?: boolean;
 }
