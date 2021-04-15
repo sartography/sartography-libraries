@@ -6,7 +6,7 @@ import {catchError, debounce} from 'rxjs/operators';
 import {ApiError} from '../types/api';
 import {AppEnvironment} from '../types/app-environment';
 import {Approval, ApprovalCounts, ApprovalStatus} from '../types/approval';
-import {FileMeta, FileParams, LookupData} from '../types/file';
+import {DocumentDirectory, FileMeta, FileParams, LookupData} from '../types/file';
 import {ScriptInfo} from '../types/script-info';
 import {Study} from '../types/study';
 import {TaskAction, TaskEvent} from '../types/task-event';
@@ -59,6 +59,9 @@ export class ApiService {
     workflowSpecCategoryList: '/workflow-specification-category',
     workflowSpecCategory: '/workflow-specification-category/{cat_id}',
 
+    // Document Directory
+    documentDirectory: '/document_directory/{study_id}',
+
     // Workflows and Tasks
     taskEvents: '/task_events',
     workflow: '/workflow/{workflow_id}',
@@ -108,6 +111,17 @@ export class ApiService {
       .post<Study>(url, study)
       .pipe(catchError(err => ApiService._handleError(err)));
   }
+
+  /** Get a specific Study */
+  getDocumentDirectory(studyId: number): Observable<DocumentDirectory[]> {
+    const url = this.apiRoot + this.endpoints.documentDirectory
+      .replace('{study_id}', studyId.toString());
+
+    return this.httpClient
+      .get<DocumentDirectory[]>(url)
+      .pipe(catchError(err => ApiService._handleError(err)));
+  }
+
 
   /** Get a specific Study */
   getStudy(studyId: number): Observable<Study> {

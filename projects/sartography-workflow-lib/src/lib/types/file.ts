@@ -49,6 +49,14 @@ export enum FileType {
   ZIP = 'zip',
 }
 
+export interface DocumentDirectory {
+  level: string;
+  file: FileMeta;
+  expanded: boolean;
+  filecount: number;
+  children: DocumentDirectory[];
+}
+
 export interface FileMeta {
   content_type: string;
   file: File;
