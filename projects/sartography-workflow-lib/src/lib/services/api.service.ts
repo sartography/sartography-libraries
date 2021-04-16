@@ -1,19 +1,19 @@
-import {APP_BASE_HREF} from '@angular/common';
-import {HttpClient, HttpParams, HttpResponse} from '@angular/common/http';
-import {Inject, Injectable} from '@angular/core';
-import {Observable, of, throwError, timer} from 'rxjs';
-import {catchError, debounce} from 'rxjs/operators';
-import {ApiError} from '../types/api';
-import {AppEnvironment} from '../types/app-environment';
-import {Approval, ApprovalCounts, ApprovalStatus} from '../types/approval';
-import {FileMeta, FileParams, LookupData} from '../types/file';
-import {ScriptInfo} from '../types/script-info';
-import {Study, StudyAssociate} from '../types/study';
-import {TaskAction, TaskEvent} from '../types/task-event';
-import {User} from '../types/user';
-import {Workflow, WorkflowSpec, WorkflowSpecCategory} from '../types/workflow';
-import {WorkflowTask} from '../types/workflow-task';
-import {isSignedIn} from '../util/is-signed-in';
+import { APP_BASE_HREF } from '@angular/common';
+import { HttpClient, HttpParams, HttpResponse } from '@angular/common/http';
+import { Inject, Injectable } from '@angular/core';
+import { Observable, of, throwError, timer } from 'rxjs';
+import { catchError, debounce } from 'rxjs/operators';
+import { ApiError } from '../types/api';
+import { AppEnvironment } from '../types/app-environment';
+import { Approval, ApprovalCounts, ApprovalStatus } from '../types/approval';
+import { FileMeta, FileParams, LookupData } from '../types/file';
+import { ScriptInfo } from '../types/script-info';
+import { Study, StudyAssociate } from '../types/study';
+import { TaskAction, TaskEvent } from '../types/task-event';
+import { User } from '../types/user';
+import { Workflow, WorkflowSpec, WorkflowSpecCategory } from '../types/workflow';
+import { WorkflowTask } from '../types/workflow-task';
+import { isSignedIn } from '../util/is-signed-in';
 
 
 @Injectable({
@@ -31,7 +31,8 @@ export class ApiService {
     referenceFile: '/reference_file/{name}',
 
     // Configurator Tools
-    scriptList: '/list_scripts',
+    listScripts: '/list_scripts',
+    sendEmail: '/send_email',
     renderDocx: '/render_docx',
     renderMarkdown: '/render_markdown',
 
@@ -88,7 +89,7 @@ export class ApiService {
   /** Get the string value from a given URL */
   getStringFromUrl(url: string): Observable<string> {
     return this.httpClient
-      .get(url, {responseType: 'text'})
+      .get(url, { responseType: 'text' })
       .pipe(catchError(err => ApiService._handleError(err)));
   }
 
@@ -140,8 +141,8 @@ export class ApiService {
       .pipe(catchError(err => ApiService._handleError(err)));
   }
 
-   /** Return all users related to a study and their access + role */
-   getStudyAssociates(studyId: number): Observable<StudyAssociate[]> {
+  /** Return all users related to a study and their access + role */
+  getStudyAssociates(studyId: number): Observable<StudyAssociate[]> {
     const url = this.apiRoot + this.endpoints.studyAssociates
       .replace('{study_id}', studyId.toString());
 
@@ -169,7 +170,7 @@ export class ApiService {
 
     const url = this.apiRoot + this.endpoints.approvalCounts;
     return this.httpClient
-      .get<ApprovalCounts>(url, {params})
+      .get<ApprovalCounts>(url, { params })
       .pipe(catchError(err => ApiService._handleError(err)));
   }
 
@@ -186,7 +187,7 @@ export class ApiService {
     }
     const url = this.apiRoot + this.endpoints.approvalList;
     return this.httpClient
-      .get<Approval[]>(url, {params})
+      .get<Approval[]>(url, { params })
       .pipe(catchError(err => ApiService._handleError(err)));
   }
 
@@ -311,7 +312,7 @@ export class ApiService {
     const params = this._paramsToHttpParams(fileParams);
 
     return this.httpClient
-      .get<FileMeta[]>(url, {params})
+      .get<FileMeta[]>(url, { params })
       .pipe(catchError(err => ApiService._handleError(err)));
   }
 
@@ -320,7 +321,7 @@ export class ApiService {
     const url = this.apiRoot + this.endpoints.fileList;
     const params = new HttpParams().set('workflow_id', workflowId.toString());
     return this.httpClient
-      .get<FileMeta[]>(url, {params})
+      .get<FileMeta[]>(url, { params })
       .pipe(catchError(err => ApiService._handleError(err)));
   }
 
@@ -332,7 +333,7 @@ export class ApiService {
     formData.append('file', fileMeta.file);
 
     return this.httpClient
-      .post<FileMeta>(url, formData, {params})
+      .post<FileMeta>(url, formData, { params })
       .pipe(catchError(err => ApiService._handleError(err)));
   }
 
@@ -374,7 +375,7 @@ export class ApiService {
       .replace('{file_id}', fileId.toString());
 
     return this.httpClient
-      .get(url, {observe: 'response', responseType: 'arraybuffer'})
+      .get(url, { observe: 'response', responseType: 'arraybuffer' })
       .pipe(catchError(err => ApiService._handleError(err)));
   }
 
@@ -394,9 +395,9 @@ export class ApiService {
   getTaskEvents(action?: TaskAction, studyId?: number, workflowId?: number): Observable<TaskEvent[]> {
     const url = this.apiRoot + this.endpoints.taskEvents;
     let httpParams = new HttpParams();
-    if(action) httpParams = httpParams.set('action', action);
-    if(studyId) httpParams = httpParams.set('study', studyId.toString());
-    if(workflowId) httpParams = httpParams.set('workflow', workflowId.toString());
+    if (action) httpParams = httpParams.set('action', action);
+    if (studyId) httpParams = httpParams.set('study', studyId.toString());
+    if (workflowId) httpParams = httpParams.set('workflow', workflowId.toString());
 
     return this.httpClient
       .get<TaskEvent[]>(url + '?' + httpParams.toString())
@@ -411,7 +412,7 @@ export class ApiService {
       .replace('{workflow_id}', workflowId.toString());
 
     return this.httpClient
-      .get<Workflow>(url, {params})
+      .get<Workflow>(url, { params })
       .pipe(catchError(err => ApiService._handleError(err)));
   }
 
@@ -422,7 +423,7 @@ export class ApiService {
       .replace('{workflow_id}', workflowId.toString());
 
     return this.httpClient
-      .get<Workflow>(url, {params})
+      .get<Workflow>(url, { params })
       .pipe(catchError(err => ApiService._handleError(err)));
   }
 
@@ -444,7 +445,7 @@ export class ApiService {
       .replace('{workflow_id}', workflowId.toString())
       .replace('{task_id}', taskId);
 
-    if(updateAll) {
+    if (updateAll) {
       url += '?update_all=True'
     }
     return this.httpClient.put<Workflow>(url, data)
@@ -476,7 +477,7 @@ export class ApiService {
       .replace('{name}', name);
 
     return this.httpClient
-      .get(url, {observe: 'response', responseType: 'arraybuffer'})
+      .get(url, { observe: 'response', responseType: 'arraybuffer' })
       .pipe(catchError(err => ApiService._handleError(err)));
   }
 
@@ -488,18 +489,54 @@ export class ApiService {
     formData.append('file', newFile);
 
     return this.httpClient
-      .put(url, formData, {observe: 'response', responseType: 'arraybuffer'})
+      .put(url, formData, { observe: 'response', responseType: 'arraybuffer' })
       .pipe(catchError(err => ApiService._handleError(err)));
   }
 
   /** listScripts */
   listScripts(): Observable<ScriptInfo[]> {
-    const url = this.apiRoot + this.endpoints.scriptList;
+    const url = this.apiRoot + this.endpoints.listScripts;
 
     return this.httpClient
       .get<ScriptInfo[]>(url)
       .pipe(catchError(err => ApiService._handleError(err)));
   }
+
+  /** renderMarkdown */
+  renderMarkdown(template: string, data: string)
+  // : Observable<string>
+  {
+    const url = this.apiRoot + this.endpoints.renderMarkdown;
+
+    const params = new HttpParams()
+    .append('template', template)
+    .append('data', data);
+
+    return this.httpClient
+      .get<string>(url, { params })
+      .pipe(catchError(err => ApiService._handleError(err)));
+  }
+
+  /** renderDocx */
+  renderDocx()
+  {
+    const url = this.apiRoot + this.endpoints.renderDocx;
+
+    // return this.httpClient
+    //   .get<ScriptInfo[]>(url)
+    //   .pipe(catchError(err => ApiService._handleError(err)));
+  }
+
+  /** sendEmail */
+  sendEmail() {
+    const url = this.apiRoot + this.endpoints.sendEmail;
+
+    // return this.httpClient
+    //   .get<ScriptInfo[]>(url)
+    //   .pipe(catchError(err => ApiService._handleError(err)));
+  }
+
+
 
   /** isSignedIn */
   isSignedIn(): boolean {
@@ -575,7 +612,7 @@ export class ApiService {
       .append('limit', limit.toString());
 
     return this.httpClient
-      .get<LookupData[]>(url, {params})
+      .get<LookupData[]>(url, { params })
       .pipe(catchError(err => ApiService._handleError(err)));
   }
 
@@ -583,10 +620,10 @@ export class ApiService {
   eval(expression: string, data: any): Observable<any> {
     console.log('Evaluating expression ', expression);
     const url = this.apiRoot + this.endpoints.eval;
-    const body = {expression, data};
+    const body = { expression, data };
     return this.httpClient.put<any>(url, body)
       .pipe(debounce(() => timer(10000)),
-            catchError(err => ApiService._handleError(err)));
+        catchError(err => ApiService._handleError(err)));
 
   }
 
@@ -599,6 +636,6 @@ export class ApiService {
         paramsObject[k] = val.toString();
       }
     });
-    return new HttpParams({fromObject: paramsObject});
+    return new HttpParams({ fromObject: paramsObject });
   }
 }

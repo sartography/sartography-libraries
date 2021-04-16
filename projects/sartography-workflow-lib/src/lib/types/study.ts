@@ -67,7 +67,6 @@ export interface Study {
   inactive?: boolean;
   ind_number?: string;
   last_updated?: Date;
-  primary_investigator_id?: string;
   status?: StudyStatus;
   sponsor?: string;
   user_uid?: string;
