@@ -211,7 +211,7 @@ describe('ApiService', () => {
       expect(data.id).toEqual(workflowId);
     });
 
-    const req = httpMock.expectOne(`apiRoot/workflow/${workflowId}/restart?clear_data=false`);
+    const req = httpMock.expectOne(`apiRoot/workflow/${workflowId}/restart?clear_data=false&delete_files=false`);
     expect(req.request.method).toEqual('GET');
     req.flush(mockWorkflow0);
   });
@@ -224,10 +224,24 @@ describe('ApiService', () => {
       expect(data.id).toEqual(workflowId);
     });
 
-    const req = httpMock.expectOne(`apiRoot/workflow/${workflowId}/restart?clear_data=true`);
+    const req = httpMock.expectOne(`apiRoot/workflow/${workflowId}/restart?clear_data=true&delete_files=false`);
     expect(req.request.method).toEqual('GET');
     req.flush(mockWorkflow0);
   });
+
+  it('should get reset workflow and clear out data and delete files', () => {
+    const workflowId = 0;
+
+    service.restartWorkflow(workflowId, true, true).subscribe(data => {
+      expect(data).toBeTruthy();
+      expect(data.id).toEqual(workflowId);
+    });
+
+    const req = httpMock.expectOne(`apiRoot/workflow/${workflowId}/restart?clear_data=true&delete_files=true`);
+    expect(req.request.method).toEqual('GET');
+    req.flush(mockWorkflow0);
+  });
+
 
   it('should get one workflow specification', () => {
     service.getWorkflowSpecification(mockWorkflowSpec0.id).subscribe(data => {

@@ -418,9 +418,10 @@ export class ApiService {
       .pipe(catchError(err => ApiService._handleError(err)));
   }
 
-  restartWorkflow(workflowId: number, clearData: boolean = false): Observable<Workflow> {
+  restartWorkflow(workflowId: number, clearData: boolean = false, deleteFiles: boolean = false): Observable<Workflow> {
     let params = new HttpParams();
     params = params.set('clear_data', clearData.toString());
+    params = params.set('delete_files', deleteFiles.toString());
     const url = this.apiRoot + this.endpoints.workflowRestart
       .replace('{workflow_id}', workflowId.toString());
 
