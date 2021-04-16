@@ -49,6 +49,14 @@ export enum FileType {
   ZIP = 'zip',
 }
 
+export interface DocumentDirectory {
+  level: string;
+  file: FileMeta;
+  expanded: boolean;
+  filecount: number;
+  children: DocumentDirectory[];
+}
+
 export interface FileMeta {
   content_type: string;
   file: File;
@@ -64,6 +72,7 @@ export interface FileMeta {
   form_field_key?: string;
   is_reference?: boolean;
   irb_doc_code?: string;
+  category?: string;
   primary_process_id?: string;
   is_status?: boolean;
 }
