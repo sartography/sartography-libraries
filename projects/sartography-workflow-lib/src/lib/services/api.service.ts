@@ -113,10 +113,12 @@ export class ApiService {
   }
 
   /** Get a specific Study */
-  getDocumentDirectory(studyId: number): Observable<DocumentDirectory[]> {
-    const url = this.apiRoot + this.endpoints.documentDirectory
+  getDocumentDirectory(studyId: number, workflowId?: number): Observable<DocumentDirectory[]> {
+    let url = this.apiRoot + this.endpoints.documentDirectory
       .replace('{study_id}', studyId.toString());
-
+    if (workflowId) {
+      url = url + '?workflow_id=' + workflowId.toString();
+    }
     return this.httpClient
       .get<DocumentDirectory[]>(url)
       .pipe(catchError(err => ApiService._handleError(err)));
