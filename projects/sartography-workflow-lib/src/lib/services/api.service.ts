@@ -53,6 +53,7 @@ export class ApiService {
     // Workflow Specifications
     workflowSpecList: '/workflow-specification',
     workflowSpec: '/workflow-specification/{spec_id}',
+    workflowSpecListStandalone: '/workflow-specification/standalone',
     workflowSpecValidate: '/workflow-specification/{spec_id}/validate',
 
     // Workflow Specification Category
@@ -229,6 +230,15 @@ export class ApiService {
 
     return this.httpClient
       .get<WorkflowSpec>(url)
+      .pipe(catchError(err => ApiService._handleError(err)));
+  }
+
+  /** Get a list of standalone workflows */
+  getWorkflowSpecificationStandalone(): Observable<WorkflowSpec[]> {
+    const url = this.apiRoot + this.endpoints.workflowSpecListStandalone;
+
+    return this.httpClient
+      .get<WorkflowSpec[]>(url)
       .pipe(catchError(err => ApiService._handleError(err)));
   }
 
