@@ -245,10 +245,10 @@ export class ApiService {
   /** Get a workflow from a workflow spec */
   getWorkflowFromSpec(workflowSpecId: string): Observable<Workflow> {
     const url = this.apiRoot + this.endpoints.workflowSpec
-      .replace('{workflow_spec_id}', workflowSpecId);
+      .replace('{spec_id}', workflowSpecId);
 
     return this.httpClient
-      .post<Workflow>(url, {spec_id: workflowSpecId})
+      .post<Workflow>(url, {})
       .pipe(catchError(err => ApiService._handleError(err)));
   }
 
