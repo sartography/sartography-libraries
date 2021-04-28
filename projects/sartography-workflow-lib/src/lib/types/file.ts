@@ -65,6 +65,7 @@ export interface FileMeta {
   primary?: boolean;
   type: FileType;
   latest_version?: string;
+  last_modified?: string;
   workflow_spec_id?: string;
   workflow_id?: number;
   study_id?: number;
@@ -75,6 +76,7 @@ export interface FileMeta {
   category?: string;
   primary_process_id?: string;
   is_status?: boolean;
+  file_size?: string;
 }
 
 export interface FileParams {

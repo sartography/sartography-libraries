@@ -88,16 +88,11 @@ export class FileFieldComponent extends FileBaseComponent implements OnInit {
   loadFiles() {
     if (isNumberDefined(this.fileId)) {
       this.api.getFileMeta(this.fileId).subscribe(fm => {
-        this.api.getFileData(fm.id).subscribe(response => {
-          const file = newFileFromResponse(fm, response);
-          fm.file = file;
-          this.selectedFileMeta = fm;
-          this.selectedFile = file;
-          if (this.model && this.formControl) {
-            this.model[this.key] = fm.id;
-            this.formControl.setValue(fm.id);
-          }
-        });
+        this.selectedFileMeta = fm;
+        if (this.model && this.formControl) {
+          this.model[this.key] = fm.id;
+          this.formControl.setValue(fm.id);
+        }
       });
     }
   }

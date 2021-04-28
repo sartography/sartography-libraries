@@ -92,12 +92,9 @@ describe('FileFieldComponent', () => {
     expect(fmsReq.request.method).toEqual('GET');
     fmsReq.flush(mockFileMeta0);
 
-    const fReq = httpMock.expectOne(`apiRoot/file/${mockFileMeta0.id}/data`);
-    expect(fReq.request.method).toEqual('GET');
     const mockHeaders = new HttpHeaders()
       .append('last-modified', mockFileMeta0.file.lastModified.toString())
       .append('content-type', mockFileMeta0.file.type);
-    fReq.flush(new ArrayBuffer(8), {headers: mockHeaders});
 
     expect(component.selectedFile).toEqual(mockFileMeta0.file);
     expect(component.selectedFileMeta).toEqual(mockFileMeta0);
