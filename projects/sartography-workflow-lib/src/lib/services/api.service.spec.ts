@@ -110,10 +110,22 @@ describe('ApiService', () => {
       expect(data.id).toEqual(mockStudy0.id);
     });
 
-    const req = httpMock.expectOne(`apiRoot/study/${mockStudy0.id}`);
+    const req = httpMock.expectOne(`apiRoot/study/${mockStudy0.id}?update_status=false`);
     expect(req.request.method).toEqual('GET');
     req.flush(mockStudy0);
   });
+
+  it('should get one study and update the status', () => {
+    service.getStudy(mockStudy0.id, true).subscribe(data => {
+      expect(data).toBeTruthy();
+      expect(data.id).toEqual(mockStudy0.id);
+    });
+
+    const req = httpMock.expectOne(`apiRoot/study/${mockStudy0.id}?update_status=true`);
+    expect(req.request.method).toEqual('GET');
+    req.flush(mockStudy0);
+  });
+
 
   it('should update a study', () => {
     const modifiedStudy: Study = createClone()(mockStudy0);
@@ -568,10 +580,10 @@ describe('ApiService', () => {
     const badId = 666;
     service.getStudy(badId).subscribe(
       data => expect(data).toBeNull(),
-      err => expect(err).toEqual('Http failure response for apiRoot/study/666: 42 waaaa')
+      err => expect(err).toEqual('Http failure response for apiRoot/study/666?update_status=false: 42 waaaa')
     );
 
-    const req = httpMock.expectOne(`apiRoot/study/${badId}`);
+    const req = httpMock.expectOne(`apiRoot/study/${badId}?update_status=false`);
     expect(req.request.method).toEqual('GET');
     req.error(mockErrorResponse, {status: 42, statusText: 'waaaa'});
   });

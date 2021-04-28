@@ -127,12 +127,16 @@ export class ApiService {
 
 
   /** Get a specific Study */
-  getStudy(studyId: number): Observable<Study> {
+  getStudy(studyId: number, updateStatus=false): Observable<Study> {
+    let params = new HttpParams();
+    params = params.set('update_status', String(updateStatus));
+
+
     const url = this.apiRoot + this.endpoints.study
       .replace('{study_id}', studyId.toString());
 
     return this.httpClient
-      .get<Study>(url)
+      .get<Study>(url, {params})
       .pipe(catchError(err => ApiService._handleError(err)));
   }
 
