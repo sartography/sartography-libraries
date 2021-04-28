@@ -1,8 +1,9 @@
-import {FileMeta, FileType} from '../../types/file';
+import {DocumentDirectory, FileMeta, FileType} from '../../types/file';
 import {mockStudy0} from './study.mocks';
 import {mockWorkflowSpec0} from './workflow-spec.mocks';
 import {mockWorkflowTask0} from './workflow-task.mocks';
 import {mockWorkflow0} from './workflow.mocks';
+
 
 const timeCode = new Date('2020-01-23T12:34:12.345Z').getTime();
 export const mockFileMeta0: FileMeta = {
@@ -108,3 +109,61 @@ export const mockFileMetas: FileMeta[] = [
   mockFileMeta2,
   mockFileMeta3,
 ];
+
+
+export const ddMock1: DocumentDirectory = {
+  level: undefined,
+  file: mockFileMeta1,
+  expanded: false,
+  filecount: 0,
+  children: [],
+}
+
+
+export const ddMock2: DocumentDirectory = {
+  level: undefined,
+  file: undefined,
+  expanded: false,
+  filecount: 0,
+  children: [],
+}
+
+
+export const mockDocumentDirectory: DocumentDirectory[] = [
+  {
+    level: 'Document',
+    file: undefined,
+    expanded: true,
+    filecount: 2,
+    children: [
+      {
+        level: 'A',
+        file: undefined,
+        expanded: true,
+        filecount: 1,
+        children: [{
+          level: undefined,
+          file: mockFileMeta0,
+          expanded: true,
+          filecount: 0,
+          children: [],
+        },
+          {
+            level: 'B',
+            file: undefined,
+            expanded: true,
+            filecount: 1,
+            children: [{
+              level: undefined,
+              file: mockFileMeta1,
+              expanded: false,
+              filecount: 0,
+              children: [],
+            }]
+          }
+
+        ]
+
+      }]
+  }
+]

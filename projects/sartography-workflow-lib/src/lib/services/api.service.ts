@@ -53,6 +53,7 @@ export class ApiService {
     // Workflow Specifications
     workflowSpecList: '/workflow-specification',
     workflowSpec: '/workflow-specification/{spec_id}',
+    workflowSpecListStandalone: '/workflow-specification/standalone',
     workflowSpecValidate: '/workflow-specification/{spec_id}/validate',
 
     // Workflow Specification Category
@@ -113,10 +114,12 @@ export class ApiService {
   }
 
   /** Get a specific Study */
-  getDocumentDirectory(studyId: number): Observable<DocumentDirectory[]> {
-    const url = this.apiRoot + this.endpoints.documentDirectory
+  getDocumentDirectory(studyId: number, workflowId?: number): Observable<DocumentDirectory[]> {
+    let url = this.apiRoot + this.endpoints.documentDirectory
       .replace('{study_id}', studyId.toString());
-
+    if (workflowId) {
+      url = url + '?workflow_id=' + workflowId.toString();
+    }
     return this.httpClient
       .get<DocumentDirectory[]>(url)
       .pipe(catchError(err => ApiService._handleError(err)));
@@ -227,6 +230,25 @@ export class ApiService {
 
     return this.httpClient
       .get<WorkflowSpec>(url)
+      .pipe(catchError(err => ApiService._handleError(err)));
+  }
+
+  /** Get a list of standalone workflows */
+  getWorkflowSpecificationStandalone(): Observable<WorkflowSpec[]> {
+    const url = this.apiRoot + this.endpoints.workflowSpecListStandalone;
+
+    return this.httpClient
+      .get<WorkflowSpec[]>(url)
+      .pipe(catchError(err => ApiService._handleError(err)));
+  }
+
+  /** Get a workflow from a workflow spec */
+  getWorkflowFromSpec(workflowSpecId: string): Observable<Workflow> {
+    const url = this.apiRoot + this.endpoints.workflowSpec
+      .replace('{spec_id}', workflowSpecId);
+
+    return this.httpClient
+      .post<Workflow>(url, {})
       .pipe(catchError(err => ApiService._handleError(err)));
   }
 
