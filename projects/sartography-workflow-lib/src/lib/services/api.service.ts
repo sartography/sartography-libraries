@@ -248,7 +248,7 @@ export class ApiService {
       .replace('{workflow_spec_id}', workflowSpecId);
 
     return this.httpClient
-      .post<Workflow>(url, {})
+      .post<Workflow>(url, {spec_id: workflowSpecId})
       .pipe(catchError(err => ApiService._handleError(err)));
   }
 
