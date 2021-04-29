@@ -571,7 +571,6 @@ export class ApiService {
     // local storage.
     localStorage.setItem('prev_url', location.href);
     const returnUrl = location.origin + this.baseHref + 'session';
-    console.log('Should return to ' + returnUrl);
     let httpParams = new HttpParams().set('redirect_url', returnUrl);
     if (!this.environment.production) {
       httpParams = httpParams.set('uid', 'dhf8r');
@@ -608,7 +607,6 @@ export class ApiService {
 
   /** Evaluate an expression using the api, which should return a true or false value */
   eval(expression: string, data: any): Observable<any> {
-    console.log('Evaluating expression ', expression);
     const url = this.apiRoot + this.endpoints.eval;
     const body = {expression, data};
     return this.httpClient.put<any>(url, body)

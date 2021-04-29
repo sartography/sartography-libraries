@@ -213,7 +213,6 @@ export class ToFormlyPipe implements PipeTransform {
         case 'autocomplete':
           const fieldFileParams = Object.assign({}, fileParams || {});
           fieldFileParams.form_field_key = field.id;
-          console.log('The params for a search are: ', fieldFileParams);
           resultField.type = 'autocomplete';
           const limit = this._getAutocompleteNumResults(field, 5);
           resultField.templateOptions.filter = (query: string) => this.apiService
@@ -543,7 +542,6 @@ export class ToFormlyPipe implements PipeTransform {
           )
           .subscribe(
             data => {
-              console.log('Updating Variable to ', data.result);
               // wrap the assignment to the variable in a promise - so that it gets evaluated as a part
               // of angular's next round of DOM updates, so we avoid modifying the state in the middle of a call.
               Promise.resolve(null).then(() => formState[variableKey] = data.result);
@@ -567,7 +565,6 @@ export class ToFormlyPipe implements PipeTransform {
 
 
         formState[variableSubjectKey].next({expression: p.value, data: model});
-        console.log('model', JSON.stringify(model, null, '    '));
       }
       // We immediately return the variable, but it might change due to the above observable.
       return formState[variableKey]

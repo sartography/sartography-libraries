@@ -25,19 +25,15 @@ export class SessionRedirectComponent implements OnInit, OnDestroy {
   ) {
     this.sub = this.route.queryParamMap.subscribe(paramMap => {
       this.token = paramMap.get('token');
-      console.log('Setting Token to:', this.token);
       localStorage.setItem('token', this.token);
-      console.log('Token is now set to:', localStorage.getItem('token'));
       this.api.getUser().subscribe(_ => this.goPrevUrl());
     });
   }
 
   ngOnInit() {
-    console.log('ngOnInit')
   }
 
   ngOnDestroy() {
-    console.log('ngOnDestroy')
     this.sub.unsubscribe();
   }
 
