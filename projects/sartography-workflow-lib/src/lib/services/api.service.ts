@@ -353,12 +353,12 @@ export class ApiService {
       .pipe(catchError(err => ApiService._handleError(err)));
   }
 
-  /** Add a File and its File Metadata to a Workflow Specification */
-  addFileMeta(fileParams: FileParams, fileMeta: FileMeta): Observable<FileMeta> {
+  /** Add a File */
+  addFile(fileParams: FileParams, fileMeta: FileMeta, file: File): Observable<FileMeta> {
     const url = this.apiRoot + this.endpoints.fileList;
     const params = this._paramsToHttpParams(fileParams);
     const formData = new FormData();
-    formData.append('file', fileMeta.file);
+    formData.append('file', file);
 
     return this.httpClient
       .post<FileMeta>(url, formData, {params})
@@ -379,9 +379,6 @@ export class ApiService {
   updateFileMeta(fileMeta: FileMeta): Observable<FileMeta> {
     const url = this.apiRoot + this.endpoints.file
       .replace('{file_id}', fileMeta.id.toString());
-
-    // Don't send file data
-    delete fileMeta.file;
 
     return this.httpClient
       .put<FileMeta>(url, fileMeta)
@@ -408,11 +405,11 @@ export class ApiService {
   }
 
   /** Update the File Data for specific File Metadata */
-  updateFileData(fileMeta: FileMeta): Observable<FileMeta> {
+  updateFileData(fileMeta: FileMeta, file: File): Observable<FileMeta> {
     const url = this.apiRoot + this.endpoints.fileData
       .replace('{file_id}', fileMeta.id.toString());
     const formData = new FormData();
-    formData.append('file', fileMeta.file);
+    formData.append('file', file);
 
     return this.httpClient
       .put<FileMeta>(url, formData)

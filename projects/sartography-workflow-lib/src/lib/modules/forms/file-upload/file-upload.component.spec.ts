@@ -13,7 +13,7 @@ import {FileSystemFileEntry, NgxFileDropEntry, NgxFileDropModule} from 'ngx-file
 import {of} from 'rxjs';
 import {ApiService} from '../../../services/api.service';
 import {MockEnvironment} from '../../../testing/mocks/environment.mocks';
-import {mockFileMeta0, mockFileMetas} from '../../../testing/mocks/file.mocks';
+import {mockFile0, mockFile1, mockFileMeta0, mockFileMetas} from '../../../testing/mocks/file.mocks';
 import {FileUploadComponent} from './file-upload.component';
 import {APP_BASE_HREF} from '@angular/common';
 
@@ -88,12 +88,9 @@ describe('FileUploadComponent', () => {
     fmsReq.flush(mockFileMetas);
 
     mockFileMetas.forEach((fm, i) => {
-      const fReq = httpMock.expectOne(`apiRoot/file/${fm.id}/data`);
-      expect(fReq.request.method).toEqual('GET');
       const mockHeaders = new HttpHeaders()
-        .append('last-modified', mockFileMetas[i].file.lastModified.toString())
-        .append('content-type', mockFileMetas[i].file.type);
-      fReq.flush(new ArrayBuffer(8), {headers: mockHeaders});
+        .append('last-modified', mockFileMetas[i].last_modified.toString())
+        .append('content-type', mockFileMetas[i].content_type);
     });
 
     expect((component as any).fileMetas).toEqual(new Set(mockFileMetas));
@@ -117,7 +114,7 @@ describe('FileUploadComponent', () => {
         isDirectory: false,
         isFile: true,
         file: (callback: (file: File) => void): void => {
-          callback(fm.file);
+          callback(mockFile1);
         },
       };
       return new NgxFileDropEntry(fm.name, fileEntry);
@@ -125,7 +122,7 @@ describe('FileUploadComponent', () => {
 
     component.dropped(files);
 
-    mockFileMetas.forEach(fm => expect(addFileSpy).toHaveBeenCalledWith(fm.file));
+    mockFileMetas.forEach(fm => expect(addFileSpy).toHaveBeenCalledWith(mockFile1));
     expect(updateFileListSpy).toHaveBeenCalled();
   });
 
@@ -167,9 +164,9 @@ describe('FileUploadComponent', () => {
   });
 
   it('should add a file', () => {
-    spyOn((component as any).api, 'addFileMeta').and.returnValue(of(mockFileMeta0));
+    spyOn((component as any).api, 'addFile').and.returnValue(of(mockFileMeta0));
     const updateFileListSpy = spyOn(component, 'updateFileList').and.stub();
-    component.addFile(mockFileMeta0.file);
+    component.addFile(mockFile0);
     expect(component.fileMetas.has(mockFileMeta0)).toEqual(true);
     expect(updateFileListSpy).toHaveBeenCalled();
   });

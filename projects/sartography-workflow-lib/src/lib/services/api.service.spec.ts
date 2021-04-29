@@ -8,7 +8,13 @@ import {RouterTestingModule} from '@angular/router/testing';
 import createClone from 'rfdc';
 import {SessionRedirectComponent} from '../components/session-redirect/session-redirect.component';
 import {MockEnvironment} from '../testing/mocks/environment.mocks';
-import {mockFileMeta0, mockFileMetaReference0, mockFileMetas, mockFileMetaTask0} from '../testing/mocks/file.mocks';
+import {
+  mockFile0,
+  mockFileMeta0,
+  mockFileMetaReference0,
+  mockFileMetas,
+  mockFileMetaTask0
+} from '../testing/mocks/file.mocks';
 import {mockScriptInfos} from '../testing/mocks/script-info.mocks';
 import {mockErrorResponse} from '../testing/mocks/study-status.mocks';
 import {mockStudies, mockStudy0, newRandomStudy} from '../testing/mocks/study.mocks';
@@ -365,7 +371,7 @@ describe('ApiService', () => {
   });
 
   it('should add a file for a given workflow specification', () => {
-    service.addFileMeta({workflow_spec_id: mockWorkflowSpec0.id}, mockFileMeta0).subscribe(data => {
+    service.addFile({workflow_spec_id: mockWorkflowSpec0.id}, mockFileMeta0, mockFile0).subscribe(data => {
       expect(data.workflow_spec_id).toEqual(mockFileMeta0.workflow_spec_id);
       expect(data.name).toEqual(mockFileMeta0.name);
       expect(data.content_type).toEqual(mockFileMeta0.content_type);
@@ -381,7 +387,7 @@ describe('ApiService', () => {
       workflow_id: mockWorkflow0.id,
       form_field_key: 'some_field_id',
     };
-    service.addFileMeta(params, mockFileMeta0).subscribe(data => {
+    service.addFile(params, mockFileMeta0, mockFile0).subscribe(data => {
       expect(data.workflow_spec_id).toEqual(mockFileMeta0.workflow_spec_id);
       expect(data.name).toEqual(mockFileMeta0.name);
       expect(data.content_type).toEqual(mockFileMeta0.content_type);
@@ -398,7 +404,6 @@ describe('ApiService', () => {
       id: mockFileMeta0.id,
       content_type: mockFileMeta0.content_type,
       name: 'one-fish-v2.bpmn',
-      file: new File(['new file bits'], 'one-fish-v2.bpmn'),
       type: mockFileMeta0.type,
       workflow_spec_id: mockFileMeta0.workflow_spec_id,
     };
@@ -428,15 +433,15 @@ describe('ApiService', () => {
 
   it('should get file data for a given file', () => {
     service.getFileData(mockFileMeta0.id).subscribe((response: HttpResponse<ArrayBuffer>) => {
-      expect(response.headers.get('content-type')).toEqual(mockFileMeta0.file.type);
-      expect(response.headers.get('last-modified')).toEqual(mockFileMeta0.file.lastModified.toString());
+      expect(response.headers.get('content-type')).toEqual(mockFileMeta0.type);
+      expect(response.headers.get('last-modified')).toEqual(mockFileMeta0.last_modified.toString());
     });
 
     const req = httpMock.expectOne(`apiRoot/file/${mockFileMeta0.id}/data`);
     expect(req.request.method).toEqual('GET');
     const mockHeaders = new HttpHeaders()
-      .append('last-modified', mockFileMeta0.file.lastModified.toString())
-      .append('content-type', mockFileMeta0.file.type);
+      .append('last-modified', mockFileMeta0.last_modified.toString())
+      .append('content-type', mockFileMeta0.type);
     req.flush(new ArrayBuffer(8), {headers: mockHeaders});
   });
 
@@ -445,20 +450,22 @@ describe('ApiService', () => {
       id: mockFileMeta0.id,
       content_type: mockFileMeta0.content_type,
       name: 'one-fish-v2.bpmn',
-      file: new File(['new file bits'], 'one-fish-v2.bpmn', {type: 'text/xml'}),
       type: mockFileMeta0.type,
       workflow_spec_id: mockFileMeta0.workflow_spec_id,
     };
 
-    service.updateFileData(modifiedFileMeta).subscribe(data => {
-      const file = data as FileMeta;
-      expect(file.name).toEqual(modifiedFileMeta.name);
-      expect(file.type).toEqual(modifiedFileMeta.content_type);
+    const file = new File(['new file bits'], 'one-fish-v2.bpmn', {type: 'text/xml'});
+
+
+    service.updateFileData(modifiedFileMeta, file).subscribe(data => {
+      const newMeta = data as FileMeta;
+      expect(newMeta.name).toEqual(modifiedFileMeta.name);
+      expect(newMeta.type).toEqual(modifiedFileMeta.content_type);
     });
 
     const req = httpMock.expectOne(`apiRoot/file/${mockFileMeta0.id}/data`);
     expect(req.request.method).toEqual('PUT');
-    req.event(new HttpResponse<File>({body: modifiedFileMeta.file}));
+    req.event(new HttpResponse<File>({body: file}));
   });
 
   it('should delete a given file', () => {
@@ -494,15 +501,15 @@ describe('ApiService', () => {
 
   it('should get a specific reference file', () => {
     service.getReferenceFile(mockFileMetaReference0.name).subscribe((response: HttpResponse<ArrayBuffer>) => {
-      expect(response.headers.get('content-type')).toEqual(mockFileMetaReference0.file.type);
-      expect(response.headers.get('last-modified')).toEqual(mockFileMetaReference0.file.lastModified.toString());
+      expect(response.headers.get('content-type')).toEqual(mockFileMetaReference0.type);
+      expect(response.headers.get('last-modified')).toEqual(mockFileMetaReference0.last_modified.toString());
     });
 
     const req = httpMock.expectOne(`apiRoot/reference_file/${mockFileMetaReference0.name}`);
     expect(req.request.method).toEqual('GET');
     const mockHeaders = new HttpHeaders()
-      .append('last-modified', mockFileMetaReference0.file.lastModified.toString())
-      .append('content-type', mockFileMetaReference0.file.type);
+      .append('last-modified', mockFileMetaReference0.last_modified.toString())
+      .append('content-type', mockFileMetaReference0.type);
     req.flush(new ArrayBuffer(8), {headers: mockHeaders});
   });
 

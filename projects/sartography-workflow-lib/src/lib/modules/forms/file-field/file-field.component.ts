@@ -35,8 +35,6 @@ export class FileFieldComponent extends FileBaseComponent implements OnInit {
 
     if (this.selectedFile) {
       this.addFile(this.selectedFile);
-    } else if (this.selectedFileMeta && this.selectedFileMeta.file) {
-      this.selectedFile = this.selectedFileMeta.file;
     }
   }
 
@@ -49,7 +47,6 @@ export class FileFieldComponent extends FileBaseComponent implements OnInit {
       content_type: file.type,
       name: file.name,
       type: getFileType(file),
-      file,
     };
 
     if (isNumberDefined(this.studyId)) {
@@ -64,8 +61,7 @@ export class FileFieldComponent extends FileBaseComponent implements OnInit {
       fileMeta.form_field_key = this.key;
     }
 
-    this.api.addFileMeta(this.fileParams, fileMeta).subscribe(fm => {
-      fm.file = this.selectedFile;
+    this.api.addFile(this.fileParams, fileMeta, file).subscribe(fm => {
       this.selectedFileMeta = fm;
       this.model[this.key] = fm.id;
       this.formControl.setValue(fm.id);

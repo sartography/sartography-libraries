@@ -59,7 +59,6 @@ export interface DocumentDirectory {
 
 export interface FileMeta {
   content_type: string;
-  file: File;
   id?: number;
   name: string;
   primary?: boolean;
@@ -76,7 +75,7 @@ export interface FileMeta {
   category?: string;
   primary_process_id?: string;
   is_status?: boolean;
-  file_size?: string;
+  size?: number;
 }
 
 export interface FileParams {

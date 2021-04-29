@@ -1,5 +1,5 @@
 import {HttpHeaders, HttpResponse} from '@angular/common/http';
-import {mockFileMeta0} from '../testing/mocks/file.mocks';
+import {mockFile0, mockFileMeta0} from '../testing/mocks/file.mocks';
 import {FileType} from '../types/file';
 import {getFileIcon, getFileType, newFileFromResponse} from './file-type';
 
@@ -46,7 +46,7 @@ describe('getFileIcon', () => {
 describe('newFileFromResponse', () => {
   it('should return a File for a given FileMeta and HTTP response', () => {
     const mockHeaders = new HttpHeaders()
-      .append('last-modified', mockFileMeta0.file.lastModified.toString())
+      .append('last-modified', mockFileMeta0.last_modified.toString())
       .append('content-type', mockFileMeta0.content_type);
     expect(newFileFromResponse(
       mockFileMeta0,
@@ -54,6 +54,6 @@ describe('newFileFromResponse', () => {
         body: new ArrayBuffer(8),
         headers: mockHeaders
       }
-    ))).toEqual(mockFileMeta0.file);
+    ))).toEqual(mockFile0);
   })
 });

@@ -93,13 +93,11 @@ export class FileUploadComponent extends FileBaseComponent {
       content_type: file.type,
       name: file.name,
       type: getFileType(file),
-      file,
       study_id: this.studyId,
       workflow_id: this.workflowId,
       form_field_key: this.field.key,
     };
-    this.api.addFileMeta(this.fileParams, fileMeta).subscribe(fm => {
-      fm.file = file;
+    this.api.addFile(this.fileParams, fileMeta, file).subscribe(fm => {
       this.fileMetas.add(fm);
       this.updateFileList();
     });
@@ -131,14 +129,9 @@ export class FileUploadComponent extends FileBaseComponent {
   loadFiles() {
     this.api.getFileMetas(this.fileParams).subscribe(fms => {
       fms.forEach(fm => {
-        this.api.getFileData(fm.id).subscribe(response => {
-          fm.file = newFileFromResponse(fm, response)
-          this.fileMetas.add(fm);
-          if (this.fileMetas.size === fms.length) {
-            this.updateFileList();
-          }
-        });
+        this.fileMetas.add(fm);
       });
+      this.updateFileList();
     });
   }
 }
