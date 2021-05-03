@@ -300,15 +300,10 @@ export class ToFormlyPipe implements PipeTransform {
             case 'required_expression':
               resultField.expressionProperties['templateOptions.required'] = this.getPythonEvalFunction(field, p);
               break;
-            case 'read_only_expression':
+            case 'read_only':
               resultField.expressionProperties['templateOptions.readonly'] = this.getPythonEvalFunction(field, p);
               resultField.expressionProperties['templateOptions.floatLabel'] = `field.templateOptions.readonly ? 'always' : ''`;
               resultField.expressionProperties.className = this._readonlyClassName;
-              break;
-            case 'read_only':
-              resultField.templateOptions.readonly = this._stringToBool(p.value);
-              resultField.templateOptions.floatLabel = 'always';
-              resultField.className = this._addClassName(resultField, 'read-only should-float');
               break;
             case 'placeholder':
               resultField.templateOptions.placeholder = p.value;

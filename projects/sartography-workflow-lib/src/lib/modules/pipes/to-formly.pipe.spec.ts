@@ -610,8 +610,8 @@ describe('ToFormlyPipe', () => {
         ],
         properties: [
           {
-            id: 'read_only_expression',
-            value: 'true'
+            id: 'read_only',
+            value: 'True'
           },
           {
             id: 'enum_type',
