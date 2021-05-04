@@ -108,13 +108,13 @@ describe('ToFormlyPipe', () => {
     expect(after[0].templateOptions.minLength).toEqual(5);
   });
 
-  it('converts read only field to Formly readonly property', () => {
+  it('converts read_only field to Formly readonly property', () => {
     const before: BpmnFormJsonField[] = [
       {
         id: 'random_number',
         label: 'Pick a number. Any number',
         type: 'long',
-        properties: [{id: 'read_only', value: 'true'}]
+        properties: [{id: 'read_only', value: 'True'}]
       }
     ];
     const after = pipe.transform(before);
@@ -611,7 +611,7 @@ describe('ToFormlyPipe', () => {
         properties: [
           {
             id: 'read_only',
-            value: 'True'
+            value: '1 == 1'
           },
           {
             id: 'enum_type',

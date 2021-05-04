@@ -1,14 +1,14 @@
-import {Pipe, PipeTransform} from '@angular/core';
-import {FormlyFieldConfig} from '@ngx-formly/core';
+import { Pipe, PipeTransform } from '@angular/core';
+import { FormlyFieldConfig } from '@ngx-formly/core';
 import createClone from 'rfdc';
-import {Observable, of, Subject, timer} from 'rxjs';
-import {isIterable} from 'rxjs/internal-compatibility';
-import {ApiService} from '../../services/api.service';
-import {FileParams} from '../../types/file';
-import {BpmnFormJsonField, BpmnFormJsonFieldEnumValue, BpmnFormJsonFieldProperty} from '../../types/json';
+import { Observable, of, Subject, timer } from 'rxjs';
+import { isIterable } from 'rxjs/internal-compatibility';
+import { ApiService } from '../../services/api.service';
+import { FileParams } from '../../types/file';
+import { BpmnFormJsonField, BpmnFormJsonFieldEnumValue, BpmnFormJsonFieldProperty } from '../../types/json';
 import isEqual from 'lodash.isequal';
-import {catchError, debounce, debounceTime, distinctUntilChanged, filter, map, switchMap} from 'rxjs/operators';
-import {ApiError} from '../../types/api';
+import { catchError, debounce, debounceTime, distinctUntilChanged, filter, map, switchMap } from 'rxjs/operators';
+import { ApiError } from '../../types/api';
 
 /***
  * Convert the given BPMN form JSON value to Formly JSON
@@ -126,7 +126,7 @@ export class ToFormlyPipe implements PipeTransform {
           resultField.type = 'select';
           resultField.templateOptions.options = field.options.map((v: BpmnFormJsonFieldEnumValue) => {
             // Include lookup data object, if available
-            const option: any = {value: v.id, label: v.name};
+            const option: any = { value: v.id, label: v.name };
             if (v.hasOwnProperty('data')) {
               option.data = v.data;
             }
@@ -166,25 +166,25 @@ export class ToFormlyPipe implements PipeTransform {
           resultField.type = 'input';
           resultField.templateOptions.type = 'number';
           resultField.defaultValue = parseInt(field.default_value, 10);
-          resultField.validators = {validation: ['number']};
+          resultField.validators = { validation: ['number'] };
           break;
         case 'url':
           resultField.type = 'input';
           resultField.templateOptions.type = 'url';
           resultField.defaultValue = field.default_value;
-          resultField.validators = {validation: ['url']};
+          resultField.validators = { validation: ['url'] };
           break;
         case 'email':
           resultField.type = 'input';
           resultField.templateOptions.type = 'email';
           resultField.defaultValue = field.default_value;
-          resultField.validators = {validation: ['email']};
+          resultField.validators = { validation: ['email'] };
           break;
         case 'tel':
           resultField.type = 'input';
           resultField.templateOptions.type = 'tel';
           resultField.defaultValue = field.default_value;
-          resultField.validators = {validation: ['phone']};
+          resultField.validators = { validation: ['phone'] };
           break;
         case 'boolean':
           resultField.type = 'radio';
@@ -192,8 +192,8 @@ export class ToFormlyPipe implements PipeTransform {
             resultField.defaultValue = this._stringToBool(field.default_value);
           }
           resultField.templateOptions.options = [
-            {value: true, label: 'Yes'},
-            {value: false, label: 'No'},
+            { value: true, label: 'Yes' },
+            { value: false, label: 'No' },
           ];
           break;
         case 'date':
@@ -204,11 +204,11 @@ export class ToFormlyPipe implements PipeTransform {
           break;
         case 'files':
           resultField.type = 'files';
-          resultField.validators = {validation: ['files']};
+          resultField.validators = { validation: ['files'] };
           break;
         case 'file':
           resultField.type = 'file';
-          resultField.validators = {validation: ['file']};
+          resultField.validators = { validation: ['file'] };
           break;
         case 'autocomplete':
           const fieldFileParams = Object.assign({}, fileParams || {});
@@ -217,7 +217,7 @@ export class ToFormlyPipe implements PipeTransform {
           const limit = this._getAutocompleteNumResults(field, 5);
           resultField.templateOptions.filter = (query: string) => this.apiService
             .lookupFieldOptions(query, fieldFileParams, limit);
-          resultField.validators = {validation: ['autocomplete']};
+          resultField.validators = { validation: ['autocomplete'] };
           break;
         default:
           console.error('Field type is not supported.');
@@ -300,9 +300,15 @@ export class ToFormlyPipe implements PipeTransform {
             case 'required_expression':
               resultField.expressionProperties['templateOptions.required'] = this.getPythonEvalFunction(field, p);
               break;
+
             case 'read_only':
-              resultField.expressionProperties['templateOptions.readonly'] = this.getPythonEvalFunction(field, p);
+              if (this._stringIsBool(p.value)) {
+                resultField.templateOptions.readonly = this._stringToBool(p.value);
+              } else {
+                resultField.expressionProperties['templateOptions.readonly'] = this.getPythonEvalFunction(field, p);//(0, field, resultField); 
+              }
               resultField.expressionProperties['templateOptions.floatLabel'] = `field.templateOptions.readonly ? 'always' : ''`;
+
               resultField.expressionProperties.className = this._readonlyClassName;
               break;
             case 'placeholder':
@@ -333,7 +339,7 @@ export class ToFormlyPipe implements PipeTransform {
               if (field.type === 'enum') {
                 if (p.value === 'checkbox') {
                   resultField.type = 'multicheckbox_data';
-                  resultField.validators = {validation: ['multicheckbox_data']};
+                  resultField.validators = { validation: ['multicheckbox_data'] };
                   resultField.templateOptions.type = 'array';
                   resultField.className = this._addClassName(resultField, 'vertical-checkbox-group');
 
@@ -361,7 +367,13 @@ export class ToFormlyPipe implements PipeTransform {
 
     return this._makeRepeats(this._makeGroups(result));
   }
-
+  private _stringIsBool(s: string
+  ) {
+    if (s.toLowerCase() === 'true' || s.toLowerCase() === 'false') {
+      return true;
+    }
+    return false;
+  }
   private _stringToBool(s: string) {
     return s.toLowerCase() === 'true';
   }
@@ -462,8 +474,8 @@ export class ToFormlyPipe implements PipeTransform {
                   buttonLabel: field.templateOptions.repeatSectionButtonLabel,
                   editOnly: field.templateOptions.repeatSectionEditOnly,
                 },
-                validators: {validation: ['repeat']},
-                fieldArray: {fieldGroup: [field]},
+                validators: { validation: ['repeat'] },
+                fieldArray: { fieldGroup: [field] },
               }
             ]
           };
@@ -512,7 +524,7 @@ export class ToFormlyPipe implements PipeTransform {
    * You can pass an optional method, which should be called when the result completes.
    */
   private getPythonEvalFunction(field: BpmnFormJsonField, p: BpmnFormJsonFieldProperty, defaultValue = false,
-                                method = null) {
+    method = null) {
     return (model: any, formState: any, fieldConfig: FormlyFieldConfig) => {
 
       // Establish some variables to be added to the form state.
@@ -545,12 +557,12 @@ export class ToFormlyPipe implements PipeTransform {
               console.log(`Failed to update field ${field.id} unable to process expression. ${error.message}`);
               formState[variableKey] = 'error'
             }
-            );
+          );
       }
 
       // We need this check so that we don't repeatedly query the api if the data model changed and we have
       // new information to act upon.
-      if (formState[dataStateKey] !== JSON.stringify(model) ) {
+      if (formState[dataStateKey] !== JSON.stringify(model)) {
         formState[dataStateKey] = JSON.stringify(model);  // Deep copy of model and store it for comparison
         // TODO: Augment the model with all current form field keys and values
         // loop through fieldConfig.parent.fieldGroup
@@ -559,8 +571,9 @@ export class ToFormlyPipe implements PipeTransform {
         // If not, add them to the model with value of null.
 
 
-        formState[variableSubjectKey].next({expression: p.value, data: model});
+        formState[variableSubjectKey].next({ expression: p.value, data: model });
       }
+      console.log(formState[variableKey]);
       // We immediately return the variable, but it might change due to the above observable.
       return formState[variableKey]
     };
