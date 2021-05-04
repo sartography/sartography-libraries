@@ -305,7 +305,7 @@ export class ToFormlyPipe implements PipeTransform {
               if (this._stringIsBool(p.value)) {
                 resultField.templateOptions.readonly = this._stringToBool(p.value);
               } else {
-                resultField.expressionProperties['templateOptions.readonly'] = this.getPythonEvalFunction(field, p);//(0, field, resultField); 
+                resultField.expressionProperties['templateOptions.readonly'] = this.getPythonEvalFunction(field, p);
               }
               resultField.expressionProperties['templateOptions.floatLabel'] = `field.templateOptions.readonly ? 'always' : ''`;
 
