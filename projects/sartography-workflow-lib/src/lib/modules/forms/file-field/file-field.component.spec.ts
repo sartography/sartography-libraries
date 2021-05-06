@@ -130,23 +130,19 @@ describe('FileFieldComponent', () => {
 
   it('should add a file', () => {
     spyOn((component as any).api, 'addFile').and.returnValue(of(mockFileMeta0));
-    const loadFilesSpy = spyOn(component, 'loadFiles').and.stub();
     component.addFile(mockFile0);
     expect(component.selectedFile).toEqual(mockFile0);
     expect(component.selectedFileMeta).toEqual(mockFileMeta0);
-    expect(loadFilesSpy).toHaveBeenCalled();
   });
 
   it('should remove a file', () => {
     spyOn((component as any).api, 'deleteFileMeta').and.returnValue(of(null));
-    const loadFilesSpy = spyOn(component, 'loadFiles').and.stub();
     component.selectedFileMeta = mockFileMeta0;
     component.selectedFile = mockFile0;
 
     component.removeFile();
     expect(component.selectedFileMeta).toBeUndefined();
     expect(component.selectedFile).toBeUndefined();
-    expect(loadFilesSpy).toHaveBeenCalled();
   });
 
   it('should set default value', () => {

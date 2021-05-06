@@ -123,6 +123,13 @@ export const mockFileMetas: FileMeta[] = [
   mockFileMeta3,
 ];
 
+export const mockFiles: File[] = [
+  mockFile0,
+  mockFile1,
+  mockFile2,
+  mockFile3,
+];
+
 
 export const ddMock1: DocumentDirectory = {
   level: undefined,

@@ -6,7 +6,7 @@ import {ReplaySubject} from 'rxjs';
 import {ApiService} from '../../../services/api.service';
 import {AppEnvironment} from '../../../types/app-environment';
 import {FileMeta} from '../../../types/file';
-import {getFileIcon, getFileType, newFileFromResponse} from '../../../util/file-type';
+import {getFileIcon, getFileType} from '../../../util/file-type';
 import {FileBaseComponent} from '../file-base/file-base.component';
 
 @Component({
