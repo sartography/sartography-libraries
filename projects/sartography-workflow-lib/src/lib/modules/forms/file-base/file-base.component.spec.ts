@@ -31,10 +31,6 @@ describe('FileBaseComponent', () => {
       declarations: [FileBaseComponent],
       providers: [
         ApiService,
-        {
-          provide: ActivatedRoute,
-          useValue: {paramMap: of(convertToParamMap({study_id: '0', workflow_id: '0', task_id: 'whatever'}))},
-        },
         {provide: 'APP_ENVIRONMENT', useClass: MockEnvironment},
         {provide: Router, useValue: mockRouter},
         {provide: APP_BASE_HREF, useValue: '/'},
@@ -48,7 +44,13 @@ describe('FileBaseComponent', () => {
     config = formlyConfig;
     builder = formlyBuilder;
     field = {
-      key: 'hi'
+      key: 'hi',
+      templateOptions:
+        { workflow_id: 10,
+          study_id: 9,
+          workflow_spec_id: 'specName',
+          doc_code: () => { return ('my_doc_code') } // doc_code should override the field key
+        },
     };
     builder.buildForm(form, [field], {hi: 123}, {});
   }));
@@ -57,20 +59,20 @@ describe('FileBaseComponent', () => {
     httpMock = TestBed.inject(HttpTestingController);
     fixture = TestBed.createComponent(FileBaseComponent);
     component = fixture.componentInstance;
-    component.field = {key: 'hi'};
+    component.field = field;
     fixture.detectChanges();
   });
 
   it('should create', () => {
     expect(component).toBeTruthy();
     expect(component.key).toEqual('hi');
-    expect((component as any).fileId).toEqual(null);
-
+    expect((component as any).fileId).toEqual(123);
+    component.ngOnInit();
     const fp = (component as any).fileParams;
     expect(fp).toBeTruthy();
-    expect(fp.study_id).toEqual(0);
-    expect(fp.workflow_id).toEqual(0);
-    expect(fp.form_field_key).toEqual('hi');
+    expect(fp.study_id).toEqual(9);
+    expect(fp.workflow_id).toEqual(10);
+    expect(fp.form_field_key).toEqual('my_doc_code');
   });
 
 });

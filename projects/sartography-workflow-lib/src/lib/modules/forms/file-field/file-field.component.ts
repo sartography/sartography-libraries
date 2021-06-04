@@ -17,9 +17,8 @@ export class FileFieldComponent extends FileBaseComponent implements OnInit {
 
   constructor(
     protected api: ApiService,
-    protected route: ActivatedRoute
   ) {
-    super(api, route);
+    super(api);
   }
 
   ngOnInit(): void {

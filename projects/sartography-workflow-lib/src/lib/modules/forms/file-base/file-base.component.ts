@@ -18,32 +18,21 @@ export class FileBaseComponent extends FieldType implements OnInit {
 
   constructor(
     protected api: ApiService,
-    protected route: ActivatedRoute,
   ) {
     super();
-    this.route.paramMap.subscribe(paramMap => {
-      if (paramMap.has('study_id')) {
-        this.studyId = parseInt(paramMap.get('study_id'), 10);
-      }
-
-      if (paramMap.has('workflow_id')) {
-        this.workflowId = parseInt(paramMap.get('workflow_id'), 10);
-      }
-
-      if (paramMap.has('workflow_spec_id')) {
-        this.workflowSpecId = paramMap.get('workflow_spec_id');
-      }
-
-    });
   }
 
   ngOnInit(): void {
     super.ngOnInit();
     this.fileParams = {
-      study_id: this.studyId,
-      workflow_id: this.workflowId,
+      study_id: this.to.study_id,
+      workflow_id: this.to.workflow_id,
       form_field_key: this.key,
     };
+    if ('doc_code' in this.to) {
+      this.fileParams.form_field_key = this.to.doc_code();
+    }
+
 
     this.fileId = this.model && this.model.hasOwnProperty(this.key) ? this.model[this.key] : null;
     this.loadFiles();

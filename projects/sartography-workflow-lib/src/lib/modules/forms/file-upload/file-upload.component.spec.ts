@@ -68,7 +68,13 @@ describe('FileUploadComponent', () => {
     builder = formlyBuilder;
     field = {
       key: 'hi',
-      defaultValue: 'Hello there.'
+      defaultValue: 'Hello there.',
+      templateOptions:
+        { workflow_id: 10,
+          study_id: 9,
+          workflow_spec_id: 'specName'
+        },
+
     };
     builder.buildForm(form, [field], {}, {});
   }));
@@ -83,7 +89,7 @@ describe('FileUploadComponent', () => {
     };
     fixture.detectChanges();
 
-    const fmsReq = httpMock.expectOne('apiRoot/file?study_id=0&workflow_id=0&form_field_key=hi');
+    const fmsReq = httpMock.expectOne('apiRoot/file?study_id=9&workflow_id=10&form_field_key=hi');
     expect(fmsReq.request.method).toEqual('GET');
     fmsReq.flush(mockFileMetas);
 

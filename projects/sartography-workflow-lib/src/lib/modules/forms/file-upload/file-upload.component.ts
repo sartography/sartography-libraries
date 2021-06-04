@@ -34,9 +34,8 @@ export class FileUploadComponent extends FileBaseComponent {
     @Inject('APP_ENVIRONMENT') private environment: AppEnvironment,
     @Inject(APP_BASE_HREF) public appBaseHref: string,
     protected api: ApiService,
-    protected route: ActivatedRoute,
   ) {
-    super(api, route);
+    super(api);
     this.baseHref = appBaseHref;
   }
 

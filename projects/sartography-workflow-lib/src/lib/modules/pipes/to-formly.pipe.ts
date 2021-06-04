@@ -1,4 +1,4 @@
-import {Pipe, PipeTransform} from '@angular/core';
+import {Injectable, Pipe, PipeTransform} from '@angular/core';
 import {FormlyFieldConfig} from '@ngx-formly/core';
 import createClone from 'rfdc';
 import {Observable, of, Subject, timer} from 'rxjs';
@@ -103,20 +103,25 @@ export interface PythonEvaluation {
   data?: any;     // Lookup data object, populated by backend LookupService
 }
 
-
 @Pipe({
   name: 'toFormly'
 })
 export class ToFormlyPipe implements PipeTransform {
+  private defaultFileParams:FileParams = {}
   constructor(private apiService?: ApiService) {
   }
 
-  transform(value: BpmnFormJsonField[], fileParams?: FileParams, ...args: any[]): FormlyFieldConfig[] {
+  transform(value: BpmnFormJsonField[], fileParams = this.defaultFileParams, ...args: any[]): FormlyFieldConfig[] {
+
     const result: FormlyFieldConfig[] = [];
     for (const field of value) {
       const resultField: FormlyFieldConfig = {
         key: field.id,
-        templateOptions: {},
+        templateOptions: {
+          workflow_id: fileParams.workflow_id,
+          study_id: fileParams.study_id,
+          workflow_spec_id: fileParams.workflow_spec_id
+        },
         expressionProperties: {},
       };
 
@@ -354,6 +359,9 @@ export class ToFormlyPipe implements PipeTransform {
                   resultField.className = this._addClassName(resultField, 'vertical-radio-group');
                 }
               }
+              break;
+            case 'doc_code':
+              resultField.templateOptions.doc_code = this.getPythonEvalFunction(field, p);
               break;
             default:
               break;

@@ -14,6 +14,10 @@ describe('ToFormlyPipe', () => {
   let pipe: ToFormlyPipe;
   let apiService: ApiService;
   const mockRouter = {navigate: jasmine.createSpy('navigate')};
+  const workflowId = 20;
+  const studyId = 15;
+  const workflowSpec = 'PythonWorkflow';
+  const fileParams = {workflow_id:workflowId, study_id: studyId, workflow_spec_id: workflowSpec};
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -120,6 +124,21 @@ describe('ToFormlyPipe', () => {
     const after = pipe.transform(before);
     expect(after[0].templateOptions.readonly).toEqual(true);
   });
+
+  it('provides the workflow_id, study_id and spec as a template option to all fields', () => {
+    const before: BpmnFormJsonField[] = [
+      {
+        id: 'airspeed',
+        label: 'What is the airspeed veolocity of an unladen swallow?',
+        type: 'long',
+      }
+    ];
+    const after = pipe.transform(before, fileParams);
+    expect(after[0].templateOptions.workflow_id).toEqual(workflowId);
+    expect(after[0].templateOptions.study_id).toEqual(studyId);
+    expect(after[0].templateOptions.workflow_spec_id).toEqual(workflowSpec);
+  });
+
 
   it('converts boolean field to Formly radio group', () => {
     const before: BpmnFormJsonField[] = [
@@ -257,11 +276,36 @@ describe('ToFormlyPipe', () => {
         type: 'file'
       }
     ];
-    const after = pipe.transform(before);
+    const after = pipe.transform(before, fileParams);
     expect(after[0].key).toEqual(before[0].id);
     expect(after[0].type).toEqual('file');
     expect(after[0].templateOptions.label).toEqual(before[0].label);
+    expect(after[0].templateOptions.workflow_id).toEqual(workflowId);
+    expect(after[0].templateOptions.study_id).toEqual(studyId);
+    expect(after[0].templateOptions.workflow_spec_id).toEqual(workflowSpec);
   });
+
+  it('respects the doc_code for form fields overriding the form field id', () => {
+    const before: BpmnFormJsonField[] = [
+      {
+        id: 'upload_file',
+        label: 'TPS Report',
+        type: 'file',
+        properties: [
+        {id: 'doc_code', value: '"my_doc_code"'},
+        ]
+      }
+    ];
+    const after = pipe.transform(before, fileParams);
+    expect(after[0].key).toEqual(before[0].id);
+    expect(after[0].type).toEqual('file');
+    expect(after[0].templateOptions.label).toEqual(before[0].label);
+    expect(after[0].templateOptions.workflow_id).toEqual(workflowId);
+    expect(after[0].templateOptions.study_id).toEqual(studyId);
+    expect(after[0].templateOptions.workflow_spec_id).toEqual(workflowSpec);
+    expect(after[0].templateOptions.doc_code).not.toBeNull()
+  });
+
 
   it('converts files field to file uploader', () => {
     const before: BpmnFormJsonField[] = [
@@ -370,11 +414,6 @@ describe('ToFormlyPipe', () => {
         type: 'textarea',
       },
     ];
-    const fileParams: FileParams = {
-      workflow_id: 123,
-      form_field_key: 'ingredients',
-      task_spec_name: '123412341234'
-    }
     const _getAutocompleteNumResultsSpy = spyOn((pipe as any), '_getAutocompleteNumResults').and.callThrough();
     const after = pipe.transform(before, fileParams);
     expect(_getAutocompleteNumResultsSpy).toHaveBeenCalledWith(before[1], 5);

@@ -76,6 +76,8 @@ export interface FileMeta {
   primary_process_id?: string;
   is_status?: boolean;
   size?: number;
+  data_store?: any;
+  file?: File;
 }
 
 export interface FileParams {
