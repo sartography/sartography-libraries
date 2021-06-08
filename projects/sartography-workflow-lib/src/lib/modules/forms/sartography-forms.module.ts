@@ -20,7 +20,6 @@ import {NgxFileDropModule} from 'ngx-file-drop';
 import {MarkdownModule} from 'ngx-markdown';
 import {SartographyPipesModule} from '../pipes/sartography-pipes.module';
 import {AutocompleteFieldComponent} from './autocomplete-field/autocomplete-field.component';
-import {FileBaseComponent} from './file-base/file-base.component';
 import {FileFieldComponent} from './file-field/file-field.component';
 import {FileUploadComponent} from './file-upload/file-upload.component';
 import {FileValueAccessorDirective} from './file-upload/file-value-accessor.directive';
@@ -116,7 +115,6 @@ export class AppFormlyConfig {
 @NgModule({
   declarations: [
     AutocompleteFieldComponent,
-    FileBaseComponent,
     FileFieldComponent,
     FileUploadComponent,
     FileValueAccessorDirective,
@@ -155,7 +153,6 @@ export class AppFormlyConfig {
   ],
   exports: [
     AutocompleteFieldComponent,
-    FileBaseComponent,
     FileFieldComponent,
     FileUploadComponent,
     FormPrintoutComponent,

@@ -24,7 +24,7 @@ import {mockWorkflowSpec0, mockWorkflowSpecs} from '../testing/mocks/workflow-sp
 import {mockWorkflowTask0} from '../testing/mocks/workflow-task.mocks';
 import {mockWorkflow0} from '../testing/mocks/workflow.mocks';
 import {ApprovalCounts} from '../types/approval';
-import {FileMeta, FileParams} from '../types/file';
+import {FileMeta} from '../types/file';
 import {Study} from '../types/study';
 import {WorkflowSpec, WorkflowSpecCategory} from '../types/workflow';
 import {ApiService} from './api.service';
@@ -337,9 +337,8 @@ describe('ApiService', () => {
   });
 
   it('should get files for a given workflow task', () => {
-    const params: FileParams = {
-      study_id: mockStudy0.id,
-      workflow_id: mockWorkflow0.id,
+    const params = {
+      workflow_id: mockWorkflow0.id
     };
     service.getFileMetas(params).subscribe(data => {
       expect(data.length).toBeGreaterThan(0);
@@ -349,7 +348,7 @@ describe('ApiService', () => {
       }
     });
 
-    const queryString = `study_id=${mockStudy0.id}&workflow_id=${mockWorkflow0.id}`;
+    const queryString = `workflow_id=${mockWorkflow0.id}`;
     const req = httpMock.expectOne('apiRoot/file?' + queryString);
     expect(req.request.method).toEqual('GET');
     req.flush(mockFileMetas);
@@ -383,7 +382,7 @@ describe('ApiService', () => {
   });
 
   it('should add a file for a given workflow task form field', () => {
-    const params: FileParams = {
+    const params = {
       workflow_id: mockWorkflow0.id,
       form_field_key: 'some_field_id',
     };

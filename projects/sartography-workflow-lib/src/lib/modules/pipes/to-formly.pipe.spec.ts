@@ -4,7 +4,6 @@ import {MatBottomSheetModule} from '@angular/material/bottom-sheet';
 import {Router} from '@angular/router';
 import {ApiService} from '../../services/api.service';
 import {MockEnvironment} from '../../testing/mocks/environment.mocks';
-import {FileParams} from '../../types/file';
 import {BpmnFormJsonField} from '../../types/json';
 import {ToFormlyPipe} from './to-formly.pipe';
 import {APP_BASE_HREF} from '@angular/common';
@@ -15,9 +14,7 @@ describe('ToFormlyPipe', () => {
   let apiService: ApiService;
   const mockRouter = {navigate: jasmine.createSpy('navigate')};
   const workflowId = 20;
-  const studyId = 15;
-  const workflowSpec = 'PythonWorkflow';
-  const fileParams = {workflow_id:workflowId, study_id: studyId, workflow_spec_id: workflowSpec};
+  const taskSpecName = 'myTask';
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -133,10 +130,9 @@ describe('ToFormlyPipe', () => {
         type: 'long',
       }
     ];
-    const after = pipe.transform(before, fileParams);
+    const after = pipe.transform(before, workflowId, taskSpecName);
     expect(after[0].templateOptions.workflow_id).toEqual(workflowId);
-    expect(after[0].templateOptions.study_id).toEqual(studyId);
-    expect(after[0].templateOptions.workflow_spec_id).toEqual(workflowSpec);
+    expect(after[0].templateOptions.task_spec_name).toEqual(taskSpecName);
   });
 
 
@@ -276,13 +272,12 @@ describe('ToFormlyPipe', () => {
         type: 'file'
       }
     ];
-    const after = pipe.transform(before, fileParams);
+    const after = pipe.transform(before, workflowId, taskSpecName);
     expect(after[0].key).toEqual(before[0].id);
     expect(after[0].type).toEqual('file');
     expect(after[0].templateOptions.label).toEqual(before[0].label);
     expect(after[0].templateOptions.workflow_id).toEqual(workflowId);
-    expect(after[0].templateOptions.study_id).toEqual(studyId);
-    expect(after[0].templateOptions.workflow_spec_id).toEqual(workflowSpec);
+    expect(after[0].templateOptions.task_spec_name).toEqual(taskSpecName);
   });
 
   it('respects the doc_code for form fields overriding the form field id', () => {
@@ -296,13 +291,12 @@ describe('ToFormlyPipe', () => {
         ]
       }
     ];
-    const after = pipe.transform(before, fileParams);
+    const after = pipe.transform(before, workflowId, taskSpecName);
     expect(after[0].key).toEqual(before[0].id);
     expect(after[0].type).toEqual('file');
     expect(after[0].templateOptions.label).toEqual(before[0].label);
     expect(after[0].templateOptions.workflow_id).toEqual(workflowId);
-    expect(after[0].templateOptions.study_id).toEqual(studyId);
-    expect(after[0].templateOptions.workflow_spec_id).toEqual(workflowSpec);
+    expect(after[0].templateOptions.task_spec_name).toEqual(taskSpecName);
     expect(after[0].templateOptions.doc_code).not.toBeNull()
   });
 
@@ -415,7 +409,7 @@ describe('ToFormlyPipe', () => {
       },
     ];
     const _getAutocompleteNumResultsSpy = spyOn((pipe as any), '_getAutocompleteNumResults').and.callThrough();
-    const after = pipe.transform(before, fileParams);
+    const after = pipe.transform(before, workflowId, taskSpecName);
     expect(_getAutocompleteNumResultsSpy).toHaveBeenCalledWith(before[1], 5);
     expect(after[1].key).toEqual(before[1].id);
     expect(after[1].type).toEqual('autocomplete');

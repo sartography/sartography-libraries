@@ -4,10 +4,9 @@ import createClone from 'rfdc';
 import {Observable, of, Subject, timer} from 'rxjs';
 import {isIterable} from 'rxjs/internal-compatibility';
 import {ApiService} from '../../services/api.service';
-import {FileParams} from '../../types/file';
 import {BpmnFormJsonField, BpmnFormJsonFieldEnumValue, BpmnFormJsonFieldProperty} from '../../types/json';
 import isEqual from 'lodash.isequal';
-import {catchError, debounce, debounceTime, distinctUntilChanged, filter, map, switchMap} from 'rxjs/operators';
+import {catchError, debounceTime, switchMap} from 'rxjs/operators';
 import {ApiError} from '../../types/api';
 
 /***
@@ -107,20 +106,18 @@ export interface PythonEvaluation {
   name: 'toFormly'
 })
 export class ToFormlyPipe implements PipeTransform {
-  private defaultFileParams:FileParams = {}
   constructor(private apiService?: ApiService) {
   }
 
-  transform(value: BpmnFormJsonField[], fileParams = this.defaultFileParams, ...args: any[]): FormlyFieldConfig[] {
+  transform(value: BpmnFormJsonField[], workflowId: number = null, taskSpecName = null,  ...args: any[]): FormlyFieldConfig[] {
 
     const result: FormlyFieldConfig[] = [];
     for (const field of value) {
       const resultField: FormlyFieldConfig = {
         key: field.id,
         templateOptions: {
-          workflow_id: fileParams.workflow_id,
-          study_id: fileParams.study_id,
-          workflow_spec_id: fileParams.workflow_spec_id
+          workflow_id: workflowId,
+          task_spec_name: taskSpecName
         },
         expressionProperties: {},
       };
@@ -216,12 +213,10 @@ export class ToFormlyPipe implements PipeTransform {
           resultField.validators = {validation: ['file']};
           break;
         case 'autocomplete':
-          const fieldFileParams = Object.assign({}, fileParams || {});
-          fieldFileParams.form_field_key = field.id;
           resultField.type = 'autocomplete';
           const limit = this._getAutocompleteNumResults(field, 5);
           resultField.templateOptions.filter = (query: string) => this.apiService
-            .lookupFieldOptions(query, fieldFileParams, limit);
+            .lookupFieldOptions(query, workflowId, taskSpecName, field.id, limit);
           resultField.validators = {validation: ['autocomplete']};
           break;
         default:
@@ -524,8 +519,7 @@ export class ToFormlyPipe implements PipeTransform {
    * to the correct value.
    * You can pass an optional method, which should be called when the result completes.
    */
-  private getPythonEvalFunction(field: BpmnFormJsonField, p: BpmnFormJsonFieldProperty, defaultValue = false,
-                                method = null) {
+  private getPythonEvalFunction(field: BpmnFormJsonField, p: BpmnFormJsonFieldProperty, defaultValue = false, method = null) {
     return (model: any, formState: any, fieldConfig: FormlyFieldConfig) => {
 
       // Establish some variables to be added to the form state.

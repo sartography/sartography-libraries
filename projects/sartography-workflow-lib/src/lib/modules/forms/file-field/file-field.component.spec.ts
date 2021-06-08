@@ -14,7 +14,6 @@ import {of} from 'rxjs';
 import {ApiService} from '../../../services/api.service';
 import {MockEnvironment} from '../../../testing/mocks/environment.mocks';
 import {mockFile0, mockFile1, mockFileMeta0, mockFileMeta1} from '../../../testing/mocks/file.mocks';
-import {FileBaseComponent} from '../file-base/file-base.component';
 import {FileValueAccessorDirective} from '../file-upload/file-value-accessor.directive';
 import {FileFieldComponent} from './file-field.component';
 import {APP_BASE_HREF} from '@angular/common';
@@ -48,7 +47,6 @@ describe('FileFieldComponent', () => {
         ReactiveFormsModule,
       ],
       declarations: [
-        FileBaseComponent,
         FileFieldComponent,
         FileValueAccessorDirective,
       ],
@@ -73,9 +71,15 @@ describe('FileFieldComponent', () => {
     builder = formlyBuilder;
     field = {
       key: 'hi',
-      defaultValue: mockFile1
+      defaultValue: mockFile1,
+      templateOptions:
+        { workflow_id: 10,
+          study_id: 9,
+          workflow_spec_id: 'specName',
+          doc_code: () => { return ('my_doc_code') } // doc_code should override the field key
+        },
     };
-    builder.buildForm(form, [field], {hi: mockFileMeta0.id}, {});
+    builder.buildForm(form, [field], {my_doc_code: mockFileMeta0.id}, {});
   }));
 
   beforeEach(() => {
@@ -83,12 +87,12 @@ describe('FileFieldComponent', () => {
     fixture = TestBed.createComponent(FileFieldComponent);
     component = fixture.componentInstance;
     component.field = field;
+    component.formState[field.id + '_doc_code'] = 'my_doc_code';
     fixture.detectChanges();
 
     expect(component.selectedFile).toEqual(mockFile1);
 
     const fmsReq = httpMock.expectOne('apiRoot/file/' + mockFileMeta0.id);
-    // const fmsReq = httpMock.expectOne(`apiRoot/file?workflow_spec_id=${mockWorkflowSpec0.id}&form_field_key=hi`);
     expect(fmsReq.request.method).toEqual('GET');
     fmsReq.flush(mockFileMeta0);
 
@@ -129,10 +133,13 @@ describe('FileFieldComponent', () => {
   });
 
   it('should add a file', () => {
-    spyOn((component as any).api, 'addFile').and.returnValue(of(mockFileMeta0));
     component.addFile(mockFile0);
     expect(component.selectedFile).toEqual(mockFile0);
-    expect(component.selectedFileMeta).toEqual(mockFileMeta0);
+    const fileMeta = component.selectedFileMeta;
+    expect(fileMeta.file).toEqual(mockFile0);
+    expect(fileMeta.workflow_id).toEqual(10);
+    expect(fileMeta.study_id).toEqual(9);
+    expect(fileMeta.form_field_key).toEqual('my_doc_code');
   });
 
   it('should remove a file', () => {

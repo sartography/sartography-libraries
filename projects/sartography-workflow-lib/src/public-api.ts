@@ -9,7 +9,6 @@ export * from './lib/components/session-redirect/session-redirect.component';
 
 // Forms Module
 export * from './lib/modules/forms/sartography-forms.module';
-export * from './lib/modules/forms/file-base/file-base.component';
 export * from './lib/modules/forms/file-field/file-field.component';
 export * from './lib/modules/forms/file-upload/file-upload.component';
 export * from './lib/modules/forms/radio-data-field/radio-data-field.component';

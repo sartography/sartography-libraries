@@ -1,20 +1,19 @@
 import {APP_BASE_HREF} from '@angular/common';
-import {Component, EventEmitter, Inject, Output} from '@angular/core';
-import {ActivatedRoute} from '@angular/router';
+import {Component, EventEmitter, Inject, OnInit, Output} from '@angular/core';
 import {FileSystemFileEntry, NgxFileDropEntry} from 'ngx-file-drop';
 import {ReplaySubject} from 'rxjs';
 import {ApiService} from '../../../services/api.service';
 import {AppEnvironment} from '../../../types/app-environment';
 import {FileMeta} from '../../../types/file';
 import {getFileIcon, getFileType} from '../../../util/file-type';
-import {FileBaseComponent} from '../file-base/file-base.component';
+import {FieldType} from '@ngx-formly/material';
 
 @Component({
   selector: 'lib-file-upload',
   templateUrl: './file-upload.component.html',
   styleUrls: ['./file-upload.component.scss']
 })
-export class FileUploadComponent extends FileBaseComponent {
+export class FileUploadComponent extends FieldType implements  OnInit {
   @Output() filesUpdated: EventEmitter<FileMeta[]> = new EventEmitter<FileMeta[]>();
   droppedFiles: NgxFileDropEntry[] = [];
   fileMetas = new Set<FileMeta>();
@@ -35,8 +34,13 @@ export class FileUploadComponent extends FileBaseComponent {
     @Inject(APP_BASE_HREF) public appBaseHref: string,
     protected api: ApiService,
   ) {
-    super(api);
+    super();
     this.baseHref = appBaseHref;
+  }
+
+  ngOnInit(): void {
+    super.ngOnInit();
+    this.loadFiles();
   }
 
   dropped(droppedFiles: NgxFileDropEntry[]) {
@@ -92,41 +96,30 @@ export class FileUploadComponent extends FileBaseComponent {
       content_type: file.type,
       name: file.name,
       type: getFileType(file),
-      study_id: this.studyId,
-      workflow_id: this.workflowId,
-      form_field_key: this.field.key,
+      study_id: this.to.study_id,
+      workflow_id: this.to.workflow_id,
+      form_field_key: this.to.form_field_key,
+      file
     };
-    this.api.addFile(this.fileParams, fileMeta, file).subscribe(fm => {
-      this.fileMetas.add(fm);
-      this.updateFileList();
-    });
+    this.fileMetas.add(fileMeta);
+    this.updateFileList();
   }
 
   removeFile($event, fileMeta: FileMeta) {
     $event.preventDefault();
-    const fileMetaId = fileMeta.id;
-
-    this.api.deleteFileMeta(fileMetaId).subscribe(() => {
-      this.fileMetas.delete(fileMeta);
-      this.updateFileList();
-    });
+    this.fileMetas.delete(fileMeta);
+    this.updateFileList();
   }
 
   updateFileList() {
     const fileMetasArray = Array.from(this.fileMetas);
-    const fileMetaIds = fileMetasArray.map(fm => fm.id);
-
-    if (this.model && this.formControl) {
-      this.model[this.field.key] = fileMetaIds;
-      this.formControl.setValue(fileMetaIds);
-    }
-
     this.updateFileMetasSubject.next(fileMetasArray);
     this.filesUpdated.emit(fileMetasArray);
+    this.formControl.setValue(fileMetasArray);
   }
 
   loadFiles() {
-    this.api.getFileMetas(this.fileParams).subscribe(fms => {
+    this.api.getFileMetas({workflow_id: this.to.workflow_id, form_field_key: this.key}).subscribe(fms => {
       fms.forEach(fm => {
         this.fileMetas.add(fm);
       });

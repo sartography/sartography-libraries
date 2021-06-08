@@ -1,28 +1,29 @@
 import {Component, OnInit} from '@angular/core';
-import {ActivatedRoute} from '@angular/router';
 import {ApiService} from '../../../services/api.service';
 import {FileMeta} from '../../../types/file';
 import {getFileType} from '../../../util/file-type';
 import {isNumberDefined} from '../../../util/is-number-defined';
-import {FileBaseComponent} from '../file-base/file-base.component';
+import {FieldType} from '@ngx-formly/material';
 
 @Component({
   selector: 'lib-file-field',
   templateUrl: './file-field.component.html',
   styleUrls: ['./file-field.component.scss']
 })
-export class FileFieldComponent extends FileBaseComponent implements OnInit {
+
+export class FileFieldComponent extends FieldType implements OnInit {
   selectedFile: File;
   selectedFileMeta: FileMeta;
 
   constructor(
     protected api: ApiService,
   ) {
-    super(api);
+    super();
   }
 
   ngOnInit(): void {
     super.ngOnInit();
+    this.loadFiles();
 
     if (this.field && this.field.defaultValue) {
       this.selectedFile = this.field.defaultValue as File;
@@ -46,44 +47,47 @@ export class FileFieldComponent extends FileBaseComponent implements OnInit {
       content_type: file.type,
       name: file.name,
       type: getFileType(file),
+      study_id: this.to.study_id,
+      workflow_id: this.to.workflow_id,
+      form_field_key: this.getFileCode(),
+      file
     };
 
-    if (isNumberDefined(this.studyId)) {
-      fileMeta.study_id = this.studyId;
-    }
+    this.selectedFile = file;
+    this.selectedFileMeta = fileMeta;
+    this.formControl.setValue(fileMeta);
 
-    if (isNumberDefined(this.workflowId)) {
-      fileMeta.workflow_id = this.workflowId;
-    }
+    console.log('Selected File Meta:' + this.formControl.value)
+  }
 
-    if (this.key) {
-      fileMeta.form_field_key = this.key;
+  getFileCode() {
+    /* very ugly, use data down in the formState placed there by
+       the python_execute fuction in to_formly_pipe for caching the results.
+     */
+    const codeKey = this.field.id + '_doc_code';
+    console.log('FORM STATE', this.formState);
+    if(codeKey in this.formState) {
+      return this.formState[codeKey];
+    } else {
+      return this.key;
     }
-
-    this.api.addFile(this.fileParams, fileMeta, file).subscribe(fm => {
-      this.selectedFile = file;
-      this.selectedFileMeta = fm;
-      this.model[this.key] = fm.id;
-      this.fileId = fm.id;
-      this.formControl.setValue(fm.id);
-    });
   }
 
   removeFile() {
-    if (this.selectedFileMeta) {
-      this.api.deleteFileMeta(this.selectedFileMeta.id).subscribe(() => {
-        this.selectedFile = undefined;
-        this.selectedFileMeta = undefined;
-        this.model[this.key] = undefined;
-        this.fileId = undefined;
-        this.formControl.setValue(undefined);
-      });
-    }
+      this.selectedFile = undefined;
+      this.selectedFileMeta = undefined;
+      this.model[this.getFileCode()] = undefined;
+      this.formControl.setValue(undefined);
   }
 
   loadFiles() {
-    if (isNumberDefined(this.fileId)) {
-      this.api.getFileMeta(this.fileId).subscribe(fm => {
+
+    const key = this.getFileCode();
+    const fileId = this.model && this.model.hasOwnProperty(key) ? this.model[key] : null;
+    console.log('I died ugly', key, fileId);
+
+    if (isNumberDefined(fileId)) {
+      this.api.getFileMeta(fileId).subscribe(fm => {
         const options: FilePropertyBag = {
           type: fm.content_type,
           lastModified: new Date(fm.last_modified).getTime(),
@@ -98,7 +102,6 @@ export class FileFieldComponent extends FileBaseComponent implements OnInit {
         this.selectedFile = undefined;
         this.selectedFileMeta = undefined;
         this.model[this.key] = undefined;
-        this.fileId = undefined;
         this.formControl.setValue(undefined);
       });
     }

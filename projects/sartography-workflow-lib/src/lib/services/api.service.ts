@@ -6,7 +6,7 @@ import {catchError, debounce} from 'rxjs/operators';
 import {ApiError} from '../types/api';
 import {AppEnvironment} from '../types/app-environment';
 import {Approval, ApprovalCounts, ApprovalStatus} from '../types/approval';
-import {DocumentDirectory, FileMeta, FileParams, LookupData} from '../types/file';
+import {DocumentDirectory, FileMeta, LookupData} from '../types/file';
 import {ScriptInfo} from '../types/script-info';
 import {Study} from '../types/study';
 import {TaskAction, TaskEvent} from '../types/task-event';
@@ -335,9 +335,9 @@ export class ApiService {
   }
 
   /** Get all File Metadata for a given Workflow Specification, Workflow Instance, Study, or Task */
-  getFileMetas(fileParams: FileParams): Observable<FileMeta[]> {
+  getFileMetas(parameters: object): Observable<FileMeta[]> {
     const url = this.apiRoot + this.endpoints.fileList;
-    const params = this._paramsToHttpParams(fileParams);
+    const params = this._paramsToHttpParams(parameters);
 
     return this.httpClient
       .get<FileMeta[]>(url, {params})
@@ -354,7 +354,7 @@ export class ApiService {
   }
 
   /** Add a File */
-  addFile(fileParams: FileParams, fileMeta: FileMeta, file: File): Observable<FileMeta> {
+  addFile(fileParams: object, fileMeta: FileMeta, file: File): Observable<FileMeta> {
     const url = this.apiRoot + this.endpoints.fileList;
     const params = this._paramsToHttpParams(fileParams);
     const formData = new FormData();
@@ -594,16 +594,11 @@ export class ApiService {
   }
 
   /** lookupFieldOptions */
-  lookupFieldOptions(query: string, fileParams: FileParams, limit = 5): Observable<LookupData[]> {
+  lookupFieldOptions(query: string, workflowId:number, taskSpecName: string, fieldId: string, limit = 5): Observable<LookupData[]> {
     const url = this.apiRoot + this.endpoints.fieldOptionsLookup
-      .replace('{workflow_id}', fileParams.workflow_id.toString())
-      .replace('{task_spec_name}', fileParams.task_spec_name.toString())
-      .replace('{field_id}', fileParams.form_field_key);
-
-    if (fileParams.task_spec_name === null) {
-      return throwError('The task spec name is not defined. Lookups will fail');
-    }
-
+      .replace('{workflow_id}', workflowId.toString())
+      .replace('{task_spec_name}', taskSpecName.toString())
+      .replace('{field_id}', fieldId);
 
     // Initialize Params Object
     const params = new HttpParams()
