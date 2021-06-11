@@ -361,7 +361,7 @@ export class ToFormlyPipe implements PipeTransform {
               }
               break;
             case 'doc_code':
-              resultField.templateOptions.doc_code = this.getPythonEvalFunction(field, p);
+              resultField.expressionProperties['templateOptions.doc_code'] = this.getPythonEvalFunction(field, p);
               break;
             default:
               break;
@@ -524,21 +524,20 @@ export class ToFormlyPipe implements PipeTransform {
    * to the correct value.
    * You can pass an optional method, which should be called when the result completes.
    */
-  private getPythonEvalFunction(field: BpmnFormJsonField, p: BpmnFormJsonFieldProperty, defaultValue = false,
-                                method = null) {
+  private getPythonEvalFunction(field: BpmnFormJsonField, p: BpmnFormJsonFieldProperty, defaultValue = false, method = null) {
     return (model: any, formState: any, fieldConfig: FormlyFieldConfig) => {
 
       // Establish some variables to be added to the form state.
       const variableKey = field.id + '_' + p.id;  // The actual value we want to return
       const variableSubjectKey = field.id + '_' + p.id + '_subject'; // A subject to add api calls to.
       const variableSubscriptionKey = field.id + '_' + p.id + '_subscription'; // a debounced subscription.
-      const dataStateKey = field.id + '_' + p.id + '_data';
 
       // Do this only the first time it is called to establish some subjects and subscriptions.
       // Set up a variable that can be returned, and a variable subject that can be debounced,
       // calls to the api will eventually end up in the formState[variable]
       if (!(formState.hasOwnProperty(variableKey))) {
-        formState[variableKey] = defaultValue;
+        formState[variableKey] = {};
+        formState[variableKey][''] = defaultValue;
         formState[variableSubjectKey] = new Subject<PythonEvaluation>();  // To debounce on this function
         formState[variableSubscriptionKey] = formState[variableSubjectKey].pipe(
           debounceTime(250),
@@ -549,10 +548,11 @@ export class ToFormlyPipe implements PipeTransform {
             catchError(err => of([]))
           )
           .subscribe(
-            data => {
+            response => {
               // wrap the assignment to the variable in a promise - so that it gets evaluated as a part
               // of angular's next round of DOM updates, so we avoid modifying the state in the middle of a call.
-              Promise.resolve(null).then(() => formState[variableKey] = data.result);
+              const key = JSON.stringify(response.data);
+              Promise.resolve(null).then(() => formState[variableKey][key] = response.result);
             },
             (error: ApiError) => {
               console.log(`Failed to update field ${field.id} unable to process expression. ${error.message}`);
@@ -560,22 +560,18 @@ export class ToFormlyPipe implements PipeTransform {
             }
             );
       }
-
-      // We need this check so that we don't repeatedly query the api if the data model changed and we have
-      // new information to act upon.
-      if (formState[dataStateKey] !== JSON.stringify(model) ) {
-        formState[dataStateKey] = JSON.stringify(model);  // Deep copy of model and store it for comparison
+      const modelKey = JSON.stringify(model)
+      if (!(modelKey in formState[variableKey])) {
+        formState[variableKey][JSON.stringify(model)] = defaultValue;
         // TODO: Augment the model with all current form field keys and values
         // loop through fieldConfig.parent.fieldGroup
         // Get keys for all fields.
         // Look in model to see if they are there yet.
         // If not, add them to the model with value of null.
-
-
         formState[variableSubjectKey].next({expression: p.value, data: model});
       }
       // We immediately return the variable, but it might change due to the above observable.
-      return formState[variableKey]
+      return formState[variableKey][modelKey]
     };
   }
 

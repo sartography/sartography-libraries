@@ -1,6 +1,6 @@
 import {formatDate} from '@angular/common';
 import {Component, Input} from '@angular/core';
-import {FormlyFieldConfig} from '@ngx-formly/core';
+import {FormlyFieldConfig, FormlyForm} from '@ngx-formly/core';
 
 interface SelectFieldOption {
   value: string;
@@ -46,6 +46,10 @@ export class FormPrintoutComponent {
       if (labels.length > 0) {
         return labels.join(', ');
       }
+    }
+
+    if (fType === 'file') {
+      return val.name;
     }
 
     // TODO: REVISIT THIS SOMETIME WHEN WE CAN TEST IT MORE THOROUGHLY

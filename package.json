@@ -8,7 +8,6 @@
     "test": "ng test",
     "test:coverage": "ng test --codeCoverage=true --watch=false --browsers=ChromeHeadless",
     "lint": "ng lint",
-    "e2e": "ng e2e",
     "patch-version": "cd projects/sartography-workflow-lib && npm version patch && cd ../..",
     "republish": "ng build sartography-workflow-lib && cd dist/sartography-workflow-lib && npm publish && cd ../..",
     "bump": "npm run lint && npm run patch-version && npm run republish",

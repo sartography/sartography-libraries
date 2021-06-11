@@ -54,11 +54,6 @@ describe('FileFieldComponent', () => {
       ],
       providers: [
         ApiService,
-        {
-          provide: ActivatedRoute,
-          useValue: {paramMap: of(convertToParamMap({study_id: '0', workflow_id: '0', task_id: '0'}))},
-          // useValue: {paramMap: of(convertToParamMap({workflow_spec_id: mockWorkflowSpec0.id}))},
-        },
         {provide: 'APP_ENVIRONMENT', useClass: MockEnvironment},
         {provide: APP_BASE_HREF, useValue: '/'},
         {provide: Router, useValue: mockRouter},
@@ -75,7 +70,7 @@ describe('FileFieldComponent', () => {
       key: 'hi',
       defaultValue: mockFile1
     };
-    builder.buildForm(form, [field], {hi: mockFileMeta0.id}, {});
+    builder.buildForm(form, [field], {hi: mockFileMeta0}, {});
   }));
 
   beforeEach(() => {
@@ -129,6 +124,8 @@ describe('FileFieldComponent', () => {
   });
 
   it('should add a file', () => {
+    // as a file is defined by default, it should attempt to delete it before adding the new one.
+    spyOn((component as any).api, 'deleteFileMeta').and.returnValue(of(null));
     spyOn((component as any).api, 'addFile').and.returnValue(of(mockFileMeta0));
     component.addFile(mockFile0);
     expect(component.selectedFile).toEqual(mockFile0);
