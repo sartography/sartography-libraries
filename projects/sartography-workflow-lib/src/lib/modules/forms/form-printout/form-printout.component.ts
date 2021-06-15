@@ -94,7 +94,7 @@ export class FormPrintoutComponent {
   }
 
   addColon(label: string) {
-    if (label[label.length - 1] === ':') {
+    if (label[label.length - 1] === ':' || label.trim().length === 0) {
       return label;
     } else {
       return label + ':';

@@ -49,8 +49,11 @@ describe('FileBaseComponent', () => {
         { workflow_id: 10,
           study_id: 9,
           workflow_spec_id: 'specName',
-          doc_code: () => { return ('my_doc_code') } // doc_code should override the field key
         },
+      expressionProperties:
+        {
+          doc_code: () => { return ('my_doc_code') } // doc_code should override the field key
+        }
     };
     builder.buildForm(form, [field], {hi: 123}, {});
   }));
@@ -66,13 +69,12 @@ describe('FileBaseComponent', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
     expect(component.key).toEqual('hi');
-    expect((component as any).fileId).toEqual(123);
     component.ngOnInit();
     const fp = (component as any).fileParams;
     expect(fp).toBeTruthy();
     expect(fp.study_id).toEqual(9);
     expect(fp.workflow_id).toEqual(10);
-    expect(fp.form_field_key).toEqual('my_doc_code');
+    expect(fp.form_field_key).toEqual('hi');
   });
 
 });
