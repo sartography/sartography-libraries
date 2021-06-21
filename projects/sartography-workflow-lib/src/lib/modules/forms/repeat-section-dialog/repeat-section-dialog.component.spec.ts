@@ -15,6 +15,13 @@ import {FormPrintoutComponent} from '../form-printout/form-printout.component';
 import {PanelWrapperComponent} from '../panel-wrapper/panel-wrapper.component';
 import {RepeatSectionComponent} from '../repeat-section/repeat-section.component';
 import {RepeatSectionDialogComponent} from './repeat-section-dialog.component';
+import {FileFieldComponent} from '../file-field/file-field.component';
+import {MockEnvironment} from '../../../testing/mocks/environment.mocks';
+import {ActivatedRoute, convertToParamMap, Router} from '@angular/router';
+import {of} from 'rxjs';
+import {APP_BASE_HREF} from '@angular/common';
+import {ApiService} from '../../../services/api.service';
+import {HttpClientTestingModule} from '@angular/common/http/testing';
 
 describe('RepeatSectionDialogComponent', () => {
   let component: RepeatSectionDialogComponent;
@@ -23,6 +30,7 @@ describe('RepeatSectionDialogComponent', () => {
   let form: FormGroup;
   let field: FormlyFieldConfigCache;
   let config: FormlyConfig;
+  const mockEnvironment = new MockEnvironment();
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -32,6 +40,7 @@ describe('RepeatSectionDialogComponent', () => {
         FormlyModule.forRoot({
           types: [
             {name: 'repeat', component: RepeatSectionComponent},
+            {name: 'file', component: FileFieldComponent, wrappers: ['form-field']},
           ],
           wrappers: [
             {name: 'panel', component: PanelWrapperComponent},
@@ -39,6 +48,7 @@ describe('RepeatSectionDialogComponent', () => {
         }),
         FormlyMaterialModule,
         FormsModule,
+        HttpClientTestingModule,
         MatCardModule,
         MatDialogModule,
         MatIconModule,
@@ -52,6 +62,9 @@ describe('RepeatSectionDialogComponent', () => {
         RepeatSectionDialogComponent,
       ],
       providers: [
+        ApiService,
+        {provide: 'APP_ENVIRONMENT', useClass: MockEnvironment},
+        {provide: APP_BASE_HREF, useValue: '/'},
         DeviceDetectorService,
         {
           provide: MatDialogRef, useValue: {

@@ -623,9 +623,7 @@ export class ApiService {
     const url = this.apiRoot + this.endpoints.eval;
     const body = {expression, data};
     return this.httpClient.put<any>(url, body)
-      .pipe(debounce(() => timer(10000)),
-            catchError(err => ApiService._handleError(err)));
-
+      .pipe(debounce(() => timer(10000)));
   }
 
   /** Construct HttpParams from params object. Only adds params that have been set. */

@@ -2,7 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
 import {FieldType} from '@ngx-formly/material';
 import {ApiService} from '../../../services/api.service';
-import {FileParams} from '../../../types/file';
+import {FileMeta, FileParams} from '../../../types/file';
 
 @Component({
   selector: 'lib-file-base',
@@ -13,6 +13,7 @@ export class FileBaseComponent extends FieldType implements OnInit {
   protected studyId: number;
   protected workflowId: number;
   protected workflowSpecId: string;
+  protected fileMeta: FileMeta;
   protected fileId: number;
   protected fileParams: FileParams;
 
@@ -29,12 +30,7 @@ export class FileBaseComponent extends FieldType implements OnInit {
       workflow_id: this.to.workflow_id,
       form_field_key: this.key,
     };
-    if ('doc_code' in this.to) {
-      this.fileParams.form_field_key = this.to.doc_code();
-    }
-
-
-    this.fileId = this.model && this.model.hasOwnProperty(this.key) ? this.model[this.key] : null;
+    this.fileId = this.model && this.model.hasOwnProperty(this.key) ? this.model[this.key].id : null;
     this.loadFiles();
   }
 

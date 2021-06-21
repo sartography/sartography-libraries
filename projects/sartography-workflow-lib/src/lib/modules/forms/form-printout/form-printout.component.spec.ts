@@ -8,6 +8,11 @@ import {FormlyMatDatepickerModule} from '@ngx-formly/material/datepicker';
 import {TruncateModule} from '@yellowspot/ng-truncate';
 import {mockFormlyFieldConfig, mockFormlyFieldModel} from '../../../testing/mocks/form.mocks';
 import {FormPrintoutComponent} from './form-printout.component';
+import {FileUploadComponent} from '../file-upload/file-upload.component';
+import {FileFieldComponent} from '../file-field/file-field.component';
+import {MockEnvironment} from '../../../testing/mocks/environment.mocks';
+import {APP_BASE_HREF} from '@angular/common';
+import {HttpClientTestingModule} from '@angular/common/http/testing';
 
 describe('FormPrintoutComponent', () => {
   let component: FormPrintoutComponent;
@@ -20,13 +25,22 @@ describe('FormPrintoutComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [
-        FormlyModule.forRoot(),
+        FormlyModule.forRoot({
+          types: [
+            {name: 'file', component: FileFieldComponent, wrappers: ['form-field']},
+          ],
+        }),
         FormlyMaterialModule,
         FormlyMatDatepickerModule,
         MatNativeDateModule,
         TruncateModule,
+        HttpClientTestingModule,
       ],
-      declarations: [FormPrintoutComponent]
+      declarations: [FormPrintoutComponent],
+      providers: [
+        {provide: 'APP_ENVIRONMENT', useClass: MockEnvironment},
+        {provide: APP_BASE_HREF, useValue: '/'},
+        ]
     })
       .compileComponents();
   }));
@@ -49,5 +63,10 @@ describe('FormPrintoutComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('should display the file name for an uploaded file', () => {
+    expect(component).toBeTruthy();
+    expect(component.getModelValue('fifth_field')).toEqual({ id: 101, name: 'bob.txt' });
   });
 });

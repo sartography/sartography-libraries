@@ -114,11 +114,10 @@ export class FileUploadComponent extends FileBaseComponent {
 
   updateFileList() {
     const fileMetasArray = Array.from(this.fileMetas);
-    const fileMetaIds = fileMetasArray.map(fm => fm.id);
 
     if (this.model && this.formControl) {
-      this.model[this.field.key] = fileMetaIds;
-      this.formControl.setValue(fileMetaIds);
+      this.model[this.field.key] = fileMetasArray;
+      this.formControl.setValue(fileMetasArray);
     }
 
     this.updateFileMetasSubject.next(fileMetasArray);
