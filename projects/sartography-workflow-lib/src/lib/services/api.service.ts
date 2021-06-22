@@ -127,7 +127,7 @@ export class ApiService {
 
 
   /** Get a specific Study */
-  getStudy(studyId: number, updateStatus=false): Observable<Study> {
+  getStudy(studyId: number, updateStatus = false): Observable<Study> {
     let params = new HttpParams();
     params = params.set('update_status', String(updateStatus));
 
@@ -420,9 +420,9 @@ export class ApiService {
   getTaskEvents(action?: TaskAction, studyId?: number, workflowId?: number): Observable<TaskEvent[]> {
     const url = this.apiRoot + this.endpoints.taskEvents;
     let httpParams = new HttpParams();
-    if(action) httpParams = httpParams.set('action', action);
-    if(studyId) httpParams = httpParams.set('study', studyId.toString());
-    if(workflowId) httpParams = httpParams.set('workflow', workflowId.toString());
+    if (action) httpParams = httpParams.set('action', action);
+    if (studyId) httpParams = httpParams.set('study', studyId.toString());
+    if (workflowId) httpParams = httpParams.set('workflow', workflowId.toString());
 
     return this.httpClient
       .get<TaskEvent[]>(url + '?' + httpParams.toString())
@@ -466,21 +466,21 @@ export class ApiService {
   /** Update Task Data for a specific Workflow Task
    * The updateAll flag will cause all remaining tasks in a multistance task to receive the same values.
    */
-  updateTaskDataForWorkflow(workflowId: number, taskId: string, data: any, updateAll = false, terminateLoop= false): Observable<Workflow> {
+  updateTaskDataForWorkflow(workflowId: number, taskId: string, data: any, updateAll = false, terminateLoop = false): Observable<Workflow> {
     let url = this.apiRoot + this.endpoints.taskDataForWorkflow
       .replace('{workflow_id}', workflowId.toString())
       .replace('{task_id}', taskId);
 
     let httpParams = new HttpParams();
 
-    if(updateAll) {
+    if (updateAll) {
       httpParams = httpParams.append('update_all', 'True');
     }
-    if(terminateLoop) {
+    if (terminateLoop) {
       httpParams = httpParams.append('terminate_loop', 'True')
     }
 
-    if(httpParams.toString() !== '') {
+    if (httpParams.toString() !== '') {
       url = url + '?' + httpParams.toString()
     }
 
@@ -616,9 +616,9 @@ export class ApiService {
   }
 
   /** Evaluate an expression using the api, which should return a true or false value */
-  eval(expression: string, data: any): Observable<any> {
+  eval(expression: string, data: any, key: string): Observable<any> {
     const url = this.apiRoot + this.endpoints.eval;
-    const body = {expression, data};
+    const body = {expression, data, key};
     return this.httpClient.put<any>(url, body)
       .pipe(debounce(() => timer(10000)));
   }

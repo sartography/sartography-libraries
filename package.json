@@ -28,6 +28,8 @@
     "@angular/router": "^9.1.11",
     "@ngx-formly/core": "^5.8.0",
     "@ngx-formly/material": "^5.8.0",
+    "@ngx-formly/material/multicheckbox": "^5.8.0",
+    "@ngx-formly/material/radio": "^5.8.0",
     "@sentry/browser": "^5.19.0",
     "@yellowspot/ng-truncate": "^1.7.0",
     "lodash.isequal": "^4.5.0",

@@ -4,4 +4,5 @@ export interface RepeatSectionDialogData {
   title: string;
   fields: FormlyFieldConfig[];
   model?: any;
+  options?: any;
 }
