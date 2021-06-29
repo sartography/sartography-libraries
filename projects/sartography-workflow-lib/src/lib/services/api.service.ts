@@ -620,9 +620,9 @@ export class ApiService {
   }
 
   /** Evaluate an expression using the api, which should return a true or false value */
-  eval(expression: string, data: any): Observable<any> {
+  eval(expression: string, data: any, key: string): Observable<any> {
     const url = this.apiRoot + this.endpoints.eval;
-    const body = { expression, data };
+    const body = {expression, data, key};
     return this.httpClient.put<any>(url, body)
       .pipe(debounce(() => timer(10000)));
   }

@@ -101,6 +101,7 @@ import {ApiError} from '../../types/api';
 export interface PythonEvaluation {
   expression: string;
   data?: any;     // Lookup data object, populated by backend LookupService
+  key: string;
 }
 
 @Pipe({
@@ -526,6 +527,9 @@ export class ToFormlyPipe implements PipeTransform {
    */
   private getPythonEvalFunction(field: BpmnFormJsonField, p: BpmnFormJsonFieldProperty, defaultValue = false, method = null) {
     return (model: any, formState: any, fieldConfig: FormlyFieldConfig) => {
+      if(!formState) {
+        formState = {}
+      }
 
       // Establish some variables to be added to the form state.
       const variableKey = field.id + '_' + p.id;  // The actual value we want to return
@@ -537,11 +541,11 @@ export class ToFormlyPipe implements PipeTransform {
       // calls to the api will eventually end up in the formState[variable]
       if (!(formState.hasOwnProperty(variableKey))) {
         formState[variableKey] = {};
-        formState[variableKey][''] = defaultValue;
+        formState[variableKey].default = defaultValue;
         formState[variableSubjectKey] = new Subject<PythonEvaluation>();  // To debounce on this function
         formState[variableSubscriptionKey] = formState[variableSubjectKey].pipe(
           debounceTime(250),
-          switchMap((subj: PythonEvaluation) => this.apiService.eval(subj.expression, subj.data)))
+          switchMap((subj: PythonEvaluation) => this.apiService.eval(subj.expression, subj.data, subj.key)))
           .pipe(
             // If the api service gets an error, handle it here, but don't error out our subscribers, so we
             // can make subsequent calls.
@@ -551,8 +555,14 @@ export class ToFormlyPipe implements PipeTransform {
             response => {
               // wrap the assignment to the variable in a promise - so that it gets evaluated as a part
               // of angular's next round of DOM updates, so we avoid modifying the state in the middle of a call.
-              const key = JSON.stringify(response.data);
-              Promise.resolve(null).then(() => formState[variableKey][key] = response.result);
+              // If there is no error, update the value.
+              if(!response.hasOwnProperty('error')) {
+                Promise.resolve(null).then(() => {
+                  // The last successful evaluation becomes the new default, this keeps things from flickering.
+                  formState[variableKey].default = response.result;
+                  formState[variableKey][response.key] = response.result;
+                });
+              }
             },
             (error: ApiError) => {
               console.log(`Failed to update field ${field.id} unable to process expression. ${error.message}`);
@@ -560,19 +570,25 @@ export class ToFormlyPipe implements PipeTransform {
             }
             );
       }
-      const modelKey = JSON.stringify(model)
-      if (!(modelKey in formState[variableKey])) {
-        formState[variableKey][JSON.stringify(model)] = defaultValue;
-        // TODO: Augment the model with all current form field keys and values
-        // loop through fieldConfig.parent.fieldGroup
-        // Get keys for all fields.
-        // Look in model to see if they are there yet.
-        // If not, add them to the model with value of null.
-        formState[variableSubjectKey].next({expression: p.value, data: model});
+      const key = this.hashCode(JSON.stringify(model));
+      if (!(key in formState[variableKey])) {
+        formState[variableKey][key] = formState[variableKey].default;
+        let data = model;
+        if(formState.hasOwnProperty('mainModel')) {
+          data = {...formState.mainModel, ...model};
+        }
+        formState[variableSubjectKey].next({expression: p.value, data, key});
       }
       // We immediately return the variable, but it might change due to the above observable.
-      return formState[variableKey][modelKey]
+      return formState[variableKey][key]
     };
+  }
+
+  private  hashCode(str) {
+    /* tslint:disable:no-bitwise */
+    return str.split('').reduce((prevHash, currVal) =>
+      (((prevHash << 5) - prevHash) + currVal.charCodeAt(0))|0, 0);
+    /* tslint:enable:no-bitwise */
   }
 
   /** Get num_results property from given field, or return the given default if no num_results property found. */

@@ -692,7 +692,7 @@ describe('ApiService', () => {
   it('should get all approvals for one approver');
 
   it('should call the api to evaluate python', () => {
-    service.eval('x == 2', {x: 2}).subscribe(data => {
+    service.eval('x == 2', {x: 2}, '100').subscribe(data => {
       expect(data).toBeTruthy();
       expect(data).toEqual({ result: true });
     });
