@@ -6,6 +6,13 @@ export const trimString = (str: string): string => {
 
 export const toSnakeCase = (str: string): string => {
   str = trimString(str);
+  return !str ? '' : String(str)
+    .replace(/\W+/gi, '_')
+    .toLowerCase();
+};
+
+export const CameltoSnakeCase = (str: string): string => {
+  str = trimString(str);
   // * https://stackoverflow.com/questions/15369566/putting-space-in-camel-case-string-using-regular-expression
   const regex = /(?<!^)([A-Z][a-z]|(?<=[a-z])[A-Z])/g;
   return !str ? '' : String(str)
