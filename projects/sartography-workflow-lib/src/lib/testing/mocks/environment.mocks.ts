@@ -8,7 +8,7 @@ export class MockEnvironment implements AppEnvironment {
   hideDataPane = true;
   api = 'apiRoot';
   irbUrl = 'irbUrl';
-  title = 'CR Connect';
+  title = 'CRConnect';
   googleAnalyticsKey = 'some_key';
   sentryKey = 'some_key';
 }
