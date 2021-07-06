@@ -59,7 +59,10 @@ export class FormPrintoutComponent {
     // }
 
     if (fType === 'datepicker') {
-      const displayDate = formatDate(val, 'mediumDate', 'en-us');
+      let displayDate = '';
+      if(val) {
+        displayDate = formatDate(val, 'mediumDate', 'en-us');
+      }
       return displayDate;
     }
 

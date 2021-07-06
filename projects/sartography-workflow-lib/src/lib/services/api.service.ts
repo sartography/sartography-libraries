@@ -257,16 +257,12 @@ export class ApiService {
   }
 
   /** Validate a Workflow Specification */
-  validateWorkflowSpecification(specId: string, testUntil: string = ''): Observable<ApiError[]> {
+  validateWorkflowSpecification(specId: string, testUntil: string = '', studyId?: number): Observable<ApiError[]> {
     let params = new HttpParams();
-    if (testUntil !== '') {
-      params = params.set('test_until', String(testUntil));
-    }
-    const url = this.apiRoot + this.endpoints.workflowSpecValidate
-      .replace('{spec_id}', specId);
-
-    return this.httpClient
-      .get<ApiError[]>(url, { params })
+    if (testUntil !== '') params = params.set('test_until', String(testUntil));
+    if (studyId) params = params.set('study_id', studyId.toString());
+    const url = this.apiRoot + this.endpoints.workflowSpecValidate.replace('{spec_id}', specId);
+    return this.httpClient.get<ApiError[]>(url, { params })
       .pipe(catchError(err => ApiService._handleError(err)));
   }
 
