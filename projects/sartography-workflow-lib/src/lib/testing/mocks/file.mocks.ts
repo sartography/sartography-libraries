@@ -130,25 +130,6 @@ export const mockFiles: File[] = [
   mockFile3,
 ];
 
-
-export const ddMock1: DocumentDirectory = {
-  level: undefined,
-  file: mockFileMeta1,
-  expanded: false,
-  filecount: 0,
-  children: [],
-}
-
-
-export const ddMock2: DocumentDirectory = {
-  level: undefined,
-  file: undefined,
-  expanded: false,
-  filecount: 0,
-  children: [],
-}
-
-
 export const mockDocumentDirectory: DocumentDirectory[] = [
   {
     level: 'Document',
