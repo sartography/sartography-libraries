@@ -11,6 +11,16 @@ export const toSnakeCase = (str: string): string => {
     .toLowerCase();
 };
 
+export const CameltoSnakeCase = (str: string): string => {
+  str = trimString(str);
+  // * https://stackoverflow.com/questions/15369566/putting-space-in-camel-case-string-using-regular-expression
+  const regex = /(?<!^)([A-Z][a-z]|(?<=[a-z])[A-Z])/g;
+  return !str ? '' : String(str)
+  .replace(regex,(match) => {
+    return '_' + match.toLowerCase();})
+    .toLowerCase();
+};
+
 export const cleanUpFilename = (str: string, extension: FileType|string): string => {
   const arr = trimString(str).split('.');
 
