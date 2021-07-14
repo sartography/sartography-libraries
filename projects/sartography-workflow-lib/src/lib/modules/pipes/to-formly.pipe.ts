@@ -207,6 +207,9 @@ export class ToFormlyPipe implements PipeTransform {
           if (field.default_value) {
             resultField.defaultValue = new Date(field.default_value);
           }
+          resultField.templateOptions = {
+            datepickerOptions : { datepickerTogglePosition: 'prefix'}
+          }
           break;
         case 'files':
           resultField.type = 'files';
