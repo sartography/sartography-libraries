@@ -16,7 +16,6 @@
       <div id="dropFilesInstructions" fxLayout="column" fxLayoutAlign="center center">
         <mat-icon>cloud_upload</mat-icon>
         <h3>Drag & drop <strong>{{to.label}}</strong> files here</h3>
-        <p *ngIf="to.description">{{to.description}}</p>
         <button mat-flat-button color="primary" (click)="openFileSelector()" type="button">Browse Files</button>
       </div>
     </ng-template>
