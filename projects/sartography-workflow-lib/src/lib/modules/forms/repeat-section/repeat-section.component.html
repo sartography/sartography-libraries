@@ -5,7 +5,7 @@
   fxLayoutGap="1em"
   [fxHide]="shouldHide()"
 >
-  <mat-error *ngIf="!field.formControl.valid">Please add a valid entry.</mat-error>
+  <mat-error *ngIf="!field.formControl.valid"> Must add at least one {{ field.templateOptions.buttonLabel ? field.templateOptions.buttonLabel : 'entry' }}</mat-error>
   <mat-card *ngFor="let f of field.fieldGroup; let i = index;" class="repeat">
     <mat-card-content fxLayout="row">
       <div fxFlex="70">
