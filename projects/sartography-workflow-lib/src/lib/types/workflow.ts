@@ -25,6 +25,7 @@ export interface WorkflowSpec {
   is_master_spec?: boolean;
   display_order?: number;
   standalone?: boolean;
+  library?: boolean;
 }
 
 export interface WorkflowSpecCategory {
@@ -33,7 +34,6 @@ export interface WorkflowSpecCategory {
   display_name: string;
   display_order: number;
   workflows?: WorkflowMetadata[];
-  library?: boolean;
 }
 
 export interface WorkflowMetadata {
