@@ -54,6 +54,7 @@ export class ApiService {
     workflowSpecList: '/workflow-specification',
     workflowSpec: '/workflow-specification/{spec_id}',
     workflowSpecListStandalone: '/workflow-specification/standalone',
+    workflowSpecListLibraries: '/workflow-specification/libraries',
     workflowSpecValidate: '/workflow-specification/{spec_id}/validate',
 
     // Workflow Specification Category
@@ -245,6 +246,16 @@ export class ApiService {
       .get<WorkflowSpec[]>(url)
       .pipe(catchError(err => ApiService._handleError(err)));
   }
+
+  /** Get a list of standalone workflows */
+  getWorkflowSpecificationLibraries(): Observable<WorkflowSpec[]> {
+    const url = this.apiRoot + this.endpoints.workflowSpecListLibraries;
+
+    return this.httpClient
+      .get<WorkflowSpec[]>(url)
+      .pipe(catchError(err => ApiService._handleError(err)));
+  }
+
 
   /** Get a workflow from a workflow spec */
   getWorkflowFromSpec(workflowSpecId: string): Observable<Workflow> {
