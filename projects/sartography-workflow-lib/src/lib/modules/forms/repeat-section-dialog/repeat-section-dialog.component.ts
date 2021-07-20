@@ -63,6 +63,18 @@ export class RepeatSectionDialogComponent implements AfterContentInit {
     this.updateDisableSave();
   }
 
+  nullOutHiddenFields(fields: FormlyFieldConfig[]) {
+    fields.forEach(f => {
+      console.log('Should I clear the data for this field?', f)
+      if (f.hide) {
+        this.data.model[f.key] = null;
+      }
+      if (f.fieldGroup) {
+        this.nullOutHiddenFields(f.fieldGroup);
+      }
+    });
+  }
+
   onInvalidFields(): void {
     this.highlightRequiredFields(this.data.fields);
     scrollToFirstInvalidField(this.deviceDetectorService);
@@ -70,6 +82,7 @@ export class RepeatSectionDialogComponent implements AfterContentInit {
 
   onSubmit(): void {
     this.highlightRequiredFields(this.data.fields);
+    this.nullOutHiddenFields(this.data.fields);
 
     if (this.noErrors()) {
       this.dialogRef.close(createClone({circles: true})(this.data.model));

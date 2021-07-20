@@ -32,10 +32,18 @@ mat-accordion {
       font-size: .9rem;
       max-width: 800px;
 
-      span.hint {
-        font-weight:bold;
-        font-size: 1em;
+      div.message {
+        font-weight:bolder;
       }
+      div.line {
+        font-family: monospace;
+        font-weight:normal;
+      }
+      div.hint {
+        font-style: italic;
+      }
+
+
     }
   }
 

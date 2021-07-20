@@ -1,6 +1,6 @@
 import {formatDate} from '@angular/common';
 import {Component, Input} from '@angular/core';
-import {FormlyFieldConfig} from '@ngx-formly/core';
+import {FormlyFieldConfig, FormlyForm} from '@ngx-formly/core';
 
 interface SelectFieldOption {
   value: string;
@@ -48,6 +48,10 @@ export class FormPrintoutComponent {
       }
     }
 
+    if (fType === 'file') {
+      return val.name;
+    }
+
     // TODO: REVISIT THIS SOMETIME WHEN WE CAN TEST IT MORE THOROUGHLY
     // // Dropdown box has the value stored as an option object
     // if (fType === 'select') {
@@ -55,7 +59,10 @@ export class FormPrintoutComponent {
     // }
 
     if (fType === 'datepicker') {
-      const displayDate = formatDate(val, 'mediumDate', 'en-us');
+      let displayDate = '';
+      if(val) {
+        displayDate = formatDate(val, 'mediumDate', 'en-us');
+      }
       return displayDate;
     }
 
@@ -90,7 +97,7 @@ export class FormPrintoutComponent {
   }
 
   addColon(label: string) {
-    if (label[label.length - 1] === ':') {
+    if (label[label.length - 1] === ':' || label.trim().length === 0) {
       return label;
     } else {
       return label + ':';

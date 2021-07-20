@@ -1,19 +1,19 @@
-import {APP_BASE_HREF} from '@angular/common';
-import {HttpClient, HttpParams, HttpResponse} from '@angular/common/http';
-import {Inject, Injectable} from '@angular/core';
-import {Observable, of, throwError, timer} from 'rxjs';
-import {catchError, debounce} from 'rxjs/operators';
-import {ApiError} from '../types/api';
-import {AppEnvironment} from '../types/app-environment';
-import {Approval, ApprovalCounts, ApprovalStatus} from '../types/approval';
-import {DocumentDirectory, FileMeta, FileParams, LookupData} from '../types/file';
-import {ScriptInfo} from '../types/script-info';
-import {Study} from '../types/study';
-import {TaskAction, TaskEvent} from '../types/task-event';
-import {User} from '../types/user';
-import {Workflow, WorkflowSpec, WorkflowSpecCategory} from '../types/workflow';
-import {WorkflowTask} from '../types/workflow-task';
-import {isSignedIn} from '../util/is-signed-in';
+import { APP_BASE_HREF } from '@angular/common';
+import { HttpClient, HttpParams, HttpResponse } from '@angular/common/http';
+import { Inject, Injectable } from '@angular/core';
+import { Observable, of, throwError, timer } from 'rxjs';
+import { catchError, debounce } from 'rxjs/operators';
+import { ApiError } from '../types/api';
+import { AppEnvironment } from '../types/app-environment';
+import { Approval, ApprovalCounts, ApprovalStatus } from '../types/approval';
+import { DocumentDirectory, FileMeta, FileParams, LookupData } from '../types/file';
+import { ScriptInfo } from '../types/script-info';
+import { Study } from '../types/study';
+import { TaskAction, TaskEvent } from '../types/task-event';
+import { User } from '../types/user';
+import { Workflow, WorkflowSpec, WorkflowSpecCategory } from '../types/workflow';
+import { WorkflowTask } from '../types/workflow-task';
+import { isSignedIn } from '../util/is-signed-in';
 
 
 @Injectable({
@@ -55,6 +55,8 @@ export class ApiService {
     // Workflow Specifications
     workflowSpecList: '/workflow-specification',
     workflowSpec: '/workflow-specification/{spec_id}',
+    workflowSpecListStandalone: '/workflow-specification/standalone',
+    workflowSpecListLibraries: '/workflow-specification/libraries',
     workflowSpecValidate: '/workflow-specification/{spec_id}/validate',
 
     // Workflow Specification Category
@@ -115,10 +117,12 @@ export class ApiService {
   }
 
   /** Get a specific Study */
-  getDocumentDirectory(studyId: number): Observable<DocumentDirectory[]> {
-    const url = this.apiRoot + this.endpoints.documentDirectory
+  getDocumentDirectory(studyId: number, workflowId?: number): Observable<DocumentDirectory[]> {
+    let url = this.apiRoot + this.endpoints.documentDirectory
       .replace('{study_id}', studyId.toString());
-
+    if (workflowId) {
+      url = url + '?workflow_id=' + workflowId.toString();
+    }
     return this.httpClient
       .get<DocumentDirectory[]>(url)
       .pipe(catchError(err => ApiService._handleError(err)));
@@ -126,12 +130,16 @@ export class ApiService {
 
 
   /** Get a specific Study */
-  getStudy(studyId: number): Observable<Study> {
+  getStudy(studyId: number, updateStatus = false): Observable<Study> {
+    let params = new HttpParams();
+    params = params.set('update_status', String(updateStatus));
+
+
     const url = this.apiRoot + this.endpoints.study
       .replace('{study_id}', studyId.toString());
 
     return this.httpClient
-      .get<Study>(url)
+      .get<Study>(url, { params })
       .pipe(catchError(err => ApiService._handleError(err)));
   }
 
@@ -242,13 +250,42 @@ export class ApiService {
       .pipe(catchError(err => ApiService._handleError(err)));
   }
 
-  /** Validate a Workflow Specification */
-  validateWorkflowSpecification(specId: string): Observable<ApiError[]> {
-    const url = this.apiRoot + this.endpoints.workflowSpecValidate
-      .replace('{spec_id}', specId);
+  /** Get a list of standalone workflows */
+  getWorkflowSpecificationStandalone(): Observable<WorkflowSpec[]> {
+    const url = this.apiRoot + this.endpoints.workflowSpecListStandalone;
 
     return this.httpClient
-      .get<ApiError[]>(url)
+      .get<WorkflowSpec[]>(url)
+      .pipe(catchError(err => ApiService._handleError(err)));
+  }
+
+  /** Get a list of standalone workflows */
+  getWorkflowSpecificationLibraries(): Observable<WorkflowSpec[]> {
+    const url = this.apiRoot + this.endpoints.workflowSpecListLibraries;
+
+    return this.httpClient
+      .get<WorkflowSpec[]>(url)
+      .pipe(catchError(err => ApiService._handleError(err)));
+  }
+
+
+  /** Get a workflow from a workflow spec */
+  getWorkflowFromSpec(workflowSpecId: string): Observable<Workflow> {
+    const url = this.apiRoot + this.endpoints.workflowSpec
+      .replace('{spec_id}', workflowSpecId);
+
+    return this.httpClient
+      .post<Workflow>(url, {})
+      .pipe(catchError(err => ApiService._handleError(err)));
+  }
+
+  /** Validate a Workflow Specification */
+  validateWorkflowSpecification(specId: string, testUntil: string = '', studyId?: number): Observable<ApiError[]> {
+    let params = new HttpParams();
+    if (testUntil !== '') params = params.set('test_until', String(testUntil));
+    if (studyId) params = params.set('study_id', studyId.toString());
+    const url = this.apiRoot + this.endpoints.workflowSpecValidate.replace('{spec_id}', specId);
+    return this.httpClient.get<ApiError[]>(url, { params })
       .pipe(catchError(err => ApiService._handleError(err)));
   }
 
@@ -339,12 +376,12 @@ export class ApiService {
       .pipe(catchError(err => ApiService._handleError(err)));
   }
 
-  /** Add a File and its File Metadata to a Workflow Specification */
-  addFileMeta(fileParams: FileParams, fileMeta: FileMeta): Observable<FileMeta> {
+  /** Add a File */
+  addFile(fileParams: FileParams, fileMeta: FileMeta, file: File): Observable<FileMeta> {
     const url = this.apiRoot + this.endpoints.fileList;
     const params = this._paramsToHttpParams(fileParams);
     const formData = new FormData();
-    formData.append('file', fileMeta.file);
+    formData.append('file', file);
 
     return this.httpClient
       .post<FileMeta>(url, formData, { params })
@@ -365,9 +402,6 @@ export class ApiService {
   updateFileMeta(fileMeta: FileMeta): Observable<FileMeta> {
     const url = this.apiRoot + this.endpoints.file
       .replace('{file_id}', fileMeta.id.toString());
-
-    // Don't send file data
-    delete fileMeta.file;
 
     return this.httpClient
       .put<FileMeta>(url, fileMeta)
@@ -394,11 +428,11 @@ export class ApiService {
   }
 
   /** Update the File Data for specific File Metadata */
-  updateFileData(fileMeta: FileMeta): Observable<FileMeta> {
+  updateFileData(fileMeta: FileMeta, file: File): Observable<FileMeta> {
     const url = this.apiRoot + this.endpoints.fileData
       .replace('{file_id}', fileMeta.id.toString());
     const formData = new FormData();
-    formData.append('file', fileMeta.file);
+    formData.append('file', file);
 
     return this.httpClient
       .put<FileMeta>(url, formData)
@@ -430,9 +464,10 @@ export class ApiService {
       .pipe(catchError(err => ApiService._handleError(err)));
   }
 
-  restartWorkflow(workflowId: number, clearData: boolean = false): Observable<Workflow> {
+  restartWorkflow(workflowId: number, clearData: boolean = false, deleteFiles: boolean = false): Observable<Workflow> {
     let params = new HttpParams();
     params = params.set('clear_data', clearData.toString());
+    params = params.set('delete_files', deleteFiles.toString());
     const url = this.apiRoot + this.endpoints.workflowRestart
       .replace('{workflow_id}', workflowId.toString());
 
@@ -454,14 +489,24 @@ export class ApiService {
   /** Update Task Data for a specific Workflow Task
    * The updateAll flag will cause all remaining tasks in a multistance task to receive the same values.
    */
-  updateTaskDataForWorkflow(workflowId: number, taskId: string, data: any, updateAll = false): Observable<Workflow> {
+  updateTaskDataForWorkflow(workflowId: number, taskId: string, data: any, updateAll = false, terminateLoop = false): Observable<Workflow> {
     let url = this.apiRoot + this.endpoints.taskDataForWorkflow
       .replace('{workflow_id}', workflowId.toString())
       .replace('{task_id}', taskId);
 
+    let httpParams = new HttpParams();
+
     if (updateAll) {
-      url += '?update_all=True'
+      httpParams = httpParams.append('update_all', 'True');
     }
+    if (terminateLoop) {
+      httpParams = httpParams.append('terminate_loop', 'True')
+    }
+
+    if (httpParams.toString() !== '') {
+      url = url + '?' + httpParams.toString()
+    }
+
     return this.httpClient.put<Workflow>(url, data)
       .pipe(catchError(err => ApiService._handleError(err)));
   }
@@ -509,7 +554,7 @@ export class ApiService {
 
   /** listScripts */
   listScripts(): Observable<ScriptInfo[]> {
-    const url = this.apiRoot + this.endpoints.listScripts;
+    const url = this.apiRoot + this.endpoints.scriptList;
 
     return this.httpClient
       .get<ScriptInfo[]>(url)
@@ -595,7 +640,6 @@ export class ApiService {
     // local storage.
     localStorage.setItem('prev_url', location.href);
     const returnUrl = location.origin + this.baseHref + 'session';
-    console.log('Should return to ' + returnUrl);
     let httpParams = new HttpParams().set('redirect_url', returnUrl);
     if (!this.environment.production) {
       httpParams = httpParams.set('uid', 'dhf8r');
@@ -631,14 +675,11 @@ export class ApiService {
   }
 
   /** Evaluate an expression using the api, which should return a true or false value */
-  eval(expression: string, data: any): Observable<any> {
-    console.log('Evaluating expression ', expression);
+  eval(expression: string, data: any, key: string): Observable<any> {
     const url = this.apiRoot + this.endpoints.eval;
-    const body = { expression, data };
+    const body = {expression, data, key};
     return this.httpClient.put<any>(url, body)
-      .pipe(debounce(() => timer(10000)),
-        catchError(err => ApiService._handleError(err)));
-
+      .pipe(debounce(() => timer(10000)));
   }
 
   /** Construct HttpParams from params object. Only adds params that have been set. */

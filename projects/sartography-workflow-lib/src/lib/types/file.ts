@@ -59,12 +59,13 @@ export interface DocumentDirectory {
 
 export interface FileMeta {
   content_type: string;
-  file: File;
   id?: number;
   name: string;
   primary?: boolean;
   type: FileType;
   latest_version?: string;
+  last_modified?: string;
+  user_uid?: string;
   workflow_spec_id?: string;
   workflow_id?: number;
   study_id?: number;
@@ -75,6 +76,9 @@ export interface FileMeta {
   category?: string;
   primary_process_id?: string;
   is_status?: boolean;
+  size?: number;
+  data_store?: any;
+  file?: File;
 }
 
 export interface FileParams {

@@ -10,16 +10,23 @@
       <mat-panel-title>
         <div class="title-section">
           <h4 *ngIf="e.code" class="title-case">{{snakeToSpace(e.code)}}</h4>
+          <div *ngIf="e.file_name">File: {{e.file_name}}</div>
           <div *ngIf="e.task_name && e.task_id">{{e.task_name}} ({{e.task_id}})</div>
           <div *ngIf="e.task_id && !e.task_name">Task ID: {{e.task_id}}</div>
           <div *ngIf="e.task_name && !e.task_id">Task Name: {{e.task_name}}</div>
-          <div *ngIf="e.file_name">File: {{e.file_name}}</div>
           <div *ngIf="e.tag">Tag: {{e.tag}}</div>
+          <div *ngIf="e.line_number">Line #: {{e.line_number}}</div>
         </div>
       </mat-panel-title>
       <mat-panel-description>
-        <span class="hint" *ngIf="e.hint">Hint: {{e.hint}}</span><br/>
-        {{e.message}}
+        <div>
+          <div class="message" *ngIf="e.message">{{e.message}}</div>
+          <div *ngIf="e.error_line">
+            <div>Error on line #{{e.line_number}}</div>
+            <div class="line" *ngIf="e.error_line">{{e.error_line}}</div>
+          </div>
+          <div class="hint" *ngIf="e.hint">{{e.hint}}</div>
+        </div>
       </mat-panel-description>
     </mat-expansion-panel-header>
     <div mat-line class="code-viewer-code">

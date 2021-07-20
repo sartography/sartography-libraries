@@ -6,7 +6,7 @@ import {ReplaySubject} from 'rxjs';
 import {ApiService} from '../../../services/api.service';
 import {AppEnvironment} from '../../../types/app-environment';
 import {FileMeta} from '../../../types/file';
-import {getFileIcon, getFileType, newFileFromResponse} from '../../../util/file-type';
+import {getFileIcon, getFileType} from '../../../util/file-type';
 import {FileBaseComponent} from '../file-base/file-base.component';
 
 @Component({
@@ -34,9 +34,8 @@ export class FileUploadComponent extends FileBaseComponent {
     @Inject('APP_ENVIRONMENT') private environment: AppEnvironment,
     @Inject(APP_BASE_HREF) public appBaseHref: string,
     protected api: ApiService,
-    protected route: ActivatedRoute,
   ) {
-    super(api, route);
+    super(api);
     this.baseHref = appBaseHref;
   }
 
@@ -93,13 +92,11 @@ export class FileUploadComponent extends FileBaseComponent {
       content_type: file.type,
       name: file.name,
       type: getFileType(file),
-      file,
       study_id: this.studyId,
       workflow_id: this.workflowId,
       form_field_key: this.field.key,
     };
-    this.api.addFileMeta(this.fileParams, fileMeta).subscribe(fm => {
-      fm.file = file;
+    this.api.addFile(this.fileParams, fileMeta, file).subscribe(fm => {
       this.fileMetas.add(fm);
       this.updateFileList();
     });
@@ -117,11 +114,10 @@ export class FileUploadComponent extends FileBaseComponent {
 
   updateFileList() {
     const fileMetasArray = Array.from(this.fileMetas);
-    const fileMetaIds = fileMetasArray.map(fm => fm.id);
 
     if (this.model && this.formControl) {
-      this.model[this.field.key] = fileMetaIds;
-      this.formControl.setValue(fileMetaIds);
+      this.model[this.field.key] = fileMetasArray;
+      this.formControl.setValue(fileMetasArray);
     }
 
     this.updateFileMetasSubject.next(fileMetasArray);
@@ -131,14 +127,9 @@ export class FileUploadComponent extends FileBaseComponent {
   loadFiles() {
     this.api.getFileMetas(this.fileParams).subscribe(fms => {
       fms.forEach(fm => {
-        this.api.getFileData(fm.id).subscribe(response => {
-          fm.file = newFileFromResponse(fm, response)
-          this.fileMetas.add(fm);
-          if (this.fileMetas.size === fms.length) {
-            this.updateFileList();
-          }
-        });
+        this.fileMetas.add(fm);
       });
+      this.updateFileList();
     });
   }
 }

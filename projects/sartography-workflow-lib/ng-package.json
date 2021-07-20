@@ -10,6 +10,7 @@
       "ngx-file-drop": "ngxFileDrop",
       "ngx-markdown": "ngxMarkdown",
       "ngx-device-detector": "ngxDeviceDetector",
+      "ngx-highlightjs": "ngxHighlightjs",
       "rfdc": "rfdc"
     }
   }

@@ -16,6 +16,7 @@
       [fields]="data.fields"
       [model]="data.model"
       (change)="updateDisableSave()"
+      [options]="data.options"
     ></formly-form>
   </div>
   <div mat-dialog-actions>
@@ -23,7 +24,8 @@
       mat-flat-button
       color="primary"
       (click)="onSubmit()"
-      [ngClass]="{'repeat-section-dialog-save': true, 'disabled': !noErrors()}"
+      [ngClass]="{'repeat-section-dialog-save': true}"
+      [disabled]="!noErrors()"
     >Save</button>
     <button
       mat-button

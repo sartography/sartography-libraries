@@ -12,6 +12,7 @@ export const mockFormlyFieldModel = {
     },
     third_field_other: 'Third field other value',
     fourth_field: new Date(),
+    fifth_field: {id:101, name:'bob.txt'},
   }
 };
 
@@ -73,5 +74,6 @@ export const mockFormlyFieldConfig = {
     },
     {key: 'third_field_other', type: 'input', templateOptions: {label: 'Third Field Other'}},
     {key: 'fourth_field', type: 'datepicker', templateOptions: {label: 'Fourth Field Date'}},
+    {key: 'fifth_field', type: 'file', templateOptions: {label: 'Fifth Field File'}},
   ],
 };

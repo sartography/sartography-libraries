@@ -13,7 +13,7 @@ import {FormlyFieldConfigCache} from '@ngx-formly/core/lib/components/formly.fie
 import {of} from 'rxjs';
 import {ApiService} from '../../../services/api.service';
 import {MockEnvironment} from '../../../testing/mocks/environment.mocks';
-import {mockFileMeta0, mockFileMeta1} from '../../../testing/mocks/file.mocks';
+import {mockFile0, mockFile1, mockFileMeta0, mockFileMeta1} from '../../../testing/mocks/file.mocks';
 import {FileBaseComponent} from '../file-base/file-base.component';
 import {FileValueAccessorDirective} from '../file-upload/file-value-accessor.directive';
 import {FileFieldComponent} from './file-field.component';
@@ -54,11 +54,6 @@ describe('FileFieldComponent', () => {
       ],
       providers: [
         ApiService,
-        {
-          provide: ActivatedRoute,
-          useValue: {paramMap: of(convertToParamMap({study_id: '0', workflow_id: '0', task_id: '0'}))},
-          // useValue: {paramMap: of(convertToParamMap({workflow_spec_id: mockWorkflowSpec0.id}))},
-        },
         {provide: 'APP_ENVIRONMENT', useClass: MockEnvironment},
         {provide: APP_BASE_HREF, useValue: '/'},
         {provide: Router, useValue: mockRouter},
@@ -73,9 +68,9 @@ describe('FileFieldComponent', () => {
     builder = formlyBuilder;
     field = {
       key: 'hi',
-      defaultValue: mockFileMeta1.file
+      defaultValue: mockFile1
     };
-    builder.buildForm(form, [field], {hi: mockFileMeta0.id}, {});
+    builder.buildForm(form, [field], {hi: mockFileMeta0}, {});
   }));
 
   beforeEach(() => {
@@ -85,21 +80,18 @@ describe('FileFieldComponent', () => {
     component.field = field;
     fixture.detectChanges();
 
-    expect(component.selectedFile).toEqual(mockFileMeta1.file);
+    expect(component.selectedFile).toEqual(mockFile1);
 
     const fmsReq = httpMock.expectOne('apiRoot/file/' + mockFileMeta0.id);
     // const fmsReq = httpMock.expectOne(`apiRoot/file?workflow_spec_id=${mockWorkflowSpec0.id}&form_field_key=hi`);
     expect(fmsReq.request.method).toEqual('GET');
     fmsReq.flush(mockFileMeta0);
 
-    const fReq = httpMock.expectOne(`apiRoot/file/${mockFileMeta0.id}/data`);
-    expect(fReq.request.method).toEqual('GET');
     const mockHeaders = new HttpHeaders()
-      .append('last-modified', mockFileMeta0.file.lastModified.toString())
-      .append('content-type', mockFileMeta0.file.type);
-    fReq.flush(new ArrayBuffer(8), {headers: mockHeaders});
+      .append('last-modified', mockFileMeta0.last_modified.toString())
+      .append('content-type', mockFileMeta0.type);
 
-    expect(component.selectedFile).toEqual(mockFileMeta0.file);
+    expect(component.selectedFile).toEqual(mockFile0);
     expect(component.selectedFileMeta).toEqual(mockFileMeta0);
   });
 
@@ -114,43 +106,43 @@ describe('FileFieldComponent', () => {
 
   it('should select a file', () => {
     const addFileSpy = spyOn(component, 'addFile').and.stub();
-    const eventWithFile = {target: {files: [mockFileMeta0.file]}};
+    const eventWithFile = {target: {files: [mockFile0]}};
     (component as any).onFileSelected(eventWithFile);
-    expect(component.selectedFile).toEqual(mockFileMeta0.file);
-    expect(addFileSpy).toHaveBeenCalledWith(mockFileMeta0.file);
+    expect(component.selectedFile).toEqual(mockFile0);
+    expect(addFileSpy).toHaveBeenCalledWith(mockFile0);
 
+/*  I do not think this is necessary anymore, because we NEVEr put the file inside the meta
     // Should get file from selectedFileMeta if it's not in the file field
     addFileSpy.calls.reset();
     component.selectedFile = undefined;
     component.selectedFileMeta = mockFileMeta0;
     const eventNoFile = {target: {files: []}};
     (component as any).onFileSelected(eventNoFile);
-    expect(component.selectedFile).toEqual(mockFileMeta0.file);
+    expect(component.selectedFile).toEqual(mockFile0);
     expect(addFileSpy).not.toHaveBeenCalled();
+*/
   });
 
   it('should add a file', () => {
-    spyOn((component as any).api, 'addFileMeta').and.returnValue(of(mockFileMeta0));
-    const loadFilesSpy = spyOn(component, 'loadFiles').and.stub();
-    component.addFile(mockFileMeta0.file);
-    expect(component.selectedFile).toEqual(mockFileMeta0.file);
+    // as a file is defined by default, it should attempt to delete it before adding the new one.
+    spyOn((component as any).api, 'deleteFileMeta').and.returnValue(of(null));
+    spyOn((component as any).api, 'addFile').and.returnValue(of(mockFileMeta0));
+    component.addFile(mockFile0);
+    expect(component.selectedFile).toEqual(mockFile0);
     expect(component.selectedFileMeta).toEqual(mockFileMeta0);
-    expect(loadFilesSpy).toHaveBeenCalled();
   });
 
   it('should remove a file', () => {
     spyOn((component as any).api, 'deleteFileMeta').and.returnValue(of(null));
-    const loadFilesSpy = spyOn(component, 'loadFiles').and.stub();
     component.selectedFileMeta = mockFileMeta0;
-    component.selectedFile = mockFileMeta0.file;
+    component.selectedFile = mockFile0;
 
     component.removeFile();
     expect(component.selectedFileMeta).toBeUndefined();
     expect(component.selectedFile).toBeUndefined();
-    expect(loadFilesSpy).toHaveBeenCalled();
   });
 
   it('should set default value', () => {
-    expect(component.selectedFile).toEqual(mockFileMeta0.file);
+    expect(component.selectedFile).toEqual(mockFile0);
   });
 });

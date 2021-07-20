@@ -1,3 +1,4 @@
+import {HttpClientTestingModule, HttpTestingController} from '@angular/common/http/testing';
 import {async, ComponentFixture, inject, TestBed} from '@angular/core/testing';
 import {FormGroup, FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {MatCardModule} from '@angular/material/card';
@@ -19,14 +20,20 @@ import {FormPrintoutComponent} from '../form-printout/form-printout.component';
 import {PanelWrapperComponent} from '../panel-wrapper/panel-wrapper.component';
 import {RepeatSectionDialogComponent} from '../repeat-section-dialog/repeat-section-dialog.component';
 import {RepeatSectionComponent} from './repeat-section.component';
+import {MockEnvironment} from '../../../testing/mocks/environment.mocks';
+import {APP_BASE_HREF} from '@angular/common';
+import {ApiService} from '../../../services/api.service';
+import {Router} from '@angular/router';
 
 describe('RepeatSectionComponent', () => {
   let component: RepeatSectionComponent;
   let fixture: ComponentFixture<RepeatSectionComponent>;
+  let httpMock: HttpTestingController;
   let builder: FormlyFormBuilder;
   let form: FormGroup;
   let field: FormlyFieldConfigCache;
   let config: FormlyConfig;
+  const mockRouter = {navigate: jasmine.createSpy('navigate')};
   const mockData = {
     field_key: {
       first_field: 'First Field Value',
@@ -50,6 +57,7 @@ describe('RepeatSectionComponent', () => {
         FormlyMaterialModule,
         FormlyMatDatepickerModule,
         FormsModule,
+        HttpClientTestingModule,
         MatCardModule,
         MatDialogModule,
         MatFormFieldModule,
@@ -66,6 +74,12 @@ describe('RepeatSectionComponent', () => {
         RepeatSectionDialogComponent,
       ],
       providers: [
+        ApiService,
+        {provide: MAT_DIALOG_DATA, useValue: []},
+        {provide: 'APP_ENVIRONMENT', useClass: MockEnvironment},
+        {provide: Router, useValue: mockRouter},
+        {provide: APP_BASE_HREF, useValue: '/'},
+        DeviceDetectorService,
         {
           provide: MatDialogRef,
           useValue: {
@@ -74,11 +88,6 @@ describe('RepeatSectionComponent', () => {
             afterClosed: (dialogResult: any) => of(mockData),
           }
         },
-        {
-          provide: MAT_DIALOG_DATA,
-          useValue: []
-        },
-        DeviceDetectorService,
       ],
     }).overrideModule(BrowserDynamicTestingModule, {
       set: {
@@ -106,6 +115,7 @@ describe('RepeatSectionComponent', () => {
   }));
 
   beforeEach(() => {
+    httpMock = TestBed.inject(HttpTestingController);
     fixture = TestBed.createComponent(RepeatSectionComponent);
     component = fixture.componentInstance;
     component.field = field;

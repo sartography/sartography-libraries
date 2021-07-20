@@ -1,4 +1,4 @@
-import {Pipe, PipeTransform} from '@angular/core';
+import {Injectable, Pipe, PipeTransform} from '@angular/core';
 import {FormlyFieldConfig} from '@ngx-formly/core';
 import createClone from 'rfdc';
 import {Observable, of, Subject, timer} from 'rxjs';
@@ -101,22 +101,28 @@ import {ApiError} from '../../types/api';
 export interface PythonEvaluation {
   expression: string;
   data?: any;     // Lookup data object, populated by backend LookupService
+  key: string;
 }
-
 
 @Pipe({
   name: 'toFormly'
 })
 export class ToFormlyPipe implements PipeTransform {
+  private defaultFileParams:FileParams = {}
   constructor(private apiService?: ApiService) {
   }
 
-  transform(value: BpmnFormJsonField[], fileParams?: FileParams, ...args: any[]): FormlyFieldConfig[] {
+  transform(value: BpmnFormJsonField[], fileParams = this.defaultFileParams, ...args: any[]): FormlyFieldConfig[] {
+
     const result: FormlyFieldConfig[] = [];
     for (const field of value) {
       const resultField: FormlyFieldConfig = {
         key: field.id,
-        templateOptions: {},
+        templateOptions: {
+          workflow_id: fileParams.workflow_id,
+          study_id: fileParams.study_id,
+          workflow_spec_id: fileParams.workflow_spec_id
+        },
         expressionProperties: {},
       };
 
@@ -213,7 +219,6 @@ export class ToFormlyPipe implements PipeTransform {
         case 'autocomplete':
           const fieldFileParams = Object.assign({}, fileParams || {});
           fieldFileParams.form_field_key = field.id;
-          console.log('The params for a search are: ', fieldFileParams);
           resultField.type = 'autocomplete';
           const limit = this._getAutocompleteNumResults(field, 5);
           resultField.templateOptions.filter = (query: string) => this.apiService
@@ -279,8 +284,8 @@ export class ToFormlyPipe implements PipeTransform {
             case 'hide_expression':
               resultField.hideExpression = this.getPythonEvalFunction(field, p);
               // Hidden field values will be removed on save.
-              // // Clears value when hidden (will be the default in Formly v6?)
-              // (resultField as any).autoClear = true;
+              // Clears value when hidden (will be the default in Formly v6?)
+              (resultField as any).autoClear = true;
               break;
             case 'value_expression':
               resultField.hooks = {
@@ -355,6 +360,9 @@ export class ToFormlyPipe implements PipeTransform {
                   resultField.className = this._addClassName(resultField, 'vertical-radio-group');
                 }
               }
+              break;
+            case 'doc_code':
+              resultField.expressionProperties['templateOptions.doc_code'] = this.getPythonEvalFunction(field, p);
               break;
             default:
               break;
@@ -517,36 +525,44 @@ export class ToFormlyPipe implements PipeTransform {
    * to the correct value.
    * You can pass an optional method, which should be called when the result completes.
    */
-  private getPythonEvalFunction(field: BpmnFormJsonField, p: BpmnFormJsonFieldProperty, defaultValue = false,
-                                method = null) {
+  private getPythonEvalFunction(field: BpmnFormJsonField, p: BpmnFormJsonFieldProperty, defaultValue = false, method = null) {
     return (model: any, formState: any, fieldConfig: FormlyFieldConfig) => {
+      if(!formState) {
+        formState = {}
+      }
 
       // Establish some variables to be added to the form state.
       const variableKey = field.id + '_' + p.id;  // The actual value we want to return
       const variableSubjectKey = field.id + '_' + p.id + '_subject'; // A subject to add api calls to.
       const variableSubscriptionKey = field.id + '_' + p.id + '_subscription'; // a debounced subscription.
-      const dataStateKey = field.id + '_' + p.id + '_data';
 
       // Do this only the first time it is called to establish some subjects and subscriptions.
       // Set up a variable that can be returned, and a variable subject that can be debounced,
       // calls to the api will eventually end up in the formState[variable]
       if (!(formState.hasOwnProperty(variableKey))) {
-        formState[variableKey] = defaultValue;
+        formState[variableKey] = {};
+        formState[variableKey].default = defaultValue;
         formState[variableSubjectKey] = new Subject<PythonEvaluation>();  // To debounce on this function
         formState[variableSubscriptionKey] = formState[variableSubjectKey].pipe(
           debounceTime(250),
-          switchMap((subj: PythonEvaluation) => this.apiService.eval(subj.expression, subj.data)))
+          switchMap((subj: PythonEvaluation) => this.apiService.eval(subj.expression, subj.data, subj.key)))
           .pipe(
             // If the api service gets an error, handle it here, but don't error out our subscribers, so we
             // can make subsequent calls.
             catchError(err => of([]))
           )
           .subscribe(
-            data => {
-              console.log('Updating Variable to ', data.result);
+            response => {
               // wrap the assignment to the variable in a promise - so that it gets evaluated as a part
               // of angular's next round of DOM updates, so we avoid modifying the state in the middle of a call.
-              Promise.resolve(null).then(() => formState[variableKey] = data.result);
+              // If there is no error, update the value.
+              if(!response.hasOwnProperty('error')) {
+                Promise.resolve(null).then(() => {
+                  // The last successful evaluation becomes the new default, this keeps things from flickering.
+                  formState[variableKey].default = response.result;
+                  formState[variableKey][response.key] = response.result;
+                });
+              }
             },
             (error: ApiError) => {
               console.log(`Failed to update field ${field.id} unable to process expression. ${error.message}`);
@@ -554,24 +570,25 @@ export class ToFormlyPipe implements PipeTransform {
             }
             );
       }
-
-      // We need this check so that we don't repeatedly query the api if the data model changed and we have
-      // new information to act upon.
-      if (formState[dataStateKey] !== JSON.stringify(model) ) {
-        formState[dataStateKey] = JSON.stringify(model);  // Deep copy of model and store it for comparison
-        // TODO: Augment the model with all current form field keys and values
-        // loop through fieldConfig.parent.fieldGroup
-        // Get keys for all fields.
-        // Look in model to see if they are there yet.
-        // If not, add them to the model with value of null.
-
-
-        formState[variableSubjectKey].next({expression: p.value, data: model});
-        console.log('model', JSON.stringify(model, null, '    '));
+      const key = this.hashCode(JSON.stringify(model));
+      if (!(key in formState[variableKey])) {
+        formState[variableKey][key] = formState[variableKey].default;
+        let data = model;
+        if(formState.hasOwnProperty('mainModel')) {
+          data = {...formState.mainModel, ...model};
+        }
+        formState[variableSubjectKey].next({expression: p.value, data, key});
       }
       // We immediately return the variable, but it might change due to the above observable.
-      return formState[variableKey]
+      return formState[variableKey][key]
     };
+  }
+
+  private  hashCode(str) {
+    /* tslint:disable:no-bitwise */
+    return str.split('').reduce((prevHash, currVal) =>
+      (((prevHash << 5) - prevHash) + currVal.charCodeAt(0))|0, 0);
+    /* tslint:enable:no-bitwise */
   }
 
   /** Get num_results property from given field, or return the given default if no num_results property found. */
