@@ -8,7 +8,7 @@ import { AppEnvironment } from '../types/app-environment';
 import { Approval, ApprovalCounts, ApprovalStatus } from '../types/approval';
 import { DocumentDirectory, FileMeta, FileParams, LookupData } from '../types/file';
 import { ScriptInfo } from '../types/script-info';
-import { Study } from '../types/study';
+import { Study, StudyAssociate } from '../types/study';
 import { TaskAction, TaskEvent } from '../types/task-event';
 import { User } from '../types/user';
 import { Workflow, WorkflowSpec, WorkflowSpecCategory } from '../types/workflow';
@@ -554,7 +554,7 @@ export class ApiService {
 
   /** listScripts */
   listScripts(): Observable<ScriptInfo[]> {
-    const url = this.apiRoot + this.endpoints.scriptList;
+    const url = this.apiRoot + this.endpoints.listScripts;
 
     return this.httpClient
       .get<ScriptInfo[]>(url)
