@@ -49,6 +49,8 @@
   "angularCompilerOptions": {
     "fullTemplateTypeCheck": true,
     "strictInjectionParameters": true,
-    "preserveSymlinks": true
+    "preserveSymlinks": true,
+    "enableIvy": true,
+    "allowEmptyCodegenFiles": true
   }
 }
