@@ -24,6 +24,7 @@ import {MockEnvironment} from '../../../testing/mocks/environment.mocks';
 import {APP_BASE_HREF} from '@angular/common';
 import {ApiService} from '../../../services/api.service';
 import {Router} from '@angular/router';
+import { FlexLayoutModule } from '@angular/flex-layout';
 
 describe('RepeatSectionComponent', () => {
   let component: RepeatSectionComponent;
@@ -46,6 +47,7 @@ describe('RepeatSectionComponent', () => {
     TestBed.configureTestingModule({
       imports: [
         BrowserAnimationsModule,
+        FlexLayoutModule,
         FormlyModule.forRoot({
           types: [
             {name: 'repeat', component: RepeatSectionComponent},

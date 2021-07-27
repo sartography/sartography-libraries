@@ -23,7 +23,7 @@ export class FileFieldComponent extends FileBaseComponent implements OnInit  {
   }
 
   get fieldKey(): string {
-    return this.fieldKey as string;
+    return this.key as string;
   }
 
   ngOnInit(): void {
