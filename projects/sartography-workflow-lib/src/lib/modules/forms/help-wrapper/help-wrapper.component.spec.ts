@@ -2,7 +2,7 @@ import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 import {MAT_DIALOG_DATA, MatDialogModule, MatDialogRef} from '@angular/material/dialog';
 import {MatIconModule} from '@angular/material/icon';
 import {MarkdownModule, MarkdownService} from 'ngx-markdown';
-import createClone from 'rfdc';
+import * as createClone from 'rfdc';
 import {mockWorkflowTask0} from '../../../testing/mocks/workflow-task.mocks';
 import {ToFormlyPipe} from '../../pipes/to-formly.pipe';
 import {UnescapeLineBreaksPipe} from '../../pipes/unescape-line-breaks.pipe';

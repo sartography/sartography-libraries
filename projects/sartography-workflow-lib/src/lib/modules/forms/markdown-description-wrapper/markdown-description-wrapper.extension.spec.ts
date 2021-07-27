@@ -1,6 +1,6 @@
 import {markdownDescriptionWrapperExtension} from './markdown-description-wrapper.extension';
 import {FormlyFieldConfig} from '@ngx-formly/core';
-import createClone from 'rfdc';
+import * as createClone from 'rfdc';
 
 describe('markdownDescriptionWrapperExtension', () => {
 

@@ -70,7 +70,7 @@ export interface FileMeta {
   workflow_id?: number;
   study_id?: number;
   task_id?: string;
-  form_field_key?: string;
+  form_field_key?: string | number | string[];
   is_reference?: boolean;
   irb_doc_code?: string;
   category?: string;
@@ -85,8 +85,8 @@ export interface FileParams {
   workflow_spec_id?: string;
   workflow_id?: number;
   study_id?: number;
-  task_spec_name?: string,
-  form_field_key?: string;
+  task_spec_name?: string;
+  form_field_key?: string | number | string[];
 }
 
 export interface LookupData {

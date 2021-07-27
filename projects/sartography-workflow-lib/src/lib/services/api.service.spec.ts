@@ -5,7 +5,7 @@ import {TestBed} from '@angular/core/testing';
 import {MatBottomSheetModule} from '@angular/material/bottom-sheet';
 import {Router} from '@angular/router';
 import {RouterTestingModule} from '@angular/router/testing';
-import createClone from 'rfdc';
+import * as createClone from 'rfdc';
 import {SessionRedirectComponent} from '../components/session-redirect/session-redirect.component';
 import {MockEnvironment} from '../testing/mocks/environment.mocks';
 import {

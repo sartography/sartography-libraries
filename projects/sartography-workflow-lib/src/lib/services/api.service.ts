@@ -270,8 +270,15 @@ export class ApiService {
   /** Validate a Workflow Specification */
   validateWorkflowSpecification(specId: string, testUntil: string = '', studyId?: number): Observable<ApiError[]> {
     let params = new HttpParams();
-    if (testUntil !== '') params = params.set('test_until', String(testUntil));
-    if (studyId) params = params.set('study_id', studyId.toString());
+
+    if (testUntil !== '') {
+      params = params.set('test_until', String(testUntil));
+    }
+
+    if (studyId) {
+      params = params.set('study_id', studyId.toString());
+    }
+
     const url = this.apiRoot + this.endpoints.workflowSpecValidate.replace('{spec_id}', specId);
     return this.httpClient.get<ApiError[]>(url, { params })
       .pipe(catchError(err => ApiService._handleError(err)));
@@ -488,11 +495,11 @@ export class ApiService {
       httpParams = httpParams.append('update_all', 'True');
     }
     if (terminateLoop) {
-      httpParams = httpParams.append('terminate_loop', 'True')
+      httpParams = httpParams.append('terminate_loop', 'True');
     }
 
     if (httpParams.toString() !== '') {
-      url = url + '?' + httpParams.toString()
+      url = url + '?' + httpParams.toString();
     }
 
     return this.httpClient.put<Workflow>(url, data)
@@ -601,7 +608,7 @@ export class ApiService {
   }
 
   openUrl(url) {
-    location.href = url
+    location.href = url;
   }
 
   /** lookupFieldOptions */
@@ -609,7 +616,7 @@ export class ApiService {
     const url = this.apiRoot + this.endpoints.fieldOptionsLookup
       .replace('{workflow_id}', fileParams.workflow_id.toString())
       .replace('{task_spec_name}', fileParams.task_spec_name.toString())
-      .replace('{field_id}', fileParams.form_field_key);
+      .replace('{field_id}', fileParams.form_field_key as string);
 
     if (fileParams.task_spec_name === null) {
       return throwError('The task spec name is not defined. Lookups will fail');

@@ -65,9 +65,9 @@ export class RepeatSectionDialogComponent implements AfterContentInit {
 
   nullOutHiddenFields(fields: FormlyFieldConfig[]) {
     fields.forEach(f => {
-      console.log('Should I clear the data for this field?', f)
+      console.log('Should I clear the data for this field?', f);
       if (f.hide) {
-        this.data.model[f.key] = null;
+        this.data.model[f.key as string] = null;
       }
       if (f.fieldGroup) {
         this.nullOutHiddenFields(f.fieldGroup);
