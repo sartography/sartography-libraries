@@ -53,8 +53,8 @@ export class ApiService {
     // Workflow Specifications
     workflowSpecList: '/workflow-specification',
     workflowSpec: '/workflow-specification/{spec_id}',
-    workflowSpecListStandalone: '/workflow-specification/standalone',
-    workflowSpecListLibraries: '/workflow-specification/libraries',
+    workflowSpecListStandalone: '/workflow-specification?standalone=true',
+    workflowSpecListLibraries: '/workflow-specification?libraries=true',
     workflowSpecValidate: '/workflow-specification/{spec_id}/validate',
 
     // Workflow Specification Category
