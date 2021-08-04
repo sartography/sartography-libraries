@@ -19,6 +19,9 @@
       "dom"
     ],
     "paths": {
+      "@angular/*": [
+        "./node_modules/@angular/*"
+      ],
       "sartography-workflow-lib": [
         "dist/sartography-workflow-lib"
       ],
@@ -51,6 +54,7 @@
     "strictInjectionParameters": true,
     "preserveSymlinks": true,
     "enableIvy": true,
-    "allowEmptyCodegenFiles": true
+    "allowEmptyCodegenFiles": true,
+    "compilationMode": "partial"
   }
 }
