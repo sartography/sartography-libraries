@@ -2,7 +2,8 @@ import {AfterContentInit, Component, Inject} from '@angular/core';
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
 import {FormlyFieldConfig} from '@ngx-formly/core';
 import {DeviceDetectorService} from 'ngx-device-detector';
-import * as createClone from 'rfdc';
+import * as createClone_ from 'rfdc';
+const createClone = createClone_;
 import {RepeatSectionDialogData} from '../../../types/repeat-section-dialog-data';
 import {scrollToFirstInvalidField} from '../../../util/scroll-to-top';
 

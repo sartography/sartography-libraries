@@ -1,7 +1,8 @@
 import {Component, OnInit} from '@angular/core';
 import {MatDialog} from '@angular/material/dialog';
 import {FieldArrayType, FormlyFieldConfig, FormlyFormOptions} from '@ngx-formly/core';
-import * as createClone from 'rfdc';
+import * as createClone_ from 'rfdc';
+const createClone = createClone_;
 import {RepeatSectionDialogData} from '../../../types/repeat-section-dialog-data';
 import {RepeatSectionDialogComponent} from '../repeat-section-dialog/repeat-section-dialog.component';
 import {ApiService} from '../../../services/api.service';

@@ -1,6 +1,7 @@
 import {Injectable, Pipe, PipeTransform} from '@angular/core';
 import {FormlyFieldConfig} from '@ngx-formly/core';
-import * as createClone from 'rfdc';
+import * as createClone_ from 'rfdc';
+const createClone = createClone_;
 import {Observable, of, Subject, timer} from 'rxjs';
 import {isIterable} from 'rxjs/internal-compatibility';
 import {ApiService} from '../../services/api.service';
