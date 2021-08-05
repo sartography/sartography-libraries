@@ -11,7 +11,13 @@
       "ngx-markdown": "ngxMarkdown",
       "ngx-device-detector": "ngxDeviceDetector",
       "ngx-highlightjs": "ngxHighlightjs",
-      "rfdc": "rfdc"
+      "rfdc": "rfdc",
+      "@yellowspot/ng-truncate": "ngTruncate",
+      "lodash.isequal": "lodashIsEqual",
+      "@ngx-formly/material/multicheckbox" : "ngFormlyMulticheckbox",
+      "@ngx-formly/material/radio" : "ngFormlyRadio",
+      "@sentry/browser" : "sentryBrowser",
+      "@ngx-formly/core/select" : "ngFormlySelect"
     }
   }
 }
