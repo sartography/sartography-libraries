@@ -1,7 +1,6 @@
 import {Injectable, Pipe, PipeTransform} from '@angular/core';
 import {FormlyFieldConfig} from '@ngx-formly/core';
-import * as createClone_ from 'rfdc';
-const createClone = createClone_;
+import * as cloneDeep from "lodash/cloneDeep";
 import {Observable, of, Subject, timer} from 'rxjs';
 import {isIterable} from 'rxjs/internal-compatibility';
 import {ApiService} from '../../services/api.service';
@@ -354,7 +353,7 @@ export class ToFormlyPipe implements PipeTransform {
 
                   // Wrap default value in an array.
                   if (resultField.hasOwnProperty('defaultValue')) {
-                    const defaultValue = createClone()(resultField.defaultValue);
+                    const defaultValue = cloneDeep(resultField.defaultValue);
                     resultField.defaultValue = [defaultValue];
                   }
                 }

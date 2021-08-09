@@ -1,11 +1,10 @@
 import {Component} from '@angular/core';
 import {MatDialog} from '@angular/material/dialog';
 import {FieldArrayType, FormlyFieldConfig, FormlyFormOptions} from '@ngx-formly/core';
-import * as createClone_ from 'rfdc';
-const createClone = createClone_;
 import {RepeatSectionDialogData} from '../../../types/repeat-section-dialog-data';
 import {RepeatSectionDialogComponent} from '../repeat-section-dialog/repeat-section-dialog.component';
 import {ApiService} from '../../../services/api.service';
+import * as cloneDeep from "lodash/cloneDeep";
 
 @Component({
   selector: 'lib-repeat-section',
@@ -28,13 +27,15 @@ export class RepeatSectionComponent extends FieldArrayType {
           mainModel: this.field.parent.model,
         },
       };
+
     const dialogData: RepeatSectionDialogData = {
       title: isEdit ? title.replace(/^Add an|^Add a|^Add/, 'Edit') : title,
-      fields: [createClone()(this.field.fieldArray)],
+      fields: [cloneDeep(this.field.fieldArray)],
       model: isEdit ? this.field.fieldGroup[i].model : {},
       options
     };
-    const cachedData: RepeatSectionDialogData = createClone({circles: true})(dialogData);
+    const cachedData: RepeatSectionDialogData = cloneDeep(dialogData);
+    console.log("Cache Data:", cachedData);
     const dialogRef = this.dialog.open(RepeatSectionDialogComponent, {
       maxWidth: '100vw',
       maxHeight: '100vh',

@@ -4,8 +4,7 @@ import {NoopAnimationsModule} from '@angular/platform-browser/animations';
 import {FormlyFieldConfig, FormlyModule} from '@ngx-formly/core';
 import {FormlySelectModule} from '@ngx-formly/core/select';
 import {FormlyMatFormFieldModule} from '@ngx-formly/material/form-field';
-import * as createClone_ from 'rfdc';
-const createClone = createClone_;
+import * as cloneDeep from "lodash/cloneDeep";
 import {createFormlyFieldComponent} from '../../../testing/formly/component-factory';
 import {MulticheckboxDataFieldComponent} from './multicheckbox-data-field.component';
 
@@ -70,8 +69,8 @@ describe('MulticheckboxDataFieldComponent', () => {
   });
 
   it('should render multicheckbox type with previously-selected values', () => {
-    const mockFieldWithModel = createClone()(mockField);
-    mockFieldWithModel.model = createClone()(mockModel);
+    const mockFieldWithModel = cloneDeep(mockField);
+    mockFieldWithModel.model = cloneDeep(mockModel);
     const component = renderComponent(mockFieldWithModel);
 
     expect(component.query('lib-multicheckbox-data-field')).not.toBeNull();

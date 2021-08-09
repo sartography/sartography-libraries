@@ -1,7 +1,6 @@
 import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 import {MarkdownModule, MarkdownService} from 'ngx-markdown';
-import * as createClone_ from 'rfdc';
-const createClone = createClone_;
+import * as cloneDeep from "lodash/cloneDeep";
 import {mockWorkflowTask0} from '../../../testing/mocks/workflow-task.mocks';
 import {ToFormlyPipe} from '../../pipes/to-formly.pipe';
 import {UnescapeLineBreaksPipe} from '../../pipes/unescape-line-breaks.pipe';
@@ -31,7 +30,7 @@ describe('MarkdownDescriptionWrapperComponent', () => {
     fixture = TestBed.createComponent(MarkdownDescriptionWrapperComponent);
     component = fixture.componentInstance;
     const pipe = new ToFormlyPipe();
-    const fields = createClone()(mockWorkflowTask0.form.fields);
+    const fields = cloneDeep(mockWorkflowTask0.form.fields);
     fields[0].properties.push({
       id: 'markdown_description',
       value: '# Heading 1\n\n## Heading 2\n\n[link](https://sartography.com)'

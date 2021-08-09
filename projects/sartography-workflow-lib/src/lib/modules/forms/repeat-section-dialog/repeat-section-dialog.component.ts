@@ -2,8 +2,7 @@ import {AfterContentInit, Component, Inject} from '@angular/core';
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
 import {FormlyFieldConfig} from '@ngx-formly/core';
 import {DeviceDetectorService} from 'ngx-device-detector';
-import * as createClone_ from 'rfdc';
-const createClone = createClone_;
+import * as cloneDeep from "lodash/cloneDeep";
 import {RepeatSectionDialogData} from '../../../types/repeat-section-dialog-data';
 import {scrollToFirstInvalidField} from '../../../util/scroll-to-top';
 
@@ -25,7 +24,7 @@ export class RepeatSectionDialogComponent implements AfterContentInit {
 
   ngAfterContentInit(): void {
     // Cache model in case user cancels
-    this.initialModel = createClone({circles: true})(this.data.model);
+    this.initialModel = cloneDeep(this.data.model);
     this.updateDisableSave();
   }
 
@@ -86,7 +85,7 @@ export class RepeatSectionDialogComponent implements AfterContentInit {
     this.nullOutHiddenFields(this.data.fields);
 
     if (this.noErrors()) {
-      this.dialogRef.close(createClone({circles: true})(this.data.model));
+      this.dialogRef.close(cloneDeep(this.data.model));
     } else {
       this.onInvalidFields();
     }
