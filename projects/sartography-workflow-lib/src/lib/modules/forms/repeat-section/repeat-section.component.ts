@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component} from '@angular/core';
 import {MatDialog} from '@angular/material/dialog';
 import {FieldArrayType, FormlyFieldConfig, FormlyFormOptions} from '@ngx-formly/core';
 import * as createClone_ from 'rfdc';
@@ -12,15 +12,12 @@ import {ApiService} from '../../../services/api.service';
   templateUrl: './repeat-section.component.html',
   styleUrls: ['./repeat-section.component.scss']
 })
-export class RepeatSectionComponent extends FieldArrayType implements OnInit {
+export class RepeatSectionComponent extends FieldArrayType {
   constructor(
     public dialog: MatDialog,
     protected api: ApiService
   ) {
     super();
-  }
-
-  ngOnInit(): void {
   }
 
   openDialog(i: number, f?: FormlyFieldConfig) {

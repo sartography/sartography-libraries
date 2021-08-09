@@ -17,7 +17,7 @@ describe('ToFormlyPipe', () => {
   const workflowId = 20;
   const studyId = 15;
   const workflowSpec = 'PythonWorkflow';
-  const fileParams = {workflow_id:workflowId, study_id: studyId, workflow_spec_id: workflowSpec};
+  const fileParams = {workflow_id: workflowId, study_id: studyId, workflow_spec_id: workflowSpec};
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -303,7 +303,7 @@ describe('ToFormlyPipe', () => {
     expect(after[0].templateOptions.workflow_id).toEqual(workflowId);
     expect(after[0].templateOptions.study_id).toEqual(studyId);
     expect(after[0].templateOptions.workflow_spec_id).toEqual(workflowSpec);
-    expect(after[0].templateOptions.doc_code).not.toBeNull()
+    expect(after[0].templateOptions.doc_code).not.toBeNull();
   });
 
 
@@ -414,9 +414,9 @@ describe('ToFormlyPipe', () => {
         type: 'textarea',
       },
     ];
-    const _getAutocompleteNumResultsSpy = spyOn((pipe as any), '_getAutocompleteNumResults').and.callThrough();
+    const getAutocompleteNumResultsSpy = spyOn((pipe as any), '_getAutocompleteNumResults').and.callThrough();
     const after = pipe.transform(before, fileParams);
-    expect(_getAutocompleteNumResultsSpy).toHaveBeenCalledWith(before[1], 5);
+    expect(getAutocompleteNumResultsSpy).toHaveBeenCalledWith(before[1], 5);
     expect(after[1].key).toEqual(before[1].id);
     expect(after[1].type).toEqual('autocomplete');
     expect(after[1].templateOptions.label).toEqual(before[1].label);

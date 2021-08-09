@@ -20,7 +20,7 @@ export class RadioDataFieldComponent extends FormlyFieldRadio {
     ) {
       const storedVal = this.model[key].value;
 
-      if (this.radioGroup) {
+      if (this.radioGroup && this.radioGroup._radios) {
         const radios = this.radioGroup._radios.toArray();
 
         for (const radio of radios) {
@@ -30,7 +30,6 @@ export class RadioDataFieldComponent extends FormlyFieldRadio {
         }
       }
     }
-
     return null;
   }
 

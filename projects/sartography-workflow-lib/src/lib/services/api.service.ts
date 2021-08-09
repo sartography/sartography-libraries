@@ -438,9 +438,9 @@ export class ApiService {
   getTaskEvents(action?: TaskAction, studyId?: number, workflowId?: number): Observable<TaskEvent[]> {
     const url = this.apiRoot + this.endpoints.taskEvents;
     let httpParams = new HttpParams();
-    if (action) httpParams = httpParams.set('action', action);
-    if (studyId) httpParams = httpParams.set('study', studyId.toString());
-    if (workflowId) httpParams = httpParams.set('workflow', workflowId.toString());
+    if (action)  { httpParams = httpParams.set('action', action); }
+    if (studyId) { httpParams = httpParams.set('study', studyId.toString()); }
+    if (workflowId) { httpParams = httpParams.set('workflow', workflowId.toString()); }
 
     return this.httpClient
       .get<TaskEvent[]>(url + '?' + httpParams.toString())

@@ -9,11 +9,8 @@ import { Component, OnInit } from '@angular/core';
   `,
   styles: []
 })
-export class SartographyWorkflowLibComponent implements OnInit {
+export class SartographyWorkflowLibComponent {
 
   constructor() { }
-
-  ngOnInit() {
-  }
 
 }

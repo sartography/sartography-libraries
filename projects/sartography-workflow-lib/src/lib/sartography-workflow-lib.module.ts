@@ -14,7 +14,7 @@ import {MatExpansionModule} from '@angular/material/expansion';
 
 // @dynamic
 export function import_json() {
-  import('highlight.js/lib/languages/json.js')
+  import('highlight.js/lib/languages/json.js');
 }
 
 @NgModule({
