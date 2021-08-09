@@ -1,7 +1,8 @@
-import {Component, OnInit} from '@angular/core';
+import {Component} from '@angular/core';
 import {MatDialog} from '@angular/material/dialog';
 import {FieldArrayType, FormlyFieldConfig, FormlyFormOptions} from '@ngx-formly/core';
-import createClone from 'rfdc';
+import * as createClone_ from 'rfdc';
+const createClone = createClone_;
 import {RepeatSectionDialogData} from '../../../types/repeat-section-dialog-data';
 import {RepeatSectionDialogComponent} from '../repeat-section-dialog/repeat-section-dialog.component';
 import {ApiService} from '../../../services/api.service';
@@ -11,15 +12,12 @@ import {ApiService} from '../../../services/api.service';
   templateUrl: './repeat-section.component.html',
   styleUrls: ['./repeat-section.component.scss']
 })
-export class RepeatSectionComponent extends FieldArrayType implements OnInit {
+export class RepeatSectionComponent extends FieldArrayType {
   constructor(
     public dialog: MatDialog,
     protected api: ApiService
   ) {
     super();
-  }
-
-  ngOnInit(): void {
   }
 
   openDialog(i: number, f?: FormlyFieldConfig) {
@@ -57,9 +55,10 @@ export class RepeatSectionComponent extends FieldArrayType implements OnInit {
   }
 
   remove(i: number) {
-    for(const field of this.field.fieldGroup[i].fieldGroup) {
-      if (field.type === 'file' && field.key in this.model[i]) {
-        this.removeFile(this.model[i][field.key].id)
+    for (const field of this.field.fieldGroup[i].fieldGroup) {
+      const fieldKey = field.key as string;
+      if (field.type === 'file' && fieldKey in this.model[i]) {
+        this.removeFile(this.model[i][fieldKey].id);
       }
     }
     super.remove(i);

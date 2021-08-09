@@ -1,6 +1,7 @@
 import {Injectable, Pipe, PipeTransform} from '@angular/core';
 import {FormlyFieldConfig} from '@ngx-formly/core';
-import createClone from 'rfdc';
+import * as createClone_ from 'rfdc';
+const createClone = createClone_;
 import {Observable, of, Subject, timer} from 'rxjs';
 import {isIterable} from 'rxjs/internal-compatibility';
 import {ApiService} from '../../services/api.service';
@@ -108,7 +109,7 @@ export interface PythonEvaluation {
   name: 'toFormly'
 })
 export class ToFormlyPipe implements PipeTransform {
-  private defaultFileParams:FileParams = {}
+  private defaultFileParams: FileParams = {};
   constructor(private apiService?: ApiService) {
   }
 
@@ -209,7 +210,7 @@ export class ToFormlyPipe implements PipeTransform {
           }
           resultField.templateOptions = {
             datepickerOptions : { datepickerTogglePosition: 'prefix'}
-          }
+          };
           break;
         case 'files':
           resultField.type = 'files';
@@ -530,8 +531,8 @@ export class ToFormlyPipe implements PipeTransform {
    */
   private getPythonEvalFunction(field: BpmnFormJsonField, p: BpmnFormJsonFieldProperty, defaultValue = false, method = null) {
     return (model: any, formState: any, fieldConfig: FormlyFieldConfig) => {
-      if(!formState) {
-        formState = {}
+      if (!formState) {
+        formState = {};
       }
 
       // Establish some variables to be added to the form state.
@@ -559,7 +560,7 @@ export class ToFormlyPipe implements PipeTransform {
               // wrap the assignment to the variable in a promise - so that it gets evaluated as a part
               // of angular's next round of DOM updates, so we avoid modifying the state in the middle of a call.
               // If there is no error, update the value.
-              if(!response.hasOwnProperty('error')) {
+              if (!response.hasOwnProperty('error')) {
                 Promise.resolve(null).then(() => {
                   // The last successful evaluation becomes the new default, this keeps things from flickering.
                   formState[variableKey].default = response.result;
@@ -569,7 +570,7 @@ export class ToFormlyPipe implements PipeTransform {
             },
             (error: ApiError) => {
               console.log(`Failed to update field ${field.id} unable to process expression. ${error.message}`);
-              formState[variableKey] = 'error'
+              formState[variableKey] = 'error';
             }
             );
       }
@@ -577,21 +578,21 @@ export class ToFormlyPipe implements PipeTransform {
       if (!(key in formState[variableKey])) {
         formState[variableKey][key] = formState[variableKey].default;
         let data = model;
-        if(formState.hasOwnProperty('mainModel')) {
+        if (formState.hasOwnProperty('mainModel')) {
           data = {...formState.mainModel, ...model};
         }
         formState[variableSubjectKey].next({expression: p.value, data, key});
       }
       // We immediately return the variable, but it might change due to the above observable.
-      return formState[variableKey][key]
+      return formState[variableKey][key];
     };
   }
 
   private  hashCode(str) {
-    /* tslint:disable:no-bitwise */
+    /* eslint-disable no-bitwise */
     return str.split('').reduce((prevHash, currVal) =>
-      (((prevHash << 5) - prevHash) + currVal.charCodeAt(0))|0, 0);
-    /* tslint:enable:no-bitwise */
+      (((prevHash << 5) - prevHash) + currVal.charCodeAt(0)) | 0, 0);
+    /* eslint-enable no-bitwise */
   }
 
   /** Get num_results property from given field, or return the given default if no num_results property found. */
@@ -610,7 +611,7 @@ export class ToFormlyPipe implements PipeTransform {
   private _addClassName(field: FormlyFieldConfig, className: string): string {
     const newClasses = className ? className.split(' ') : [];
     const oldClasses = field.className ? field.className.split(' ') : [];
-    return Array.from(new Set(oldClasses.concat(newClasses))).join(' ')
+    return Array.from(new Set(oldClasses.concat(newClasses))).join(' ');
   }
 
   // Returns the appropriate className string for the given field, depending on its read-only state

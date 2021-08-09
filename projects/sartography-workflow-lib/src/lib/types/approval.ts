@@ -17,7 +17,7 @@ export enum ApprovalStatusLabels {
 export interface ApprovalFile {
   id: number;
   name: string;
-  content_type: string
+  content_type: string;
 }
 
 export interface ApprovalPerson {

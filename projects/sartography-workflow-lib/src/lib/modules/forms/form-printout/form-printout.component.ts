@@ -18,6 +18,10 @@ export class FormPrintoutComponent {
   constructor() {
   }
 
+  get fieldKey(): string {
+    return this.field.key as string;
+  }
+
   getModelValue(key: string) {
     let val = this.field.model[key];
     const fType = this.field.type;
@@ -60,7 +64,7 @@ export class FormPrintoutComponent {
 
     if (fType === 'datepicker') {
       let displayDate = '';
-      if(val) {
+      if (val) {
         displayDate = formatDate(val, 'mediumDate', 'en-us');
       }
       return displayDate;

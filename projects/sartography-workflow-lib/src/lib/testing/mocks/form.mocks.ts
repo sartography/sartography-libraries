@@ -12,7 +12,7 @@ export const mockFormlyFieldModel = {
     },
     third_field_other: 'Third field other value',
     fourth_field: new Date(),
-    fifth_field: {id:101, name:'bob.txt'},
+    fifth_field: {id: 101, name: 'bob.txt'},
   }
 };
 

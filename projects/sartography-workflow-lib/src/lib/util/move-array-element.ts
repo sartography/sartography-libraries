@@ -8,7 +8,7 @@ export const moveArrayElementUp = (a: Array<any>, i: number) => {
   } else {
     swapArrayElements(a, i, i - 1);
   }
-}
+};
 
 /**
  * Given the array `a`, moves element with index `i` one position down.
@@ -20,7 +20,7 @@ export const moveArrayElementDown = (a: Array<any>, i: number) => {
   } else {
     swapArrayElements(a, i, i + 1);
   }
-}
+};
 
 /**
  * Given the array `a`, swaps the positions of elements with indexes `i` and `j`,
@@ -30,4 +30,4 @@ export const swapArrayElements = (a: Array<any>, i: number, j: number) => {
   if (i >= 0 && j >= 0 && (a.length >= i + 1) && (a.length >= j + 1)) {
     [a[i], a[j]] = [a[j], a[i]]; // Swap items using destructuring
   }
-}
+};

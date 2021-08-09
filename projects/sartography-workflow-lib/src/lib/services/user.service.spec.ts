@@ -47,20 +47,20 @@ describe('UserService', () => {
     userReq.flush(mockUser0);
 
     expect(!!localStorage.getItem( 'admin_view_as')).toBeFalse();
-    expect((service as any)._realUser.value).toEqual(mockUser0);
-    expect((service as any)._isAdmin.value).toBeTrue();
-    expect((service as any)._isImpersonating.value).toBeFalse();
+    expect((service as any).realUser.value).toEqual(mockUser0);
+    expect((service as any).isAdmin.value).toBeTrue();
+    expect((service as any).isImpersonating.value).toBeFalse();
 
   });
 
-  it('should impersonate user',() => {
+  it('should impersonate user', () => {
     const userReq = httpMock.expectOne('apiRoot/user');
     expect(userReq.request.method).toEqual('GET');
     userReq.flush(mockUser0);
 
     // click on the nav link and then verify user is != realUser
 
-    (service as any).viewAs('rhh8n')
+    (service as any).viewAs('rhh8n');
     // First step - we get back the main user
     const userReq1 = httpMock.expectOne('apiRoot/user');
     expect(userReq1.request.method).toEqual('GET');
@@ -71,9 +71,9 @@ describe('UserService', () => {
     userReq2.flush(mockUser1);
 
     // now we should be impersonating but still admin so we can still switch
-    expect(localStorage.getItem( 'admin_view_as')).toEqual('rhh8n')
-    expect((service as any)._isAdmin.value).toBeTrue();
-    expect((service as any)._isImpersonating.value).toBeTrue();
+    expect(localStorage.getItem( 'admin_view_as')).toEqual('rhh8n');
+    expect((service as any).isAdmin.value).toBeTrue();
+    expect((service as any).isImpersonating.value).toBeTrue();
 
   });
 

@@ -39,6 +39,10 @@ export class FileUploadComponent extends FileBaseComponent {
     this.baseHref = appBaseHref;
   }
 
+  get fieldKey(): string {
+    return this.field.key as string;
+  }
+
   dropped(droppedFiles: NgxFileDropEntry[]) {
     this.droppedFiles = droppedFiles;
     this.dropZoneHover = false;
@@ -94,7 +98,7 @@ export class FileUploadComponent extends FileBaseComponent {
       type: getFileType(file),
       study_id: this.studyId,
       workflow_id: this.workflowId,
-      form_field_key: this.field.key,
+      form_field_key: this.fieldKey,
     };
     this.api.addFile(this.fileParams, fileMeta, file).subscribe(fm => {
       this.fileMetas.add(fm);
@@ -116,7 +120,7 @@ export class FileUploadComponent extends FileBaseComponent {
     const fileMetasArray = Array.from(this.fileMetas);
 
     if (this.model && this.formControl) {
-      this.model[this.field.key] = fileMetasArray;
+      this.model[this.fieldKey] = fileMetasArray;
       this.formControl.setValue(fileMetasArray);
     }
 

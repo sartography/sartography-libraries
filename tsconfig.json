@@ -7,7 +7,7 @@
     "declaration": false,
     "downlevelIteration": true,
     "experimentalDecorators": true,
-    "module": "esnext",
+    "module": "es2020",
     "moduleResolution": "node",
     "importHelpers": true,
     "target": "es2015",
@@ -18,37 +18,13 @@
       "es2018",
       "dom"
     ],
-    "paths": {
-      "sartography-workflow-lib": [
-        "dist/sartography-workflow-lib"
-      ],
-      "sartography-workflow-lib/*": [
-        "dist/sartography-workflow-lib/*"
-      ],
-      "lodash.isequal": [
-        "./node_modules/lodash.isequal"
-      ],
-      "ngx-device-detector": [
-        "./node_modules/ngx-device-detector"
-      ],
-      "ngx-file-drop": [
-        "./node_modules/ngx-file-drop"
-      ],
-      "ngx-markdown": [
-        "./node_modules/ngx-markdown"
-      ],
-      "highlight.js": [
-        "./node_modules/ngx-markdown"
-      ],
-      "ngx-highlightjs": ["./node_modules/ngx-highlightjs"],
-      "rxjs": ["./node_modules/rxjs"],
-      "tslib": ["./node_modules/tslib"],
-      "zone.js": ["./node_modules/zone.js"]
-    }
   },
   "angularCompilerOptions": {
     "fullTemplateTypeCheck": true,
     "strictInjectionParameters": true,
-    "preserveSymlinks": true
+    "preserveSymlinks": true,
+    "enableIvy": true,
+    "allowEmptyCodegenFiles": true,
+    "compilationMode": "partial"
   }
 }
