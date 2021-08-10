@@ -1,6 +1,7 @@
 import {markdownDescriptionWrapperExtension} from './markdown-description-wrapper.extension';
 import {FormlyFieldConfig} from '@ngx-formly/core';
-import createClone from 'rfdc';
+import * as cloneDeep from "lodash/cloneDeep";
+import {clone} from '@ngx-formly/core/lib/utils';
 
 describe('markdownDescriptionWrapperExtension', () => {
 
@@ -9,7 +10,7 @@ describe('markdownDescriptionWrapperExtension', () => {
       key: 'field_without_markdown_description',
       type: 'text'
     };
-    const before = createClone()(field);
+    const before = cloneDeep(field);
 
     markdownDescriptionWrapperExtension(before);
     expect(field).toEqual(before);
@@ -23,7 +24,7 @@ describe('markdownDescriptionWrapperExtension', () => {
         markdownDescription: 'whatever',
       }
     };
-    const before = createClone()(field);
+    const before = cloneDeep(field);
 
     markdownDescriptionWrapperExtension(field);
     expect(field).not.toEqual(before);
@@ -39,7 +40,7 @@ describe('markdownDescriptionWrapperExtension', () => {
       },
       wrappers: ['panel', 'form-field', 'help']
     };
-    const before = createClone()(field);
+    const before = cloneDeep(field);
 
     markdownDescriptionWrapperExtension(field);
     expect(field).not.toEqual(before);
@@ -56,7 +57,7 @@ describe('markdownDescriptionWrapperExtension', () => {
       },
       wrappers: ['form-field', 'help']
     };
-    const before = createClone()(field);
+    const before = cloneDeep(field);
 
     markdownDescriptionWrapperExtension(field);
     expect(field).not.toEqual(before);

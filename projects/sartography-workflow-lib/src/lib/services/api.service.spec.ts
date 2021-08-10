@@ -5,7 +5,7 @@ import {TestBed} from '@angular/core/testing';
 import {MatBottomSheetModule} from '@angular/material/bottom-sheet';
 import {Router} from '@angular/router';
 import {RouterTestingModule} from '@angular/router/testing';
-import createClone from 'rfdc';
+import * as cloneDeep from "lodash/cloneDeep";
 import {SessionRedirectComponent} from '../components/session-redirect/session-redirect.component';
 import {MockEnvironment} from '../testing/mocks/environment.mocks';
 import {
@@ -134,7 +134,7 @@ describe('ApiService', () => {
 
 
   it('should update a study', () => {
-    const modifiedStudy: Study = createClone()(mockStudy0);
+    const modifiedStudy: Study = cloneDeep(mockStudy0);
     modifiedStudy.title = 'New title';
 
     service.updateStudy(mockStudy0.id, modifiedStudy).subscribe(data => {
@@ -284,7 +284,7 @@ describe('ApiService', () => {
   });
 
   it('should update a workflow specification', () => {
-    const modifiedSpec: WorkflowSpec = createClone()(mockWorkflowSpec0);
+    const modifiedSpec: WorkflowSpec = cloneDeep(mockWorkflowSpec0);
     modifiedSpec.display_name = 'New name';
 
     service.updateWorkflowSpecification(mockWorkflowSpec0.id, modifiedSpec).subscribe(data => {
@@ -630,7 +630,7 @@ describe('ApiService', () => {
   });
 
   it('should update a workflow spec category', () => {
-    const modifiedCat: WorkflowSpecCategory = createClone()(mockWorkflowSpecCategory0);
+    const modifiedCat: WorkflowSpecCategory = cloneDeep(mockWorkflowSpecCategory0);
     modifiedCat.display_name = 'New name';
 
     service.updateWorkflowSpecCategory(mockWorkflowSpecCategory0.id, modifiedCat).subscribe(data => {

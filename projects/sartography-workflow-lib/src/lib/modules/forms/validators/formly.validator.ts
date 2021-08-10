@@ -113,7 +113,7 @@ export function AutocompleteValidator(control: FormControl): ValidationErrors {
   );
 
   if (isRequired && !control.value) {
-    return {required: true}
+    return {required: true};
   }
 
   if (control.value) {
@@ -135,7 +135,7 @@ export function FileFieldValidator(control: FormControl): ValidationErrors {
     fields[0].templateOptions.required &&
     !control.value
   ) {
-    return {required: true}
+    return {required: true};
   }
   return null;
 }
@@ -154,7 +154,7 @@ export function FileUploadValidator(control: FormControl): ValidationErrors {
     fields[0].templateOptions.required &&
     !control.value
   ) {
-    return {required: true}
+    return {required: true};
   }
   return null;
 }
@@ -173,7 +173,7 @@ export function RepeatSectionValidator(control: FormControl): ValidationErrors {
     fields[0].templateOptions.required &&
     !control.value
   ) {
-    return {required: true}
+    return {required: true};
   }
   return null;
 }

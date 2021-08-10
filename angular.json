@@ -10,7 +10,7 @@
       "prefix": "lib",
       "architect": {
         "build": {
-          "builder": "@angular-devkit/build-ng-packagr:build",
+          "builder": "@angular-devkit/build-angular:ng-packagr",
           "options": {
             "tsConfig": "projects/sartography-workflow-lib/tsconfig.lib.json",
             "project": "projects/sartography-workflow-lib/ng-package.json"
@@ -37,14 +37,11 @@
           }
         },
         "lint": {
-          "builder": "@angular-devkit/build-angular:tslint",
+          "builder": "@angular-eslint/builder:lint",
           "options": {
-            "tsConfig": [
-              "projects/sartography-workflow-lib/tsconfig.lib.json",
-              "projects/sartography-workflow-lib/tsconfig.spec.json"
-            ],
-            "exclude": [
-              "**/node_modules/**"
+            "lintFilePatterns": [
+              "projects/sartography-workflow-lib/**/*.ts",
+              "projects/sartography-workflow-lib/**/*.html"
             ]
           }
         }
@@ -53,6 +50,7 @@
   },
   "defaultProject": "sartography-workflow-lib",
   "cli": {
-    "analytics": "bc6a81f9-c4c5-46ec-a27b-ba6ec643e910"
+    "analytics": "bc6a81f9-c4c5-46ec-a27b-ba6ec643e910",
+    "defaultCollection": "@angular-eslint/schematics"
   }
 }

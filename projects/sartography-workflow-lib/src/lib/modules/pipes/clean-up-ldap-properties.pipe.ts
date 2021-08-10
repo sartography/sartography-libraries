@@ -7,7 +7,7 @@ export class CleanUpLdapPropertiesPipe implements PipeTransform {
 
   // Takes a comma-delimited string from LDAP and returns a human-readable string.
   transform(value: string, ...args: any[]): any {
-    return this.itemsFromLdap(value).join(', ')
+    return this.itemsFromLdap(value).join(', ');
   }
 
   // E1:Clinician Physician
@@ -36,7 +36,7 @@ export class CleanUpLdapPropertiesPipe implements PipeTransform {
         });
         items.add(s.trim());
       } else {
-        items.add(item.trim())
+        items.add(item.trim());
       }
     }
 

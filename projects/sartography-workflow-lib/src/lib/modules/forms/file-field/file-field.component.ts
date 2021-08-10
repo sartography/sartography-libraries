@@ -22,6 +22,10 @@ export class FileFieldComponent extends FileBaseComponent implements OnInit  {
     super(api);
   }
 
+  get fieldKey(): string {
+    return this.key as string;
+  }
+
   ngOnInit(): void {
     super.ngOnInit();
 
@@ -46,22 +50,22 @@ export class FileFieldComponent extends FileBaseComponent implements OnInit  {
     // First, remove any existing file if it exists.
     if (this.selectedFileMeta) {
       this.api.deleteFileMeta(this.selectedFileMeta.id).subscribe(() => {
-        this._addFile(file)
+        this._addFile(file);
       });
     } else {
-      this._addFile(file)
+      this._addFile(file);
     }
   }
 
-  _addFile(file:File) {
+  _addFile(file: File) {
     const fileMeta: FileMeta = {
       content_type: file.type,
       name: file.name,
       type: getFileType(file),
     };
 
-    let docCode = this.key;
-    if('doc_code' in this.field.templateOptions) {
+    let docCode = this.fieldKey;
+    if ('doc_code' in this.field.templateOptions) {
       docCode = this.field.templateOptions.doc_code;
     }
     fileMeta.form_field_key = docCode;
@@ -78,10 +82,10 @@ export class FileFieldComponent extends FileBaseComponent implements OnInit  {
 
       this.selectedFile = file;
       this.selectedFileMeta = fm;
-      this.model[this.key] = fm;
+      this.model[this.fieldKey] = fm;
       this.fileId = fm.id;
       this.formControl.setValue(fm);
-      console.log('File Field Model', this.model)
+      console.log('File Field Model', this.model);
     });
   }
 
@@ -90,7 +94,7 @@ export class FileFieldComponent extends FileBaseComponent implements OnInit  {
       this.api.deleteFileMeta(this.selectedFileMeta.id).subscribe(() => {
         this.selectedFile = undefined;
         this.selectedFileMeta = undefined;
-        this.model[this.key] = undefined;
+        this.model[this.fieldKey] = undefined;
         this.fileId = undefined;
         this.formControl.setValue(undefined);
       });
@@ -116,13 +120,13 @@ export class FileFieldComponent extends FileBaseComponent implements OnInit  {
         this.selectedFile = new File([], fm.name, options);
         this.selectedFileMeta = fm;
         if (this.model && this.formControl) {
-          this.model[this.key] = fm;
+          this.model[this.fieldKey] = fm;
           this.formControl.setValue(fm);
         }
       }, error => {
         this.selectedFile = undefined;
         this.selectedFileMeta = undefined;
-        this.model[this.key] = undefined;
+        this.model[this.fieldKey] = undefined;
         this.fileId = undefined;
         this.formControl.setValue(undefined);
       });

@@ -52,7 +52,7 @@ describe('FileBaseComponent', () => {
         },
       expressionProperties:
         {
-          doc_code: () => { return ('my_doc_code') } // doc_code should override the field key
+          doc_code: () => 'my_doc_code' // doc_code should override the field key
         }
     };
     builder.buildForm(form, [field], {hi: 123}, {});

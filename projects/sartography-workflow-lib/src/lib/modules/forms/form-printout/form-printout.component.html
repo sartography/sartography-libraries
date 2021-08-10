@@ -2,17 +2,17 @@
   <lib-form-printout *ngFor="let f of field.fieldGroup" [field]="f"></lib-form-printout>
 </ng-container>
 <ng-template #displayValue>
-  <ng-container *ngIf="getModelValue(field.key) && getModelValue(field.key) !== ''">
+  <ng-container *ngIf="getModelValue(fieldKey) && getModelValue(fieldKey) !== ''">
     <p>
       {{addColon(field.templateOptions.label)}}
       <strong>
-        <ng-container *ngIf="isEnumField(field)">{{field.model[field.key].label | truncate: 50}}</ng-container>
+        <ng-container *ngIf="isEnumField(field)">{{field.model[fieldKey].label | truncate: 50}}</ng-container>
         <ng-container *ngIf="!isEnumField(field)">
           <ng-container *ngIf="field.type === 'multicheckbox_data'">
-            <ng-container *ngFor="let item of field.model[field.key]"><br />{{item.label | truncate: 50}}</ng-container>
+            <ng-container *ngFor="let item of field.model[fieldKey]"><br />{{item.label | truncate: 50}}</ng-container>
           </ng-container>
           <ng-container *ngIf="field.type !== 'multicheckbox_data'">
-            {{getModelValue(field.key) | truncate: 50}}
+            {{getModelValue(fieldKey) | truncate: 50}}
           </ng-container>
         </ng-container>
       </strong>

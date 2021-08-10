@@ -2,11 +2,12 @@ import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 import {MAT_DIALOG_DATA, MatDialogModule, MatDialogRef} from '@angular/material/dialog';
 import {MatIconModule} from '@angular/material/icon';
 import {MarkdownModule, MarkdownService} from 'ngx-markdown';
-import createClone from 'rfdc';
 import {mockWorkflowTask0} from '../../../testing/mocks/workflow-task.mocks';
 import {ToFormlyPipe} from '../../pipes/to-formly.pipe';
 import {UnescapeLineBreaksPipe} from '../../pipes/unescape-line-breaks.pipe';
 import {HelpWrapperComponent} from './help-wrapper.component';
+import * as cloneDeep from "lodash/cloneDeep";
+
 
 describe('HelpWrapperComponent', () => {
   let component: HelpWrapperComponent;
@@ -42,7 +43,7 @@ describe('HelpWrapperComponent', () => {
     fixture = TestBed.createComponent(HelpWrapperComponent);
     component = fixture.componentInstance;
     const pipe = new ToFormlyPipe();
-    const fields = createClone()(mockWorkflowTask0.form.fields);
+    const fields = cloneDeep(mockWorkflowTask0.form.fields);
     fields[0].properties.push({
       id: 'help',
       value: '# Heading 1\n\n## Heading 2\n\n[link](https://sartography.com)'

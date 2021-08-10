@@ -1,5 +1,5 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
-import {ActivatedRoute, Router} from '@angular/router';
+import {Component, OnDestroy} from '@angular/core';
+import {ActivatedRoute} from '@angular/router';
 import {Subscription} from 'rxjs';
 import {ApiService} from '../../services/api.service';
 
@@ -8,7 +8,7 @@ import {ApiService} from '../../services/api.service';
   templateUrl: 'session-redirect.component.html',
   styleUrls: ['./session-redirect.component.scss']
 })
-export class SessionRedirectComponent implements OnInit, OnDestroy {
+export class SessionRedirectComponent implements OnDestroy {
 
   token: string;
   private sub: Subscription;
@@ -28,9 +28,6 @@ export class SessionRedirectComponent implements OnInit, OnDestroy {
       localStorage.setItem('token', this.token);
       this.api.getUser().subscribe(_ => this.goPrevUrl());
     });
-  }
-
-  ngOnInit() {
   }
 
   ngOnDestroy() {

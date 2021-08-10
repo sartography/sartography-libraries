@@ -26,7 +26,7 @@ const renderComponent = (field: FormlyFieldConfig) => {
       ReactiveFormsModule,
     ],
   });
-}
+};
 
 describe('RadioDataFieldComponent', () => {
   it('should render radio buttons with data', () => {

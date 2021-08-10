@@ -59,7 +59,7 @@ export interface WorkflowMetadata {
   status: WorkflowStatus;
   state_message?: string;  // An optional message explaining the state of a workflow.
   display_order?: number;
-  is_review? : boolean;
+  is_review?: boolean;
 }
 
 
@@ -74,7 +74,7 @@ export interface Workflow {
   next_task?: WorkflowTask;
   is_latest_spec?: boolean;
   spec_version?: string;
-  is_review? : boolean;
+  is_review?: boolean;
   title?: string;
   redirect?: number;
 }
@@ -89,7 +89,7 @@ export interface WorkflowNavItem {
   backtrack_to?: string;
   task_id?: string;
   state?: WorkflowTaskState;
-  children?: WorkflowNavItem[]
+  children?: WorkflowNavItem[];
 }
 
 

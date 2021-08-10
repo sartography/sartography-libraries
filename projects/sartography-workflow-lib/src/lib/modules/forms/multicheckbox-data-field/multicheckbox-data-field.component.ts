@@ -70,8 +70,8 @@ export class MulticheckboxDataFieldComponent extends FormlyFieldMultiCheckbox im
       //   },
       //   ...
       // ]
-      if(!this._is_iterable(formVal)) {
-        formVal = [formVal]
+      if (!this._is_iterable(formVal)) {
+        formVal = [formVal];
       }
       for (const val of formVal) {
         if (
@@ -101,8 +101,9 @@ export class MulticheckboxDataFieldComponent extends FormlyFieldMultiCheckbox im
   private _initializeValue() {
     // Only do this the first time
     if (!this.initialized && isEqual(this.formControl.value, [undefined])) {
-      const hasCurrentValue = this.model.hasOwnProperty(this.field.key) && !isEqual(this.model[this.field.key], [undefined]);
-      const defaultValue = hasCurrentValue ? this.model[this.field.key] : this.field.defaultValue;
+      const key = this.field.key as string;
+      const hasCurrentValue = this.model.hasOwnProperty(key) && !isEqual(this.model[key], [undefined]);
+      const defaultValue = hasCurrentValue ? this.model[key] : this.field.defaultValue;
       this.formControl.patchValue(defaultValue);
       this.initialized = true;
     }
