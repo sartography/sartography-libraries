@@ -55,6 +55,7 @@ export class ApiService {
     workflowSpec: '/workflow-specification/{spec_id}',
     workflowSpecListStandalone: '/workflow-specification?standalone=true',
     workflowSpecListLibraries: '/workflow-specification?libraries=true',
+    updateWorkflowLibrary: '/workflow-specification/{spec_id}/library/{library_id}',
     workflowSpecValidate: '/workflow-specification/{spec_id}/validate',
 
     // Workflow Specification Category
@@ -160,6 +161,29 @@ export class ApiService {
       .delete<null>(url)
       .pipe(catchError(err => ApiService._handleError(err)));
   }
+
+  /** Delete a library from a workflow */
+  deleteWorkflowLibrary(workflowSpecId: string, librarySpecId: string): Observable<null> {
+    const url = this.apiRoot + this.endpoints.updateWorkflowLibrary
+      .replace('{spec_id}', workflowSpecId)
+      .replace('{library_id}', librarySpecId);
+    return this.httpClient
+      .delete<null>(url)
+      .pipe(catchError(err => ApiService._handleError(err)));
+  }
+
+  /** Delete a library from a workflow */
+  addWorkflowLibrary(workflowSpecId: string, librarySpecId: string): Observable<null> {
+    const url = this.apiRoot + this.endpoints.updateWorkflowLibrary
+      .replace('{spec_id}', workflowSpecId)
+      .replace('{library_id}', librarySpecId);
+    return this.httpClient
+      .post<null>(url,'')
+      .pipe(catchError(err => ApiService._handleError(err)));
+  }
+
+
+
 
   /** Get a specific Study */
   getStudyApprovals(studyId: number): Observable<Approval[]> {
