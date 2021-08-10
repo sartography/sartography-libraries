@@ -10,7 +10,11 @@ services:
 language: node_js
 
 node_js:
-  - 12
+  - 14
+
+before_install:
+  - dpkg --compare-versions `npm -v` ge 7.10 || npm i -g npm@^7.10
+  - npm --version
 
 before_script:
   - export DISPLAY=:99.0
