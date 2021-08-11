@@ -5,6 +5,7 @@ import {RepeatSectionDialogData} from '../../../types/repeat-section-dialog-data
 import {RepeatSectionDialogComponent} from '../repeat-section-dialog/repeat-section-dialog.component';
 import {ApiService} from '../../../services/api.service';
 import * as cloneDeep from "lodash/cloneDeep";
+import {RepeatSectionConfirmDialogComponent} from "../repeat-section-confirm-dialog/repeat-section-confirm-dialog.component";
 
 @Component({
   selector: 'lib-repeat-section',
@@ -51,6 +52,20 @@ export class RepeatSectionComponent extends FieldArrayType {
         }
 
         super.add(i, model);
+      }
+    });
+  }
+
+  confirmDelete(i: number, f?: FormlyFieldConfig) {
+    const dialogRef = this.dialog.open(RepeatSectionConfirmDialogComponent, {
+      maxWidth: '100vw',
+      maxHeight: '100vh',
+      minWidth: '70vw',
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result == true) {
+        this.remove(i);
       }
     });
   }
