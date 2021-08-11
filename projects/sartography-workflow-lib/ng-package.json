@@ -13,11 +13,11 @@
       "ngx-highlightjs": "ngxHighlightjs",
       "@yellowspot/ng-truncate": "ngTruncate",
       "lodash.isequal": "lodashIsEqual",
-      "lodash.cloneDeep": "lodashCloneDeep",
+      "lodash/cloneDeep": "lodashCloneDeep",
       "@ngx-formly/material/multicheckbox" : "ngFormlyMulticheckbox",
       "@ngx-formly/material/radio" : "ngFormlyRadio",
       "@sentry/browser" : "sentryBrowser",
-      "@ngx-formly/core/select" : "ngFormlySelect"
+      "@ngx-formly/core/select" : "ngFormlySelect",
     }
   }
 }
