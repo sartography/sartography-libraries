@@ -8,13 +8,12 @@ import { AppEnvironment } from '../types/app-environment';
 import { Approval, ApprovalCounts, ApprovalStatus } from '../types/approval';
 import { DocumentDirectory, FileMeta, FileParams, LookupData } from '../types/file';
 import { ScriptInfo } from '../types/script-info';
-import { Study } from '../types/study';
+import { Study , StudyAssociate} from '../types/study';
 import { TaskAction, TaskEvent } from '../types/task-event';
 import { User } from '../types/user';
 import { Workflow, WorkflowSpec, WorkflowSpecCategory } from '../types/workflow';
 import { WorkflowTask } from '../types/workflow-task';
 import { isSignedIn } from '../util/is-signed-in';
-
 
 @Injectable({
   providedIn: 'root'
@@ -44,6 +43,7 @@ export class ApiService {
     studyList: '/study',
     study: '/study/{study_id}',
     studyApprovals: '/study/{study_id}/approvals',
+    studyAssociates: '/study/{study_id}/associates',
 
     // Approvals
     approvalCounts: '/approval-counts',
@@ -171,7 +171,15 @@ export class ApiService {
       .delete<null>(url)
       .pipe(catchError(err => ApiService._handleError(err)));
   }
+  /** Return all users related to a study and their access + role */
+  getStudyAssociates(studyId: number): Observable<StudyAssociate[]> {
+    const url = this.apiRoot + this.endpoints.studyAssociates
+      .replace('{study_id}', studyId.toString());
 
+    return this.httpClient
+      .get<StudyAssociate[]>(url)
+      .pipe(catchError(err => ApiService._handleError(err)));
+  }
   /** Delete a library from a workflow */
   addWorkflowLibrary(workflowSpecId: string, librarySpecId: string): Observable<null> {
     const url = this.apiRoot + this.endpoints.updateWorkflowLibrary

@@ -82,3 +82,9 @@ export interface Study {
   events?: TaskEvent[];
   events_history?: StudyEvent[];
 }
+
+export interface StudyAssociate {
+  uid: string;
+  access: boolean
+  role: string;
+}
