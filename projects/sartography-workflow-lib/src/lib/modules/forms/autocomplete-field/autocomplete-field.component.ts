@@ -21,9 +21,7 @@ export class AutocompleteFieldComponent extends FieldType implements OnInit {
     if (this.to.filter) {
       this.filter = this.formControl.valueChanges.pipe<string, LookupData[]>(
         startWith(''),
-        switchMap<string, Observable<LookupData[]>>(term => {
-          return this.to.filter(term);
-        }),
+        switchMap<string, Observable<LookupData[]>>(term => this.to.filter(term)),
       );
     }
   }

@@ -5,7 +5,7 @@ import {NavigationEnd, Router} from '@angular/router';
 import {ApiError} from '../types/api';
 import {AppEnvironment} from '../types/app-environment';
 
-declare var gtag;
+declare let gtag;
 
 @Injectable({
   providedIn: 'root'

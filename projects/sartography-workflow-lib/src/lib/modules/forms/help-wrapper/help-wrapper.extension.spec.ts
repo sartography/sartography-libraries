@@ -1,6 +1,6 @@
 import {helpWrapperExtension} from './help-wrapper.extension';
 import {FormlyFieldConfig} from '@ngx-formly/core';
-import * as cloneDeep from "lodash/cloneDeep";
+import * as cloneDeep from 'lodash/cloneDeep';
 
 describe('helpWrapperExtension', () => {
 

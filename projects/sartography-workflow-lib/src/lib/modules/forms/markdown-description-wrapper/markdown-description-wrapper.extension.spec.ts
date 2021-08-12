@@ -1,6 +1,6 @@
 import {markdownDescriptionWrapperExtension} from './markdown-description-wrapper.extension';
 import {FormlyFieldConfig} from '@ngx-formly/core';
-import * as cloneDeep from "lodash/cloneDeep";
+import * as cloneDeep from 'lodash/cloneDeep';
 import {clone} from '@ngx-formly/core/lib/utils';
 
 describe('markdownDescriptionWrapperExtension', () => {

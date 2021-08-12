@@ -4,13 +4,12 @@ import {NoopAnimationsModule} from '@angular/platform-browser/animations';
 import {FormlyFieldConfig, FormlyModule} from '@ngx-formly/core';
 import {FormlySelectModule} from '@ngx-formly/core/select';
 import {FormlyMatFormFieldModule} from '@ngx-formly/material/form-field';
-import * as cloneDeep from "lodash/cloneDeep";
+import * as cloneDeep from 'lodash/cloneDeep';
 import {createFormlyFieldComponent} from '../../../testing/formly/component-factory';
 import {MulticheckboxDataFieldComponent} from './multicheckbox-data-field.component';
 
 
-const renderComponent = (field: FormlyFieldConfig) => {
-  return createFormlyFieldComponent(field, {
+const renderComponent = (field: FormlyFieldConfig) => createFormlyFieldComponent(field, {
     declarations: [
       MulticheckboxDataFieldComponent,
     ],
@@ -26,7 +25,6 @@ const renderComponent = (field: FormlyFieldConfig) => {
       NoopAnimationsModule,
     ],
   });
-};
 
 describe('MulticheckboxDataFieldComponent', () => {
   const mockModel = {

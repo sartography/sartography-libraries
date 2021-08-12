@@ -4,8 +4,8 @@ import {FieldArrayType, FormlyFieldConfig, FormlyFormOptions} from '@ngx-formly/
 import {RepeatSectionDialogData} from '../../../types/repeat-section-dialog-data';
 import {RepeatSectionDialogComponent} from '../repeat-section-dialog/repeat-section-dialog.component';
 import {ApiService} from '../../../services/api.service';
-import * as cloneDeep from "lodash/cloneDeep";
-import {RepeatSectionConfirmDialogComponent} from "../repeat-section-confirm-dialog/repeat-section-confirm-dialog.component";
+import * as cloneDeep from 'lodash/cloneDeep';
+import {RepeatSectionConfirmDialogComponent} from '../repeat-section-confirm-dialog/repeat-section-confirm-dialog.component';
 
 @Component({
   selector: 'lib-repeat-section',
@@ -36,7 +36,7 @@ export class RepeatSectionComponent extends FieldArrayType {
       options
     };
     const cachedData: RepeatSectionDialogData = cloneDeep(dialogData);
-    console.log("Cache Data:", cachedData);
+    console.log('Cache Data:', cachedData);
     const dialogRef = this.dialog.open(RepeatSectionDialogComponent, {
       maxWidth: '100vw',
       maxHeight: '100vh',
