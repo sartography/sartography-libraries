@@ -9,8 +9,6 @@
         "createDefaultProgram": true
       },
       "extends": [
-        "plugin:@angular-eslint/ng-cli-compat",
-        "plugin:@angular-eslint/ng-cli-compat--formatting-add-on",
         "plugin:@angular-eslint/recommended",
         "plugin:@angular-eslint/template/process-inline-templates"
       ],
@@ -19,7 +17,7 @@
           "error",
           {
             "type": "element",
-            "prefix": "app",
+            "prefix": ["app", "lib"],
             "style": "kebab-case"
           }
         ],
@@ -27,15 +25,15 @@
           "error",
           {
             "type": "attribute",
-            "prefix": "app",
+            "prefix": ["app", "lib"],
             "style": "camelCase"
           }
         ],
         "@typescript-eslint/naming-convention": [
-          "error",
+          "warn",
           {
             "selector": "objectLiteralProperty",
-            "format": ["camelCase", "snake_case"],
+            "format": ["camelCase", "snake_case", "PascalCase", "UPPER_CASE"],
             "leadingUnderscore": "allow",
             "trailingUnderscore": "allow"
           }
