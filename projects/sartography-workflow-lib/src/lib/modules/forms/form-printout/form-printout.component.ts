@@ -1,5 +1,5 @@
 import {formatDate} from '@angular/common';
-import {Component, Input} from '@angular/core';
+import {AfterViewInit, Component, Input} from '@angular/core';
 import {FormlyFieldConfig, FormlyForm} from '@ngx-formly/core';
 
 interface SelectFieldOption {
@@ -101,6 +101,9 @@ export class FormPrintoutComponent {
   }
 
   addColon(label: string) {
+    if (!label) {
+      return "";
+    }
     if (label[label.length - 1] === ':' || label.trim().length === 0) {
       return label;
     } else {

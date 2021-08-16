@@ -1,10 +1,11 @@
-import {Component} from '@angular/core';
+import {AfterViewInit, Component, OnInit} from '@angular/core';
 import {MatDialog} from '@angular/material/dialog';
 import {FieldArrayType, FormlyFieldConfig, FormlyFormOptions} from '@ngx-formly/core';
 import {RepeatSectionDialogData} from '../../../types/repeat-section-dialog-data';
 import {RepeatSectionDialogComponent} from '../repeat-section-dialog/repeat-section-dialog.component';
 import {ApiService} from '../../../services/api.service';
 import * as cloneDeep from "lodash/cloneDeep";
+import {AbstractControl, FormControl, FormGroup, ValidationErrors} from '@angular/forms';
 
 @Component({
   selector: 'lib-repeat-section',
@@ -49,9 +50,11 @@ export class RepeatSectionComponent extends FieldArrayType {
         if (this.field.fieldGroup.length > i) {
           super.remove(i);
         }
-
         super.add(i, model);
       }
+      this.field.fieldGroup.forEach(fg => {
+        fg.formControl.updateValueAndValidity();
+      })
     });
   }
 
@@ -70,11 +73,9 @@ export class RepeatSectionComponent extends FieldArrayType {
   }
 
   shouldHide(): boolean {
-    if (
-      this.field &&
-      this.field.hideExpression &&
-      typeof (this.field.hideExpression) === 'function'
-    ) {
+    if (!this.field) {
+      return true;
+    } else if (this.field.hideExpression && typeof (this.field.hideExpression) === 'function') {
       return !!(this.field.hideExpression(this.field.parent && this.field.parent.model, this.formState, this.field));
     } else {
       return false;

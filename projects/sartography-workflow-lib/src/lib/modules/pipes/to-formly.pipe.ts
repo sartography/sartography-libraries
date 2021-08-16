@@ -288,7 +288,7 @@ export class ToFormlyPipe implements PipeTransform {
               resultField.hideExpression = this.getPythonEvalFunction(field, p);
               // Hidden field values will be removed on save.
               // Clears value when hidden (will be the default in Formly v6?)
-              (resultField as any).autoClear = true;
+              (resultField as any).resetOnHide = true;
               break;
             case 'value_expression':
               resultField.expressionProperties['model.' + field.id] = this.getPythonEvalFunction(field, p);
@@ -566,13 +566,23 @@ export class ToFormlyPipe implements PipeTransform {
             }
             );
       }
-      const key = this.hashCode(JSON.stringify(model));
+
+      // Establish the data model that the evaluation will be based upon.  This may be
+      // 'mainModel', if this is being handled in a form that was created in a repeat section, or it
+      // may include the data extracted from a great grandparent, if one exists, which will happen in
+      // repeat sections, where the parent is fieldArray, and the grandparent is a list of field arrays,
+      // and the great grandparent is the original form field.  I AM SORRY, if you are here trying to
+      // debug this.
+      let data = model;
+      if (formState.hasOwnProperty('mainModel')) {
+        data = {...formState.mainModel, ...model};
+      } else if ("parent" in fieldConfig.parent && "parent" in fieldConfig.parent.parent) {
+        data = {...fieldConfig.parent.parent.parent.model, ...model};
+      }
+
+      const key = this.hashCode(JSON.stringify(data));
       if (!(key in formState[variableKey])) {
         formState[variableKey][key] = formState[variableKey].default;
-        let data = model;
-        if (formState.hasOwnProperty('mainModel')) {
-          data = {...formState.mainModel, ...model};
-        }
         formState[variableSubjectKey].next({expression: p.value, data, key});
       }
       // We immediately return the variable, but it might change due to the above observable.
