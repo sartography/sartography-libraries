@@ -37,4 +37,16 @@ describe('RepeatSectionConfirmDialogComponent', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+
+  it('should confirm deletion on submit', () => {
+    const closeSpy = spyOn(component.dialogRef, 'close').and.stub();
+    component.onConfirm();
+    expect(closeSpy).toHaveBeenCalledWith(true);
+  });
+
+  it('should not change data on cancel', () => {
+    const closeSpy = spyOn(component.dialogRef, 'close').and.stub();
+    component.onDismiss();
+    expect(closeSpy).toHaveBeenCalledWith(false);
+  });
 });

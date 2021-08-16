@@ -137,4 +137,26 @@ describe('RepeatSectionComponent', () => {
     expect(openDialogSpy).toHaveBeenCalled();
     expect(addSpy).toHaveBeenCalled();
   });
+
+  it('should open a dialog confirming deletion of an item', () => {
+    const removeSpy = spyOn(component, 'remove').and.stub();
+
+    // @ts-ignore
+    const openDialogSpy = spyOn(component.dialog, 'open').and.returnValue({afterClosed: () => of(true)});
+
+    component.confirmDelete(0);
+    expect(openDialogSpy).toHaveBeenCalled();
+    expect(removeSpy).toHaveBeenCalled();
+  });
+
+  it('should not delete an item if not confirmed', () => {
+    const removeSpy = spyOn(component, 'remove').and.stub();
+
+    // @ts-ignore
+    const openDialogSpy = spyOn(component.dialog, 'open').and.returnValue({afterClosed: () => of(false)});
+
+    component.confirmDelete(0);
+    expect(openDialogSpy).toHaveBeenCalled();
+    expect(removeSpy).not.toHaveBeenCalled();
+  });
 });
