@@ -289,14 +289,7 @@ export class ToFormlyPipe implements PipeTransform {
               (resultField as any).autoClear = true;
               break;
             case 'value_expression':
-              resultField.hooks = {
-                onInit(myField) {
-                  const control = myField.formControl;
-                  if (control.value === null && p.value in myField.model) {
-                    control.setValue(myField.model[p.value]);
-                  }
-                }
-              };
+              resultField.expressionProperties['model.' + field.id] = this.getPythonEvalFunction(field, p);
               break;
             case 'label_expression':
               resultField.expressionProperties['templateOptions.label'] = this.getPythonEvalFunction(field, p);
