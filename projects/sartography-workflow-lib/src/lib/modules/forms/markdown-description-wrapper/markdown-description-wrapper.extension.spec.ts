@@ -1,14 +1,13 @@
-import {markdownDescriptionWrapperExtension} from './markdown-description-wrapper.extension';
-import {FormlyFieldConfig} from '@ngx-formly/core';
-import * as cloneDeep from 'lodash/cloneDeep';
-import {clone} from '@ngx-formly/core/lib/utils';
+import { markdownDescriptionWrapperExtension } from './markdown-description-wrapper.extension';
+import { FormlyFieldConfig } from '@ngx-formly/core';
+import { cloneDeep } from 'lodash';
 
 describe('markdownDescriptionWrapperExtension', () => {
 
   it('should not extend a form control that has no markdownDescription option', () => {
     const field: FormlyFieldConfig = {
       key: 'field_without_markdown_description',
-      type: 'text'
+      type: 'text',
     };
     const before = cloneDeep(field);
 
@@ -22,7 +21,7 @@ describe('markdownDescriptionWrapperExtension', () => {
       type: 'text',
       templateOptions: {
         markdownDescription: 'whatever',
-      }
+      },
     };
     const before = cloneDeep(field);
 
@@ -38,7 +37,7 @@ describe('markdownDescriptionWrapperExtension', () => {
       templateOptions: {
         markdownDescription: 'whatever',
       },
-      wrappers: ['panel', 'form-field', 'help']
+      wrappers: ['panel', 'form-field', 'help'],
     };
     const before = cloneDeep(field);
 
@@ -55,7 +54,7 @@ describe('markdownDescriptionWrapperExtension', () => {
       templateOptions: {
         markdownDescription: 'whatever',
       },
-      wrappers: ['form-field', 'help']
+      wrappers: ['form-field', 'help'],
     };
     const before = cloneDeep(field);
 

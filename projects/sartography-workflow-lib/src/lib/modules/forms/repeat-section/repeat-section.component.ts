@@ -1,21 +1,21 @@
-import {Component} from '@angular/core';
-import {MatDialog} from '@angular/material/dialog';
-import {FieldArrayType, FormlyFieldConfig, FormlyFormOptions} from '@ngx-formly/core';
-import {RepeatSectionDialogData} from '../../../types/repeat-section-dialog-data';
-import {RepeatSectionDialogComponent} from '../repeat-section-dialog/repeat-section-dialog.component';
-import {ApiService} from '../../../services/api.service';
-import * as cloneDeep from 'lodash/cloneDeep';
-import {RepeatSectionConfirmDialogComponent} from '../repeat-section-confirm-dialog/repeat-section-confirm-dialog.component';
+import { Component } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
+import { FieldArrayType, FormlyFieldConfig, FormlyFormOptions } from '@ngx-formly/core';
+import { RepeatSectionDialogData } from '../../../types/repeat-section-dialog-data';
+import { RepeatSectionDialogComponent } from '../repeat-section-dialog/repeat-section-dialog.component';
+import { ApiService } from '../../../services/api.service';
+import { cloneDeep } from 'lodash';
+import { RepeatSectionConfirmDialogComponent } from '../repeat-section-confirm-dialog/repeat-section-confirm-dialog.component';
 
 @Component({
   selector: 'lib-repeat-section',
   templateUrl: './repeat-section.component.html',
-  styleUrls: ['./repeat-section.component.scss']
+  styleUrls: ['./repeat-section.component.scss'],
 })
 export class RepeatSectionComponent extends FieldArrayType {
   constructor(
     public dialog: MatDialog,
-    protected api: ApiService
+    protected api: ApiService,
   ) {
     super();
   }
@@ -24,16 +24,16 @@ export class RepeatSectionComponent extends FieldArrayType {
     const isEdit = !!f;
     const title = this.field.templateOptions.label || 'Add ' + this.field.templateOptions.buttonLabel;
     const options: FormlyFormOptions = {
-        formState: {
-          mainModel: this.field.parent.model,
-        },
-      };
+      formState: {
+        mainModel: this.field.parent.model,
+      },
+    };
 
     const dialogData: RepeatSectionDialogData = {
       title: isEdit ? title.replace(/^Add an|^Add a|^Add/, 'Edit') : title,
       fields: [cloneDeep(this.field.fieldArray)],
       model: isEdit ? this.field.fieldGroup[i].model : {},
-      options
+      options,
     };
     const cachedData: RepeatSectionDialogData = cloneDeep(dialogData);
     console.log('Cache Data:', cachedData);
