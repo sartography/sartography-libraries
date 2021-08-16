@@ -1,6 +1,10 @@
 import {FileType} from '../types/file';
 
-export const trimString = (str: string): string => !str ? '' : String(str).replace(/^\W+|\W+$/gi, '');
+/**
+ * Trims non-word characters from the ends of the given string.
+ * @param str
+ */
+export const trimString = (str: string): string => !str ? '' : String(str).replace(/(^\W+)|(\W+$)/gi, '');
 
 export const toSnakeCase = (str: string): string => {
   str = trimString(str);
