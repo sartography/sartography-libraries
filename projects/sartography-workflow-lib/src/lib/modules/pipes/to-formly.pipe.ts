@@ -1,6 +1,6 @@
 import {Injectable, Pipe, PipeTransform} from '@angular/core';
 import {FormlyFieldConfig} from '@ngx-formly/core';
-import * as cloneDeep from "lodash/cloneDeep";
+import { cloneDeep } from 'lodash';
 import {Observable, of, Subject, timer} from 'rxjs';
 import {isIterable} from 'rxjs/internal-compatibility';
 import {ApiService} from '../../services/api.service';
@@ -146,9 +146,7 @@ export class ToFormlyPipe implements PipeTransform {
                 resultField.defaultValue = options.find(o => o.value === field.default_value);
               });
             } else if (resultField.templateOptions.options instanceof Array) {
-              resultField.defaultValue = resultField.templateOptions.options.find(o => {
-                return o.value === field.default_value;
-              });
+              resultField.defaultValue = resultField.templateOptions.options.find(o => o.value === field.default_value);
             }
           }
 

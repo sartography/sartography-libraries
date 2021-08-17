@@ -8,8 +8,7 @@ import {createFormlyFieldComponent} from '../../../testing/formly/component-fact
 import {RadioDataFieldComponent} from './radio-data-field.component';
 
 
-const renderComponent = (field: FormlyFieldConfig) => {
-  return createFormlyFieldComponent(field, {
+const renderComponent = (field: FormlyFieldConfig) => createFormlyFieldComponent(field, {
     declarations: [
       RadioDataFieldComponent,
     ],
@@ -26,7 +25,6 @@ const renderComponent = (field: FormlyFieldConfig) => {
       ReactiveFormsModule,
     ],
   });
-};
 
 describe('RadioDataFieldComponent', () => {
   it('should render radio buttons with data', () => {

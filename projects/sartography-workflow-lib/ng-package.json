@@ -18,6 +18,7 @@
       "@ngx-formly/material/radio" : "ngFormlyRadio",
       "@sentry/browser" : "sentryBrowser",
       "@ngx-formly/core/select" : "ngFormlySelect",
+      "lodash": "lodash"
     }
   }
 }

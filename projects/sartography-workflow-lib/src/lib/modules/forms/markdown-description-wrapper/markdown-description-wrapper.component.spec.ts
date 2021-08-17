@@ -1,6 +1,6 @@
 import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 import {MarkdownModule, MarkdownService} from 'ngx-markdown';
-import * as cloneDeep from "lodash/cloneDeep";
+import { cloneDeep } from 'lodash';
 import {mockWorkflowTask0} from '../../../testing/mocks/workflow-task.mocks';
 import {ToFormlyPipe} from '../../pipes/to-formly.pipe';
 import {UnescapeLineBreaksPipe} from '../../pipes/unescape-line-breaks.pipe';

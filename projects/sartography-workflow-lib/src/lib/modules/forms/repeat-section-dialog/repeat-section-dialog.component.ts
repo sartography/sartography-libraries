@@ -2,7 +2,7 @@ import {AfterContentInit, Component, Inject} from '@angular/core';
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
 import {FormlyFieldConfig} from '@ngx-formly/core';
 import {DeviceDetectorService} from 'ngx-device-detector';
-import * as cloneDeep from "lodash/cloneDeep";
+import { cloneDeep } from 'lodash';
 import {RepeatSectionDialogData} from '../../../types/repeat-section-dialog-data';
 import {scrollToFirstInvalidField} from '../../../util/scroll-to-top';
 
@@ -33,9 +33,7 @@ export class RepeatSectionDialogComponent implements AfterContentInit {
   }
 
   noErrors(): boolean {
-    return this.data.fields.every(f => {
-      return f.formControl && f.formControl.valid;
-    });
+    return this.data.fields.every(f => f.formControl && f.formControl.valid);
   }
 
   onNoClick(): void {

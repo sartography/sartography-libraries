@@ -14,11 +14,11 @@ export class FileValueAccessorDirective implements ControlValueAccessor {
 
   @HostListener('change', ['$event.target.files'])
   onChange = (files: File[]) => {
-  }
+  };
 
   @HostListener('blur', [])
   onTouched = () => {
-  }
+  };
 
   writeValue(value) {
   }
