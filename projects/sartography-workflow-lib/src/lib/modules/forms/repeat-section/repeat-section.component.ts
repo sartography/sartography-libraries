@@ -50,9 +50,11 @@ export class RepeatSectionComponent extends FieldArrayType {
         if (this.field.fieldGroup.length > i) {
           super.remove(i);
         }
-
         super.add(i, model);
       }
+      this.field.fieldGroup.forEach(fg => {
+        fg.formControl.updateValueAndValidity();
+      })
     });
   }
 
@@ -85,11 +87,9 @@ export class RepeatSectionComponent extends FieldArrayType {
   }
 
   shouldHide(): boolean {
-    if (
-      this.field &&
-      this.field.hideExpression &&
-      typeof (this.field.hideExpression) === 'function'
-    ) {
+    if (!this.field) {
+      return true;
+    } else if (this.field.hideExpression && typeof (this.field.hideExpression) === 'function') {
       return !!(this.field.hideExpression(this.field.parent && this.field.parent.model, this.formState, this.field));
     } else {
       return false;
