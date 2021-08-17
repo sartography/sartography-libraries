@@ -193,14 +193,22 @@ export class ToFormlyPipe implements PipeTransform {
           resultField.validators = {validation: ['phone']};
           break;
         case 'boolean':
-          resultField.type = 'radio';
-          if (field.default_value !== undefined && field.default_value !== null && field.default_value !== '') {
-            resultField.defaultValue = this._stringToBool(field.default_value);
+          if (field.properties.find(x => x.id === 'boolean_type' && x.value === 'checkbox')) {
+            resultField.type = 'checkbox';
+            resultField.defaultValue = false;
+            resultField.templateOptions = { indeterminate: false };
+            break;
           }
-          resultField.templateOptions.options = [
-            {value: true, label: 'Yes'},
-            {value: false, label: 'No'},
-          ];
+          else if (!field.properties.find(x => x.id === 'boolean_type')) {
+            resultField.type = 'radio';
+            if (field.default_value !== undefined && field.default_value !== null && field.default_value !== '') {
+              resultField.defaultValue = this._stringToBool(field.default_value);
+            }
+            resultField.templateOptions.options = [
+              {value: true, label: 'Yes'},
+              {value: false, label: 'No'},
+            ];
+          }
           break;
         case 'date':
           resultField.type = 'datepicker';
