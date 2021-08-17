@@ -58,6 +58,7 @@ import {
   UrlValidator,
   UrlValidatorMessage
 } from './validators/formly.validator';
+import { RepeatSectionConfirmDialogComponent } from './repeat-section-confirm-dialog/repeat-section-confirm-dialog.component';
 
 
 @Injectable()
@@ -129,6 +130,7 @@ export class AppFormlyConfig {
     RadioDataFieldComponent,
     RepeatSectionComponent,
     RepeatSectionDialogComponent,
+    RepeatSectionConfirmDialogComponent,
   ],
   imports: [
     CommonModule,

@@ -1,6 +1,6 @@
 import {Injectable, Pipe, PipeTransform} from '@angular/core';
 import {FormlyFieldConfig} from '@ngx-formly/core';
-import * as cloneDeep from "lodash/cloneDeep";
+import { cloneDeep } from 'lodash';
 import {Observable, of, Subject, timer} from 'rxjs';
 import {isIterable} from 'rxjs/internal-compatibility';
 import {ApiService} from '../../services/api.service';
@@ -146,9 +146,7 @@ export class ToFormlyPipe implements PipeTransform {
                 resultField.defaultValue = options.find(o => o.value === field.default_value);
               });
             } else if (resultField.templateOptions.options instanceof Array) {
-              resultField.defaultValue = resultField.templateOptions.options.find(o => {
-                return o.value === field.default_value;
-              });
+              resultField.defaultValue = resultField.templateOptions.options.find(o => o.value === field.default_value);
             }
           }
 
@@ -193,14 +191,22 @@ export class ToFormlyPipe implements PipeTransform {
           resultField.validators = {validation: ['phone']};
           break;
         case 'boolean':
-          resultField.type = 'radio';
-          if (field.default_value !== undefined && field.default_value !== null && field.default_value !== '') {
-            resultField.defaultValue = this._stringToBool(field.default_value);
+          if (field.properties.find(x => x.id === 'boolean_type' && x.value === 'checkbox')) {
+            resultField.type = 'checkbox';
+            resultField.defaultValue = false;
+            resultField.templateOptions = { indeterminate: false };
+            break;
           }
-          resultField.templateOptions.options = [
-            {value: true, label: 'Yes'},
-            {value: false, label: 'No'},
-          ];
+          else if (!field.properties.find(x => x.id === 'boolean_type')) {
+            resultField.type = 'radio';
+            if (field.default_value !== undefined && field.default_value !== null && field.default_value !== '') {
+              resultField.defaultValue = this._stringToBool(field.default_value);
+            }
+            resultField.templateOptions.options = [
+              {value: true, label: 'Yes'},
+              {value: false, label: 'No'},
+            ];
+          }
           break;
         case 'date':
           resultField.type = 'datepicker';

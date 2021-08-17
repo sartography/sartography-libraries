@@ -8,6 +8,7 @@ import {FileParams} from '../../types/file';
 import {BpmnFormJsonField} from '../../types/json';
 import {ToFormlyPipe} from './to-formly.pipe';
 import {APP_BASE_HREF} from '@angular/common';
+import {isBoolean} from "util";
 
 describe('ToFormlyPipe', () => {
   let httpMock: HttpTestingController;
@@ -171,6 +172,25 @@ describe('ToFormlyPipe', () => {
     expect(after[0].templateOptions.options[0].value).toEqual(true);
     expect(after[0].templateOptions.options[0].label).toEqual('Yes');
     expect(after[0].templateOptions.help).toEqual(before[0].properties[0].value);
+  });
+
+  it('converts boolean field to Formly checkbox', () => {
+    const before: BpmnFormJsonField[] =[
+      {
+        id: 'should_do_checkbox',
+        label: 'Does this do the checkbox?',
+        type: 'boolean',
+        default_value: 'false',
+        properties: [
+          {
+            id: 'boolean_property',
+            value: 'checkbox'
+          }
+        ]
+      }
+    ];
+    const after = pipe.transform(before);
+    expect(after[0].type === 'checkbox');
   });
 
   it('converts enum fields to various Formly array fields', async () => {

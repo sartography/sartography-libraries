@@ -1,3 +1,1 @@
-export const isSignedIn = (): boolean => {
-  return !!localStorage.getItem('token');
-};
+export const isSignedIn = (): boolean => !!localStorage.getItem('token');
