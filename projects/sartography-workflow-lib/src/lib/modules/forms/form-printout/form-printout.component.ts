@@ -23,6 +23,9 @@ export class FormPrintoutComponent {
   }
 
   getModelValue(key: string) {
+    if(!(key in this.field.model)) {
+      return "";
+    }
     let val = this.field.model[key];
     const fType = this.field.type;
 
