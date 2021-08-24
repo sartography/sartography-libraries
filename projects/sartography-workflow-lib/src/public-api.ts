@@ -9,10 +9,19 @@ export * from './lib/components/session-redirect/session-redirect.component';
 
 // Forms Module
 export * from './lib/modules/forms/sartography-forms.module';
+export * from './lib/modules/forms/autocomplete-field/autocomplete-field.component';
 export * from './lib/modules/forms/file-base/file-base.component';
 export * from './lib/modules/forms/file-field/file-field.component';
 export * from './lib/modules/forms/file-upload/file-upload.component';
+export * from './lib/modules/forms/form-printout/form-printout.component';
+export * from './lib/modules/forms/help-dialog/help-dialog.component';
+export * from './lib/modules/forms/help-wrapper/help-wrapper.component';
+export * from './lib/modules/forms/markdown-description-wrapper/markdown-description-wrapper.component';
+export * from './lib/modules/forms/multicheckbox-data-field/multicheckbox-data-field.component';
+export * from './lib/modules/forms/panel-wrapper/panel-wrapper.component';
 export * from './lib/modules/forms/radio-data-field/radio-data-field.component';
+export * from './lib/modules/forms/repeat-section-dialog/repeat-section-dialog.component';
+export * from './lib/modules/forms/repeat-section/repeat-section.component';
 export * from './lib/modules/forms/validators/email.regex';
 export * from './lib/modules/forms/validators/email.validator';
 export * from './lib/modules/forms/validators/formly.validator';
@@ -54,6 +63,7 @@ export * from './lib/testing/mocks/workflow-spec-category.mocks';
 export * from './lib/testing/mocks/workflow-spec.mocks';
 export * from './lib/testing/mocks/workflow-task.mocks';
 export * from './lib/testing/mocks/workflow.mocks';
+export * from './lib/testing/formly/component-factory';
 
 // Types
 export * from './lib/types/api';

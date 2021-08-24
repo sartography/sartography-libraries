@@ -50,7 +50,8 @@ describe('ApiErrorsComponent', () => {
   });
 
   it('should dismiss', () => {
-    const dismissSpy = spyOn((component as any)._bottomSheetRef, 'dismiss').and.stub();
+    console.log('Component is ', component);
+    const dismissSpy = spyOn((component as any).bottomSheetRef, 'dismiss').and.stub();
     component.dismiss(new MouseEvent('click'));
     expect(dismissSpy).toHaveBeenCalled();
   });

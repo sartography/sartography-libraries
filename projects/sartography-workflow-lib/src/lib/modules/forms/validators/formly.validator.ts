@@ -113,7 +113,7 @@ export function AutocompleteValidator(control: FormControl): ValidationErrors {
   );
 
   if (isRequired && !control.value) {
-    return {required: true}
+    return {required: true};
   }
 
   if (control.value) {
@@ -135,7 +135,7 @@ export function FileFieldValidator(control: FormControl): ValidationErrors {
     fields[0].templateOptions.required &&
     !control.value
   ) {
-    return {required: true}
+    return {required: true};
   }
   return null;
 }
@@ -154,7 +154,7 @@ export function FileUploadValidator(control: FormControl): ValidationErrors {
     fields[0].templateOptions.required &&
     !control.value
   ) {
-    return {required: true}
+    return {required: true};
   }
   return null;
 }
@@ -165,19 +165,18 @@ export function FileUploadValidatorMessage(err, field: FormlyFieldConfig) {
 
 export function RepeatSectionValidator(control: FormControl): ValidationErrors {
   const fields = (control as any)._fields;
-
   if (
     fields &&
     Array.isArray(fields) &&
     (fields.length > 0) &&
     fields[0].templateOptions.required &&
-    !control.value
+    [null, undefined].includes(control.value)
   ) {
-    return {required: true}
+    return {required: true};
   }
   return null;
 }
 
 export function RepeatSectionValidatorMessage(err, field: FormlyFieldConfig) {
-  return 'Please add an item.';
+  return 'Please add at least one.';
 }

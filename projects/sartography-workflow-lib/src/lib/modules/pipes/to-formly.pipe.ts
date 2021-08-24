@@ -1,6 +1,6 @@
 import {Injectable, Pipe, PipeTransform} from '@angular/core';
 import {FormlyFieldConfig} from '@ngx-formly/core';
-import createClone from 'rfdc';
+import { cloneDeep } from 'lodash';
 import {Observable, of, Subject, timer} from 'rxjs';
 import {isIterable} from 'rxjs/internal-compatibility';
 import {ApiService} from '../../services/api.service';
@@ -108,7 +108,7 @@ export interface PythonEvaluation {
   name: 'toFormly'
 })
 export class ToFormlyPipe implements PipeTransform {
-  private defaultFileParams:FileParams = {}
+  private defaultFileParams: FileParams = {};
   constructor(private apiService?: ApiService) {
   }
 
@@ -147,9 +147,7 @@ export class ToFormlyPipe implements PipeTransform {
                 resultField.defaultValue = options.find(o => o.value === field.default_value);
               });
             } else if (resultField.templateOptions.options instanceof Array) {
-              resultField.defaultValue = resultField.templateOptions.options.find(o => {
-                return o.value === field.default_value;
-              });
+              resultField.defaultValue = resultField.templateOptions.options.find(o => o.value === field.default_value);
             }
           }
 
@@ -194,14 +192,22 @@ export class ToFormlyPipe implements PipeTransform {
           resultField.validators = {validation: ['phone']};
           break;
         case 'boolean':
-          resultField.type = 'radio';
-          if (field.default_value !== undefined && field.default_value !== null && field.default_value !== '') {
-            resultField.defaultValue = this._stringToBool(field.default_value);
+          if (field.properties.find(x => x.id === 'boolean_type' && x.value === 'checkbox')) {
+            resultField.type = 'checkbox';
+            resultField.defaultValue = false;
+            resultField.templateOptions = { indeterminate: false };
+            break;
           }
-          resultField.templateOptions.options = [
-            {value: true, label: 'Yes'},
-            {value: false, label: 'No'},
-          ];
+          else if (!field.properties.find(x => x.id === 'boolean_type')) {
+            resultField.type = 'radio';
+            if (field.default_value !== undefined && field.default_value !== null && field.default_value !== '') {
+              resultField.defaultValue = this._stringToBool(field.default_value);
+            }
+            resultField.templateOptions.options = [
+              {value: true, label: 'Yes'},
+              {value: false, label: 'No'},
+            ];
+          }
           break;
         case 'date':
           resultField.type = 'datepicker';
@@ -210,7 +216,7 @@ export class ToFormlyPipe implements PipeTransform {
           }
           resultField.templateOptions = {
             datepickerOptions : { datepickerTogglePosition: 'prefix'}
-          }
+          };
           break;
         case 'files':
           resultField.type = 'files';
@@ -289,17 +295,10 @@ export class ToFormlyPipe implements PipeTransform {
               resultField.hideExpression = this.getPythonEvalFunction(field, p);
               // Hidden field values will be removed on save.
               // Clears value when hidden (will be the default in Formly v6?)
-              (resultField as any).autoClear = true;
+              (resultField as any).resetOnHide = true;
               break;
             case 'value_expression':
-              resultField.hooks = {
-                onInit(myField) {
-                  const control = myField.formControl;
-                  if (control.value === null && p.value in myField.model) {
-                    control.setValue(myField.model[p.value]);
-                  }
-                }
-              };
+              resultField.expressionProperties['model.' + field.id] = this.getPythonEvalFunction(field, p);
               break;
             case 'label_expression':
               resultField.expressionProperties['templateOptions.label'] = this.getPythonEvalFunction(field, p);
@@ -354,7 +353,7 @@ export class ToFormlyPipe implements PipeTransform {
 
                   // Wrap default value in an array.
                   if (resultField.hasOwnProperty('defaultValue')) {
-                    const defaultValue = createClone()(resultField.defaultValue);
+                    const defaultValue = cloneDeep(resultField.defaultValue);
                     resultField.defaultValue = [defaultValue];
                   }
                 }
@@ -531,8 +530,8 @@ export class ToFormlyPipe implements PipeTransform {
    */
   private getPythonEvalFunction(field: BpmnFormJsonField, p: BpmnFormJsonFieldProperty, defaultValue = false, method = null) {
     return (model: any, formState: any, fieldConfig: FormlyFieldConfig) => {
-      if(!formState) {
-        formState = {}
+      if (!formState) {
+        formState = {};
       }
 
       // Establish some variables to be added to the form state.
@@ -560,7 +559,7 @@ export class ToFormlyPipe implements PipeTransform {
               // wrap the assignment to the variable in a promise - so that it gets evaluated as a part
               // of angular's next round of DOM updates, so we avoid modifying the state in the middle of a call.
               // If there is no error, update the value.
-              if(!response.hasOwnProperty('error')) {
+              if (!response.hasOwnProperty('error')) {
                 Promise.resolve(null).then(() => {
                   // The last successful evaluation becomes the new default, this keeps things from flickering.
                   formState[variableKey].default = response.result;
@@ -570,29 +569,39 @@ export class ToFormlyPipe implements PipeTransform {
             },
             (error: ApiError) => {
               console.log(`Failed to update field ${field.id} unable to process expression. ${error.message}`);
-              formState[variableKey] = 'error'
+              formState[variableKey] = 'error';
             }
             );
       }
-      const key = this.hashCode(JSON.stringify(model));
+
+      // Establish the data model that the evaluation will be based upon.  This may be
+      // 'mainModel', if this is being handled in a form that was created in a repeat section, or it
+      // may include the data extracted from a great grandparent, if one exists, which will happen in
+      // repeat sections, where the parent is fieldArray, and the grandparent is a list of field arrays,
+      // and the great grandparent is the original form field.  I AM SORRY, if you are here trying to
+      // debug this.
+      let data = model;
+      if (formState.hasOwnProperty('mainModel')) {
+        data = {...formState.mainModel, ...model};
+      } else if ("parent" in fieldConfig.parent && "parent" in fieldConfig.parent.parent) {
+        data = {...fieldConfig.parent.parent.parent.model, ...model};
+      }
+
+      const key = this.hashCode(JSON.stringify(data));
       if (!(key in formState[variableKey])) {
         formState[variableKey][key] = formState[variableKey].default;
-        let data = model;
-        if(formState.hasOwnProperty('mainModel')) {
-          data = {...formState.mainModel, ...model};
-        }
         formState[variableSubjectKey].next({expression: p.value, data, key});
       }
       // We immediately return the variable, but it might change due to the above observable.
-      return formState[variableKey][key]
+      return formState[variableKey][key];
     };
   }
 
   private  hashCode(str) {
-    /* tslint:disable:no-bitwise */
+    /* eslint-disable no-bitwise */
     return str.split('').reduce((prevHash, currVal) =>
-      (((prevHash << 5) - prevHash) + currVal.charCodeAt(0))|0, 0);
-    /* tslint:enable:no-bitwise */
+      (((prevHash << 5) - prevHash) + currVal.charCodeAt(0)) | 0, 0);
+    /* eslint-enable no-bitwise */
   }
 
   /** Get num_results property from given field, or return the given default if no num_results property found. */
@@ -611,7 +620,7 @@ export class ToFormlyPipe implements PipeTransform {
   private _addClassName(field: FormlyFieldConfig, className: string): string {
     const newClasses = className ? className.split(' ') : [];
     const oldClasses = field.className ? field.className.split(' ') : [];
-    return Array.from(new Set(oldClasses.concat(newClasses))).join(' ')
+    return Array.from(new Set(oldClasses.concat(newClasses))).join(' ');
   }
 
   // Returns the appropriate className string for the given field, depending on its read-only state

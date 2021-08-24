@@ -68,7 +68,7 @@ describe('ErrorInterceptor', () => {
     httpClient.get<Study>(fakeUrl).subscribe(
       _ => fail(`should have failed with a ${errorStatus} error`),
       error => {
-        expect(error).toEqual(expectedMessage, 'message')
+        expect(error).toEqual(expectedMessage, 'message');
       }
     );
 
@@ -80,7 +80,7 @@ describe('ErrorInterceptor', () => {
   });
 
   it('display API error in bottom sheet', () => {
-    const bottomSheetOpenSpy = spyOn(errorInterceptor.bottomSheet, 'open').and.stub()
+    const bottomSheetOpenSpy = spyOn(errorInterceptor.bottomSheet, 'open').and.stub();
     const logErrorSpy = spyOn((errorInterceptor as any).googleAnalyticsService, 'errorEvent').and.stub();
     const errorStatus = 400;
     const fakeUrl = 'apiRoot/study/12345';
@@ -89,7 +89,7 @@ describe('ErrorInterceptor', () => {
     httpClient.get<Study>(fakeUrl).subscribe(
       _ => fail(`should have failed with a ${errorStatus} error`),
       error => {
-        expect(error).toEqual(expectedMessage, 'message')
+        expect(error).toEqual(expectedMessage, 'message');
       }
     );
 

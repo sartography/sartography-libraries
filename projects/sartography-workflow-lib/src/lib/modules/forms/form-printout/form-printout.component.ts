@@ -1,5 +1,5 @@
 import {formatDate} from '@angular/common';
-import {Component, Input} from '@angular/core';
+import {AfterViewInit, Component, Input} from '@angular/core';
 import {FormlyFieldConfig, FormlyForm} from '@ngx-formly/core';
 
 interface SelectFieldOption {
@@ -18,7 +18,14 @@ export class FormPrintoutComponent {
   constructor() {
   }
 
+  get fieldKey(): string {
+    return this.field.key as string;
+  }
+
   getModelValue(key: string) {
+    if(!(key in this.field.model)) {
+      return "";
+    }
     let val = this.field.model[key];
     const fType = this.field.type;
 
@@ -60,7 +67,7 @@ export class FormPrintoutComponent {
 
     if (fType === 'datepicker') {
       let displayDate = '';
-      if(val) {
+      if (val) {
         displayDate = formatDate(val, 'mediumDate', 'en-us');
       }
       return displayDate;
@@ -97,6 +104,9 @@ export class FormPrintoutComponent {
   }
 
   addColon(label: string) {
+    if (!label) {
+      return "";
+    }
     if (label[label.length - 1] === ':' || label.trim().length === 0) {
       return label;
     } else {

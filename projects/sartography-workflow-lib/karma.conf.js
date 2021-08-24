@@ -9,16 +9,22 @@ module.exports = function (config) {
       require('karma-jasmine'),
       require('karma-chrome-launcher'),
       require('karma-jasmine-html-reporter'),
-      require('karma-coverage-istanbul-reporter'),
+      require('karma-coverage'),
       require('@angular-devkit/build-angular/plugins/karma')
     ],
     client: {
-      clearContext: false // leave Jasmine Spec Runner output visible in browser
-    },
-    coverageIstanbulReporter: {
-      dir: require('path').join(__dirname, 'coverage/sartography-workflow-lib'),
-      reports: ['lcovonly'],
-      fixWebpackSourcePaths: true
+      clearContext: false, // leave Jasmine Spec Runner output visible in browser
+      jasmine: {
+        random: false,  // To avoid random errors when running the user tests, set random ordering of tests to false.
+      }
+     },
+    coverageReporter: {
+      dir: require('path').join(__dirname, 'sartography-workflow-lib/coverage'),
+      subdir: '.',
+      reporters: [
+        { type: 'html' },
+        { type: 'text-summary' }
+      ],
     },
     reporters: ['progress', 'kjhtml'],
     port: 9876,

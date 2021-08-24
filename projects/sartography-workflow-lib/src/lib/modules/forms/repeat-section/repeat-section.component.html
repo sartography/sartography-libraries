@@ -5,11 +5,15 @@
   fxLayoutGap="1em"
   [fxHide]="shouldHide()"
 >
-  <mat-error *ngIf="!field.formControl.valid"> Must add at least one {{ field.templateOptions.buttonLabel ? field.templateOptions.buttonLabel : 'entry' }}</mat-error>
-  <mat-card *ngFor="let f of field.fieldGroup; let i = index;" class="repeat">
+
+  <mat-error *ngIf="!form.valid">
+  <formly-validation-message [field]="field"></formly-validation-message>
+  </mat-error>
+
+  <mat-card *ngFor="let fg of field.fieldGroup; let i = index;" class="repeat">
     <mat-card-content fxLayout="row">
       <div fxFlex="70">
-        <lib-form-printout [field]="f"></lib-form-printout>
+        <lib-form-printout *ngFor="let f of fg.fieldGroup" [field]="f"></lib-form-printout>
       </div>
       <div
         fxFlex="30"
@@ -17,7 +21,7 @@
         fxLayoutAlign="end start"
       >
         <button
-          (click)="openDialog(i, f)"
+          (click)="openDialog(i, fg)"
           mat-icon-button
           type="button"
         >
@@ -25,7 +29,7 @@
         </button>
         <button
           *ngIf="!field.templateOptions.editOnly"
-          (click)="remove(i)"
+          (click)="confirmDelete(i)"
           mat-icon-button
           type="button"
         >
@@ -35,7 +39,6 @@
     </mat-card-content>
   </mat-card>
 </div>
-
 <div *ngIf="field && field.templateOptions" class="repeat-action">
   <button
     *ngIf="!field.templateOptions.editOnly"

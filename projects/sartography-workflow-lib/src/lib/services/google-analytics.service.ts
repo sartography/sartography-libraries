@@ -5,7 +5,7 @@ import {NavigationEnd, Router} from '@angular/router';
 import {ApiError} from '../types/api';
 import {AppEnvironment} from '../types/app-environment';
 
-declare var gtag;
+declare let gtag;
 
 @Injectable({
   providedIn: 'root'
@@ -22,7 +22,7 @@ export class GoogleAnalyticsService {
   }
 
   public authEvent(req: HttpRequest<any>) {
-    this.event('login', 'authentication', req.url)
+    this.event('login', 'authentication', req.url);
   }
 
   public errorEvent(error: ApiError) {
@@ -33,7 +33,7 @@ export class GoogleAnalyticsService {
     if (typeof gtag !== 'undefined') {
       gtag('set', {user_id: uid}); // Set the user ID using signed-in user_id.
     }
-    this.event('user-id available', 'authentication', uid)
+    this.event('user-id available', 'authentication', uid);
   }
 
   public init(analyticsKey) {

@@ -114,9 +114,7 @@ describe('FileUploadComponent', () => {
         name: fm.name,
         isDirectory: false,
         isFile: true,
-        file: (callback: (file: File) => void): void => {
-          callback(mockFile1);
-        },
+        file: (callback: (file: File) => undefined): undefined => callback(mockFile1),
       };
       return new NgxFileDropEntry(fm.name, fileEntry);
     });

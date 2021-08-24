@@ -1,6 +1,6 @@
 import {helpWrapperExtension} from './help-wrapper.extension';
 import {FormlyFieldConfig} from '@ngx-formly/core';
-import createClone from 'rfdc';
+import { cloneDeep } from 'lodash';
 
 describe('helpWrapperExtension', () => {
 
@@ -9,7 +9,7 @@ describe('helpWrapperExtension', () => {
       key: 'field_without_help',
       type: 'text'
     };
-    const before = createClone()(field);
+    const before = cloneDeep(field);
 
     helpWrapperExtension(before);
     expect(field).toEqual(before);
@@ -23,7 +23,7 @@ describe('helpWrapperExtension', () => {
         help: 'whatever',
       }
     };
-    const before = createClone()(field);
+    const before = cloneDeep(field);
 
     helpWrapperExtension(field);
     expect(field).not.toEqual(before);

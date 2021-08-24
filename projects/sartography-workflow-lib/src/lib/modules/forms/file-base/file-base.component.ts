@@ -25,13 +25,14 @@ export class FileBaseComponent extends FieldType implements OnInit {
 
   ngOnInit(): void {
     super.ngOnInit();
+    const key = this.key as string;
     this.fileParams = {
       study_id: this.to.study_id,
       workflow_id: this.to.workflow_id,
       task_spec_name: this.to.task_spec_name,
-      form_field_key: this.key,
+      form_field_key: key,
     };
-    this.fileId = this.model && this.model.hasOwnProperty(this.key) ? this.model[this.key].id : null;
+    this.fileId = this.model && this.model.hasOwnProperty(key) ? this.model[key].id : null;
     this.loadFiles();
   }
 

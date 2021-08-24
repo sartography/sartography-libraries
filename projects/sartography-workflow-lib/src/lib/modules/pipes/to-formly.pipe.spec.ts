@@ -8,6 +8,7 @@ import {FileParams} from '../../types/file';
 import {BpmnFormJsonField} from '../../types/json';
 import {ToFormlyPipe} from './to-formly.pipe';
 import {APP_BASE_HREF} from '@angular/common';
+import {isBoolean} from "util";
 
 describe('ToFormlyPipe', () => {
   let httpMock: HttpTestingController;
@@ -17,7 +18,7 @@ describe('ToFormlyPipe', () => {
   const workflowId = 20;
   const studyId = 15;
   const workflowSpec = 'PythonWorkflow';
-  const fileParams = {workflow_id:workflowId, study_id: studyId, workflow_spec_id: workflowSpec};
+  const fileParams = {workflow_id: workflowId, study_id: studyId, workflow_spec_id: workflowSpec};
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -97,6 +98,7 @@ describe('ToFormlyPipe', () => {
       }
     ];
     const after = pipe.transform(before);
+    console.log(after[0])
     expect(after[0].key).toEqual(before[0].id);
     expect(after[0].type).toEqual('input');
     expect(after[0].defaultValue).toEqual(before[0].default_value);
@@ -104,7 +106,7 @@ describe('ToFormlyPipe', () => {
     expect(after[0].hideExpression).toEqual(jasmine.any(Function));
     expect(after[0].expressionProperties['templateOptions.required']).toEqual(jasmine.any(Function));
     expect(after[0].expressionProperties['templateOptions.label']).toEqual(jasmine.any(Function));
-    expect(after[0].hooks).toEqual({onInit: jasmine.any(Function)});
+    expect(after[0].expressionProperties['model.full_name']).toEqual(jasmine.any(Function));
     expect(after[0].templateOptions.placeholder).toEqual(before[0].properties[4].value);
     expect(after[0].templateOptions.description).toEqual(before[0].properties[5].value);
     expect(after[0].templateOptions.markdownDescription).toEqual(before[0].properties[6].value);
@@ -170,6 +172,25 @@ describe('ToFormlyPipe', () => {
     expect(after[0].templateOptions.options[0].value).toEqual(true);
     expect(after[0].templateOptions.options[0].label).toEqual('Yes');
     expect(after[0].templateOptions.help).toEqual(before[0].properties[0].value);
+  });
+
+  it('converts boolean field to Formly checkbox', () => {
+    const before: BpmnFormJsonField[] =[
+      {
+        id: 'should_do_checkbox',
+        label: 'Does this do the checkbox?',
+        type: 'boolean',
+        default_value: 'false',
+        properties: [
+          {
+            id: 'boolean_property',
+            value: 'checkbox'
+          }
+        ]
+      }
+    ];
+    const after = pipe.transform(before);
+    expect(after[0].type === 'checkbox');
   });
 
   it('converts enum fields to various Formly array fields', async () => {
@@ -303,7 +324,7 @@ describe('ToFormlyPipe', () => {
     expect(after[0].templateOptions.workflow_id).toEqual(workflowId);
     expect(after[0].templateOptions.study_id).toEqual(studyId);
     expect(after[0].templateOptions.workflow_spec_id).toEqual(workflowSpec);
-    expect(after[0].templateOptions.doc_code).not.toBeNull()
+    expect(after[0].templateOptions.doc_code).not.toBeNull();
   });
 
 
@@ -414,9 +435,9 @@ describe('ToFormlyPipe', () => {
         type: 'textarea',
       },
     ];
-    const _getAutocompleteNumResultsSpy = spyOn((pipe as any), '_getAutocompleteNumResults').and.callThrough();
+    const getAutocompleteNumResultsSpy = spyOn((pipe as any), '_getAutocompleteNumResults').and.callThrough();
     const after = pipe.transform(before, fileParams);
-    expect(_getAutocompleteNumResultsSpy).toHaveBeenCalledWith(before[1], 5);
+    expect(getAutocompleteNumResultsSpy).toHaveBeenCalledWith(before[1], 5);
     expect(after[1].key).toEqual(before[1].id);
     expect(after[1].type).toEqual('autocomplete');
     expect(after[1].templateOptions.label).toEqual(before[1].label);

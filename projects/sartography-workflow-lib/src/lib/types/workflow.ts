@@ -14,6 +14,13 @@ export enum WorkflowState {
   OPTIONAL = 'optional',
 }
 
+export interface WorkflowSpecReference {
+  id: number;
+  name: string;
+  display_name: string;
+}
+
+
 export interface WorkflowSpec {
   id: string;
   name: string;
@@ -26,6 +33,8 @@ export interface WorkflowSpec {
   display_order?: number;
   standalone?: boolean;
   library?: boolean;
+  libraries?: WorkflowSpecReference[];
+  parents?: WorkflowSpecReference[];
 }
 
 export interface WorkflowSpecCategory {
@@ -50,7 +59,7 @@ export interface WorkflowMetadata {
   status: WorkflowStatus;
   state_message?: string;  // An optional message explaining the state of a workflow.
   display_order?: number;
-  is_review? : boolean;
+  is_review?: boolean;
 }
 
 
@@ -65,7 +74,7 @@ export interface Workflow {
   next_task?: WorkflowTask;
   is_latest_spec?: boolean;
   spec_version?: string;
-  is_review? : boolean;
+  is_review?: boolean;
   title?: string;
   redirect?: number;
 }
@@ -80,7 +89,7 @@ export interface WorkflowNavItem {
   backtrack_to?: string;
   task_id?: string;
   state?: WorkflowTaskState;
-  children?: WorkflowNavItem[]
+  children?: WorkflowNavItem[];
 }
 
 

@@ -55,5 +55,5 @@ describe('newFileFromResponse', () => {
         headers: mockHeaders
       }
     ))).toEqual(mockFile0);
-  })
+  });
 });

@@ -11,34 +11,34 @@ import {BehaviorSubject} from 'rxjs';
 })
 export class UserService {
   @Output() userChanged = new EventEmitter<User>();
-  private readonly _user = new BehaviorSubject<User>(undefined);
-  private readonly _isAdmin = new BehaviorSubject(false);
-  private readonly _isImpersonating = new BehaviorSubject(false);
-  private readonly _realUser = new BehaviorSubject<User>(undefined);
+  private readonly user = new BehaviorSubject<User>(undefined);
+  private readonly isAdmin = new BehaviorSubject(false);
+  private readonly isImpersonating = new BehaviorSubject(false);
+  private readonly realUser = new BehaviorSubject<User>(undefined);
   // we give the option to use observables
-  readonly user$ = this._user.asObservable();
-  readonly realUser$ =this._realUser.asObservable();
-  readonly isImpersonating$ = this._isImpersonating.asObservable();
-  readonly isAdmin$ = this._isAdmin.asObservable();
+  readonly user$ = this.user.asObservable();
+  readonly realUser$ = this.realUser.asObservable();
+  readonly isImpersonating$ = this.isImpersonating.asObservable();
+  readonly isAdmin$ = this.isAdmin.asObservable();
 
   constructor(private api: ApiService,
               public googleAnalyticsService: GoogleAnalyticsService) {
-    this._loadUser()
+    this._loadUser();
   }
 
   private _impersonate() {
     const impersonateUid = localStorage.getItem('admin_view_as');
     if ((impersonateUid !== null) &&
-        (impersonateUid !== this._realUser.value.uid) &&
-        this._isAdmin.value) {
+        (impersonateUid !== this.realUser.value.uid) &&
+        this.isAdmin.value) {
           this.api.getUser(impersonateUid).subscribe(u => {
-            this._user.next(u);
-            this._isImpersonating.next(true);
-            this._afterUserLoad()
-      }, () => this._onLoginError())
+            this.user.next(u);
+            this.isImpersonating.next(true);
+            this._afterUserLoad();
+      }, () => this._onLoginError());
     } else {
-      this._user.next(this._realUser.value);
-      this._isImpersonating.next(false);
+      this.user.next(this.realUser.value);
+      this.isImpersonating.next(false);
       this._afterUserLoad();
     }
   }
@@ -46,8 +46,8 @@ export class UserService {
   private _loadUser() {
     this.api.getUser().subscribe(u => {
       if (u) {
-        this._realUser.next(u);
-        this._isAdmin.next(u.is_admin);
+        this.realUser.next(u);
+        this.isAdmin.next(u.is_admin);
         this._impersonate();
       } else {
         this._onLoginError();
@@ -56,14 +56,14 @@ export class UserService {
   }
 
   private _afterUserLoad() {
-    if (this._realUser.value && this._realUser.value.uid) {
-      this.googleAnalyticsService.setUser(this._realUser.value.uid);
+    if (this.realUser.value && this.realUser.value.uid) {
+      this.googleAnalyticsService.setUser(this.realUser.value.uid);
     }
-    this.userChanged.emit(this._user.value);
+    this.userChanged.emit(this.user.value);
   }
 
   viewAs(uid: string) {
-    if (this._isAdmin.value && (uid !== this._realUser.value.uid)) {
+    if (this.isAdmin.value && (uid !== this.realUser.value.uid)) {
       localStorage.setItem('admin_view_as', uid);
     } else {
       localStorage.removeItem('admin_view_as');

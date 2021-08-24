@@ -8,13 +8,12 @@ import { AppEnvironment } from '../types/app-environment';
 import { Approval, ApprovalCounts, ApprovalStatus } from '../types/approval';
 import { DocumentDirectory, FileMeta, FileParams, LookupData } from '../types/file';
 import { ScriptInfo } from '../types/script-info';
-import { Study } from '../types/study';
+import { Study , StudyAssociate} from '../types/study';
 import { TaskAction, TaskEvent } from '../types/task-event';
 import { User } from '../types/user';
 import { Workflow, WorkflowSpec, WorkflowSpecCategory } from '../types/workflow';
 import { WorkflowTask } from '../types/workflow-task';
 import { isSignedIn } from '../util/is-signed-in';
-
 
 @Injectable({
   providedIn: 'root'
@@ -44,6 +43,7 @@ export class ApiService {
     studyList: '/study',
     study: '/study/{study_id}',
     studyApprovals: '/study/{study_id}/approvals',
+    studyAssociates: '/study/{study_id}/associates',
 
     // Approvals
     approvalCounts: '/approval-counts',
@@ -53,8 +53,9 @@ export class ApiService {
     // Workflow Specifications
     workflowSpecList: '/workflow-specification',
     workflowSpec: '/workflow-specification/{spec_id}',
-    workflowSpecListStandalone: '/workflow-specification/standalone',
-    workflowSpecListLibraries: '/workflow-specification/libraries',
+    workflowSpecListStandalone: '/workflow-specification?standalone=true',
+    workflowSpecListLibraries: '/workflow-specification?libraries=true',
+    updateWorkflowLibrary: '/workflow-specification/{spec_id}/library/{library_id}',
     workflowSpecValidate: '/workflow-specification/{spec_id}/validate',
 
     // Workflow Specification Category
@@ -160,6 +161,37 @@ export class ApiService {
       .delete<null>(url)
       .pipe(catchError(err => ApiService._handleError(err)));
   }
+
+  /** Delete a library from a workflow */
+  deleteWorkflowLibrary(workflowSpecId: string, librarySpecId: string): Observable<null> {
+    const url = this.apiRoot + this.endpoints.updateWorkflowLibrary
+      .replace('{spec_id}', workflowSpecId)
+      .replace('{library_id}', librarySpecId);
+    return this.httpClient
+      .delete<null>(url)
+      .pipe(catchError(err => ApiService._handleError(err)));
+  }
+  /** Return all users related to a study and their access + role */
+  getStudyAssociates(studyId: number): Observable<StudyAssociate[]> {
+    const url = this.apiRoot + this.endpoints.studyAssociates
+      .replace('{study_id}', studyId.toString());
+
+    return this.httpClient
+      .get<StudyAssociate[]>(url)
+      .pipe(catchError(err => ApiService._handleError(err)));
+  }
+  /** Delete a library from a workflow */
+  addWorkflowLibrary(workflowSpecId: string, librarySpecId: string): Observable<null> {
+    const url = this.apiRoot + this.endpoints.updateWorkflowLibrary
+      .replace('{spec_id}', workflowSpecId)
+      .replace('{library_id}', librarySpecId);
+    return this.httpClient
+      .post<null>(url,'')
+      .pipe(catchError(err => ApiService._handleError(err)));
+  }
+
+
+
 
   /** Get a specific Study */
   getStudyApprovals(studyId: number): Observable<Approval[]> {
@@ -270,8 +302,15 @@ export class ApiService {
   /** Validate a Workflow Specification */
   validateWorkflowSpecification(specId: string, testUntil: string = '', studyId?: number): Observable<ApiError[]> {
     let params = new HttpParams();
-    if (testUntil !== '') params = params.set('test_until', String(testUntil));
-    if (studyId) params = params.set('study_id', studyId.toString());
+
+    if (testUntil !== '') {
+      params = params.set('test_until', String(testUntil));
+    }
+
+    if (studyId) {
+      params = params.set('study_id', studyId.toString());
+    }
+
     const url = this.apiRoot + this.endpoints.workflowSpecValidate.replace('{spec_id}', specId);
     return this.httpClient.get<ApiError[]>(url, { params })
       .pipe(catchError(err => ApiService._handleError(err)));
@@ -431,9 +470,9 @@ export class ApiService {
   getTaskEvents(action?: TaskAction, studyId?: number, workflowId?: number): Observable<TaskEvent[]> {
     const url = this.apiRoot + this.endpoints.taskEvents;
     let httpParams = new HttpParams();
-    if (action) httpParams = httpParams.set('action', action);
-    if (studyId) httpParams = httpParams.set('study', studyId.toString());
-    if (workflowId) httpParams = httpParams.set('workflow', workflowId.toString());
+    if (action)  { httpParams = httpParams.set('action', action); }
+    if (studyId) { httpParams = httpParams.set('study', studyId.toString()); }
+    if (workflowId) { httpParams = httpParams.set('workflow', workflowId.toString()); }
 
     return this.httpClient
       .get<TaskEvent[]>(url + '?' + httpParams.toString())
@@ -488,11 +527,11 @@ export class ApiService {
       httpParams = httpParams.append('update_all', 'True');
     }
     if (terminateLoop) {
-      httpParams = httpParams.append('terminate_loop', 'True')
+      httpParams = httpParams.append('terminate_loop', 'True');
     }
 
     if (httpParams.toString() !== '') {
-      url = url + '?' + httpParams.toString()
+      url = url + '?' + httpParams.toString();
     }
 
     return this.httpClient.put<Workflow>(url, data)
@@ -601,7 +640,7 @@ export class ApiService {
   }
 
   openUrl(url) {
-    location.href = url
+    location.href = url;
   }
 
   /** lookupFieldOptions */
@@ -609,7 +648,7 @@ export class ApiService {
     const url = this.apiRoot + this.endpoints.fieldOptionsLookup
       .replace('{workflow_id}', fileParams.workflow_id.toString())
       .replace('{task_spec_name}', fileParams.task_spec_name.toString())
-      .replace('{field_id}', fileParams.form_field_key);
+      .replace('{field_id}', fileParams.form_field_key as string);
 
     if (fileParams.task_spec_name === null) {
       return throwError('The task spec name is not defined. Lookups will fail');

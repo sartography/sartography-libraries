@@ -16,7 +16,7 @@ export const mockTaskEvent0: TaskEvent = {
   task_state: mockWorkflowTask0.state,
   task_lane: 'supervisor',
   date: new Date(),
-}
+};
 
 export const mockTaskEvent1: TaskEvent = {
   id: 1,
@@ -31,7 +31,7 @@ export const mockTaskEvent1: TaskEvent = {
   task_state: mockWorkflowTask1.state,
   task_lane: '',
   date: new Date(),
-}
+};
 
 export const mockTaskEvents: TaskEvent[] = [
   mockTaskEvent0,

@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, OnInit} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {FieldWrapper} from '@ngx-formly/core';
 import {MarkdownService} from 'ngx-markdown';
 
@@ -7,7 +7,7 @@ import {MarkdownService} from 'ngx-markdown';
   templateUrl: './markdown-description-wrapper.component.html',
   styleUrls: ['./markdown-description-wrapper.component.scss']
 })
-export class MarkdownDescriptionWrapperComponent extends FieldWrapper implements OnInit, AfterViewInit {
+export class MarkdownDescriptionWrapperComponent extends FieldWrapper implements OnInit {
   constructor(private markdownService: MarkdownService) {
     super();
   }
@@ -20,7 +20,5 @@ export class MarkdownDescriptionWrapperComponent extends FieldWrapper implements
     };
   }
 
-  ngAfterViewInit(): void {
-  }
 }
 

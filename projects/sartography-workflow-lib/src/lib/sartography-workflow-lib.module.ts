@@ -10,12 +10,11 @@ import {SessionRedirectComponent} from './components/session-redirect/session-re
 import {FormlyTestComponent} from './testing/formly/component-factory';
 import {MockEnvironment} from './testing/mocks/environment.mocks';
 import {HIGHLIGHT_OPTIONS, HighlightModule} from 'ngx-highlightjs';
-import * as hljs from 'highlight.js';
 import {MatExpansionModule} from '@angular/material/expansion';
 
 // @dynamic
 export function import_json() {
-  import('node_modules/highlight.js/lib/languages/json.js')
+  import('highlight.js/lib/languages/json.js');
 }
 
 @NgModule({

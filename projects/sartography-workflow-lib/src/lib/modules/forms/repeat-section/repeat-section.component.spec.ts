@@ -1,29 +1,30 @@
-import {HttpClientTestingModule, HttpTestingController} from '@angular/common/http/testing';
-import {async, ComponentFixture, inject, TestBed} from '@angular/core/testing';
-import {FormGroup, FormsModule, ReactiveFormsModule} from '@angular/forms';
-import {MatCardModule} from '@angular/material/card';
-import {MatNativeDateModule} from '@angular/material/core';
-import {MAT_DIALOG_DATA, MatDialogModule, MatDialogRef} from '@angular/material/dialog';
-import {MatFormFieldModule} from '@angular/material/form-field';
-import {MatIconModule} from '@angular/material/icon';
-import {MatInputModule} from '@angular/material/input';
-import {BrowserDynamicTestingModule} from '@angular/platform-browser-dynamic/testing';
-import {BrowserAnimationsModule, NoopAnimationsModule} from '@angular/platform-browser/animations';
-import {FieldArrayType, FormlyConfig, FormlyFormBuilder, FormlyModule} from '@ngx-formly/core';
-import {FormlyFieldConfigCache} from '@ngx-formly/core/lib/components/formly.field.config';
-import {FormlyMaterialModule} from '@ngx-formly/material';
-import {FormlyMatDatepickerModule} from '@ngx-formly/material/datepicker';
-import {DeviceDetectorService} from 'ngx-device-detector';
-import {of} from 'rxjs';
-import {mockFormlyFieldConfig} from '../../../testing/mocks/form.mocks';
-import {FormPrintoutComponent} from '../form-printout/form-printout.component';
-import {PanelWrapperComponent} from '../panel-wrapper/panel-wrapper.component';
-import {RepeatSectionDialogComponent} from '../repeat-section-dialog/repeat-section-dialog.component';
-import {RepeatSectionComponent} from './repeat-section.component';
-import {MockEnvironment} from '../../../testing/mocks/environment.mocks';
-import {APP_BASE_HREF} from '@angular/common';
-import {ApiService} from '../../../services/api.service';
-import {Router} from '@angular/router';
+import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
+import { async, ComponentFixture, inject, TestBed } from '@angular/core/testing';
+import { FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatCardModule } from '@angular/material/card';
+import { MatNativeDateModule } from '@angular/material/core';
+import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
+import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/testing';
+import { BrowserAnimationsModule, NoopAnimationsModule } from '@angular/platform-browser/animations';
+import { FieldArrayType, FormlyConfig, FormlyFormBuilder, FormlyModule } from '@ngx-formly/core';
+import { FormlyFieldConfigCache } from '@ngx-formly/core/lib/components/formly.field.config';
+import { FormlyMaterialModule } from '@ngx-formly/material';
+import { FormlyMatDatepickerModule } from '@ngx-formly/material/datepicker';
+import { DeviceDetectorService } from 'ngx-device-detector';
+import { of } from 'rxjs';
+import { mockFormlyFieldConfig } from '../../../testing/mocks/form.mocks';
+import { FormPrintoutComponent } from '../form-printout/form-printout.component';
+import { PanelWrapperComponent } from '../panel-wrapper/panel-wrapper.component';
+import { RepeatSectionDialogComponent } from '../repeat-section-dialog/repeat-section-dialog.component';
+import { RepeatSectionComponent } from './repeat-section.component';
+import { MockEnvironment } from '../../../testing/mocks/environment.mocks';
+import { APP_BASE_HREF } from '@angular/common';
+import { ApiService } from '../../../services/api.service';
+import { Router } from '@angular/router';
+import { FlexLayoutModule } from '@angular/flex-layout';
 
 describe('RepeatSectionComponent', () => {
   let component: RepeatSectionComponent;
@@ -39,13 +40,14 @@ describe('RepeatSectionComponent', () => {
       first_field: 'First Field Value',
       second_field: 'Second Field Value',
       third_field: {a: true},
-    }
+    },
   };
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [
         BrowserAnimationsModule,
+        FlexLayoutModule,
         FormlyModule.forRoot({
           types: [
             {name: 'repeat', component: RepeatSectionComponent},
@@ -86,15 +88,15 @@ describe('RepeatSectionComponent', () => {
             close: (dialogResult: any) => {
             },
             afterClosed: (dialogResult: any) => of(mockData),
-          }
+          },
         },
       ],
     }).overrideModule(BrowserDynamicTestingModule, {
       set: {
         entryComponents: [
-          RepeatSectionDialogComponent
-        ]
-      }
+          RepeatSectionDialogComponent,
+        ],
+      },
     })
       .compileComponents();
   }));
@@ -134,5 +136,27 @@ describe('RepeatSectionComponent', () => {
     component.openDialog(0);
     expect(openDialogSpy).toHaveBeenCalled();
     expect(addSpy).toHaveBeenCalled();
+  });
+
+  it('should open a dialog confirming deletion of an item', () => {
+    const removeSpy = spyOn(component, 'remove').and.stub();
+
+    // @ts-ignore
+    const openDialogSpy = spyOn(component.dialog, 'open').and.returnValue({afterClosed: () => of(true)});
+
+    component.confirmDelete(0);
+    expect(openDialogSpy).toHaveBeenCalled();
+    expect(removeSpy).toHaveBeenCalled();
+  });
+
+  it('should not delete an item if not confirmed', () => {
+    const removeSpy = spyOn(component, 'remove').and.stub();
+
+    // @ts-ignore
+    const openDialogSpy = spyOn(component.dialog, 'open').and.returnValue({afterClosed: () => of(false)});
+
+    component.confirmDelete(0);
+    expect(openDialogSpy).toHaveBeenCalled();
+    expect(removeSpy).not.toHaveBeenCalled();
   });
 });

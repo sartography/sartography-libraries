@@ -4,13 +4,12 @@ import {NoopAnimationsModule} from '@angular/platform-browser/animations';
 import {FormlyFieldConfig, FormlyModule} from '@ngx-formly/core';
 import {FormlySelectModule} from '@ngx-formly/core/select';
 import {FormlyMatFormFieldModule} from '@ngx-formly/material/form-field';
-import createClone from 'rfdc';
+import { cloneDeep } from 'lodash';
 import {createFormlyFieldComponent} from '../../../testing/formly/component-factory';
 import {MulticheckboxDataFieldComponent} from './multicheckbox-data-field.component';
 
 
-const renderComponent = (field: FormlyFieldConfig) => {
-  return createFormlyFieldComponent(field, {
+const renderComponent = (field: FormlyFieldConfig) => createFormlyFieldComponent(field, {
     declarations: [
       MulticheckboxDataFieldComponent,
     ],
@@ -26,7 +25,6 @@ const renderComponent = (field: FormlyFieldConfig) => {
       NoopAnimationsModule,
     ],
   });
-}
 
 describe('MulticheckboxDataFieldComponent', () => {
   const mockModel = {
@@ -52,6 +50,7 @@ describe('MulticheckboxDataFieldComponent', () => {
         {value: 'f', label: 'Option F', data: {short_name: 'f', long_name: 'Option F', description: 'F is for fanfaronic'}},
       ],
     },
+    model: null,
   };
 
   it('should render multicheckbox type with default value', () => {
@@ -68,8 +67,8 @@ describe('MulticheckboxDataFieldComponent', () => {
   });
 
   it('should render multicheckbox type with previously-selected values', () => {
-    const mockFieldWithModel = createClone()(mockField);
-    mockFieldWithModel.model = createClone()(mockModel);
+    const mockFieldWithModel = cloneDeep(mockField);
+    mockFieldWithModel.model = cloneDeep(mockModel);
     const component = renderComponent(mockFieldWithModel);
 
     expect(component.query('lib-multicheckbox-data-field')).not.toBeNull();
@@ -84,7 +83,7 @@ describe('MulticheckboxDataFieldComponent', () => {
     const checkbox1 = checkboxes[0].query(By.css('input'));
     checkbox1.nativeElement.click();
     component.fixture.detectChanges();
-    expect(component.field.form.value.checkbox_field.length).toEqual(3,'checkbox should be checked.');
+    expect(component.field.form.value.checkbox_field.length).toEqual(3, 'checkbox should be checked.');
 
     // Click the 2nd item.
     const checkbox2 = checkboxes[0].query(By.css('input'));
@@ -113,7 +112,7 @@ describe('MulticheckboxDataFieldComponent', () => {
           }
         ]
       }
-    }
+    };
 
     const component = renderComponent(mockFieldSingle);
     expect(component.query('lib-multicheckbox-data-field')).not.toBeNull();
