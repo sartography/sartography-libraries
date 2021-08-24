@@ -29,6 +29,7 @@ export class FileBaseComponent extends FieldType implements OnInit {
     this.fileParams = {
       study_id: this.to.study_id,
       workflow_id: this.to.workflow_id,
+      task_spec_name: this.to.task_spec_name,
       form_field_key: key,
     };
     this.fileId = this.model && this.model.hasOwnProperty(key) ? this.model[key].id : null;
