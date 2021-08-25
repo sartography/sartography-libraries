@@ -315,9 +315,12 @@ export class ToFormlyPipe implements PipeTransform {
               resultField.expressionProperties.className = this._readonlyClassName;
               break;
             case 'read_only':
-              resultField.templateOptions.readonly = this._stringToBool(p.value);
-              resultField.templateOptions.floatLabel = 'always';
-              resultField.className = this._addClassName(resultField, 'read-only should-float');
+              let read_only = this._stringToBool(p.value);
+              resultField.templateOptions.readonly = read_only;
+              if (read_only) {
+                resultField.templateOptions.floatLabel = 'always';
+                resultField.className = this._addClassName(resultField, 'read-only should-float');
+              }
               break;
             case 'placeholder':
               resultField.templateOptions.placeholder = p.value;
