@@ -22,9 +22,17 @@ export const mockWorkflowSpecCategory2: WorkflowSpecCategory = {
   display_order: 2,
   workflows: mockWorkflowMetas,
 };
+export const mockWorkflowSpecCategory3: WorkflowSpecCategory = {
+  id: 2,
+  name: 'weird_thing',
+  display_name: 'Weird thing',
+  display_order: 3,
+  workflows: mockWorkflowMetas,
+};
 
 export const mockWorkflowSpecCategories: WorkflowSpecCategory[] = [
   mockWorkflowSpecCategory0,
   mockWorkflowSpecCategory1,
   mockWorkflowSpecCategory2,
+  mockWorkflowSpecCategory3,
 ];

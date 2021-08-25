@@ -20,7 +20,7 @@ import {mockErrorResponse} from '../testing/mocks/study-status.mocks';
 import {mockStudies, mockStudy0, newRandomStudy} from '../testing/mocks/study.mocks';
 import {mockUser0} from '../testing/mocks/user.mocks';
 import {mockWorkflowSpecCategories, mockWorkflowSpecCategory0} from '../testing/mocks/workflow-spec-category.mocks';
-import {mockWorkflowSpec0, mockWorkflowSpecs} from '../testing/mocks/workflow-spec.mocks';
+import {mockWorkflowSpec0, mockWorkflowSpec3, mockWorkflowSpecs} from '../testing/mocks/workflow-spec.mocks';
 import {mockWorkflowTask0} from '../testing/mocks/workflow-task.mocks';
 import {mockWorkflow0} from '../testing/mocks/workflow.mocks';
 import {ApprovalCounts} from '../types/approval';
@@ -700,6 +700,35 @@ describe('ApiService', () => {
     const req = httpMock.expectOne(`apiRoot/eval`);
     expect(req.request.method).toEqual('PUT');
     req.flush({result: true});
+  });
+
+  it('should add a library workflow specification', () => {
+    service.addWorkflowSpecification(mockWorkflowSpec3).subscribe(data => {
+      expect(data).toBeTruthy();
+      expect(data.id).toEqual(mockWorkflowSpec3.id);
+      expect(data.library).toEqual(true);
+    });
+
+    const req = httpMock.expectOne(`apiRoot/workflow-specification`);
+    expect(req.request.method).toEqual('POST');
+    req.flush(mockWorkflowSpec3);
+  });
+
+  it('should update a library to be standalone and no longer a library', () => {
+    const modifiedSpec: WorkflowSpec = cloneDeep(mockWorkflowSpec3);
+    modifiedSpec.standalone= true;
+    modifiedSpec.library= false;
+
+    service.updateWorkflowSpecification(mockWorkflowSpec3.id, modifiedSpec).subscribe(data => {
+      expect(data).toBeTruthy();
+      expect(data.id).toEqual(mockWorkflowSpec3.id);
+      expect(data.standalone).toEqual(true);
+      expect(data.library).toEqual(false);
+    });
+
+    const req = httpMock.expectOne(`apiRoot/workflow-specification/${mockWorkflowSpec3.id}`);
+    expect(req.request.method).toEqual('PUT');
+    req.flush(modifiedSpec);
   });
 
 });

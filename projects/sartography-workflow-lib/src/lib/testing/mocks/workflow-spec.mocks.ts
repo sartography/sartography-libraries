@@ -2,7 +2,8 @@ import {WorkflowSpec} from '../../types/workflow';
 import {
   mockWorkflowSpecCategory0,
   mockWorkflowSpecCategory1,
-  mockWorkflowSpecCategory2
+  mockWorkflowSpecCategory2,
+  mockWorkflowSpecCategory3
 } from './workflow-spec-category.mocks';
 
 export const mockWorkflowSpec0: WorkflowSpec = {
@@ -41,9 +42,24 @@ export const mockWorkflowSpec2: WorkflowSpec = {
   libraries: [],
   library: false
 };
+export const mockWorkflowSpec3: WorkflowSpec = {
+  id: 'weird_thing',
+  name: 'weird_thing',
+  display_name: 'Weird thing',
+  description: 'Do some weird things',
+  category_id: 3,
+  category: mockWorkflowSpecCategory3,
+  display_order: 2,
+  parents: [],
+  standalone: false,
+  libraries: [],
+  library: true
+};
+
 
 export const mockWorkflowSpecs: WorkflowSpec[] = [
   mockWorkflowSpec0,
   mockWorkflowSpec1,
   mockWorkflowSpec2,
+  mockWorkflowSpec3,
 ];
