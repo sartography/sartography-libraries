@@ -370,6 +370,19 @@ describe('ApiService', () => {
     req.flush([mockFileMetaTask0]);
   });
 
+  it('should reorder the workflow specification with a given direction', () => {
+    const modifiedFileMeta: FileMeta = {
+      id: mockFileMeta0.id,
+      content_type: mockFileMeta0.content_type,
+      name: 'one-fish-v2.bpmn',
+      type: mockFileMeta0.type,
+      workflow_spec_id: mockFileMeta0.workflow_spec_id,
+    };
+    service.reorderWorkflowSpecification(mockWorkflowSpec0.id, "moveDown").subscribe(data => {
+      expect(data.id).toEqual(mockWorkflowSpec0.id); //stupid test remove
+    });
+  });
+
   it('should add a file for a given workflow specification', () => {
     service.addFile({workflow_spec_id: mockWorkflowSpec0.id}, mockFileMeta0, mockFile0).subscribe(data => {
       expect(data.workflow_spec_id).toEqual(mockFileMeta0.workflow_spec_id);

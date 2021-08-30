@@ -57,6 +57,7 @@ export class ApiService {
     workflowSpecListLibraries: '/workflow-specification?libraries=true',
     updateWorkflowLibrary: '/workflow-specification/{spec_id}/library/{library_id}',
     workflowSpecValidate: '/workflow-specification/{spec_id}/validate',
+    reorderWorkflowSpecification: '/workflow-specification/{spec_id}/{direction}',
 
     // Workflow Specification Category
     workflowSpecCategoryList: '/workflow-specification-category',
@@ -391,6 +392,19 @@ export class ApiService {
 
     return this.httpClient
       .get<FileMeta[]>(url, { params })
+      .pipe(catchError(err => ApiService._handleError(err)));
+  }
+
+  /** Reorder workflow spec categories */
+
+  /** Reorder workflow specs */
+  reorderWorkflowSpecification(specId: string, direction: string): Observable<WorkflowSpec> {
+    const url = this.apiRoot + this.endpoints.reorderWorkflowSpecification
+      .replace('{spec_id}', specId)
+      .replace('{direction}', direction);
+
+    return this.httpClient
+      .put<WorkflowSpec>(url, specId)
       .pipe(catchError(err => ApiService._handleError(err)));
   }
 
