@@ -60,9 +60,9 @@ export class RepeatSectionComponent extends FieldArrayType {
 
   confirmDelete(i: number, f?: FormlyFieldConfig) {
     const dialogRef = this.dialog.open(RepeatSectionConfirmDialogComponent, {
+      width: '33vw',
       maxWidth: '100vw',
       maxHeight: '100vh',
-      minWidth: '70vw',
     });
 
     dialogRef.afterClosed().subscribe(result => {
