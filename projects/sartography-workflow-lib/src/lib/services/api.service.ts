@@ -62,6 +62,7 @@ export class ApiService {
     // Workflow Specification Category
     workflowSpecCategoryList: '/workflow-specification-category',
     workflowSpecCategory: '/workflow-specification-category/{cat_id}',
+    reorderWorkflowCategory: '/workflow-specification-category/{cat_id}/reorder',
 
     // Document Directory
     documentDirectory: '/document_directory/{study_id}',
@@ -396,6 +397,15 @@ export class ApiService {
   }
 
   /** Reorder workflow spec categories */
+  reorderWorkflowCategory(catId: number, direction: string): Observable<WorkflowSpecCategory[]> {
+    const url = this.apiRoot + this.endpoints.reorderWorkflowCategory
+      .replace('{cat_id}', catId.toString());
+
+    const params = new HttpParams().set('direction', direction);
+    return this.httpClient
+      .put<WorkflowSpecCategory[]>(url, {},{ params })
+      .pipe(catchError(err => ApiService._handleError(err)));
+  }
 
   /** Reorder workflow specs */
   reorderWorkflowSpecification(specId: string, direction: string): Observable<WorkflowSpec[]> {
@@ -404,7 +414,7 @@ export class ApiService {
 
     const params = new HttpParams().set('direction', direction);
     return this.httpClient
-      .put<WorkflowSpec[]>(url, { params })
+      .put<WorkflowSpec[]>(url, {},{ params })
       .pipe(catchError(err => ApiService._handleError(err)));
   }
 
