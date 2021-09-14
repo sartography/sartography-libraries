@@ -28,6 +28,7 @@ export class ApiService {
     fileData: '/file/{file_id}/data',
     referenceFileList: '/reference_file',
     referenceFile: '/reference_file/{name}',
+    ssDMN: '/dmn_from_ss',
 
     // Configurator Tools
     scriptList: '/list_scripts',
@@ -487,6 +488,17 @@ export class ApiService {
 
     return this.httpClient
       .put<FileMeta>(url, formData)
+      .pipe(catchError(err => ApiService._handleError(err)));
+  }
+
+  /** Create a DMN file from a spreadsheet  */
+  createDMNFromSS(file: File): Observable<HttpResponse<ArrayBuffer>> {
+    const url = this.apiRoot + this.endpoints.ssDMN;
+    const formData = new FormData();
+    formData.append('file', file);
+
+    return this.httpClient
+      .post(url, formData, { observe: 'response', responseType: 'arraybuffer' })
       .pipe(catchError(err => ApiService._handleError(err)));
   }
 
