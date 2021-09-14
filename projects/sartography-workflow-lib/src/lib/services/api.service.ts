@@ -57,10 +57,12 @@ export class ApiService {
     workflowSpecListLibraries: '/workflow-specification?libraries=true',
     updateWorkflowLibrary: '/workflow-specification/{spec_id}/library/{library_id}',
     workflowSpecValidate: '/workflow-specification/{spec_id}/validate',
+    reorderWorkflowSpecification: '/workflow-specification/{spec_id}/reorder',
 
     // Workflow Specification Category
     workflowSpecCategoryList: '/workflow-specification-category',
     workflowSpecCategory: '/workflow-specification-category/{cat_id}',
+    reorderWorkflowCategory: '/workflow-specification-category/{cat_id}/reorder',
 
     // Document Directory
     documentDirectory: '/document_directory/{study_id}',
@@ -391,6 +393,28 @@ export class ApiService {
 
     return this.httpClient
       .get<FileMeta[]>(url, { params })
+      .pipe(catchError(err => ApiService._handleError(err)));
+  }
+
+  /** Reorder workflow spec categories */
+  reorderWorkflowCategory(catId: number, direction: string): Observable<WorkflowSpecCategory[]> {
+    const url = this.apiRoot + this.endpoints.reorderWorkflowCategory
+      .replace('{cat_id}', catId.toString());
+
+    const params = new HttpParams().set('direction', direction);
+    return this.httpClient
+      .put<WorkflowSpecCategory[]>(url, {},{ params })
+      .pipe(catchError(err => ApiService._handleError(err)));
+  }
+
+  /** Reorder workflow specs */
+  reorderWorkflowSpecification(specId: string, direction: string): Observable<WorkflowSpec[]> {
+    const url = this.apiRoot + this.endpoints.reorderWorkflowSpecification
+      .replace('{spec_id}', specId);
+
+    const params = new HttpParams().set('direction', direction);
+    return this.httpClient
+      .put<WorkflowSpec[]>(url, {},{ params })
       .pipe(catchError(err => ApiService._handleError(err)));
   }
 
