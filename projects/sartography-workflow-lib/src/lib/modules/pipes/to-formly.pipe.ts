@@ -574,9 +574,13 @@ export class ToFormlyPipe implements PipeTransform {
               // If there is no error, update the value.
               if (!response.hasOwnProperty('error')) {
                 Promise.resolve(null).then(() => {
-                  // The last successful evaluation becomes the new default, this keeps things from flickering.
-                  formState[variableKey].default = response.result;
-                  formState[variableKey][response.key] = response.result;
+                  if(response.result != formState[variableKey][response.key]) {
+                    // The last successful evaluation becomes the new default, this keeps things from flickering.
+                    formState[variableKey].default = response.result;
+                    formState[variableKey][response.key] = response.result;
+                    // Assure that the field is updated in the display with the new information.
+                    fieldConfig.formControl.updateValueAndValidity({onlySelf: true, emitEvent: true});
+                  }
                 });
               }
             },
