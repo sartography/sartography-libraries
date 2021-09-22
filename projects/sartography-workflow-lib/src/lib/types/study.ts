@@ -4,6 +4,7 @@ import {FileMeta} from './file';
 import {TaskEvent} from './task-event';
 import {WorkflowSpecCategory} from './workflow';
 import {StudyEvent} from './study-event';
+import {LdapInfo} from './user';
 
 export enum StudyStatus {
   IN_PROGRESS = 'in_progress',
@@ -85,6 +86,7 @@ export interface Study {
 
 export interface StudyAssociate {
   uid: string;
-  access: boolean
+  access: boolean;
   role: string;
+  ldap_info?: LdapInfo;
 }
