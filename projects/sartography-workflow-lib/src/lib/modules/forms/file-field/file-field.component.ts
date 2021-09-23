@@ -69,17 +69,10 @@ export class FileFieldComponent extends FileBaseComponent implements OnInit  {
       docCode = this.field.templateOptions.doc_code;
     }
     fileMeta.form_field_key = docCode;
-
     this.fileParams.form_field_key = fileMeta.form_field_key;
 
     this.api.addFile(this.fileParams, fileMeta, file).subscribe(fm => {
-      // Now add the new file.
-      this.fileParams = {
-        study_id: this.to.study_id,
-        workflow_id: this.to.workflow_id,
-        form_field_key: docCode,
-      };
-
+      //
       this.selectedFile = file;
       this.selectedFileMeta = fm;
       this.model[this.fieldKey] = fm;
