@@ -7,7 +7,7 @@ import {ApiService} from '../../services/api.service';
 import {FileParams} from '../../types/file';
 import {BpmnFormJsonField, BpmnFormJsonFieldEnumValue, BpmnFormJsonFieldProperty} from '../../types/json';
 import isEqual from 'lodash.isequal';
-import {catchError, debounce, debounceTime, distinctUntilChanged, filter, map, switchMap} from 'rxjs/operators';
+import {catchError, mergeMap} from 'rxjs/operators';
 import {ApiError} from '../../types/api';
 
 /***
@@ -560,8 +560,7 @@ export class ToFormlyPipe implements PipeTransform {
         formState[variableKey].default = defaultValue;
         formState[variableSubjectKey] = new Subject<PythonEvaluation>();  // To debounce on this function
         formState[variableSubscriptionKey] = formState[variableSubjectKey].pipe(
-          debounceTime(250),
-          switchMap((subj: PythonEvaluation) => this.apiService.eval(subj.expression, subj.data, subj.key)))
+          mergeMap((subj: PythonEvaluation) => this.apiService.eval(subj.expression, subj.data, subj.key)))
           .pipe(
             // If the api service gets an error, handle it here, but don't error out our subscribers, so we
             // can make subsequent calls.
@@ -574,9 +573,13 @@ export class ToFormlyPipe implements PipeTransform {
               // If there is no error, update the value.
               if (!response.hasOwnProperty('error')) {
                 Promise.resolve(null).then(() => {
-                  // The last successful evaluation becomes the new default, this keeps things from flickering.
-                  formState[variableKey].default = response.result;
-                  formState[variableKey][response.key] = response.result;
+                  if(response.result != formState[variableKey][response.key]) {
+                    // The last successful evaluation becomes the new default, this keeps things from flickering.
+                    formState[variableKey].default = response.result;
+                    formState[variableKey][response.key] = response.result;
+                    // Assure that the field is updated in the display with the new information.
+                    fieldConfig.formControl.updateValueAndValidity({onlySelf: true, emitEvent: true});
+                  }
                 });
               }
             },
