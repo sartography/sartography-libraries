@@ -358,7 +358,7 @@ export class ApiService {
   }
 
   /** Get a Workflow Spec Category */
-  getWorkflowSpecCategory(catId: number): Observable<WorkflowSpecCategory> {
+  getWorkflowSpecCategory(catId: string): Observable<WorkflowSpecCategory> {
     const url = this.apiRoot + this.endpoints.workflowSpecCategory
       .replace('{cat_id}', catId.toString());
 
@@ -368,7 +368,7 @@ export class ApiService {
   }
 
   /** Update a Workflow Spec Category */
-  updateWorkflowSpecCategory(catId: number, newCat: WorkflowSpecCategory): Observable<WorkflowSpecCategory> {
+  updateWorkflowSpecCategory(catId: string, newCat: WorkflowSpecCategory): Observable<WorkflowSpecCategory> {
     const url = this.apiRoot + this.endpoints.workflowSpecCategory
       .replace('{cat_id}', catId.toString());
 
@@ -378,7 +378,7 @@ export class ApiService {
   }
 
   /** Delete a Workflow Spec Category */
-  deleteWorkflowSpecCategory(catId: number): Observable<null> {
+  deleteWorkflowSpecCategory(catId: string): Observable<null> {
     const url = this.apiRoot + this.endpoints.workflowSpecCategory
       .replace('{cat_id}', catId.toString());
 
