@@ -37,9 +37,7 @@ export const mockWorkflowMetadata0: WorkflowMetadata = {
   category_id: mockWorkflowSpecCategory0.id,
   description: '',
   display_name: '',
-  name: '',
   id: 0,
-  category_display_name: mockWorkflowSpecCategory0.display_name,
   status: WorkflowStatus.USER_INPUT_REQUIRED,
   display_order: 0,
   spec_version: 'a'
@@ -52,9 +50,7 @@ export const mockWorkflowMetadata1: WorkflowMetadata = {
   category_id: mockWorkflowSpecCategory1.id,
   description: '',
   display_name: '',
-  name: '',
   id: 1,
-  category_display_name: mockWorkflowSpecCategory1.display_name,
   status: WorkflowStatus.USER_INPUT_REQUIRED,
   display_order: 1,
   spec_version: 'a'

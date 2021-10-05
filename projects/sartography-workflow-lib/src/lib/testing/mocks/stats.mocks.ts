@@ -2,7 +2,6 @@ import {WorkflowMetadata, WorkflowState, WorkflowStatus} from '../../types/workf
 
 export const mockWorkflowMeta0: WorkflowMetadata = {
   id: 0,
-  name: 'all_things',
   display_name: 'Everything',
   description: 'Do all the things',
   spec_version: 'v1.1.1.1 (0.0.0.0)',
@@ -16,7 +15,6 @@ export const mockWorkflowMeta0: WorkflowMetadata = {
 
 export const mockWorkflowMeta1: WorkflowMetadata = {
   id: 1,
-  name: 'few_things',
   display_name: 'Some things',
   description: 'Do a few things',
   spec_version: 'v1.1.1.1 (0.0.0.0)',
