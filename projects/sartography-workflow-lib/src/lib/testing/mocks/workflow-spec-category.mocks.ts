@@ -2,28 +2,28 @@ import {WorkflowSpecCategory} from '../../types/workflow';
 import {mockWorkflowMetas} from './stats.mocks';
 
 export const mockWorkflowSpecCategory0: WorkflowSpecCategory = {
-  id: '0',
+  id: 0,
   display_name: 'Everything',
   display_order: 0,
   workflows: mockWorkflowMetas,
   admin: false,
 };
 export const mockWorkflowSpecCategory1: WorkflowSpecCategory = {
-  id: '1',
+  id: 1,
   display_name: 'Some things',
   display_order: 1,
   workflows: mockWorkflowMetas,
   admin: false,
 };
 export const mockWorkflowSpecCategory2: WorkflowSpecCategory = {
-  id: '2',
+  id: 2,
   display_name: 'One thing',
   display_order: 2,
   workflows: mockWorkflowMetas,
   admin: false,
 };
 export const mockWorkflowSpecCategory3: WorkflowSpecCategory = {
-  id: '2',
+  id: 2,
   display_name: 'Weird thing',
   display_order: 3,
   workflows: mockWorkflowMetas,

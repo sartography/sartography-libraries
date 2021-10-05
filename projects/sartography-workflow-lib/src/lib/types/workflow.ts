@@ -36,7 +36,7 @@ export interface WorkflowSpec {
 }
 
 export interface WorkflowSpecCategory {
-  id: string;
+  id: number;
   display_name: string;
   display_order: number;
   workflows?: WorkflowMetadata[];
@@ -47,7 +47,7 @@ export interface WorkflowMetadata {
   state: WorkflowState;
   completed_tasks: number;
   total_tasks: number;
-  category_id: string;
+  category_id: number;
   description: string;
   display_name: string;
   id: number;
