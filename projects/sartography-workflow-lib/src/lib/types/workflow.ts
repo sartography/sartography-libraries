@@ -36,7 +36,7 @@ export interface WorkflowSpec {
 }
 
 export interface WorkflowSpecCategory {
-  id: number;
+  id?: number;
   display_name: string;
   display_order: number;
   workflows?: WorkflowMetadata[];
