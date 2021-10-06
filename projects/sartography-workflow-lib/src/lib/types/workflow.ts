@@ -20,10 +20,8 @@ export interface WorkflowSpecReference {
   display_name: string;
 }
 
-
 export interface WorkflowSpec {
   id: string;
-  name: string;
   display_name: string;
   description: string;
   primary_process_id?: string;
@@ -38,8 +36,7 @@ export interface WorkflowSpec {
 }
 
 export interface WorkflowSpecCategory {
-  id: number;
-  name: string;
+  id?: number;
   display_name: string;
   display_order: number;
   workflows?: WorkflowMetadata[];
@@ -53,10 +50,8 @@ export interface WorkflowMetadata {
   category_id: number;
   description: string;
   display_name: string;
-  name: string;
   id: number;
   spec_version: string;
-  category_display_name?: string;
   status: WorkflowStatus;
   state_message?: string;  // An optional message explaining the state of a workflow.
   display_order?: number;
