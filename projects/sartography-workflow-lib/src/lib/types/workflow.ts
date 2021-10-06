@@ -25,7 +25,7 @@ export interface WorkflowSpec {
   display_name: string;
   description: string;
   primary_process_id?: string;
-  category_id?: string;
+  category_id?: number;
   category?: WorkflowSpecCategory;
   is_master_spec?: boolean;
   display_order?: number;
