@@ -48,6 +48,7 @@ export interface WorkflowMetadata {
   completed_tasks: number;
   total_tasks: number;
   category_id: number;
+  category_display_name: string;
   description: string;
   display_name: string;
   id: number;
