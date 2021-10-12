@@ -13,7 +13,7 @@ import {
   mockFileMeta0,
   mockFileMetaReference0,
   mockFileMetas,
-  mockFileMetaTask0
+  mockFileMetaTask0, mockFileReference0
 } from '../testing/mocks/file.mocks';
 import {mockScriptInfos} from '../testing/mocks/script-info.mocks';
 import {mockErrorResponse} from '../testing/mocks/study-status.mocks';
@@ -501,6 +501,16 @@ describe('ApiService', () => {
     const req = httpMock.expectOne(`apiRoot/list_scripts`);
     expect(req.request.method).toEqual('GET');
     req.flush(mockScriptInfos);
+  });
+
+  it('should add a new reference file', () => {
+    service.addReferenceFile(mockFileMetaReference0, mockFileReference0).subscribe(data => {
+      expect(data.name).toEqual(mockFileMetaReference0.name);
+      expect(data.is_reference).toEqual(true)
+    });
+    const req = httpMock.expectOne('apiRoot/reference_file');
+    expect(req.request.method).toEqual('POST');
+    req.flush(mockFileMetaReference0);
   });
 
   it('should get reference files', () => {
