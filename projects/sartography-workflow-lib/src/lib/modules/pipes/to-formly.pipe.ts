@@ -156,7 +156,7 @@ export class ToFormlyPipe implements PipeTransform {
           // the value attribute of the field. Yes, it's confusing, but it allows us to access the label
           // of the option so we can display it later.
           resultField.templateOptions.valueProp = (option) => option;
-          resultField.templateOptions.compareWith = (o1, o2) => isEqual(o1, o2);
+          resultField.templateOptions.compareWith = (o1, o2) => isEqual(o1.value, o2.value);
           break;
         case 'string':
           resultField.type = 'input';

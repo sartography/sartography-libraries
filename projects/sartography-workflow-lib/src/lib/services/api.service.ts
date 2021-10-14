@@ -590,6 +590,18 @@ export class ApiService {
       .pipe(catchError(err => ApiService._handleError(err)));
   }
 
+  /** add Reference File */
+  addReferenceFile(fileMeta: FileMeta, file:File) {
+    const url = this.apiRoot + this.endpoints.referenceFileList;
+    const formData = new FormData();
+    formData.append('file', file);
+
+    return this.httpClient
+      .post<FileMeta>(url, formData)
+      .pipe(catchError(err => ApiService._handleError(err)))
+
+  }
+
   /** listReferenceFiles */
   listReferenceFiles(): Observable<FileMeta[]> {
     const url = this.apiRoot + this.endpoints.referenceFileList;
