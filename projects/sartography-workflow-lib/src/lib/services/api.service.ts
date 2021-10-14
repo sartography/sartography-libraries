@@ -78,6 +78,12 @@ export class ApiService {
     fieldOptionsLookup: '/workflow/{workflow_id}/lookup/{task_spec_name}/{field_id}',
     // Tools
     eval: '/eval',
+    publishToGithub: '/workflow_sync/publish',
+    needsPublishToGithub: '/workflow_sync/need_publish',
+    syncMasterList: '/workflow_sync/master_list',
+    syncPullAll: '/workflow_sync/pullall',
+    syncSources: '/workflow_sync/sources',
+
   };
 
   constructor(
@@ -602,6 +608,25 @@ export class ApiService {
       .get(url, { observe: 'response', responseType: 'arraybuffer' })
       .pipe(catchError(err => ApiService._handleError(err)));
   }
+
+  publishToGithub(message: string): Observable<HttpResponse<ArrayBuffer>> {
+    const url = this.apiRoot + this.endpoints.publishToGithub
+
+    return this.httpClient
+      .post(url, {message: message}, { observe: 'response', responseType: 'arraybuffer' })
+      .pipe(catchError(err => ApiService._handleError(err)));
+
+  }
+
+  needsPublishToGithub(): Observable <boolean> {
+    const url = this.apiRoot + this.endpoints.needsPublishToGithub
+
+    return this.httpClient
+      .get<boolean>(url)
+      .pipe(catchError(err => ApiService._handleError(err)));
+
+  }
+
 
   /** updateReferenceFile */
   updateReferenceFile(name: string, newFile: File): Observable<HttpResponse<ArrayBuffer>> {
