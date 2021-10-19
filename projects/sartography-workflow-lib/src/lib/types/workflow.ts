@@ -1,5 +1,10 @@
 import {NavItemType, WorkflowTask, WorkflowTaskState} from './workflow-task';
 
+export interface SyncSource {
+  name: string,
+  url: string,
+}
+
 export enum WorkflowStatus {
   NOT_STARTED = 'not_started',
   USER_INPUT_REQUIRED = 'user_input_required',

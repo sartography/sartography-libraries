@@ -81,6 +81,20 @@ export interface FileMeta {
   file?: File;
 }
 
+export interface FileData {
+  filename: string,
+  date_created: string,
+  type: string,
+  primary: boolean,
+  content_type: string,
+  primary_process_id: string,
+  md5_hash: string,
+  location?: string,
+  new?: boolean,
+  status: string,
+
+}
+
 export interface FileParams {
   workflow_spec_id?: string;
   workflow_id?: number;
