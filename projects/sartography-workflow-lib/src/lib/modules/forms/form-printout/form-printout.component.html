@@ -14,7 +14,7 @@
 
         </ng-container>
 
-
+        <!-- fixme: remove this
         <ng-container *ngIf="!isEnumField(field)">
           <ng-container *ngIf="field.type === 'multicheckbox_data'">
             <ng-container *ngFor="let item of field.model[fieldKey]"><br />
@@ -27,6 +27,7 @@
             {{getModelValue(fieldKey) | truncate: 50}}
           </ng-container>
         </ng-container>
+        -->
       </strong>
       <mat-error>
         <formly-validation-message [field]="field"></formly-validation-message>

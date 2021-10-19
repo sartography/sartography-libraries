@@ -30,43 +30,6 @@ export function PhoneValidatorMessage(err, field: FormlyFieldConfig) {
   return `"${field.formControl.value}" is not a valid phone number`;
 }
 
-export function MulticheckboxValidator(control: FormControl): ValidationErrors {
-  if (control.value) {
-    for (const key in control.value) {
-      if (control.value[key] === true) {
-        return null;
-      }
-    }
-  }
-  return {required: true};
-}
-
-export function MulticheckboxValidatorMessage(err, field: FormlyFieldConfig) {
-  return 'At least one of these checkboxes must be selected.';
-}
-
-export function MulticheckboxDataFieldValidator(control: FormControl): ValidationErrors {
-  const fields = (control as any)._fields;
-
-  if (fields && fields[0].templateOptions.required) {
-    if (
-      control.value &&
-      control.value.length > 0 &&
-      !isEqual(control.value, [undefined])
-    ) {
-      return null;
-    } else {
-      return {required: true};
-    }
-  } else {
-    return null;
-  }
-}
-
-export function MulticheckboxDataFieldValidatorMessage(err, field: FormlyFieldConfig) {
-  return 'At least one of these checkboxes must be selected.';
-}
-
 export function MinValidationMessage(err, field) {
   return `This value should be more than ${field.templateOptions.min}`;
 }
@@ -113,11 +76,11 @@ export function AutocompleteValidator(control: FormControl): ValidationErrors {
   );
 
   if (isRequired && !control.value) {
+    console.log("Yes, the control has a value:", control.value);
     return {required: true};
   }
-
-  if (control.value) {
-    return (typeof control.value === 'object') ? null : {autocomplete: true};
+  if (control.value === 'invalid') {
+    return {autocomplete: true};
   }
 }
 

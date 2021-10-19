@@ -155,8 +155,8 @@ export class ToFormlyPipe implements PipeTransform {
           // the control, Formly will look into the value attribute of the option object, rather than
           // the value attribute of the field. Yes, it's confusing, but it allows us to access the label
           // of the option so we can display it later.
-          resultField.templateOptions.valueProp = (option) => option;
-          resultField.templateOptions.compareWith = (o1, o2) => isEqual(o1.value, o2.value);
+          // resultField.templateOptions.valueProp = (option) => option.value;
+          // resultField.templateOptions.compareWith = (o1, o2) => isEqual(o1.value, o2.value);
           break;
         case 'string':
           resultField.type = 'input';
@@ -232,7 +232,7 @@ export class ToFormlyPipe implements PipeTransform {
           resultField.type = 'autocomplete';
           const limit = this._getAutocompleteNumResults(field, 5);
           resultField.templateOptions.filter = (query: string) => this.apiService
-            .lookupFieldOptions(query, fieldFileParams, limit);
+            .lookupFieldOptions(query, fieldFileParams, null, limit);
           resultField.validators = {validation: ['autocomplete']};
           break;
         default:
@@ -343,12 +343,20 @@ export class ToFormlyPipe implements PipeTransform {
               resultField.className = this._addClassName(resultField, 'textarea-cols');
               resultField.templateOptions.cols = parseInt(p.value, 10);
               break;
+            case 'label.column':
+              resultField.templateOptions.label_attribute = p.value;
+              break;
+            case 'value.column':
+              resultField.templateOptions.value_attribute = p.value;
+              break;
             case 'enum_type':
               if (field.type === 'enum') {
                 if (p.value === 'checkbox') {
-                  resultField.type = 'multicheckbox_data';
-                  resultField.validators = {validation: ['multicheckbox_data']};
-                  resultField.templateOptions.type = 'array';
+                  resultField.type = 'select';
+                  resultField.templateOptions.multiple = true;
+                  //resultField.validators = {validation: ['multicheckbox_data']};
+                  resultField.templateOptions.selectAllOption = 'Select All';
+                  //  resultField.templateOptions.type = 'array';
                   resultField.className = this._addClassName(resultField, 'vertical-checkbox-group');
 
                   // Wrap default value in an array.

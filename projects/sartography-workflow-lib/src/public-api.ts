@@ -17,7 +17,6 @@ export * from './lib/modules/forms/form-printout/form-printout.component';
 export * from './lib/modules/forms/help-dialog/help-dialog.component';
 export * from './lib/modules/forms/help-wrapper/help-wrapper.component';
 export * from './lib/modules/forms/markdown-description-wrapper/markdown-description-wrapper.component';
-export * from './lib/modules/forms/multicheckbox-data-field/multicheckbox-data-field.component';
 export * from './lib/modules/forms/panel-wrapper/panel-wrapper.component';
 export * from './lib/modules/forms/radio-data-field/radio-data-field.component';
 export * from './lib/modules/forms/repeat-section-dialog/repeat-section-dialog.component';

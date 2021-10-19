@@ -1,18 +1,20 @@
 <input
   type="text"
   matInput
+  [formControl]="textInputControl"
+  [value]="label"
   [matAutocomplete]="auto"
-  [formControl]="formControl"
   [formlyAttributes]="field"
   [placeholder]="to.placeholder"
 >
+<input type="hidden" [formControl]="formControl">
 <mat-autocomplete
   autoActiveFirstOption
   #auto="matAutocomplete"
-  [displayWith]="displayFn"
->
+  [displayWith]="displayFn.bind(this)"
+  (optionSelected)=newSelection($event)>
   <mat-option
     *ngFor="let lookupData of filter | async"
     [value]="lookupData"
-  >{{lookupData.label}}</mat-option>
+  >{{displayFn(lookupData)}}</mat-option>
 </mat-autocomplete>
