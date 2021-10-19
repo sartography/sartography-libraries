@@ -344,10 +344,10 @@ export class ToFormlyPipe implements PipeTransform {
               resultField.templateOptions.cols = parseInt(p.value, 10);
               break;
             case 'label.column':
-              resultField.templateOptions.label_attribute = p.value;
+              resultField.templateOptions.label_column = p.value;
               break;
             case 'value.column':
-              resultField.templateOptions.value_attribute = p.value;
+              resultField.templateOptions.value_column = p.value;
               break;
             case 'enum_type':
               if (field.type === 'enum') {

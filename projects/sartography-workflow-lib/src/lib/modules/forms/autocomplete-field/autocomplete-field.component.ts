@@ -58,7 +58,7 @@ export class AutocompleteFieldComponent extends FieldType implements OnInit {
   setSelectionFromValue(value: string) {
     this.api.lookupFieldOptions('', this.fileParams, this.value, 1).subscribe(hits => {
       if(hits.length > 0) {
-        this.label = hits[0][this.to.label_attribute];
+        this.label = hits[0][this.to.label_column];
       } else {
         console.error("Failed to locate previous selection for auto-complete, leaving blank.")
       }
@@ -68,19 +68,18 @@ export class AutocompleteFieldComponent extends FieldType implements OnInit {
   newSelection(selected: MatAutocompleteSelectedEvent) {
     console.log("New Selection!", selected.option.value);
     const selected_object = selected.option.value;
-    this.value = selected_object[this.to.value_attribute]
+    this.value = selected_object[this.to.value_column];
     console.log("Value now set to ", this.value);
   }
 
   displayFn(lookupData: Object): string {
+    console.log("is " + this.to.label_column + " in " + lookupData);
     if (!lookupData) {
       return ""
     } else if (typeof lookupData === 'string') {
       return lookupData
-    } else if ('label_attribute' in this.to) {
-      return lookupData[this.to.label_attribute];
     } else {
-      return JSON.stringify(lookupData)
+      return lookupData[this.to.label_column];
     }
   }
 }
