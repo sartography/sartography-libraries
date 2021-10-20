@@ -58,6 +58,7 @@ describe('FormPrintoutComponent', () => {
     fixture = TestBed.createComponent(FormPrintoutComponent);
     component = fixture.componentInstance;
     component.field = field;
+    component.model = field.model
     fixture.detectChanges();
   });
 
@@ -69,8 +70,7 @@ describe('FormPrintoutComponent', () => {
     expect(component).toBeTruthy();
     component.field = mockFormlyFieldConfig.fieldGroup[6]
     component.key = 'fifth_field';
-    component.getModelValue().subscribe(result => {
-      expect(result).toEqual('bob.txt' )
-    })
+    component.updateValue();
+    expect(component.value).toEqual('bob.txt' )
   });
 });
