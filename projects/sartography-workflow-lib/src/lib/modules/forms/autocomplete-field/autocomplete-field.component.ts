@@ -40,7 +40,6 @@ export class AutocompleteFieldComponent extends FieldType implements OnInit {
     };
 
     if(this.value) {
-      console.log("Pre-loading Value!", this.value);
       this.setSelectionFromValue(this.value);
     }
 

@@ -1,5 +1,5 @@
 import {formatDate} from '@angular/common';
-import {AfterViewInit, Component, Input, OnInit} from '@angular/core';
+import {AfterViewInit, Component, Input, OnChanges, OnInit, SimpleChanges} from '@angular/core';
 import {FormlyFieldConfig} from '@ngx-formly/core';
 import {Observable, of} from 'rxjs';
 import {ApiService} from '../../../services/api.service';
@@ -15,8 +15,10 @@ interface SelectFieldOption {
   templateUrl: './form-printout.component.html',
   styleUrls: ['./form-printout.component.scss']
 })
-export class FormPrintoutComponent implements OnInit {
+export class FormPrintoutComponent implements OnInit, OnChanges {
   @Input() field: FormlyFieldConfig;
+  @Input() model: object;  // model will get correctly updated onChanges, field does not.
+
   value: string = "";
   label: string = "";
   key: string = "";
@@ -24,54 +26,49 @@ export class FormPrintoutComponent implements OnInit {
   constructor(protected api: ApiService) {
   }
 
-  ngOnInit(): void {
-    this.key = this.field.key as string;
-    this.getModelValue().subscribe(value=> {
-      this.value = value;
-    })
+  ngOnChanges(changes: SimpleChanges): void {
+    this.model = changes['model'].currentValue;
+    this.updateValue();
     this.label = this.addColon(this.field.templateOptions.label);
   }
 
+  ngOnInit(): void {
+    this.updateValue();
+    this.label = this.addColon(this.field.templateOptions.label);
+  }
 
-  getModelValue(): Observable<string> {
-    if(!(this.key in this.field.model)) {
-      return of("");
+  updateValue() {
+
+    this.key = this.field.key as string;
+    if(!(this.key in this.model)) {
+      this.value = "";
+      return ""
     }
-    let val = this.field.model[this.key];
+
+    let val = this.model[this.key];
     const fType = this.field.type;
 
-    console.log("IT IS A ", fType)
-
-    // If this is an autocomplete, or select field or radio field, get
-    if(fType === 'autocomplete') {
-      return this.getAutcompleteValue();
+    switch (fType) {
+      case('autocomplete'):
+        this.getAutcompleteValue().subscribe( val => this.value = val)
+        break;
+      case('radio'):
+      case('select'):
+        this.value = this.getSelectValue();
+        break;
+      case('file'):
+        if(val && 'name' in val) {
+          this.value = val.name;
+        }
+        break;
+      case('datepicker'):
+        if (val) {
+          this.value = formatDate(val, 'mediumDate', 'en-us');
+        }
+        break;
+      default:
+        this.value = val;
     }
-
-    // If this is a radio or checkbox field, get the human-readable label for it
-    if (fType === 'radio' || fType === 'select') {
-      return this.getSelectValue();
-    }
-
-    if (fType === 'file') {
-      return of(val.name);
-    }
-
-    if (fType === 'datepicker') {
-      let displayDate = '';
-      if (val) {
-        displayDate = formatDate(val, 'mediumDate', 'en-us');
-      }
-      return of(displayDate);
-    }
-
-    // If the value is not human-readable, at least strip the key name off the front of it.
-    const keyStartPattern = RegExp(`^${this.key}`);
-    if (typeof val === 'string' && keyStartPattern.test(val)) {
-      val = val.replace(keyStartPattern, '');
-    }
-
-   // return all other values
-    return of(val);
   }
 
 
@@ -82,7 +79,7 @@ export class FormPrintoutComponent implements OnInit {
       task_spec_name: this.field.templateOptions.task_spec_name,
       form_field_key: this.field.key as string,
     };
-    return this.api.lookupFieldOptions('', fileParams, this.field.model[this.key], 1).pipe(
+    return this.api.lookupFieldOptions('', fileParams, this.model[this.key], 1).pipe(
       map(results => {
         if (results.length > 0) {
           return results[0][this.field.templateOptions.label_column] as string
@@ -93,10 +90,10 @@ export class FormPrintoutComponent implements OnInit {
     )
   }
 
-  getSelectValue(): Observable<string> {
+  getSelectValue(): string {
     const labels = [];
     const opts = this.field.templateOptions.options as SelectFieldOption[];
-    let val = this.field.model[this.key];
+    let val = this.model[this.key];
     opts.forEach(o => {
         if (
           o.value === val || (Array.isArray(val) && val.includes(o.value)) ||
@@ -113,9 +110,9 @@ export class FormPrintoutComponent implements OnInit {
     });
 
     if (labels.length > 0) {
-      return of(labels.join(', '));
+      return labels.join(', ');
     } else {
-      return of("")
+      return "";
     }
   }
 
