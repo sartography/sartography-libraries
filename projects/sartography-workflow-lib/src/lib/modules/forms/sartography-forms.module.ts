@@ -56,6 +56,7 @@ import {
   UrlValidatorMessage
 } from './validators/formly.validator';
 import { RepeatSectionConfirmDialogComponent } from './repeat-section-confirm-dialog/repeat-section-confirm-dialog.component';
+import {MatProgressSpinnerModule, MatSpinner} from '@angular/material/progress-spinner';
 
 
 @Injectable()
@@ -141,6 +142,7 @@ export class AppFormlyConfig {
     MatInputModule,
     MatRadioModule,
     MatTableModule,
+    MatProgressSpinnerModule,
     NgxFileDropModule,
     ReactiveFormsModule,
     SartographyPipesModule,

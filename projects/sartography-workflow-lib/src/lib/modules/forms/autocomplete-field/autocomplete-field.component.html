@@ -1,3 +1,7 @@
+<!-- this is were the real value goes. -->
+<input type="hidden" [formControl]="formControl">
+
+<!-- this input is used to handle the autocomplete and display things correctly -->
 <input
   type="text"
   matInput
@@ -7,14 +11,24 @@
   [formlyAttributes]="field"
   [placeholder]="to.placeholder"
 >
-<input type="hidden" [formControl]="formControl">
 <mat-autocomplete
   autoActiveFirstOption
   #auto="matAutocomplete"
   [displayWith]="displayFn.bind(this)"
   (optionSelected)=newSelection($event)>
+  <mat-option disabled class="loading" *ngIf="state()==='loading'">
+    <mat-spinner diameter="35"></mat-spinner>
+  </mat-option>
+  <mat-option disabled *ngIf="state()==='no_results'">
+    No results match.
+  </mat-option>
+  <mat-option disabled *ngIf="state()==='selected'">
+    {{label}}
+  </mat-option>
   <mat-option
     *ngFor="let lookupData of filter | async"
     [value]="lookupData"
   >{{displayFn(lookupData)}}</mat-option>
 </mat-autocomplete>
+
+

@@ -230,9 +230,7 @@ export class ToFormlyPipe implements PipeTransform {
           const fieldFileParams = Object.assign({}, fileParams || {});
           fieldFileParams.form_field_key = field.id;
           resultField.type = 'autocomplete';
-          const limit = this._getAutocompleteNumResults(field, 5);
-          resultField.templateOptions.filter = (query: string) => this.apiService
-            .lookupFieldOptions(query, fieldFileParams, null, limit);
+          resultField.templateOptions.limit = this._getAutocompleteNumResults(field, 5);
           resultField.validators = {validation: ['autocomplete']};
           break;
         default:
@@ -354,9 +352,7 @@ export class ToFormlyPipe implements PipeTransform {
                 if (p.value === 'checkbox') {
                   resultField.type = 'select';
                   resultField.templateOptions.multiple = true;
-                  //resultField.validators = {validation: ['multicheckbox_data']};
                   resultField.templateOptions.selectAllOption = 'Select All';
-                  //  resultField.templateOptions.type = 'array';
                   resultField.className = this._addClassName(resultField, 'vertical-checkbox-group');
 
                   // Wrap default value in an array.

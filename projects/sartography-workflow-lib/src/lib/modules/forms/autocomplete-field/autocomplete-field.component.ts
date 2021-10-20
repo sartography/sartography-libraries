@@ -1,13 +1,11 @@
-import {Component, OnInit, ViewChild} from '@angular/core';
-import {ErrorStateMatcher} from '@angular/material/core';
-import {MatInput} from '@angular/material/input';
+import {Component, OnInit} from '@angular/core';
 import {FieldType} from '@ngx-formly/material';
-import {Observable} from 'rxjs';
-import {startWith, switchMap} from 'rxjs/operators';
+import {EMPTY, Observable} from 'rxjs';
+import {debounceTime, startWith, switchMap, tap} from 'rxjs/operators';
 import {ApiService} from '../../../services/api.service';
 import {FileParams} from '../../../types/file';
 import {FormControl} from '@angular/forms';
-import {MatAutocompleteActivatedEvent, MatAutocompleteSelectedEvent} from '@angular/material/autocomplete';
+import {MatAutocompleteSelectedEvent} from '@angular/material/autocomplete';
 
 @Component({
   selector: 'lib-autocomplete-field',
@@ -16,9 +14,11 @@ import {MatAutocompleteActivatedEvent, MatAutocompleteSelectedEvent} from '@angu
 })
 export class AutocompleteFieldComponent extends FieldType implements OnInit {
   filter: Observable<Object[]>;
+  selectedObject: Object; // The full object returned by the api, when one is selected.
   label: string;
-
+  loading = false;
   fileParams: FileParams;
+  numResults = 0;
 
   textInputControl = new FormControl('');
 
@@ -44,21 +44,44 @@ export class AutocompleteFieldComponent extends FieldType implements OnInit {
       this.setSelectionFromValue(this.value);
     }
 
-    if (this.to.filter) {
-      this.filter = this.textInputControl.valueChanges.pipe<string, Object[]>(
-        startWith(''),
-        switchMap<string, Observable<Object[]>>(term => {
-          this.value = "invalid";
-          return this.to.filter(term);
-        }));
+    this.filter = this.textInputControl.valueChanges.pipe(
+      debounceTime(500),
+      startWith(''),
+      switchMap<string, Observable<Object[]>>(term => {
+        if(term === this.selectedObject) {
+          return EMPTY;  // Don't try to saerch for the selected object, only do this for strings.
+        }
+        this.value = "invalid";
+        this.loading = true;
+        return this.api.lookupFieldOptions(term, this.fileParams, null, this.to.limit);
+      })
+    );
+
+    this.filter.subscribe(results => {
+      this.loading = false;
+      this.numResults = results.length;
+      this.selectedObject = null;
+    })
+  }
+
+  state() {
+    if(this.loading) {
+      return "loading";
+    } else if (this.selectedObject) {
+      return "selected"
+    } else if (this.numResults === 0) {
+      return "no_results"
+    } else {
+      return "results"
     }
   }
 
-
   setSelectionFromValue(value: string) {
-    this.api.lookupFieldOptions('', this.fileParams, this.value, 1).subscribe(hits => {
+    this.api.lookupFieldOptions('', this.fileParams, value, 1).subscribe(hits => {
       if(hits.length > 0) {
+        this.selectedObject = hits[0]
         this.label = hits[0][this.to.label_column];
+        this.value = value;
       } else {
         console.error("Failed to locate previous selection for auto-complete, leaving blank.")
       }
@@ -66,14 +89,13 @@ export class AutocompleteFieldComponent extends FieldType implements OnInit {
   }
 
   newSelection(selected: MatAutocompleteSelectedEvent) {
-    console.log("New Selection!", selected.option.value);
-    const selected_object = selected.option.value;
-    this.value = selected_object[this.to.value_column];
-    console.log("Value now set to ", this.value);
+    this.selectedObject = selected.option.value;
+    this.value = this.selectedObject[this.to.value_column];
+    console.log("Selected Object is ", this.selectedObject);
+    console.log("Value is ", this.value);
   }
 
   displayFn(lookupData: Object): string {
-    console.log("is " + this.to.label_column + " in " + lookupData);
     if (!lookupData) {
       return ""
     } else if (typeof lookupData === 'string') {

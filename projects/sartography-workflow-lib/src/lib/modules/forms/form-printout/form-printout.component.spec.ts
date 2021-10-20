@@ -67,6 +67,10 @@ describe('FormPrintoutComponent', () => {
 
   it('should display the file name for an uploaded file', () => {
     expect(component).toBeTruthy();
-    expect(component.getModelValue('fifth_field')).toEqual({ id: 101, name: 'bob.txt' });
+    component.field = mockFormlyFieldConfig.fieldGroup[6]
+    component.key = 'fifth_field';
+    component.getModelValue().subscribe(result => {
+      expect(result).toEqual('bob.txt' )
+    })
   });
 });

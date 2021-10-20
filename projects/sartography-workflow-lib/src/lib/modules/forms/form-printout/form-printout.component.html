@@ -2,32 +2,9 @@
 <ng-container>
   <ng-container *ngIf="!field.hide">
     <p>
-      {{addColon(field.templateOptions.label)}}
+      {{label}}
       <strong>
-        <ng-container *ngIf="isEnumField(field)">
-          <span *ngIf="field.model[fieldKey]">
-          {{field.model[fieldKey].label | truncate: 50}}
-          </span>
-          <span *ngIf="!field.model[fieldKey]">
-          Undefined.
-          </span>
-
-        </ng-container>
-
-        <!-- fixme: remove this
-        <ng-container *ngIf="!isEnumField(field)">
-          <ng-container *ngIf="field.type === 'multicheckbox_data'">
-            <ng-container *ngFor="let item of field.model[fieldKey]"><br />
-              <span *ngIf="item">
-                {{item.label | truncate: 50}}
-              </span>
-            </ng-container>
-          </ng-container>
-          <ng-container *ngIf="field.type !== 'multicheckbox_data'">
-            {{getModelValue(fieldKey) | truncate: 50}}
-          </ng-container>
-        </ng-container>
-        -->
+          {{value | truncate: 50}}
       </strong>
       <mat-error>
         <formly-validation-message [field]="field"></formly-validation-message>
