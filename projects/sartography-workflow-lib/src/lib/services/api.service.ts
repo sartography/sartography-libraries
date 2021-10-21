@@ -11,7 +11,7 @@ import { ScriptInfo } from '../types/script-info';
 import { Study , StudyAssociate} from '../types/study';
 import { TaskAction, TaskEvent } from '../types/task-event';
 import { User } from '../types/user';
-import { Workflow, WorkflowSpec, WorkflowSpecCategory } from '../types/workflow';
+import {SyncCategoryItem, SyncItem, SyncSource, Workflow, WorkflowSpec, WorkflowSpecCategory} from '../types/workflow';
 import { WorkflowTask } from '../types/workflow-task';
 import { isSignedIn } from '../util/is-signed-in';
 
@@ -80,8 +80,8 @@ export class ApiService {
     eval: '/eval',
     publishToGithub: '/workflow_sync/publish',
     needsPublishToGithub: '/workflow_sync/need_publish',
-    syncMasterList: '/workflow_sync/master_list',
-    syncPullAll: '/workflow_sync/pullall',
+    syncMasterList: '/workflow_sync/master_list?remote={remoteserver}&keep_new_local={keepnewlocal}',
+    syncPullAll: '/workflow_sync/pullall?remote={remoteserver}&keep_new_local={keepnewlocal}',
     syncSources: '/workflow_sync/sources',
 
   };
@@ -638,6 +638,37 @@ export class ApiService {
       .pipe(catchError(err => ApiService._handleError(err)));
 
   }
+
+  getSyncList(endpoint,keep_new_local): Observable <SyncCategoryItem[]> {
+    let url = this.apiRoot + this.endpoints.syncMasterList
+    url = url.replace('{remoteserver}', endpoint);
+    url = url.replace('{keepnewlocal}', keep_new_local);
+    return this.httpClient
+      .get<SyncCategoryItem[]>(url)
+      .pipe(catchError(err => ApiService._handleError(err)));
+
+  }
+
+
+  syncPullAll(endpoint,keep_new_local): Observable <SyncItem[]> {
+    let url = this.apiRoot + this.endpoints.syncPullAll
+    url = url.replace('{remoteserver}', endpoint);
+    url = url.replace('{keepnewlocal}', keep_new_local);
+    return this.httpClient
+      .get<SyncItem[]>(url)
+      .pipe(catchError(err => ApiService._handleError(err)));
+
+  }
+
+
+  syncSources(): Observable <SyncSource[]> {
+    let url = this.apiRoot + this.endpoints.syncSources
+    return this.httpClient
+      .get<SyncSource[]>(url)
+      .pipe(catchError(err => ApiService._handleError(err)));
+
+  }
+
 
 
   /** updateReferenceFile */

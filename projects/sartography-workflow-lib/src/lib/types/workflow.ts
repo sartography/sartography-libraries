@@ -1,4 +1,5 @@
 import {NavItemType, WorkflowTask, WorkflowTaskState} from './workflow-task';
+import {FileData} from './file';
 
 export interface SyncSource {
   name: string,
@@ -38,6 +39,32 @@ export interface WorkflowSpec {
   library?: boolean;
   libraries?: WorkflowSpecReference[];
   parents?: WorkflowSpecReference[];
+}
+
+export interface SyncSource {
+  url: string;
+  name: string;
+}
+
+export interface SyncCategoryItem {
+  category: string;
+  workflows: WorkflowSpecSync[];
+}
+
+export interface SyncItem {
+  workflow: string;
+  name: string;
+  files: string[];
+}
+
+export interface WorkflowSpecSync {
+  workflow_spec_id: string;
+  date_created: string;
+  location: string;
+  name: string;
+  new: boolean;
+  status: string;
+  files : FileData[];
 }
 
 export interface WorkflowSpecCategory {
