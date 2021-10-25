@@ -31,7 +31,6 @@ export class AutocompleteFieldComponent extends FieldType implements OnInit {
   ngOnInit(): void {
     super.ngOnInit();
 
-
     this.fileParams = {
       study_id: this.to.study_id,
       workflow_id: this.to.workflow_id,
@@ -48,7 +47,7 @@ export class AutocompleteFieldComponent extends FieldType implements OnInit {
       startWith(''),
       switchMap<string, Observable<Object[]>>(term => {
         if(term === this.selectedObject) {
-          return EMPTY;  // Don't try to saerch for the selected object, only do this for strings.
+          return EMPTY;  // Don't try to search for the selected object, only do this for strings.
         }
         this.value = "invalid";
         this.loading = true;
