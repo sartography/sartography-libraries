@@ -30,7 +30,6 @@ import {HelpWrapperComponent} from './help-wrapper/help-wrapper.component';
 import {helpWrapperExtension} from './help-wrapper/help-wrapper.extension';
 import {MarkdownDescriptionWrapperComponent} from './markdown-description-wrapper/markdown-description-wrapper.component';
 import {markdownDescriptionWrapperExtension} from './markdown-description-wrapper/markdown-description-wrapper.extension';
-import {MulticheckboxDataFieldComponent} from './multicheckbox-data-field/multicheckbox-data-field.component';
 import {PanelWrapperComponent} from './panel-wrapper/panel-wrapper.component';
 import {RadioDataFieldComponent} from './radio-data-field/radio-data-field.component';
 import {RepeatSectionDialogComponent} from './repeat-section-dialog/repeat-section-dialog.component';
@@ -45,9 +44,7 @@ import {
   FileUploadValidator,
   FileUploadValidatorMessage,
   MaxValidationMessage,
-  MinValidationMessage, MulticheckboxDataFieldValidator, MulticheckboxDataFieldValidatorMessage,
-  MulticheckboxValidator,
-  MulticheckboxValidatorMessage,
+  MinValidationMessage,
   NumberValidator,
   NumberValidatorMessage,
   PhoneValidator,
@@ -59,6 +56,7 @@ import {
   UrlValidatorMessage
 } from './validators/formly.validator';
 import { RepeatSectionConfirmDialogComponent } from './repeat-section-confirm-dialog/repeat-section-confirm-dialog.component';
+import {MatProgressSpinnerModule, MatSpinner} from '@angular/material/progress-spinner';
 
 
 @Injectable()
@@ -71,7 +69,6 @@ export class AppFormlyConfig {
       {name: 'autocomplete', component: AutocompleteFieldComponent, wrappers: ['form-field']},
       {name: 'file', component: FileFieldComponent, wrappers: ['form-field']},
       {name: 'files', component: FileUploadComponent, wrappers: ['form-field']},
-      {name: 'multicheckbox_data', component: MulticheckboxDataFieldComponent, wrappers: ['form-field']},
       {name: 'radio_data', component: RadioDataFieldComponent, wrappers: ['form-field']},
       {name: 'repeat', component: RepeatSectionComponent},
     ],
@@ -80,8 +77,6 @@ export class AppFormlyConfig {
       {name: 'email', validation: EmailValidator},
       {name: 'url', validation: UrlValidator},
       {name: 'number', validation: NumberValidator},
-      {name: 'multicheckbox', validation: MulticheckboxValidator},
-      {name: 'multicheckbox_data', validation: MulticheckboxDataFieldValidator},
       {name: 'autocomplete', validation: AutocompleteValidator},
       {name: 'file', validation: FileFieldValidator},
       {name: 'files', validation: FileUploadValidator},
@@ -92,8 +87,6 @@ export class AppFormlyConfig {
       {name: 'email', message: EmailValidatorMessage},
       {name: 'url', message: UrlValidatorMessage},
       {name: 'number', message: NumberValidatorMessage},
-      {name: 'multicheckbox', message: MulticheckboxValidatorMessage},
-      {name: 'multicheckbox_data', message: MulticheckboxDataFieldValidatorMessage},
       {name: 'autocomplete', message: AutocompleteValidatorMessage},
       {name: 'file', message: FileFieldValidatorMessage},
       {name: 'files', message: FileUploadValidatorMessage},
@@ -125,7 +118,6 @@ export class AppFormlyConfig {
     HelpDialogComponent,
     HelpWrapperComponent,
     MarkdownDescriptionWrapperComponent,
-    MulticheckboxDataFieldComponent,
     PanelWrapperComponent,
     RadioDataFieldComponent,
     RepeatSectionComponent,
@@ -150,6 +142,7 @@ export class AppFormlyConfig {
     MatInputModule,
     MatRadioModule,
     MatTableModule,
+    MatProgressSpinnerModule,
     NgxFileDropModule,
     ReactiveFormsModule,
     SartographyPipesModule,
@@ -164,7 +157,6 @@ export class AppFormlyConfig {
     HelpDialogComponent,
     HelpWrapperComponent,
     MarkdownDescriptionWrapperComponent,
-    MulticheckboxDataFieldComponent,
     PanelWrapperComponent,
     RadioDataFieldComponent,
     RepeatSectionComponent,

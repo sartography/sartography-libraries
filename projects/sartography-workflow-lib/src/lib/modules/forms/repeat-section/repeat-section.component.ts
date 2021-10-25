@@ -45,16 +45,22 @@ export class RepeatSectionComponent extends FieldArrayType {
     });
 
     dialogRef.afterClosed().subscribe((model: any) => {
-      console.log('Repeat Section Form State:', this.formState);
       if (model) {
+        console.log("This model is ", model)
         if (this.field.fieldGroup.length > i) {
+          console.log("Removing group")
           super.remove(i);
         }
+        console.log("updating model at ", i, model);
         super.add(i, model);
       }
+
+      this.field.formControl.updateValueAndValidity();
       this.field.fieldGroup.forEach(fg => {
+        console.log("Field Groups are: ", fg.model['ldap']);
         fg.formControl.updateValueAndValidity();
       })
+
     });
   }
 

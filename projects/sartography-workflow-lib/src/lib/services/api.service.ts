@@ -6,7 +6,7 @@ import { catchError, debounce } from 'rxjs/operators';
 import { ApiError } from '../types/api';
 import { AppEnvironment } from '../types/app-environment';
 import { Approval, ApprovalCounts, ApprovalStatus } from '../types/approval';
-import { DocumentDirectory, FileMeta, FileParams, LookupData } from '../types/file';
+import { DocumentDirectory, FileMeta, FileParams } from '../types/file';
 import { ScriptInfo } from '../types/script-info';
 import { Study , StudyAssociate} from '../types/study';
 import { TaskAction, TaskEvent } from '../types/task-event';
@@ -692,7 +692,7 @@ export class ApiService {
   }
 
   /** lookupFieldOptions */
-  lookupFieldOptions(query: string, fileParams: FileParams, limit = 5): Observable<LookupData[]> {
+  lookupFieldOptions(query: string, fileParams: FileParams, value: string=null, limit = 5): Observable<Object[]> {
     const url = this.apiRoot + this.endpoints.fieldOptionsLookup
       .replace('{workflow_id}', fileParams.workflow_id.toString())
       .replace('{task_spec_name}', fileParams.task_spec_name.toString())
@@ -702,14 +702,17 @@ export class ApiService {
       return throwError('The task spec name is not defined. Lookups will fail');
     }
 
-
     // Initialize Params Object
-    const params = new HttpParams()
+    let params = new HttpParams()
       .append('query', query)
       .append('limit', limit.toString());
 
+    if(value) {
+      params = params.append('value', value);
+    }
+
     return this.httpClient
-      .get<LookupData[]>(url, { params })
+      .get<Object[]>(url, { params })
       .pipe(catchError(err => ApiService._handleError(err)));
   }
 

@@ -32,7 +32,7 @@ export class FileBaseComponent extends FieldType implements OnInit {
       task_spec_name: this.to.task_spec_name,
       form_field_key: key,
     };
-    this.fileId = this.model && this.model.hasOwnProperty(key) ? this.model[key].id : null;
+    this.fileId = this.model && this.model.hasOwnProperty(key) && this.model[key] ? this.model[key].id : null;
     this.loadFiles();
   }
 
