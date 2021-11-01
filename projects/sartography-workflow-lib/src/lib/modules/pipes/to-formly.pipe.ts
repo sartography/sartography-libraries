@@ -595,7 +595,14 @@ export class ToFormlyPipe implements PipeTransform {
       }
 
       let data = cloneDeep(model);
-      delete data[field.id];  // do not consider the current field when calculating the data model hash.
+      delete data[field.id];  // eDeep(model);do not consider the current field when calculating the data model hash.
+
+      // Give fields a default value of None (so they can be used in dynamic expressions)
+      for (let field of fieldConfig.parent.fieldGroup) {
+        if (!(field.key.toString() in data)){
+           data[field['key']] = null;
+        }
+      }
 
       // Establish the data model that the evaluation will be based upon.  This may be
       // 'mainModel', if this is being handled in a form that was created in a repeat section, or it
