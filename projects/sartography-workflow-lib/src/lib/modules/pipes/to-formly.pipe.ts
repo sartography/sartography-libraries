@@ -595,12 +595,15 @@ export class ToFormlyPipe implements PipeTransform {
       }
 
       let data = cloneDeep(model);
-      delete data[field.id];  // eDeep(model);do not consider the current field when calculating the data model hash.
+      delete data[field.id];  // eDeep(model);do not consider the current field when calculating the data model hash.\
+      console.log('here is fc: ',fieldConfig);
 
       // Give fields a default value of None (so they can be used in dynamic expressions)
       for (let field of fieldConfig.parent.fieldGroup) {
-        if (!(field.key.toString() in data)){
+        if (field.key && !(field.key.toString() in data)){
            data[field['key']] = null;
+        } else if (field.fieldGroup[0].type.toString() == 'repeat') {
+          console.log(field);
         }
       }
 
