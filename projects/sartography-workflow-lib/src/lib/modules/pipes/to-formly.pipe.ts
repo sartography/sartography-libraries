@@ -560,6 +560,7 @@ export class ToFormlyPipe implements PipeTransform {
       // Set up a variable that can be returned, and a variable subject that can be debounced,
       // calls to the api will eventually end up in the formState[variable]
       if (!(formState.hasOwnProperty(variableKey))) {
+        console.log('here');
         formState[variableKey] = {};
         formState[variableKey].default = defaultValue;
         formState[variableSubjectKey] = new Subject<PythonEvaluation>();  // To debounce on this function
@@ -602,8 +603,8 @@ export class ToFormlyPipe implements PipeTransform {
       for (let field of fieldConfig.parent.fieldGroup) {
         if (field.key && !(field.key.toString() in data)){
            data[field['key']] = null;
-        } else if (field.fieldGroup[0].type.toString() == 'repeat') {
-          console.log(field);
+        // } else if (field.fieldGroup[0].type.toString() == 'repeat') {
+        //  console.log(field);
         }
       }
 
