@@ -597,14 +597,11 @@ export class ToFormlyPipe implements PipeTransform {
 
       let data = cloneDeep(model);
       delete data[field.id];  // eDeep(model);do not consider the current field when calculating the data model hash.\
-      console.log('here is fc: ',fieldConfig);
 
       // Give fields a default value of None (so they can be used in dynamic expressions)
       for (let field of fieldConfig.parent.fieldGroup) {
         if (field.key && !(field.key.toString() in data)){
            data[field['key']] = null;
-        // } else if (field.fieldGroup[0].type.toString() == 'repeat') {
-        //  console.log(field);
         }
       }
 
@@ -615,9 +612,9 @@ export class ToFormlyPipe implements PipeTransform {
       // and the great grandparent is the original form field.  I AM SORRY, if you are here trying to
       // debug this.
       if (formState.hasOwnProperty('mainModel')) {
-        data = {...formState.mainModel, ...model};
+        data = {...formState.mainModel, ...data};
       } else if ("parent" in fieldConfig.parent && "parent" in fieldConfig.parent.parent) {
-        data = {...fieldConfig.parent.parent.parent.model, ...model};
+        data = {...fieldConfig.parent.parent.parent.model, ...data};
       }
       const key = this.hashCode(JSON.stringify(data));
       if (!(key in formState[variableKey])) {
