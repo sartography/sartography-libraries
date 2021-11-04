@@ -13,7 +13,7 @@
   <mat-card *ngFor="let fg of field.fieldGroup; let i = index;" class="repeat">
     <mat-card-content fxLayout="row">
       <div fxFlex="70">
-        <lib-form-printout *ngFor="let f of fg.fieldGroup" [field]="f"></lib-form-printout>
+        <lib-form-printout *ngFor="let f of fg.fieldGroup" [field]="f" [model]="f.model"></lib-form-printout>
       </div>
       <div
         fxFlex="30"

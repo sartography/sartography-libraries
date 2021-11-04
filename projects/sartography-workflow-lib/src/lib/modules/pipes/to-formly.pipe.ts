@@ -155,8 +155,8 @@ export class ToFormlyPipe implements PipeTransform {
           // the control, Formly will look into the value attribute of the option object, rather than
           // the value attribute of the field. Yes, it's confusing, but it allows us to access the label
           // of the option so we can display it later.
-          resultField.templateOptions.valueProp = (option) => option;
-          resultField.templateOptions.compareWith = (o1, o2) => isEqual(o1.value, o2.value);
+          // resultField.templateOptions.valueProp = (option) => option.value;
+          // resultField.templateOptions.compareWith = (o1, o2) => isEqual(o1.value, o2.value);
           break;
         case 'string':
           resultField.type = 'input';
@@ -230,9 +230,7 @@ export class ToFormlyPipe implements PipeTransform {
           const fieldFileParams = Object.assign({}, fileParams || {});
           fieldFileParams.form_field_key = field.id;
           resultField.type = 'autocomplete';
-          const limit = this._getAutocompleteNumResults(field, 5);
-          resultField.templateOptions.filter = (query: string) => this.apiService
-            .lookupFieldOptions(query, fieldFileParams, limit);
+          resultField.templateOptions.limit = this._getAutocompleteNumResults(field, 5);
           resultField.validators = {validation: ['autocomplete']};
           break;
         default:
@@ -343,12 +341,18 @@ export class ToFormlyPipe implements PipeTransform {
               resultField.className = this._addClassName(resultField, 'textarea-cols');
               resultField.templateOptions.cols = parseInt(p.value, 10);
               break;
+            case 'label.column':
+              resultField.templateOptions.label_column = p.value;
+              break;
+            case 'value.column':
+              resultField.templateOptions.value_column = p.value;
+              break;
             case 'enum_type':
               if (field.type === 'enum') {
                 if (p.value === 'checkbox') {
-                  resultField.type = 'multicheckbox_data';
-                  resultField.validators = {validation: ['multicheckbox_data']};
-                  resultField.templateOptions.type = 'array';
+                  resultField.type = 'select';
+                  resultField.templateOptions.multiple = true;
+                  resultField.templateOptions.selectAllOption = 'Select All';
                   resultField.className = this._addClassName(resultField, 'vertical-checkbox-group');
 
                   // Wrap default value in an array.
@@ -556,6 +560,7 @@ export class ToFormlyPipe implements PipeTransform {
       // Set up a variable that can be returned, and a variable subject that can be debounced,
       // calls to the api will eventually end up in the formState[variable]
       if (!(formState.hasOwnProperty(variableKey))) {
+        console.log('here');
         formState[variableKey] = {};
         formState[variableKey].default = defaultValue;
         formState[variableSubjectKey] = new Subject<PythonEvaluation>();  // To debounce on this function
@@ -591,7 +596,14 @@ export class ToFormlyPipe implements PipeTransform {
       }
 
       let data = cloneDeep(model);
-      delete data[field.id];  // do not consider the current field when calculating the data model hash.
+      delete data[field.id];  // eDeep(model);do not consider the current field when calculating the data model hash.\
+
+      // Give fields a default value of None (so they can be used in dynamic expressions)
+      for (let field of fieldConfig.parent.fieldGroup) {
+        if (field.key && !(field.key.toString() in data)){
+           data[field['key']] = null;
+        }
+      }
 
       // Establish the data model that the evaluation will be based upon.  This may be
       // 'mainModel', if this is being handled in a form that was created in a repeat section, or it
@@ -600,9 +612,9 @@ export class ToFormlyPipe implements PipeTransform {
       // and the great grandparent is the original form field.  I AM SORRY, if you are here trying to
       // debug this.
       if (formState.hasOwnProperty('mainModel')) {
-        data = {...formState.mainModel, ...model};
+        data = {...formState.mainModel, ...data};
       } else if ("parent" in fieldConfig.parent && "parent" in fieldConfig.parent.parent) {
-        data = {...fieldConfig.parent.parent.parent.model, ...model};
+        data = {...fieldConfig.parent.parent.parent.model, ...data};
       }
       const key = this.hashCode(JSON.stringify(data));
       if (!(key in formState[variableKey])) {

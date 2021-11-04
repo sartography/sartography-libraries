@@ -1,6 +1,9 @@
 import {formatDate} from '@angular/common';
-import {AfterViewInit, Component, Input} from '@angular/core';
-import {FormlyFieldConfig, FormlyForm} from '@ngx-formly/core';
+import {AfterViewInit, Component, Input, OnChanges, OnInit, SimpleChanges} from '@angular/core';
+import {FormlyFieldConfig} from '@ngx-formly/core';
+import {Observable, of} from 'rxjs';
+import {ApiService} from '../../../services/api.service';
+import {map} from 'rxjs/operators';
 
 interface SelectFieldOption {
   value: string;
@@ -12,96 +15,107 @@ interface SelectFieldOption {
   templateUrl: './form-printout.component.html',
   styleUrls: ['./form-printout.component.scss']
 })
-export class FormPrintoutComponent {
+export class FormPrintoutComponent implements OnInit, OnChanges {
   @Input() field: FormlyFieldConfig;
+  @Input() model: object;  // model will get correctly updated onChanges, field does not.
 
-  constructor() {
+  value: string = "";
+  label: string = "";
+  key: string = "";
+
+  constructor(protected api: ApiService) {
   }
 
-  get fieldKey(): string {
-    return this.field.key as string;
+  ngOnChanges(changes: SimpleChanges): void {
+    this.model = changes['model'].currentValue;
+    this.updateValue();
+    this.label = this.addColon(this.field.templateOptions.label);
   }
 
-  getModelValue(key: string) {
-    if(!(key in this.field.model)) {
-      return "";
+  ngOnInit(): void {
+    this.updateValue();
+    this.label = this.addColon(this.field.templateOptions.label);
+  }
+
+  updateValue() {
+
+    this.key = this.field.key as string;
+    if(!(this.key in this.model)) {
+      this.value = "";
+      return ""
     }
-    let val = this.field.model[key];
+
+    let val = this.model[this.key];
     const fType = this.field.type;
 
-    // If this is a radio or checkbox field, get the human-readable label for it
-    if (fType === 'multicheckbox' || fType === 'radio' || fType === 'select') {
-      const labels = [];
-      const opts = this.field.templateOptions.options as SelectFieldOption[];
-      opts.forEach(o => {
-        if (!this._isOther(o.value) && !this._isOther(o.label)) {
-          if (
-            o.value === val ||
-            (
-              !!val &&
-              typeof val === 'object' &&
-              Object.getPrototypeOf(val) === Object.getPrototypeOf({}) &&
-              val.hasOwnProperty(o.value) &&
-              val[o.value] === true
-            )
-          ) {
-            labels.push(o.label);
-          }
+    switch (fType) {
+      case('autocomplete'):
+        this.getAutcompleteValue().subscribe( val => this.value = val)
+        break;
+      case('radio'):
+      case('select'):
+        this.value = this.getSelectValue();
+        break;
+      case('file'):
+        if(val && 'name' in val) {
+          this.value = val.name;
         }
-      });
-
-      if (labels.length > 0) {
-        return labels.join(', ');
-      }
+        break;
+      case('datepicker'):
+        if (val) {
+          this.value = formatDate(val, 'mediumDate', 'en-us');
+        }
+        break;
+      default:
+        this.value = val;
     }
+  }
 
-    if (fType === 'file') {
-      return val.name;
-    }
 
-    // TODO: REVISIT THIS SOMETIME WHEN WE CAN TEST IT MORE THOROUGHLY
-    // // Dropdown box has the value stored as an option object
-    // if (fType === 'select') {
-    //   return val.label;
-    // }
+  getAutcompleteValue(): Observable<string> {
+    const fileParams = {
+      study_id: this.field.templateOptions.study_id,
+      workflow_id: this.field.templateOptions.workflow_id,
+      task_spec_name: this.field.templateOptions.task_spec_name,
+      form_field_key: this.field.key as string,
+    };
+    return this.api.lookupFieldOptions('', fileParams, this.model[this.key], 1).pipe(
+      map(results => {
+        if (results.length > 0) {
+          return results[0][this.field.templateOptions.label_column] as string
+        } else {
+          return "I don't know what is going on."
+        }
+      })
+    )
+  }
 
-    if (fType === 'datepicker') {
-      let displayDate = '';
-      if (val) {
-        displayDate = formatDate(val, 'mediumDate', 'en-us');
-      }
-      return displayDate;
-    }
+  getSelectValue(): string {
+    const labels = [];
+    const opts = this.field.templateOptions.options as SelectFieldOption[];
+    let val = this.model[this.key];
+    opts.forEach(o => {
+        if (
+          o.value === val || (Array.isArray(val) && val.includes(o.value)) ||
+          (
+            !!val &&
+            typeof val === 'object' &&
+            Object.getPrototypeOf(val) === Object.getPrototypeOf({}) &&
+            val.hasOwnProperty(o.value) &&
+            val[o.value] === true
+          )
+        ) {
+          labels.push(o.label);
+        }
+    });
 
-    // If the value is not human-readable, at least strip the key name off the front of it.
-    const keyStartPattern = RegExp(`^${key}`);
-    if (typeof val === 'string' && keyStartPattern.test(val)) {
-      val = val.replace(keyStartPattern, '');
-    }
-
-    // If it's the "other" value, make sure "other" is selected in its parent field before displaying it.
-    const otherPattern = /_other$|\w+Other$/;
-    const keyEndsWithOther = otherPattern.test(key);
-    if (keyEndsWithOther) {
-      const parentKey = key.replace(otherPattern, '');
-      const parentVal = this.field.model[parentKey];
-      const displayVal = this._isOther(parentVal) || otherPattern.test(parentVal) ? val : null;
-      return displayVal;
+    if (labels.length > 0) {
+      return labels.join(', ');
     } else {
-
-      // It's a human-readable value. Just return it now, unless the value is "Other".
-      const otherVal = this._isOther(val) ? null : val;
-      return otherVal;
+      return "";
     }
   }
 
-  private _isOther(value: string): boolean {
-    return value && typeof value === 'string' && value.toLowerCase() === 'other';
-  }
-
-  isEnumField(field: FormlyFieldConfig) {
-    return ['select', 'radio_data', 'autocomplete'].includes(field.type);
-  }
 
   addColon(label: string) {
     if (!label) {

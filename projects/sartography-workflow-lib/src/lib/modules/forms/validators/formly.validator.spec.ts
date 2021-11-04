@@ -101,24 +101,6 @@ describe('Formly Validators', () => {
     expect(Validators.PhoneValidatorMessage(err, field)).toContain('bad_number');
   });
 
-  it('should return error if at least one checkbox in multicheckbox is not checked', () => {
-    control.setValue({});
-    expect(Validators.MulticheckboxValidator(control)).toEqual({required: true});
-
-    control.setValue({
-      checkbox_a: true,
-      checkbox_b: false,
-      checkbox_c: false,
-    });
-    expect(Validators.MulticheckboxValidator(control)).toBeNull();
-  });
-
-  it('should return multicheckbox validator message', () => {
-    control.setValue({});
-    expect(Validators.MulticheckboxValidatorMessage(err, field))
-      .toEqual('At least one of these checkboxes must be selected.');
-  });
-
   it('should min validation message', () => {
     field.templateOptions.min = 42;
     expect(Validators.MinValidationMessage(err, field)).toContain('42');

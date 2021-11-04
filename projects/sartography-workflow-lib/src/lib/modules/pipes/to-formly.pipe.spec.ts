@@ -239,8 +239,8 @@ describe('ToFormlyPipe', () => {
 
     before[0].properties.push({id: 'enum_type', value: 'checkbox'});
     const afterMulticheckbox = await pipe.transform(before);
-    expect(afterMulticheckbox[0].type).toEqual('multicheckbox_data');
-    expect(afterMulticheckbox[0].className).toEqual('vertical-checkbox-group');
+    expect(afterMulticheckbox[0].type).toEqual('select');
+    expect(afterMulticheckbox[0].templateOptions.multiple).toEqual(true);
     expect(afterMulticheckbox[0].defaultValue).toEqual([defaultEnumValue]);
 
     before[0].properties[1] = {id: 'enum_type', value: 'radio'};
@@ -441,11 +441,8 @@ describe('ToFormlyPipe', () => {
     expect(after[1].key).toEqual(before[1].id);
     expect(after[1].type).toEqual('autocomplete');
     expect(after[1].templateOptions.label).toEqual(before[1].label);
-    expect(after[1].templateOptions.filter).toBeTruthy();
+    expect(after[1].validators['validation']).toEqual(['autocomplete']);
 
-    // Should not set filter for other fields
-    expect(after[0].templateOptions.filter).toBeUndefined();
-    expect(after[2].templateOptions.filter).toBeUndefined();
   });
 
   it('should get the number of autocomplete results', () => {

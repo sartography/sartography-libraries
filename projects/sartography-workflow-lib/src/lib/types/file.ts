@@ -103,9 +103,3 @@ export interface FileParams {
   form_field_key?: string | number | string[];
 }
 
-export interface LookupData {
-  id: number;
-  value: string;
-  label: string;
-  data: any;
-}

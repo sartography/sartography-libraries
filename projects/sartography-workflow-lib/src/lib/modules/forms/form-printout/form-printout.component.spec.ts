@@ -58,6 +58,7 @@ describe('FormPrintoutComponent', () => {
     fixture = TestBed.createComponent(FormPrintoutComponent);
     component = fixture.componentInstance;
     component.field = field;
+    component.model = field.model
     fixture.detectChanges();
   });
 
@@ -67,6 +68,9 @@ describe('FormPrintoutComponent', () => {
 
   it('should display the file name for an uploaded file', () => {
     expect(component).toBeTruthy();
-    expect(component.getModelValue('fifth_field')).toEqual({ id: 101, name: 'bob.txt' });
+    component.field = mockFormlyFieldConfig.fieldGroup[6]
+    component.key = 'fifth_field';
+    component.updateValue();
+    expect(component.value).toEqual('bob.txt' )
   });
 });
