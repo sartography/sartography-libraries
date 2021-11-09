@@ -76,7 +76,6 @@ export function AutocompleteValidator(control: FormControl): ValidationErrors {
   );
 
   if (isRequired && !control.value) {
-    console.log("Yes, the control has a value:", control.value);
     return {required: true};
   }
   if (control.value === 'invalid') {

@@ -533,16 +533,17 @@ export class ToFormlyPipe implements PipeTransform {
    * You can pass an optional method, which should be called when the result completes.
    */
   protected getPythonEvalFunction(field: BpmnFormJsonField, p: BpmnFormJsonFieldProperty, defaultValue = false, method = null) {
+    // Establish some variables to be added to the form state.
+    const variableKey = field.id + '_' + p.id;  // The actual value we want to return
+    const variableSubjectKey = field.id + '_' + p.id + '_subject'; // A subject to add api calls to.
+    const variableSubscriptionKey = field.id + '_' + p.id + '_subscription'; // a debounced subscription.
+    const variableCountCalls = field.id + '_' + p.id + '_count'; // Total number of times called.
+
+    // Here is the function to execute to get the value.
     return (model: any, formState: any, fieldConfig: FormlyFieldConfig) => {
       if (!formState) {
         formState = {};
       }
-
-      // Establish some variables to be added to the form state.
-      const variableKey = field.id + '_' + p.id;  // The actual value we want to return
-      const variableSubjectKey = field.id + '_' + p.id + '_subject'; // A subject to add api calls to.
-      const variableSubscriptionKey = field.id + '_' + p.id + '_subscription'; // a debounced subscription.
-      const variableCountCalls = field.id + '_' + p.id + '_count';
 
       // A bit of code to warn us when we are calling this 1000's of times.
       if(!(variableCountCalls in formState)) {
@@ -554,7 +555,6 @@ export class ToFormlyPipe implements PipeTransform {
             "Current count " + formState[variableCountCalls] )
         }
       }
-
 
       // Do this only the first time it is called to establish some subjects and subscriptions.
       // Set up a variable that can be returned, and a variable subject that can be debounced,
@@ -622,6 +622,7 @@ export class ToFormlyPipe implements PipeTransform {
         formState[variableSubjectKey].next({expression: p.value, data, key});
       }
       // We immediately return the variable, but it might change due to the above observable.
+      console.log("Returning ", formState[variableKey][key]);
       return formState[variableKey][key];
     };
   }
