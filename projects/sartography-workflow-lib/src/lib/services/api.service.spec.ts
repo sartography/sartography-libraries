@@ -272,6 +272,14 @@ describe('ApiService', () => {
     req.flush(mockWorkflowSpec0);
   });
 
+  it('should hit the LDAP lookup endpoint', () => {
+      service.ldapLookup("atp", 5).subscribe(data => {
+        expect(data).toBeTruthy();
+      })
+    const req = httpMock.expectOne(`apiRoot/ldap?query=atp&limit=5`);
+      expect(req.request.method).toEqual('GET');
+  });
+
   it('should add a workflow specification', () => {
     service.addWorkflowSpecification(mockWorkflowSpec0).subscribe(data => {
       expect(data).toBeTruthy();
