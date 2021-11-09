@@ -546,13 +546,15 @@ export class ToFormlyPipe implements PipeTransform {
       }
 
       // A bit of code to warn us when we are calling this 1000's of times.
-      if(!(variableCountCalls in formState)) {
-        formState[variableCountCalls] = 0;
+
+      const c_key = 'total_python_eval_count';
+      if(!(c_key in formState)) {
+        formState[c_key] = 0;
       } else {
-        formState[variableCountCalls] += 1;
-        if (formState[variableCountCalls] % 500 === 0) {
+        formState[c_key] += 1;
+        if (formState[c_key] % 10000 === 0) {
           console.warn("WARNING!  The Python Eval Function is being called excessively.  " +
-            "Current count " + formState[variableCountCalls] )
+            "Current count " + formState[c_key] )
         }
       }
 
@@ -560,7 +562,6 @@ export class ToFormlyPipe implements PipeTransform {
       // Set up a variable that can be returned, and a variable subject that can be debounced,
       // calls to the api will eventually end up in the formState[variable]
       if (!(formState.hasOwnProperty(variableKey))) {
-        console.log('here');
         formState[variableKey] = {};
         formState[variableKey].default = defaultValue;
         formState[variableSubjectKey] = new Subject<PythonEvaluation>();  // To debounce on this function
@@ -622,7 +623,6 @@ export class ToFormlyPipe implements PipeTransform {
         formState[variableSubjectKey].next({expression: p.value, data, key});
       }
       // We immediately return the variable, but it might change due to the above observable.
-      console.log("Returning ", formState[variableKey][key]);
       return formState[variableKey][key];
     };
   }
