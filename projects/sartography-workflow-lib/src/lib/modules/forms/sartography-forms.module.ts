@@ -64,7 +64,7 @@ import {ConfigOption} from '@ngx-formly/core/lib/services/formly.config';
 export class AppFormlyConfig {
   public static config = {
     extras: {
-      checkExpressionOn: 'modelChange' as ConfigOption['extras']['checkExpressionOn'],
+//      checkExpressionOn: 'modelChange' as ConfigOption['extras']['checkExpressionOn'],
       showError: ShowError,
     },
     types: [
