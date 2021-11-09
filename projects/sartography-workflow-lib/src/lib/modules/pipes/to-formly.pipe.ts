@@ -533,28 +533,30 @@ export class ToFormlyPipe implements PipeTransform {
    * You can pass an optional method, which should be called when the result completes.
    */
   protected getPythonEvalFunction(field: BpmnFormJsonField, p: BpmnFormJsonFieldProperty, defaultValue = false, method = null) {
+    // Establish some variables to be added to the form state.
+    const variableKey = field.id + '_' + p.id;  // The actual value we want to return
+    const variableSubjectKey = field.id + '_' + p.id + '_subject'; // A subject to add api calls to.
+    const variableSubscriptionKey = field.id + '_' + p.id + '_subscription'; // a debounced subscription.
+    const variableCountCalls = field.id + '_' + p.id + '_count'; // Total number of times called.
+
+    // Here is the function to execute to get the value.
     return (model: any, formState: any, fieldConfig: FormlyFieldConfig) => {
       if (!formState) {
         formState = {};
       }
 
-      // Establish some variables to be added to the form state.
-      const variableKey = field.id + '_' + p.id;  // The actual value we want to return
-      const variableSubjectKey = field.id + '_' + p.id + '_subject'; // A subject to add api calls to.
-      const variableSubscriptionKey = field.id + '_' + p.id + '_subscription'; // a debounced subscription.
-      const variableCountCalls = field.id + '_' + p.id + '_count';
-
       // A bit of code to warn us when we are calling this 1000's of times.
-      if(!(variableCountCalls in formState)) {
-        formState[variableCountCalls] = 0;
+
+      const c_key = 'total_python_eval_count';
+      if(!(c_key in formState)) {
+        formState[c_key] = 0;
       } else {
-        formState[variableCountCalls] += 1;
-        if (formState[variableCountCalls] % 500 === 0) {
+        formState[c_key] += 1;
+        if (formState[c_key] % 10000 === 0) {
           console.warn("WARNING!  The Python Eval Function is being called excessively.  " +
-            "Current count " + formState[variableCountCalls] )
+            "Current count " + formState[c_key] )
         }
       }
-
 
       // Do this only the first time it is called to establish some subjects and subscriptions.
       // Set up a variable that can be returned, and a variable subject that can be debounced,
@@ -595,7 +597,14 @@ export class ToFormlyPipe implements PipeTransform {
       }
 
       let data = cloneDeep(model);
-      delete data[field.id];  // do not consider the current field when calculating the data model hash.
+      delete data[field.id];  // eDeep(model);do not consider the current field when calculating the data model hash.\
+
+      // Give fields a default value of None (so they can be used in dynamic expressions)
+      for (let field of fieldConfig.parent.fieldGroup) {
+        if (field.key && !(field.key.toString() in data)){
+           data[field['key']] = null;
+        }
+      }
 
       // Establish the data model that the evaluation will be based upon.  This may be
       // 'mainModel', if this is being handled in a form that was created in a repeat section, or it
@@ -604,9 +613,9 @@ export class ToFormlyPipe implements PipeTransform {
       // and the great grandparent is the original form field.  I AM SORRY, if you are here trying to
       // debug this.
       if (formState.hasOwnProperty('mainModel')) {
-        data = {...formState.mainModel, ...model};
+        data = {...formState.mainModel, ...data};
       } else if ("parent" in fieldConfig.parent && "parent" in fieldConfig.parent.parent) {
-        data = {...fieldConfig.parent.parent.parent.model, ...model};
+        data = {...fieldConfig.parent.parent.parent.model, ...data};
       }
       const key = this.hashCode(JSON.stringify(data));
       if (!(key in formState[variableKey])) {

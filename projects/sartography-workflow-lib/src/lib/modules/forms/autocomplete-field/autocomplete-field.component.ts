@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {AfterViewInit, Component, OnInit} from '@angular/core';
 import {FieldType} from '@ngx-formly/material';
 import {EMPTY, Observable} from 'rxjs';
 import {debounceTime, startWith, switchMap, tap} from 'rxjs/operators';
@@ -12,7 +12,7 @@ import {MatAutocompleteSelectedEvent} from '@angular/material/autocomplete';
   templateUrl: './autocomplete-field.component.html',
   styleUrls: ['./autocomplete-field.component.scss']
 })
-export class AutocompleteFieldComponent extends FieldType implements OnInit {
+export class AutocompleteFieldComponent extends FieldType implements OnInit, AfterViewInit {
   filter: Observable<Object[]>;
   selectedObject: Object; // The full object returned by the api, when one is selected.
   label: string;
@@ -28,6 +28,8 @@ export class AutocompleteFieldComponent extends FieldType implements OnInit {
     super();
   }
 
+
+
   ngOnInit(): void {
     super.ngOnInit();
 
@@ -38,18 +40,17 @@ export class AutocompleteFieldComponent extends FieldType implements OnInit {
       form_field_key: this.key as string,
     };
 
-    if(this.value) {
-      this.setSelectionFromValue(this.value);
-    }
-
     this.filter = this.textInputControl.valueChanges.pipe(
       debounceTime(500),
-      startWith(''),
+      startWith(''), // Initially execute this with an empty string to get some results back.
       switchMap<string, Observable<Object[]>>(term => {
         if(term === this.selectedObject) {
           return EMPTY;  // Don't try to search for the selected object, only do this for strings.
         }
-        this.value = "invalid";
+        if(term.length < 3) {
+          term = "";  // Return all the results if we don't have a valid term yet ...
+        }
+
         this.loading = true;
         return this.api.lookupFieldOptions(term, this.fileParams, null, this.to.limit);
       })
@@ -60,6 +61,11 @@ export class AutocompleteFieldComponent extends FieldType implements OnInit {
       this.numResults = results.length;
       this.selectedObject = null;
     })
+  }
+
+  ngAfterViewInit(): void {
+    super.ngAfterViewInit();
+    this.setSelectionFromValue(this.value)
   }
 
   state() {
@@ -74,14 +80,21 @@ export class AutocompleteFieldComponent extends FieldType implements OnInit {
     }
   }
 
-  setSelectionFromValue(value: string) {
+  valueChanged(newValue) {
+    this.setSelectionFromValue(newValue)
+  }
+
+  setSelectionFromValue(value) {
+    if(this.textInputControl.value == value || value == false || value == null) {
+      return;
+    }
+
     this.api.lookupFieldOptions('', this.fileParams, value, 1).subscribe(hits => {
       if(hits.length > 0) {
         this.selectedObject = hits[0]
         this.label = hits[0][this.to.label_column];
-        this.value = value;
       } else {
-        console.error("Failed to locate previous selection for auto-complete, leaving blank.")
+        console.error("Failed to locate selection '" + value + "' for auto-complete, leaving blank.")
       }
     })
   }
@@ -89,8 +102,6 @@ export class AutocompleteFieldComponent extends FieldType implements OnInit {
   newSelection(selected: MatAutocompleteSelectedEvent) {
     this.selectedObject = selected.option.value;
     this.value = this.selectedObject[this.to.value_column];
-    console.log("Selected Object is ", this.selectedObject);
-    console.log("Value is ", this.value);
   }
 
   displayFn(lookupData: Object): string {

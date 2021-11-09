@@ -1,5 +1,5 @@
-<!-- this is where the real value goes. -->
-<input type="hidden" [formControl]="formControl">
+<!-- this is were the real value goes. -->
+<input type="hidden" [formControl]="formControl" (ngModelChange)="valueChanged($event)">
 
 <!-- this input is used to handle the autocomplete and display things correctly -->
 <input
