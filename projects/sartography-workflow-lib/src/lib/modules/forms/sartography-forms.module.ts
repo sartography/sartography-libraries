@@ -57,12 +57,14 @@ import {
 } from './validators/formly.validator';
 import { RepeatSectionConfirmDialogComponent } from './repeat-section-confirm-dialog/repeat-section-confirm-dialog.component';
 import {MatProgressSpinnerModule, MatSpinner} from '@angular/material/progress-spinner';
+import {ConfigOption} from '@ngx-formly/core/lib/services/formly.config';
 
 
 @Injectable()
 export class AppFormlyConfig {
   public static config = {
     extras: {
+//      checkExpressionOn: 'modelChange' as ConfigOption['extras']['checkExpressionOn'],
       showError: ShowError,
     },
     types: [

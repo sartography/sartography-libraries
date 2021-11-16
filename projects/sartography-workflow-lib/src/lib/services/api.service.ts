@@ -39,6 +39,7 @@ export class ApiService {
     login: '/login',
     user: '/user',
     userList: '/list_users',
+    ldap: '/ldap',
 
     // Studies
     studyList: '/study',
@@ -76,6 +77,7 @@ export class ApiService {
     taskDataForWorkflow: '/workflow/{workflow_id}/task/{task_id}/data',
     setCurrentTaskForWorkflow: '/workflow/{workflow_id}/task/{task_id}/set_token',
     fieldOptionsLookup: '/workflow/{workflow_id}/lookup/{task_spec_name}/{field_id}',
+
     // Tools
     eval: '/eval',
     publishToGithub: '/workflow_sync/publish',
@@ -83,7 +85,6 @@ export class ApiService {
     syncMasterList: '/workflow_sync/master_list?remote={remoteserver}&keep_new_local={keepnewlocal}',
     syncPullAll: '/workflow_sync/pullall?remote={remoteserver}&keep_new_local={keepnewlocal}',
     syncSources: '/workflow_sync/sources',
-
   };
 
   constructor(
@@ -748,7 +749,8 @@ export class ApiService {
   }
 
   /** lookupFieldOptions */
-  lookupFieldOptions(query: string, fileParams: FileParams, value: string=null, limit = 5): Observable<Object[]> {
+  lookupFieldOptions(query: string, fileParams?: FileParams, value: string=null, limit = 5): Observable<Object[]> {
+    console.log(fileParams);
     const url = this.apiRoot + this.endpoints.fieldOptionsLookup
       .replace('{workflow_id}', fileParams.workflow_id.toString())
       .replace('{task_spec_name}', fileParams.task_spec_name.toString())
@@ -766,6 +768,20 @@ export class ApiService {
     if(value) {
       params = params.append('value', value);
     }
+
+    return this.httpClient
+      .get<Object[]>(url, { params })
+      .pipe(catchError(err => ApiService._handleError(err)));
+  }
+
+  /** LDAP Lookup without Context */
+  ldapLookup(query: string, limit = 5): Observable<Object[]> {
+    const url = this.apiRoot + this.endpoints.ldap;
+
+    // Initialize Params Object
+    let params = new HttpParams()
+      .append('query', query)
+      .append('limit', limit.toString());
 
     return this.httpClient
       .get<Object[]>(url, { params })
