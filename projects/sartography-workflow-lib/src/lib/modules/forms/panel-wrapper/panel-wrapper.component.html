@@ -1,8 +1,10 @@
-<mat-card class="mat-elevation-z0">
-  <mat-card-header>
-    <mat-card-title>{{ to.label }}</mat-card-title>
-  </mat-card-header>
-  <mat-card-content>
-    <ng-container #fieldComponent></ng-container>
-  </mat-card-content>
-</mat-card>
+<div [fxHide]="shouldHide()">
+  <mat-card class="mat-elevation-z0">
+    <mat-card-header>
+      <mat-card-title>{{ to.label }}</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <ng-container #fieldComponent></ng-container>
+    </mat-card-content>
+  </mat-card>
+</div>
