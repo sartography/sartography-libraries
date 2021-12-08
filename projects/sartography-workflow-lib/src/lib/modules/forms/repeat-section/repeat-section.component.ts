@@ -93,12 +93,22 @@ export class RepeatSectionComponent extends FieldArrayType {
   }
 
   shouldHide(): boolean {
-    if (!this.field) {
-      return true;
-    } else if (this.field.hideExpression && typeof (this.field.hideExpression) === 'function') {
-      return !!(this.field.hideExpression(this.field.parent && this.field.parent.model, this.formState, this.field));
-    } else {
-      return false;
+    return false;
+    /**
+    // If there's a hide expression to evaluate, then evaluate it for each field in the repeat section
+    // If any of them are visible, DON'T hide the whole repeat group
+    for (let x = 0; x < this.field.fieldArray.fieldGroup.length; x++) {
+      if (typeof (this.field.fieldArray.fieldGroup[0].hideExpression) === 'function') {
+        if ((this.field.fieldArray.fieldGroup[0].hideExpression(this.field.parent && this.field.parent.model, this.formState, this.field)) !== true) {
+          console.log('weird thing - show group');
+          return false;
+        }
+      }
     }
+    // If everything in the group is hidden, hide the entire group.
+    console.log('Hiding Repeat');
+     return true;
+     */
   }
+
 }
