@@ -20,6 +20,32 @@ export enum StudyStatusLabels {
   ABANDONED = 'Abandoned',
 }
 
+export enum ProgressStatus {
+  IN_PROGRESS = 'in_progress',
+  SUBMITTED_FOR_PRE_REVIEW = 'submitted_for_pre_review',
+  IN_PRE_REVIEW = 'in_pre_review',
+  RETURNED_FROM_PRE_REVIEW = 'returned_from_pre_review',
+  PRE_REVIEW_COMPLETE = 'pre_review_complete',
+  AGENDA_DATE_SET = 'agenda_date_set',
+  APPROVED = 'approved',
+  APPROVED_WITH_CONDITIONS = 'approved_with_conditions',
+  DEFERRED = 'deferred',
+  DISAPPROVED = 'disapproved'
+}
+
+export enum ProgressStatusLabels {
+  IN_PROGRESS = 'In Progress',
+  SUBMITTED_FOR_PRE_REVIEW = 'Submitted for Pre-Review',
+  IN_PRE_REVIEW = 'In Pre-Review',
+  RETURNED_FROM_PRE_REVIEW = 'Returned from Pre-Review',
+  PRE_REVIEW_COMPLETE = 'Pre-Review Complete',
+  AGENDA_DATE_SET = 'Agenda Date Set',
+  APPROVED = 'Approved',
+  APPROVED_WITH_CONDITIONS = 'Approved with Conditions',
+  DEFERRED = 'Deferred',
+  DISAPPROVED = 'Disapproved'
+}
+
 export const ProtocolBuilderRequiredDocs = {
   1: `Investigators Brochure`,
   6: `Cancer Center's PRC Approval Form`,
