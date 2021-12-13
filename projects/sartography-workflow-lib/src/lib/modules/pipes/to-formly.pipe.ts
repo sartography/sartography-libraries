@@ -196,6 +196,7 @@ export class ToFormlyPipe implements PipeTransform {
             resultField.type = 'checkbox';
             resultField.defaultValue = false;
             resultField.templateOptions = { indeterminate: false };
+            resultField.validators = {validation: ['checked']};
             break;
           }
           else if (!field.properties.find(x => x.id === 'boolean_type')) {

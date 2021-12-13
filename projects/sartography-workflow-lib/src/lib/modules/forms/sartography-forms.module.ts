@@ -53,7 +53,9 @@ import {
   RepeatSectionValidatorMessage,
   ShowError,
   UrlValidator,
-  UrlValidatorMessage
+  UrlValidatorMessage,
+  CheckedValidator,
+  CheckedValidatorMessage,
 } from './validators/formly.validator';
 import { RepeatSectionConfirmDialogComponent } from './repeat-section-confirm-dialog/repeat-section-confirm-dialog.component';
 import {MatProgressSpinnerModule, MatSpinner} from '@angular/material/progress-spinner';
@@ -83,6 +85,8 @@ export class AppFormlyConfig {
       {name: 'file', validation: FileFieldValidator},
       {name: 'files', validation: FileUploadValidator},
       {name: 'repeat', validation: RepeatSectionValidator},
+      {name: 'checked', validation: CheckedValidator},
+
     ],
     validationMessages: [
       {name: 'phone', message: PhoneValidatorMessage},
@@ -96,6 +100,7 @@ export class AppFormlyConfig {
       {name: 'required', message: 'This field is required.'},
       {name: 'min', message: MinValidationMessage},
       {name: 'max', message: MaxValidationMessage},
+      {name: 'checked', message: CheckedValidatorMessage},
     ],
     wrappers: [
       {name: 'panel', component: PanelWrapperComponent},
