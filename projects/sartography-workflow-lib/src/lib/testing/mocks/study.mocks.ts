@@ -1,4 +1,10 @@
-import {ProtocolBuilderRequiredDocs, ProtocolBuilderRequirement, StudyStatus, Study} from '../../types/study';
+import {
+  ProgressStatus,
+  ProtocolBuilderRequiredDocs,
+  ProtocolBuilderRequirement,
+  Study,
+  StudyStatus
+} from '../../types/study';
 import {mockWorkflowSpecCategories} from './workflow-spec-category.mocks';
 
 export const mockStudy0: Study = {
@@ -12,6 +18,7 @@ export const mockStudy0: Study = {
   short_title: '',
   inactive: false,
   categories: mockWorkflowSpecCategories,
+  progress_status: ProgressStatus.APPROVED,
 };
 
 export const mockStudy1: Study = {
@@ -25,6 +32,7 @@ export const mockStudy1: Study = {
   short_title: '',
   inactive: false,
   categories: mockWorkflowSpecCategories,
+  progress_status: ProgressStatus.APPROVED,
 };
 
 export const mockStudies: Study[] = [
