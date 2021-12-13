@@ -108,6 +108,8 @@ export interface Study {
   comment?: string;
   events?: TaskEvent[];
   events_history?: StudyEvent[];
+  progress_status?: ProgressStatus;
+
 }
 
 export interface StudyAssociate {
