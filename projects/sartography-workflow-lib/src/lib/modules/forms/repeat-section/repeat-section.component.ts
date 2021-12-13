@@ -92,13 +92,4 @@ export class RepeatSectionComponent extends FieldArrayType {
     this.api.deleteFileMeta(fileId).subscribe();
   }
 
-  shouldHide(): boolean {
-    if (!this.field) {
-      return true;
-    } else if (this.field.hideExpression && typeof (this.field.hideExpression) === 'function') {
-      return !!(this.field.hideExpression(this.field.parent && this.field.parent.model, this.formState, this.field));
-    } else {
-      return false;
-    }
-  }
 }

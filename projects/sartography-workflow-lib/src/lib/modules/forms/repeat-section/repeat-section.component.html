@@ -3,9 +3,7 @@
   [ngClass]="{'container': true, 'invalid': !field.formControl.valid}"
   fxLayout="column"
   fxLayoutGap="1em"
-  [fxHide]="shouldHide()"
 >
-
   <mat-error *ngIf="!form.valid">
   <formly-validation-message [field]="field"></formly-validation-message>
   </mat-error>
