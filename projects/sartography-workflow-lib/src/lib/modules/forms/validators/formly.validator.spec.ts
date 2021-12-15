@@ -65,6 +65,17 @@ describe('Formly Validators', () => {
     expect(Validators.UrlValidatorMessage(err, field)).toContain('bad_url');
   });
 
+  it('should validate a single boolean checkbox', () => {
+    control.setValue('null');
+    expect(Validators.CheckedValidator(control)).toBeNull();
+
+    control.setValue(false);
+    expect(Validators.CheckedValidator(control)).toEqual({checked: true});
+
+    control.setValue(true);
+    expect(Validators.CheckedValidator(control)).toBeNull();
+  })
+
   it('should validate phone numbers', () => {
     const badPhones = [
       'not a phone number',

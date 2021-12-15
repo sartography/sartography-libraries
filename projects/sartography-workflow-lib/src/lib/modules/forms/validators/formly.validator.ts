@@ -30,6 +30,14 @@ export function PhoneValidatorMessage(err, field: FormlyFieldConfig) {
   return `"${field.formControl.value}" is not a valid phone number`;
 }
 
+export function CheckedValidator(control: FormControl): ValidationErrors {
+   return !control.value == true ? {checked:true} : null;
+}
+
+export function CheckedValidatorMessage() {
+  return `You must check this box to continue.`;
+}
+
 export function MinValidationMessage(err, field) {
   return `This value should be more than ${field.templateOptions.min}`;
 }
