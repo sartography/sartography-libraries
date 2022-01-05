@@ -607,6 +607,15 @@ export class ToFormlyPipe implements PipeTransform {
         }
       }
 
+      // Field parent.parent (repeats, groups)
+      if (fieldConfig.parent.parent) {
+        for (let field of fieldConfig.parent.parent.fieldGroup) {
+          if (field.key && !(field.key.toString() in data)) {
+            data[field['key']] = null;
+          }
+        }
+      }
+
       // Establish the data model that the evaluation will be based upon.  This may be
       // 'mainModel', if this is being handled in a form that was created in a repeat section, or it
       // may include the data extracted from a great grandparent, if one exists, which will happen in
