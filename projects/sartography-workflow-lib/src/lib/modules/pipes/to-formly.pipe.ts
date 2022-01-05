@@ -240,7 +240,10 @@ export class ToFormlyPipe implements PipeTransform {
           break;
       }
 
+      // Resolve the label
       resultField.templateOptions.label = field.label;
+      let label = {id: "label", value: field.label}
+      resultField.expressionProperties['templateOptions.label'] = this.getPythonEvalFunction(field, label);
 
       // Convert bpmnjs field validations to Formly field requirements
       if (field.validation && isIterable(field.validation) && (field.validation.length > 0)) {
@@ -296,9 +299,10 @@ export class ToFormlyPipe implements PipeTransform {
             case 'value_expression':
               resultField.expressionProperties['model.' + field.id] = this.getPythonEvalFunction(field, p);
               break;
-            case 'label_expression':
-              resultField.expressionProperties['templateOptions.label'] = this.getPythonEvalFunction(field, p);
-              break;
+            // Deprecated
+            //case 'label_expression':
+              // resultField.expressionProperties['templateOptions.label'] = this.getPythonEvalFunction(field, p);
+            //  break;
             case 'repeat_required_expression':
               resultField.templateOptions.repeatSectionRequiredExpression = this.getPythonEvalFunction(field, p);
               break;
@@ -326,6 +330,7 @@ export class ToFormlyPipe implements PipeTransform {
               break;
             case 'help':
               resultField.templateOptions.help = p.value;
+              resultField.expressionProperties['templateOptions.help'] = this.getPythonEvalFunction(field, p);
               break;
             case 'markdown_description':
               resultField.templateOptions.markdownDescription = p.value;
