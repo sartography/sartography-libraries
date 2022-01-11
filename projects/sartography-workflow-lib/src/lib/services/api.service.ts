@@ -14,6 +14,7 @@ import { User } from '../types/user';
 import { Workflow, WorkflowSpec, WorkflowSpecCategory } from '../types/workflow';
 import { WorkflowTask } from '../types/workflow-task';
 import { isSignedIn } from '../util/is-signed-in';
+import {TaskLogQuery} from '../types/task-log';
 
 @Injectable({
   providedIn: 'root'
@@ -46,6 +47,7 @@ export class ApiService {
     study: '/study/{study_id}',
     studyApprovals: '/study/{study_id}/approvals',
     studyAssociates: '/study/{study_id}/associates',
+    studyLogs: '/study/{study_id}/log',
 
     // Approvals
     approvalCounts: '/approval-counts',
@@ -77,6 +79,7 @@ export class ApiService {
     taskDataForWorkflow: '/workflow/{workflow_id}/task/{task_id}/data',
     setCurrentTaskForWorkflow: '/workflow/{workflow_id}/task/{task_id}/set_token',
     fieldOptionsLookup: '/workflow/{workflow_id}/lookup/{task_spec_name}/{field_id}',
+    workflowLogs: '/workflow/{workflow_id}/log',
 
     // Tools
     eval: '/eval',
@@ -121,7 +124,6 @@ export class ApiService {
       .pipe(catchError(err => ApiService._handleError(err)));
   }
 
-  /** Get a specific Study */
   getDocumentDirectory(studyId: number, workflowId?: number): Observable<DocumentDirectory[]> {
     let url = this.apiRoot + this.endpoints.documentDirectory
       .replace('{study_id}', studyId.toString());
@@ -132,7 +134,6 @@ export class ApiService {
       .get<DocumentDirectory[]>(url)
       .pipe(catchError(err => ApiService._handleError(err)));
   }
-
 
   /** Get a specific Study */
   getStudy(studyId: number, updateStatus = false): Observable<Study> {
@@ -147,6 +148,17 @@ export class ApiService {
       .get<Study>(url, { params })
       .pipe(catchError(err => ApiService._handleError(err)));
   }
+
+  /** Get logs for a Study */
+  getStudyLogs(studyId: number, query: TaskLogQuery): Observable<TaskLogQuery> {
+    const url = this.apiRoot + this.endpoints.studyLogs
+      .replace('{study_id}', studyId.toString());
+
+    return this.httpClient
+      .put<TaskLogQuery>(url, query)
+      .pipe(catchError(err => ApiService._handleError(err)));
+  }
+
 
   /** Update a specific Study */
   updateStudy(studyId: number, study: Study): Observable<Study> {
@@ -177,6 +189,7 @@ export class ApiService {
       .delete<null>(url)
       .pipe(catchError(err => ApiService._handleError(err)));
   }
+
   /** Return all users related to a study and their access + role */
   getStudyAssociates(studyId: number): Observable<StudyAssociate[]> {
     const url = this.apiRoot + this.endpoints.studyAssociates
@@ -186,6 +199,8 @@ export class ApiService {
       .get<StudyAssociate[]>(url)
       .pipe(catchError(err => ApiService._handleError(err)));
   }
+
+
   /** Delete a library from a workflow */
   addWorkflowLibrary(workflowSpecId: string, librarySpecId: string): Observable<null> {
     const url = this.apiRoot + this.endpoints.updateWorkflowLibrary
@@ -586,6 +601,17 @@ export class ApiService {
     return this.httpClient.put<Workflow>(url, {})
       .pipe(catchError(err => ApiService._handleError(err)));
   }
+
+  /** Get logs for a Workflow */
+  getWorkflowLogs(workflowId: number, query: TaskLogQuery): Observable<TaskLogQuery> {
+    const url = this.apiRoot + this.endpoints.workflowLogs
+      .replace('{workflow_id}', workflowId.toString());
+
+    return this.httpClient
+      .put<TaskLogQuery>(url, query)
+      .pipe(catchError(err => ApiService._handleError(err)));
+  }
+
 
   /** add Reference File */
   addReferenceFile(fileMeta: FileMeta, file:File) {
