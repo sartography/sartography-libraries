@@ -128,6 +128,7 @@ export class ToFormlyPipe implements PipeTransform {
       };
 
       // Convert bpmnjs field type to Formly field type
+      let def = {id: "default", value: field.default_value};
       switch (field.type) {
         case 'enum':
           resultField.type = 'select';
@@ -140,6 +141,7 @@ export class ToFormlyPipe implements PipeTransform {
             return option;
           });
 
+          /**
           // Store entire options object as default value
           if (field.hasOwnProperty('default_value')) {
             if (resultField.templateOptions.options instanceof Observable) {
@@ -150,6 +152,7 @@ export class ToFormlyPipe implements PipeTransform {
               resultField.defaultValue = resultField.templateOptions.options.find(o => o.value === field.default_value);
             }
           }
+           */
 
           // Store the entire option object as the value of the select field, but, when comparing
           // the control, Formly will look into the value attribute of the option object, rather than
@@ -161,49 +164,53 @@ export class ToFormlyPipe implements PipeTransform {
         case 'string':
           resultField.type = 'input';
           resultField.defaultValue = field.default_value;
+          resultField.expressionProperties['model.' + field.id] = this.getPythonEvalFunction(field, def);
           break;
         case 'textarea':
           resultField.type = 'textarea';
           resultField.defaultValue = field.default_value;
+          resultField.expressionProperties['model.' + field.id] = this.getPythonEvalFunction(field, def);
           resultField.templateOptions.rows = 5;
           break;
         case 'long':
           resultField.type = 'input';
           resultField.templateOptions.type = 'number';
-          resultField.defaultValue = parseInt(field.default_value, 10);
+          field.properties.push({id:'value_expression', value:field.default_value});
           resultField.validators = {validation: ['number']};
           break;
         case 'url':
           resultField.type = 'input';
           resultField.templateOptions.type = 'url';
           resultField.defaultValue = field.default_value;
+          resultField.expressionProperties['model.' + field.id] = this.getPythonEvalFunction(field, def);
           resultField.validators = {validation: ['url']};
           break;
         case 'email':
           resultField.type = 'input';
           resultField.templateOptions.type = 'email';
           resultField.defaultValue = field.default_value;
+          resultField.expressionProperties['model.' + field.id] = this.getPythonEvalFunction(field, def);
           resultField.validators = {validation: ['email']};
           break;
         case 'tel':
           resultField.type = 'input';
           resultField.templateOptions.type = 'tel';
           resultField.defaultValue = field.default_value;
+          resultField.expressionProperties['model.' + field.id] = this.getPythonEvalFunction(field, def);
           resultField.validators = {validation: ['phone']};
           break;
         case 'boolean':
           if (field.properties.find(x => x.id === 'boolean_type' && x.value === 'checkbox')) {
             resultField.type = 'checkbox';
             resultField.defaultValue = false;
+            resultField.expressionProperties['model.' + field.id] = this.getPythonEvalFunction(field, def);
             resultField.templateOptions = { indeterminate: false };
             resultField.validators = {validation: ['checked']};
             break;
           }
           else if (!field.properties.find(x => x.id === 'boolean_type')) {
             resultField.type = 'radio';
-            if (field.default_value !== undefined && field.default_value !== null && field.default_value !== '') {
-              resultField.defaultValue = this._stringToBool(field.default_value);
-            }
+            resultField.expressionProperties['model.' + field.id] = this.getPythonEvalFunction(field, def);
             resultField.templateOptions.options = [
               {value: true, label: 'Yes'},
               {value: false, label: 'No'},
@@ -327,6 +334,7 @@ export class ToFormlyPipe implements PipeTransform {
               break;
             case 'description':
               resultField.templateOptions.description = p.value;
+              resultField.expressionProperties['templateOptions.description'] = this.getPythonEvalFunction(field, p);
               break;
             case 'help':
               resultField.templateOptions.help = p.value;
@@ -334,6 +342,7 @@ export class ToFormlyPipe implements PipeTransform {
               break;
             case 'markdown_description':
               resultField.templateOptions.markdownDescription = p.value;
+              resultField.expressionProperties['templateOptions.markdownDescription'] = this.getPythonEvalFunction(field, p);
               break;
             case 'autosize':
               resultField.templateOptions.autosize = this._stringToBool(p.value);
