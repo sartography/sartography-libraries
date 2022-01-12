@@ -79,6 +79,7 @@ export * from './lib/types/user';
 export * from './lib/types/task-event';
 export * from './lib/types/workflow';
 export * from './lib/types/workflow-task';
+export * from './lib/types/task-log';
 
 // Utilities
 export * from './lib/util/diagram-type';
