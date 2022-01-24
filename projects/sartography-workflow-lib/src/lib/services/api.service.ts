@@ -23,13 +23,20 @@ export class ApiService {
   apiRoot: string;
 
   endpoints = {
-    // Files
+    // User Files
     fileList: '/file',
     file: '/file/{file_id}',
     fileData: '/file/{file_id}/data',
+    ssDMN: '/dmn_from_ss',
+
+    // Workflow Specification Files
+    specFileList: '/spec_file',
+    specFile: '/spec_file/{file_id}',
+    specFileData: '/spec_file/{file_id}/data',
+
+    // Reference Files
     referenceFileList: '/reference_file',
     referenceFile: '/reference_file/{name}',
-    ssDMN: '/dmn_from_ss',
 
     // Configurator Tools
     scriptList: '/list_scripts',
@@ -405,7 +412,16 @@ export class ApiService {
       .pipe(catchError(err => ApiService._handleError(err)));
   }
 
-  /** Get all File Metadata for a given Workflow Specification, Workflow Instance, Study, or Task */
+  getSpecFileMetas(workflowSpecId: string) {
+    const url = this.apiRoot + this.endpoints.specFileList;
+    let params = new HttpParams();
+    params = params.set("workflow_spec_id", workflowSpecId)
+    return this.httpClient
+      .get<FileMeta[]>(url, { params })
+      .pipe(catchError(err => ApiService._handleError(err)));
+  }
+
+  /** Get all User uploaded File Metadata for a given Workflow Instance, Study, or Task */
   getFileMetas(fileParams: FileParams): Observable<FileMeta[]> {
     const url = this.apiRoot + this.endpoints.fileList;
     const params = this._paramsToHttpParams(fileParams);
@@ -414,6 +430,7 @@ export class ApiService {
       .get<FileMeta[]>(url, { params })
       .pipe(catchError(err => ApiService._handleError(err)));
   }
+
 
   /** Reorder workflow spec categories */
   reorderWorkflowCategory(catId: number, direction: string): Observable<WorkflowSpecCategory[]> {
@@ -446,9 +463,15 @@ export class ApiService {
       .pipe(catchError(err => ApiService._handleError(err)));
   }
 
+  addSpecFile(workflowSpec: WorkflowSpec, fileMeta: FileMeta, file: File): Observable<FileMeta> {
+    const fileParams = {workflow_spec_id: workflowSpec.id}
+    return this.addFile(fileParams, fileMeta, file, this.endpoints.specFileList)
+  }
+
   /** Add a File */
-  addFile(fileParams: FileParams, fileMeta: FileMeta, file: File): Observable<FileMeta> {
-    const url = this.apiRoot + this.endpoints.fileList;
+  addFile(fileParams: FileParams, fileMeta: FileMeta, file: File,
+          base_url: string = this.endpoints.fileList): Observable<FileMeta> {
+    const url = this.apiRoot + base_url;
     const params = this._paramsToHttpParams(fileParams);
     const formData = new FormData();
     formData.append('file', file);
@@ -458,9 +481,13 @@ export class ApiService {
       .pipe(catchError(err => ApiService._handleError(err)));
   }
 
+  getSpecFileMeta(fileMetaId:number): Observable<FileMeta> {
+    return this.getFileMeta(fileMetaId,this.endpoints.specFile)
+  }
+
   /** Get metadata for one specific File */
-  getFileMeta(fileMetaId: number): Observable<FileMeta> {
-    const url = this.apiRoot + this.endpoints.file
+  getFileMeta(fileMetaId: number, base_url: String = this.endpoints.file): Observable<FileMeta> {
+    const url = this.apiRoot + base_url
       .replace('{file_id}', fileMetaId.toString());
 
     return this.httpClient
@@ -468,9 +495,14 @@ export class ApiService {
       .pipe(catchError(err => ApiService._handleError(err)));
   }
 
+  /** Delete the File metadata for Workflow Specification File */
+  updateSpecFileMeta(fileMeta: FileMeta): Observable<FileMeta> {
+    return this.updateFileMeta(fileMeta, this.endpoints.specFile)
+  }
+
   /** Update File Metadata */
-  updateFileMeta(fileMeta: FileMeta): Observable<FileMeta> {
-    const url = this.apiRoot + this.endpoints.file
+  updateFileMeta(fileMeta: FileMeta, base_url: String = this.endpoints.file): Observable<FileMeta> {
+    const url = this.apiRoot + base_url
       .replace('{file_id}', fileMeta.id.toString());
 
     return this.httpClient
@@ -478,8 +510,18 @@ export class ApiService {
       .pipe(catchError(err => ApiService._handleError(err)));
   }
 
-  deleteFileMeta(fileMetaId: number): Observable<null> {
-    const url = this.apiRoot + this.endpoints.file
+  /** Delete the File metadata for Workflow Specification File */
+  deleteSpecFileMeta(fileMetaId: number): Observable<null> {
+    return this.deleteFileMeta(fileMetaId, this.endpoints.specFile)
+  }
+
+  /** Delete the File metadata for Workflow Specification File */
+  deleteRefFileMeta(fileMetaId: number): Observable<null> {
+    return this.deleteFileMeta(fileMetaId, this.endpoints.referenceFile)
+  }
+
+  deleteFileMeta(fileMetaId: number, base_url: String = this.endpoints.file): Observable<null> {
+    const url = this.apiRoot + base_url
       .replace('{file_id}', fileMetaId.toString());
 
     return this.httpClient
@@ -487,9 +529,14 @@ export class ApiService {
       .pipe(catchError(err => ApiService._handleError(err)));
   }
 
+  /** Get the File metadata for Workflow Specification File */
+  getSpecFileData(fileId: number): Observable<HttpResponse<ArrayBuffer>> {
+    return this.getFileData(fileId, this.endpoints.specFileData)
+  }
+
   /** Get the File Data for specific File Metadata */
-  getFileData(fileId: number): Observable<HttpResponse<ArrayBuffer>> {
-    const url = this.apiRoot + this.endpoints.fileData
+  getFileData(fileId: number, base_url: String = this.endpoints.fileData): Observable<HttpResponse<ArrayBuffer>> {
+    const url = this.apiRoot + base_url
       .replace('{file_id}', fileId.toString());
 
     return this.httpClient
@@ -497,9 +544,15 @@ export class ApiService {
       .pipe(catchError(err => ApiService._handleError(err)));
   }
 
+
+  /** Update the File metadata for Workflow Specification File */
+  updateSpecFileData(fileMeta: FileMeta, file: File): Observable<FileMeta> {
+    return this.updateFileData(fileMeta, file, this.endpoints.specFileData)
+  }
+
   /** Update the File Data for specific File Metadata */
-  updateFileData(fileMeta: FileMeta, file: File): Observable<FileMeta> {
-    const url = this.apiRoot + this.endpoints.fileData
+  updateFileData(fileMeta: FileMeta, file: File, base_url = this.endpoints.fileData): Observable<FileMeta> {
+    const url = this.apiRoot + base_url
       .replace('{file_id}', fileMeta.id.toString());
     const formData = new FormData();
     formData.append('file', file);
@@ -709,10 +762,6 @@ export class ApiService {
     localStorage.setItem('prev_url', location.href);
     const returnUrl = location.origin + this.baseHref + 'session';
     let httpParams = new HttpParams().set('redirect_url', returnUrl);
-    if (!this.environment.production) {
-      httpParams = httpParams.set('uid', 'dhf8r');
-    }
-
     this.openUrl(this.apiRoot + this.endpoints.login + '?' + httpParams.toString());
   }
 

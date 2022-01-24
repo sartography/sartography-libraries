@@ -127,7 +127,7 @@ describe('ToFormlyPipe', () => {
     expect(after[0].templateOptions.readonly).toEqual(true);
   });
 
-  it('provides the workflow_id, study_id and spec as a template option to all fields', () => {
+  it('provides the workflow_id, study_id as a template option to all fields', () => {
     const before: BpmnFormJsonField[] = [
       {
         id: 'airspeed',
@@ -138,7 +138,6 @@ describe('ToFormlyPipe', () => {
     const after = pipe.transform(before, fileParams);
     expect(after[0].templateOptions.workflow_id).toEqual(workflowId);
     expect(after[0].templateOptions.study_id).toEqual(studyId);
-    expect(after[0].templateOptions.workflow_spec_id).toEqual(workflowSpec);
   });
 
 
@@ -303,7 +302,6 @@ describe('ToFormlyPipe', () => {
     expect(after[0].templateOptions.label).toEqual(before[0].label);
     expect(after[0].templateOptions.workflow_id).toEqual(workflowId);
     expect(after[0].templateOptions.study_id).toEqual(studyId);
-    expect(after[0].templateOptions.workflow_spec_id).toEqual(workflowSpec);
   });
 
   it('respects the doc_code for form fields overriding the form field id', () => {
@@ -323,7 +321,6 @@ describe('ToFormlyPipe', () => {
     expect(after[0].templateOptions.label).toEqual(before[0].label);
     expect(after[0].templateOptions.workflow_id).toEqual(workflowId);
     expect(after[0].templateOptions.study_id).toEqual(studyId);
-    expect(after[0].templateOptions.workflow_spec_id).toEqual(workflowSpec);
     expect(after[0].templateOptions.doc_code).not.toBeNull();
   });
 
