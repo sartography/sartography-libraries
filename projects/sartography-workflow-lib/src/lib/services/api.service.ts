@@ -37,6 +37,7 @@ export class ApiService {
     // Reference Files
     referenceFileList: '/reference_file',
     referenceFile: '/reference_file/{name}',
+    referenceFileData: '/reference_file/{name}/data',
 
     // Configurator Tools
     scriptList: '/list_scripts',
@@ -688,8 +689,18 @@ export class ApiService {
   }
 
   /** getReferenceFile */
-  getReferenceFile(name: string): Observable<HttpResponse<ArrayBuffer>> {
+  getReferenceFile(name: string): Observable<FileMeta> {
     const url = this.apiRoot + this.endpoints.referenceFile
+      .replace('{name}', name);
+
+    return this.httpClient
+      .get<FileMeta>(url)
+      .pipe(catchError(err => ApiService._handleError(err)));
+  }
+
+  /** getReferenceFile */
+  getReferenceFileData(name: string): Observable<HttpResponse<ArrayBuffer>> {
+    const url = this.apiRoot + this.endpoints.referenceFileData
       .replace('{name}', name);
 
     return this.httpClient

@@ -69,8 +69,6 @@ export interface Workflow {
   workflow_spec_id: string;
   workflow_spec?: WorkflowSpec;
   next_task?: WorkflowTask;
-  is_latest_spec?: boolean;
-  spec_version?: string;
   is_review?: boolean;
   title?: string;
   redirect?: number;
