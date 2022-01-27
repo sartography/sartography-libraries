@@ -562,7 +562,7 @@ describe('ApiService', () => {
       expect(response.headers.get('last-modified')).toEqual(newTimeCode.toString());
     });
 
-    const req = httpMock.expectOne(`apiRoot/reference_file/${mockFileMetaReference0.name}`);
+    const req = httpMock.expectOne(`apiRoot/reference_file/${mockFileMetaReference0.name}/data`);
     expect(req.request.method).toEqual('PUT');
     const mockHeaders = new HttpHeaders()
       .append('last-modified', newFile.lastModified.toString())

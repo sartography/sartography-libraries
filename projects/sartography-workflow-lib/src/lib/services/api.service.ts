@@ -710,7 +710,7 @@ export class ApiService {
 
   /** updateReferenceFile */
   updateReferenceFile(name: string, newFile: File): Observable<HttpResponse<ArrayBuffer>> {
-    const url = this.apiRoot + this.endpoints.referenceFile
+    const url = this.apiRoot + this.endpoints.referenceFileData
       .replace('{name}', name);
     const formData = new FormData();
     formData.append('file', newFile);
