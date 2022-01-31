@@ -29,10 +29,11 @@ export class ApiService {
     fileData: '/file/{file_id}/data',
     ssDMN: '/dmn_from_ss',
 
+
     // Workflow Specification Files
-    specFileList: '/spec_file',
-    specFile: '/spec_file/{file_id}',
-    specFileData: '/spec_file/{file_id}/data',
+    specFileList: '/workflow-specification/{spec_id}/file',
+    specFile: '/workflow-specification/{spec_id}/file/{file_name}',
+    specFileData: '/workflow-specification/{spec_id}/file/{file_name}/data',
 
     // Reference Files
     referenceFileList: '/reference_file',
@@ -414,7 +415,9 @@ export class ApiService {
   }
 
   getSpecFileMetas(workflowSpecId: string) {
-    const url = this.apiRoot + this.endpoints.specFileList;
+    const url = this.apiRoot + this.endpoints.specFileList
+          .replace('{spec_id}', workflowSpecId.toString());
+
     let params = new HttpParams();
     params = params.set("workflow_spec_id", workflowSpecId)
     return this.httpClient
@@ -466,7 +469,10 @@ export class ApiService {
 
   addSpecFile(workflowSpec: WorkflowSpec, fileMeta: FileMeta, file: File): Observable<FileMeta> {
     const fileParams = {workflow_spec_id: workflowSpec.id}
-    return this.addFile(fileParams, fileMeta, file, this.endpoints.specFileList)
+    const url = this.endpoints.specFileList
+      .replace('{spec_id}', workflowSpec.id)
+      .replace('{file_name}', file.name);
+    return this.addFile(fileParams, fileMeta, file, url)
   }
 
   /** Add a File */
@@ -482,8 +488,12 @@ export class ApiService {
       .pipe(catchError(err => ApiService._handleError(err)));
   }
 
-  getSpecFileMeta(fileMetaId:number): Observable<FileMeta> {
-    return this.getFileMeta(fileMetaId,this.endpoints.specFile)
+  // TODO: this isnt used anywhere
+  getSpecFileMeta(workflowSpec: WorkflowSpec, fileName: string, fileMetaId: number): Observable<FileMeta> {
+    const url = this.endpoints.specFile
+      .replace('{spec_id}', workflowSpec.id)
+      .replace('{file_name}', fileName)
+    return this.getFileMeta(fileMetaId, url);
   }
 
   /** Get metadata for one specific File */
@@ -497,8 +507,12 @@ export class ApiService {
   }
 
   /** Delete the File metadata for Workflow Specification File */
-  updateSpecFileMeta(fileMeta: FileMeta): Observable<FileMeta> {
-    return this.updateFileMeta(fileMeta, this.endpoints.specFile)
+  updateSpecFileMeta(workflowSpec: WorkflowSpec, fileMeta: FileMeta): Observable<FileMeta> {
+        // '/workflow-specification/{spec_id}/file/{file_name}',
+    const url = this.endpoints.specFile
+      .replace('{spec_id}', workflowSpec.id)
+      .replace('{file_name}', fileMeta.name)
+    return this.updateFileMeta(fileMeta, url);
   }
 
   /** Update File Metadata */
@@ -512,8 +526,12 @@ export class ApiService {
   }
 
   /** Delete the File metadata for Workflow Specification File */
-  deleteSpecFileMeta(fileMetaId: number): Observable<null> {
-    return this.deleteFileMeta(fileMetaId, this.endpoints.specFile)
+  deleteSpecFileMeta(workflowSpec: WorkflowSpec, fileMetaId: number, fileName: string): Observable<null> {
+        // '/workflow-specification/{spec_id}/file/{file_name}',
+    const url = this.endpoints.specFile
+      .replace('{spec_id}', workflowSpec.id)
+      .replace('{file_name}', fileName);
+    return this.deleteFileMeta(fileMetaId, url);
   }
 
   /** Delete the File metadata for Workflow Specification File */
@@ -531,8 +549,11 @@ export class ApiService {
   }
 
   /** Get the File metadata for Workflow Specification File */
-  getSpecFileData(fileId: number): Observable<HttpResponse<ArrayBuffer>> {
-    return this.getFileData(fileId, this.endpoints.specFileData)
+  getSpecFileData(workflowSpec: WorkflowSpec, fileId: number, fileName: string): Observable<HttpResponse<ArrayBuffer>> {
+    const url = this.endpoints.specFileData
+      .replace('{spec_id}', workflowSpec.id)
+      .replace('file_name', fileName)
+    return this.getFileData(fileId, url)
   }
 
   /** Get the File Data for specific File Metadata */
@@ -546,9 +567,14 @@ export class ApiService {
   }
 
 
+  // TODO: this also needs passed spec_id
   /** Update the File metadata for Workflow Specification File */
-  updateSpecFileData(fileMeta: FileMeta, file: File): Observable<FileMeta> {
-    return this.updateFileData(fileMeta, file, this.endpoints.specFileData)
+  updateSpecFileData(workflowSpec: WorkflowSpec, fileMeta: FileMeta, file: File): Observable<FileMeta> {
+        // specFileData: '/workflow-specification/{spec_id}/file/{file_name}/data',
+    const url = this.endpoints.specFileData
+      .replace('{spec_id}', workflowSpec.id)
+      .replace('{file_name}', fileMeta.name)
+    return this.updateFileData(fileMeta, file, url)
   }
 
   /** Update the File Data for specific File Metadata */
