@@ -122,7 +122,6 @@ export class ToFormlyPipe implements PipeTransform {
           workflow_id: fileParams.workflow_id,
           study_id: fileParams.study_id,
           task_spec_name:fileParams.task_spec_name,
-          workflow_spec_id: fileParams.workflow_spec_id
         },
         expressionProperties: {},
       };

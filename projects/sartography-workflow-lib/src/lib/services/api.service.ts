@@ -14,6 +14,7 @@ import { User } from '../types/user';
 import { Workflow, WorkflowSpec, WorkflowSpecCategory } from '../types/workflow';
 import { WorkflowTask } from '../types/workflow-task';
 import { isSignedIn } from '../util/is-signed-in';
+import {TaskLogQuery} from '../types/task-log';
 
 @Injectable({
   providedIn: 'root'
@@ -22,13 +23,21 @@ export class ApiService {
   apiRoot: string;
 
   endpoints = {
-    // Files
+    // User Files
     fileList: '/file',
     file: '/file/{file_id}',
     fileData: '/file/{file_id}/data',
+    ssDMN: '/dmn_from_ss',
+
+    // Workflow Specification Files
+    specFileList: '/spec_file',
+    specFile: '/spec_file/{file_id}',
+    specFileData: '/spec_file/{file_id}/data',
+
+    // Reference Files
     referenceFileList: '/reference_file',
     referenceFile: '/reference_file/{name}',
-    ssDMN: '/dmn_from_ss',
+    referenceFileData: '/reference_file/{name}/data',
 
     // Configurator Tools
     scriptList: '/list_scripts',
@@ -46,6 +55,7 @@ export class ApiService {
     study: '/study/{study_id}',
     studyApprovals: '/study/{study_id}/approvals',
     studyAssociates: '/study/{study_id}/associates',
+    studyLogs: '/study/{study_id}/log',
 
     // Approvals
     approvalCounts: '/approval-counts',
@@ -77,6 +87,7 @@ export class ApiService {
     taskDataForWorkflow: '/workflow/{workflow_id}/task/{task_id}/data',
     setCurrentTaskForWorkflow: '/workflow/{workflow_id}/task/{task_id}/set_token',
     fieldOptionsLookup: '/workflow/{workflow_id}/lookup/{task_spec_name}/{field_id}',
+    workflowLogs: '/workflow/{workflow_id}/log',
 
     // Tools
     eval: '/eval',
@@ -121,7 +132,6 @@ export class ApiService {
       .pipe(catchError(err => ApiService._handleError(err)));
   }
 
-  /** Get a specific Study */
   getDocumentDirectory(studyId: number, workflowId?: number): Observable<DocumentDirectory[]> {
     let url = this.apiRoot + this.endpoints.documentDirectory
       .replace('{study_id}', studyId.toString());
@@ -132,7 +142,6 @@ export class ApiService {
       .get<DocumentDirectory[]>(url)
       .pipe(catchError(err => ApiService._handleError(err)));
   }
-
 
   /** Get a specific Study */
   getStudy(studyId: number, updateStatus = false): Observable<Study> {
@@ -147,6 +156,17 @@ export class ApiService {
       .get<Study>(url, { params })
       .pipe(catchError(err => ApiService._handleError(err)));
   }
+
+  /** Get logs for a Study */
+  getStudyLogs(studyId: number, query: TaskLogQuery): Observable<TaskLogQuery> {
+    const url = this.apiRoot + this.endpoints.studyLogs
+      .replace('{study_id}', studyId.toString());
+
+    return this.httpClient
+      .put<TaskLogQuery>(url, query)
+      .pipe(catchError(err => ApiService._handleError(err)));
+  }
+
 
   /** Update a specific Study */
   updateStudy(studyId: number, study: Study): Observable<Study> {
@@ -177,6 +197,7 @@ export class ApiService {
       .delete<null>(url)
       .pipe(catchError(err => ApiService._handleError(err)));
   }
+
   /** Return all users related to a study and their access + role */
   getStudyAssociates(studyId: number): Observable<StudyAssociate[]> {
     const url = this.apiRoot + this.endpoints.studyAssociates
@@ -186,6 +207,8 @@ export class ApiService {
       .get<StudyAssociate[]>(url)
       .pipe(catchError(err => ApiService._handleError(err)));
   }
+
+
   /** Delete a library from a workflow */
   addWorkflowLibrary(workflowSpecId: string, librarySpecId: string): Observable<null> {
     const url = this.apiRoot + this.endpoints.updateWorkflowLibrary
@@ -390,7 +413,16 @@ export class ApiService {
       .pipe(catchError(err => ApiService._handleError(err)));
   }
 
-  /** Get all File Metadata for a given Workflow Specification, Workflow Instance, Study, or Task */
+  getSpecFileMetas(workflowSpecId: string) {
+    const url = this.apiRoot + this.endpoints.specFileList;
+    let params = new HttpParams();
+    params = params.set("workflow_spec_id", workflowSpecId)
+    return this.httpClient
+      .get<FileMeta[]>(url, { params })
+      .pipe(catchError(err => ApiService._handleError(err)));
+  }
+
+  /** Get all User uploaded File Metadata for a given Workflow Instance, Study, or Task */
   getFileMetas(fileParams: FileParams): Observable<FileMeta[]> {
     const url = this.apiRoot + this.endpoints.fileList;
     const params = this._paramsToHttpParams(fileParams);
@@ -399,6 +431,7 @@ export class ApiService {
       .get<FileMeta[]>(url, { params })
       .pipe(catchError(err => ApiService._handleError(err)));
   }
+
 
   /** Reorder workflow spec categories */
   reorderWorkflowCategory(catId: number, direction: string): Observable<WorkflowSpecCategory[]> {
@@ -431,9 +464,15 @@ export class ApiService {
       .pipe(catchError(err => ApiService._handleError(err)));
   }
 
+  addSpecFile(workflowSpec: WorkflowSpec, fileMeta: FileMeta, file: File): Observable<FileMeta> {
+    const fileParams = {workflow_spec_id: workflowSpec.id}
+    return this.addFile(fileParams, fileMeta, file, this.endpoints.specFileList)
+  }
+
   /** Add a File */
-  addFile(fileParams: FileParams, fileMeta: FileMeta, file: File): Observable<FileMeta> {
-    const url = this.apiRoot + this.endpoints.fileList;
+  addFile(fileParams: FileParams, fileMeta: FileMeta, file: File,
+          base_url: string = this.endpoints.fileList): Observable<FileMeta> {
+    const url = this.apiRoot + base_url;
     const params = this._paramsToHttpParams(fileParams);
     const formData = new FormData();
     formData.append('file', file);
@@ -443,9 +482,13 @@ export class ApiService {
       .pipe(catchError(err => ApiService._handleError(err)));
   }
 
+  getSpecFileMeta(fileMetaId:number): Observable<FileMeta> {
+    return this.getFileMeta(fileMetaId,this.endpoints.specFile)
+  }
+
   /** Get metadata for one specific File */
-  getFileMeta(fileMetaId: number): Observable<FileMeta> {
-    const url = this.apiRoot + this.endpoints.file
+  getFileMeta(fileMetaId: number, base_url: String = this.endpoints.file): Observable<FileMeta> {
+    const url = this.apiRoot + base_url
       .replace('{file_id}', fileMetaId.toString());
 
     return this.httpClient
@@ -453,9 +496,14 @@ export class ApiService {
       .pipe(catchError(err => ApiService._handleError(err)));
   }
 
+  /** Delete the File metadata for Workflow Specification File */
+  updateSpecFileMeta(fileMeta: FileMeta): Observable<FileMeta> {
+    return this.updateFileMeta(fileMeta, this.endpoints.specFile)
+  }
+
   /** Update File Metadata */
-  updateFileMeta(fileMeta: FileMeta): Observable<FileMeta> {
-    const url = this.apiRoot + this.endpoints.file
+  updateFileMeta(fileMeta: FileMeta, base_url: String = this.endpoints.file): Observable<FileMeta> {
+    const url = this.apiRoot + base_url
       .replace('{file_id}', fileMeta.id.toString());
 
     return this.httpClient
@@ -463,8 +511,18 @@ export class ApiService {
       .pipe(catchError(err => ApiService._handleError(err)));
   }
 
-  deleteFileMeta(fileMetaId: number): Observable<null> {
-    const url = this.apiRoot + this.endpoints.file
+  /** Delete the File metadata for Workflow Specification File */
+  deleteSpecFileMeta(fileMetaId: number): Observable<null> {
+    return this.deleteFileMeta(fileMetaId, this.endpoints.specFile)
+  }
+
+  /** Delete the File metadata for Workflow Specification File */
+  deleteRefFileMeta(fileMetaId: number): Observable<null> {
+    return this.deleteFileMeta(fileMetaId, this.endpoints.referenceFile)
+  }
+
+  deleteFileMeta(fileMetaId: number, base_url: String = this.endpoints.file): Observable<null> {
+    const url = this.apiRoot + base_url
       .replace('{file_id}', fileMetaId.toString());
 
     return this.httpClient
@@ -472,9 +530,14 @@ export class ApiService {
       .pipe(catchError(err => ApiService._handleError(err)));
   }
 
+  /** Get the File metadata for Workflow Specification File */
+  getSpecFileData(fileId: number): Observable<HttpResponse<ArrayBuffer>> {
+    return this.getFileData(fileId, this.endpoints.specFileData)
+  }
+
   /** Get the File Data for specific File Metadata */
-  getFileData(fileId: number): Observable<HttpResponse<ArrayBuffer>> {
-    const url = this.apiRoot + this.endpoints.fileData
+  getFileData(fileId: number, base_url: String = this.endpoints.fileData): Observable<HttpResponse<ArrayBuffer>> {
+    const url = this.apiRoot + base_url
       .replace('{file_id}', fileId.toString());
 
     return this.httpClient
@@ -482,9 +545,15 @@ export class ApiService {
       .pipe(catchError(err => ApiService._handleError(err)));
   }
 
+
+  /** Update the File metadata for Workflow Specification File */
+  updateSpecFileData(fileMeta: FileMeta, file: File): Observable<FileMeta> {
+    return this.updateFileData(fileMeta, file, this.endpoints.specFileData)
+  }
+
   /** Update the File Data for specific File Metadata */
-  updateFileData(fileMeta: FileMeta, file: File): Observable<FileMeta> {
-    const url = this.apiRoot + this.endpoints.fileData
+  updateFileData(fileMeta: FileMeta, file: File, base_url = this.endpoints.fileData): Observable<FileMeta> {
+    const url = this.apiRoot + base_url
       .replace('{file_id}', fileMeta.id.toString());
     const formData = new FormData();
     formData.append('file', file);
@@ -587,6 +656,17 @@ export class ApiService {
       .pipe(catchError(err => ApiService._handleError(err)));
   }
 
+  /** Get logs for a Workflow */
+  getWorkflowLogs(workflowId: number, query: TaskLogQuery): Observable<TaskLogQuery> {
+    const url = this.apiRoot + this.endpoints.workflowLogs
+      .replace('{workflow_id}', workflowId.toString());
+
+    return this.httpClient
+      .put<TaskLogQuery>(url, query)
+      .pipe(catchError(err => ApiService._handleError(err)));
+  }
+
+
   /** add Reference File */
   addReferenceFile(fileMeta: FileMeta, file:File) {
     const url = this.apiRoot + this.endpoints.referenceFileList;
@@ -609,8 +689,18 @@ export class ApiService {
   }
 
   /** getReferenceFile */
-  getReferenceFile(name: string): Observable<HttpResponse<ArrayBuffer>> {
+  getReferenceFile(name: string): Observable<FileMeta> {
     const url = this.apiRoot + this.endpoints.referenceFile
+      .replace('{name}', name);
+
+    return this.httpClient
+      .get<FileMeta>(url)
+      .pipe(catchError(err => ApiService._handleError(err)));
+  }
+
+  /** getReferenceFile */
+  getReferenceFileData(name: string): Observable<HttpResponse<ArrayBuffer>> {
+    const url = this.apiRoot + this.endpoints.referenceFileData
       .replace('{name}', name);
 
     return this.httpClient
@@ -620,7 +710,7 @@ export class ApiService {
 
   /** updateReferenceFile */
   updateReferenceFile(name: string, newFile: File): Observable<HttpResponse<ArrayBuffer>> {
-    const url = this.apiRoot + this.endpoints.referenceFile
+    const url = this.apiRoot + this.endpoints.referenceFileData
       .replace('{name}', name);
     const formData = new FormData();
     formData.append('file', newFile);
@@ -683,10 +773,6 @@ export class ApiService {
     localStorage.setItem('prev_url', location.href);
     const returnUrl = location.origin + this.baseHref + 'session';
     let httpParams = new HttpParams().set('redirect_url', returnUrl);
-    if (!this.environment.production) {
-      httpParams = httpParams.set('uid', 'dhf8r');
-    }
-
     this.openUrl(this.apiRoot + this.endpoints.login + '?' + httpParams.toString());
   }
 

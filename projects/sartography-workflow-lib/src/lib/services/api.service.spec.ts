@@ -533,12 +533,12 @@ describe('ApiService', () => {
   });
 
   it('should get a specific reference file', () => {
-    service.getReferenceFile(mockFileMetaReference0.name).subscribe((response: HttpResponse<ArrayBuffer>) => {
+    service.getReferenceFileData(mockFileMetaReference0.name).subscribe((response: HttpResponse<ArrayBuffer>) => {
       expect(response.headers.get('content-type')).toEqual(mockFileMetaReference0.type);
       expect(response.headers.get('last-modified')).toEqual(mockFileMetaReference0.last_modified.toString());
     });
 
-    const req = httpMock.expectOne(`apiRoot/reference_file/${mockFileMetaReference0.name}`);
+    const req = httpMock.expectOne(`apiRoot/reference_file/${mockFileMetaReference0.name}/data`);
     expect(req.request.method).toEqual('GET');
     const mockHeaders = new HttpHeaders()
       .append('last-modified', mockFileMetaReference0.last_modified.toString())
@@ -562,7 +562,7 @@ describe('ApiService', () => {
       expect(response.headers.get('last-modified')).toEqual(newTimeCode.toString());
     });
 
-    const req = httpMock.expectOne(`apiRoot/reference_file/${mockFileMetaReference0.name}`);
+    const req = httpMock.expectOne(`apiRoot/reference_file/${mockFileMetaReference0.name}/data`);
     expect(req.request.method).toEqual('PUT');
     const mockHeaders = new HttpHeaders()
       .append('last-modified', newFile.lastModified.toString())
