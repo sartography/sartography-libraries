@@ -148,6 +148,7 @@ export class ToFormlyPipe implements PipeTransform {
               });
             } else if (resultField.templateOptions.options instanceof Array) {
               resultField.defaultValue = resultField.templateOptions.options.find(o => o.value === field.default_value);
+              resultField.expressionProperties['model.' + field.id] = this.getPythonEvalFunction(field, def);
             }
           }
 
@@ -161,6 +162,8 @@ export class ToFormlyPipe implements PipeTransform {
         case 'string':
           resultField.type = 'input';
           this.setDefaultValue(model, resultField, field, def);
+          //resultField.defaultValue = field.default_value;
+          //resultField.expressionProperties['model.' + field.id] = this.getPythonEvalFunction(field, def);
           break;
         case 'textarea':
           resultField.type = 'textarea';
@@ -535,7 +538,8 @@ export class ToFormlyPipe implements PipeTransform {
 
   protected setDefaultValue(model: any, resultField: FormlyFieldConfig, field: BpmnFormJsonField, def: any) {
     if (!(model[resultField.key.toString()])) {
-      resultField.defaultValue = field.default_value;resultField.expressionProperties['model.' + field.id] = this.getPythonEvalFunction(field, def, model[resultField.key.toString()]);
+      resultField.defaultValue = '';
+      resultField.expressionProperties['model.' + field.id] = this.getPythonEvalFunction(field, def, resultField.defaultValue);
     } else {
       resultField.defaultValue = model[resultField.key.toString()];
     }
