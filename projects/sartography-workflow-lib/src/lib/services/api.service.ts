@@ -513,14 +513,16 @@ export class ApiService {
   }
 
   /** Update the File metadata for Workflow Specification File */
-  updateSpecFileMeta(workflowSpec: WorkflowSpec, fileMeta: FileMeta): Observable<FileMeta> {
+  updateSpecFileMeta(workflowSpec: WorkflowSpec, fileMeta: FileMeta, is_primary: boolean): Observable<FileMeta> {
         // '/workflow-specification/{spec_id}/file/{file_name}',
     const url = this.apiRoot + this.endpoints.specFile
       .replace('{spec_id}', workflowSpec.id)
       .replace('{file_name}', fileMeta.name)
 
+    const params = new HttpParams().set('is_primary', is_primary);
+
     return this.httpClient
-      .put<FileMeta>(url, fileMeta)
+      .put<FileMeta>(url, fileMeta, { params })
       .pipe(catchError(err => ApiService._handleError(err)));
   }
 
