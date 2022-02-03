@@ -469,10 +469,16 @@ export class ApiService {
 
   addSpecFile(workflowSpec: WorkflowSpec, fileMeta: FileMeta, file: File): Observable<FileMeta> {
     const fileParams = {workflow_spec_id: workflowSpec.id}
-    const url = this.endpoints.specFileList
+    const url = this.apiRoot + this.endpoints.specFileList
       .replace('{spec_id}', workflowSpec.id)
       .replace('{file_name}', file.name);
-    return this.addFile(fileParams, fileMeta, file, url)
+    const params = this._paramsToHttpParams(fileParams);
+    const formData = new FormData();
+    formData.append('file', file);
+
+    return this.httpClient
+      .post<FileMeta>(url, formData, { params })
+      .pipe(catchError(err => ApiService._handleError(err)));
   }
 
   /** Add a File */
@@ -506,10 +512,10 @@ export class ApiService {
       .pipe(catchError(err => ApiService._handleError(err)));
   }
 
-  /** Delete the File metadata for Workflow Specification File */
+  /** Update the File metadata for Workflow Specification File */
   updateSpecFileMeta(workflowSpec: WorkflowSpec, fileMeta: FileMeta): Observable<FileMeta> {
         // '/workflow-specification/{spec_id}/file/{file_name}',
-    const url = this.endpoints.specFile
+    const url = this.apiRoot + this.endpoints.specFile
       .replace('{spec_id}', workflowSpec.id)
       .replace('{file_name}', fileMeta.name)
 
@@ -529,12 +535,15 @@ export class ApiService {
   }
 
   /** Delete the File metadata for Workflow Specification File */
-  deleteSpecFileMeta(workflowSpec: WorkflowSpec, fileMetaId: number, fileName: string): Observable<null> {
+  deleteSpecFileMeta(workflowSpec: WorkflowSpec, fileName: string): Observable<null> {
         // '/workflow-specification/{spec_id}/file/{file_name}',
-    const url = this.endpoints.specFile
+    const url = this.apiRoot + this.endpoints.specFile
       .replace('{spec_id}', workflowSpec.id)
       .replace('{file_name}', fileName);
-    return this.deleteFileMeta(fileMetaId, url);
+
+    return this.httpClient
+      .delete<null>(url)
+      .pipe(catchError(err => ApiService._handleError(err)));
   }
 
   /** Delete the File metadata for Workflow Specification File */
@@ -573,15 +582,18 @@ export class ApiService {
       .pipe(catchError(err => ApiService._handleError(err)));
   }
 
-
-  // TODO: this also needs passed spec_id
   /** Update the File metadata for Workflow Specification File */
   updateSpecFileData(workflowSpec: WorkflowSpec, fileMeta: FileMeta, file: File): Observable<FileMeta> {
         // specFileData: '/workflow-specification/{spec_id}/file/{file_name}/data',
-    const url = this.endpoints.specFileData
+    const url = this.apiRoot + this.endpoints.specFileData
       .replace('{spec_id}', workflowSpec.id)
       .replace('{file_name}', fileMeta.name)
-    return this.updateFileData(fileMeta, file, url)
+     const formData = new FormData();
+    formData.append('file', file);
+
+    return this.httpClient
+      .put<FileMeta>(url, formData)
+      .pipe(catchError(err => ApiService._handleError(err)));
   }
 
   /** Update the File Data for specific File Metadata */
