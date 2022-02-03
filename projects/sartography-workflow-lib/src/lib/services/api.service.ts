@@ -488,7 +488,7 @@ export class ApiService {
       .pipe(catchError(err => ApiService._handleError(err)));
   }
 
-  // TODO: this isnt used anywhere
+// TODO: this isnt used anywhere  but fileMetaID is definitely wrong
   getSpecFileMeta(workflowSpec: WorkflowSpec, fileName: string, fileMetaId: number): Observable<FileMeta> {
     const url = this.endpoints.specFile
       .replace('{spec_id}', workflowSpec.id)
@@ -512,7 +512,10 @@ export class ApiService {
     const url = this.endpoints.specFile
       .replace('{spec_id}', workflowSpec.id)
       .replace('{file_name}', fileMeta.name)
-    return this.updateFileMeta(fileMeta, url);
+
+    return this.httpClient
+      .put<FileMeta>(url, fileMeta)
+      .pipe(catchError(err => ApiService._handleError(err)));
   }
 
   /** Update File Metadata */
@@ -549,11 +552,15 @@ export class ApiService {
   }
 
   /** Get the File metadata for Workflow Specification File */
-  getSpecFileData(workflowSpec: WorkflowSpec, fileId: number, fileName: string): Observable<HttpResponse<ArrayBuffer>> {
-    const url = this.endpoints.specFileData
+  getSpecFileData(workflowSpec: WorkflowSpec, fileName: string): Observable<HttpResponse<ArrayBuffer>> {
+    const url = this.apiRoot + this.endpoints.specFileData
       .replace('{spec_id}', workflowSpec.id)
-      .replace('file_name', fileName)
-    return this.getFileData(fileId, url)
+      .replace('{file_name}', fileName)
+
+    return this.httpClient
+      .get(url, {observe: 'response', responseType: 'arraybuffer'})
+      .pipe(catchError(err => ApiService._handleError(err)));
+
   }
 
   /** Get the File Data for specific File Metadata */
