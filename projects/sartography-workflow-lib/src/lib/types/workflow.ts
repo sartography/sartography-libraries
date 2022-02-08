@@ -20,9 +20,7 @@ export interface WorkflowSpec {
   description: string;
   primary_process_id?: string;
   primary_file_name?: string;
-  category_id?: number;
-  category_name?: string;
-  category?: WorkflowSpecCategory;
+  category_id?: string;
   is_master_spec?: boolean;
   display_order?: number;
   standalone?: boolean;
@@ -31,7 +29,7 @@ export interface WorkflowSpec {
 }
 
 export interface WorkflowSpecCategory {
-  id?: number;
+  id?: string;
   display_name: string;
   display_order: number;
   workflows?: WorkflowMetadata[];
@@ -42,7 +40,7 @@ export interface WorkflowMetadata {
   state: WorkflowState;
   completed_tasks: number;
   total_tasks: number;
-  category_id: number;
+  category_id: string;
   category_display_name: string;
   description: string;
   display_name: string;
