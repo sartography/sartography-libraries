@@ -210,7 +210,7 @@ export class ApiService {
   }
 
 
-  /** Delete a library from a workflow */
+  /** Add a library to a workflow */
   addWorkflowLibrary(workflowSpecId: string, librarySpecId: string): Observable<null> {
     const url = this.apiRoot + this.endpoints.updateWorkflowLibrary
       .replace('{spec_id}', workflowSpecId)

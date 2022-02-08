@@ -14,12 +14,6 @@ export enum WorkflowState {
   OPTIONAL = 'optional',
 }
 
-export interface WorkflowSpecReference {
-  id: number;
-  name: string;
-  display_name: string;
-}
-
 export interface WorkflowSpec {
   id: string;
   display_name: string;
@@ -27,13 +21,13 @@ export interface WorkflowSpec {
   primary_process_id?: string;
   primary_file_name?: string;
   category_id?: number;
+  category_name?: string;
   category?: WorkflowSpecCategory;
   is_master_spec?: boolean;
   display_order?: number;
   standalone?: boolean;
   library?: boolean;
-  libraries?: WorkflowSpecReference[];
-  parents?: WorkflowSpecReference[];
+  libraries?: string[];
 }
 
 export interface WorkflowSpecCategory {

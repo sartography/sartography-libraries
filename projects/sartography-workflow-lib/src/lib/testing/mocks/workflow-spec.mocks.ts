@@ -13,7 +13,6 @@ export const mockWorkflowSpec0: WorkflowSpec = {
   category_id: 0,
   category: mockWorkflowSpecCategory0,
   display_order: 0,
-  parents: [],
   libraries: [],
   library: false
 };
@@ -24,7 +23,6 @@ export const mockWorkflowSpec1: WorkflowSpec = {
   category_id: 1,
   category: mockWorkflowSpecCategory1,
   display_order: 1,
-  parents: [],
   libraries: [],
   library: false
 };
@@ -35,7 +33,6 @@ export const mockWorkflowSpec2: WorkflowSpec = {
   category_id: 2,
   category: mockWorkflowSpecCategory2,
   display_order: 2,
-  parents: [],
   libraries: [],
   library: false
 };
@@ -46,7 +43,6 @@ export const mockWorkflowSpec3: WorkflowSpec = {
   category_id: 3,
   category: mockWorkflowSpecCategory3,
   display_order: 2,
-  parents: [],
   standalone: false,
   libraries: [],
   library: true
