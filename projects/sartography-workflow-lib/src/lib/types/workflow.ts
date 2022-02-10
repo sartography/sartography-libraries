@@ -31,7 +31,7 @@ export interface WorkflowSpec {
 export interface WorkflowSpecCategory {
   id?: string;
   display_name: string;
-  display_order: number;
+  display_order?: number;
   workflows?: WorkflowMetadata[];
   admin: boolean;
 }
