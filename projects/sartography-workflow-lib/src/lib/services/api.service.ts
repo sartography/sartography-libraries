@@ -15,6 +15,7 @@ import { Workflow, WorkflowSpec, WorkflowSpecCategory } from '../types/workflow'
 import { WorkflowTask } from '../types/workflow-task';
 import { isSignedIn } from '../util/is-signed-in';
 import {TaskLogQuery} from '../types/task-log';
+import {GitRepo} from "../types/git";
 
 @Injectable({
   providedIn: 'root'
@@ -874,10 +875,10 @@ export class ApiService {
   }
 
   /** Get the git repo */
-  gitRepo() {
+  gitRepo(): Observable<GitRepo> {
      const url = this.apiRoot + this.endpoints.gitRepo;
      return this.httpClient
-       .get<Object[]>(url)
+       .get<GitRepo>(url)
        .pipe(catchError(err => ApiService._handleError(err)));
   }
 
@@ -891,7 +892,7 @@ export class ApiService {
        .pipe(catchError(err => ApiService._handleError(err)));
   }
 
-  gitRepoPush(comment: string) {
+  gitRepoPush(comment: string)  {
     const url = this.apiRoot + this.endpoints.gitRepoPush;
     let params = new HttpParams()
       .append('comment', comment)
@@ -901,7 +902,7 @@ export class ApiService {
        .pipe(catchError(err => ApiService._handleError(err)));
   }
 
-  gitRepoPull() {
+  gitRepoPull(): Observable<Object[]>  {
     const url = this.apiRoot + this.endpoints.gitRepoPull;
      return this.httpClient
        .get<Object[]>(url)

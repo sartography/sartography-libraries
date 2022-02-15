@@ -767,7 +767,7 @@ describe('ApiService', () => {
     it('should get the git repo', () => {
     service.gitRepo().subscribe(data => {
       expect(data).toBeTruthy();
-      expect(data.length).toBeGreaterThan(0);
+      expect(data).toBeGreaterThan(0);
     });
 
     const req = httpMock.expectOne(`apiRoot/git_repo`);
