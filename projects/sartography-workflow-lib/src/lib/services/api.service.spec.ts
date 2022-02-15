@@ -764,4 +764,45 @@ describe('ApiService', () => {
     req.flush(modifiedSpec);
   });
 
+    it('should get the git repo', () => {
+    service.gitRepo().subscribe(data => {
+      expect(data).toBeTruthy();
+      expect(data.length).toBeGreaterThan(0);
+    });
+
+    const req = httpMock.expectOne(`apiRoot/git_repo`);
+    expect(req.request.method).toEqual('GET');
+  });
+
+    it('should push to the git repo', () => {
+    service.gitRepoPush('test').subscribe(data => {
+      expect(data).toBeTruthy();
+      expect(data.length).toBeGreaterThan(0);
+      expect(data).toEqual('Local changes were pushed successfully')
+    });
+
+    const req = httpMock.expectOne(`apiRoot/git_repo/push?comment=test`);
+    expect(req.request.method).toEqual('GET');
+  });
+
+    it('should pull the git repo', () => {
+    service.gitRepoPull().subscribe(data => {
+      expect(data).toBeTruthy();
+      expect(data.length).toBeGreaterThan(0);
+    });
+
+    const req = httpMock.expectOne(`apiRoot/git_repo/pull`);
+    expect(req.request.method).toEqual('GET');
+    });
+
+    it('should merge the git repo', () => {
+    service.gitRepoMerge('test_branch').subscribe(data => {
+      expect(data).toBeTruthy();
+      expect(data.length).toBeGreaterThan(0);
+    });
+
+    const req = httpMock.expectOne(`apiRoot/git_repo/merge?branch=test_branch`);
+    expect(req.request.method).toEqual('GET');
+  });
+
 });

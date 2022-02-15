@@ -892,7 +892,7 @@ export class ApiService {
   }
 
   gitRepoPush(comment: string) {
-    const url = this.apiRoot + this.endpoints.gitRepoMerge;
+    const url = this.apiRoot + this.endpoints.gitRepoPush;
     let params = new HttpParams()
       .append('comment', comment)
 
@@ -902,7 +902,7 @@ export class ApiService {
   }
 
   gitRepoPull() {
-    const url = this.apiRoot + this.endpoints.gitRepoMerge;
+    const url = this.apiRoot + this.endpoints.gitRepoPull;
      return this.httpClient
        .get<Object[]>(url)
        .pipe(catchError(err => ApiService._handleError(err)));
