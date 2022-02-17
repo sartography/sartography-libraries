@@ -10,10 +10,8 @@ export const mockWorkflowSpec0: WorkflowSpec = {
   id: 'all_things',
   display_name: 'Everything',
   description: 'Do all the things',
-  category_id: 0,
-  category: mockWorkflowSpecCategory0,
+  category_id: '0',
   display_order: 0,
-  parents: [],
   libraries: [],
   library: false
 };
@@ -21,10 +19,8 @@ export const mockWorkflowSpec1: WorkflowSpec = {
   id: 'few_things',
   display_name: 'Some things',
   description: 'Do a few things',
-  category_id: 1,
-  category: mockWorkflowSpecCategory1,
+  category_id: '1',
   display_order: 1,
-  parents: [],
   libraries: [],
   library: false
 };
@@ -32,10 +28,8 @@ export const mockWorkflowSpec2: WorkflowSpec = {
   id: 'one_thing',
   display_name: 'One thing',
   description: 'Do just one thing',
-  category_id: 2,
-  category: mockWorkflowSpecCategory2,
+  category_id: '2',
   display_order: 2,
-  parents: [],
   libraries: [],
   library: false
 };
@@ -43,10 +37,8 @@ export const mockWorkflowSpec3: WorkflowSpec = {
   id: 'weird_thing',
   display_name: 'Weird thing',
   description: 'Do some weird things',
-  category_id: 3,
-  category: mockWorkflowSpecCategory3,
+  category_id: '3',
   display_order: 2,
-  parents: [],
   standalone: false,
   libraries: [],
   library: true
