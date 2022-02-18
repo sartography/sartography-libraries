@@ -156,8 +156,6 @@ export class ToFormlyPipe implements PipeTransform {
         case 'string':
           resultField.type = 'input';
           this.setDefaultValue(model, resultField, field, def);
-          //resultField.defaultValue = field.default_value;
-          //resultField.expressionProperties['model.' + field.id] = this.getPythonEvalFunction(field, def);
           break;
         case 'textarea':
           resultField.type = 'textarea';
@@ -198,11 +196,15 @@ export class ToFormlyPipe implements PipeTransform {
           }
           else if (!field.properties.find(x => x.id === 'boolean_type')) {
             resultField.type = 'radio';
-            this.setDefaultValue(model, resultField, field, def);
             resultField.templateOptions.options = [
               {value: true, label: 'Yes'},
               {value: false, label: 'No'},
             ];
+            // If you want a default value set, you have to find it in the options.
+            if (field.default_value) {
+              resultField.defaultValue = resultField.templateOptions.options.find(o => o.value === field.default_value);
+              resultField.expressionProperties['model.' + field.id] = this.getPythonEvalFunction(field, def);
+            }
           }
           break;
         case 'date':
@@ -236,7 +238,7 @@ export class ToFormlyPipe implements PipeTransform {
       }
 
       // Resolve the label
-      resultField.templateOptions.label = field.label;
+      resultField.templateOptions.label = '';
       let label = {id: "label", value: field.label}
       resultField.expressionProperties['templateOptions.label'] = this.getPythonEvalFunction(field, label);
 
@@ -291,13 +293,6 @@ export class ToFormlyPipe implements PipeTransform {
             case 'hide_expression':
               resultField.hideExpression = this.getPythonEvalFunction(field, p);
               break;
-            case 'value_expression':
-              resultField.expressionProperties['model.' + field.id] = this.getPythonEvalFunction(field, p);
-              break;
-            // Deprecated
-            //case 'label_expression':
-              // resultField.expressionProperties['templateOptions.label'] = this.getPythonEvalFunction(field, p);
-            //  break;
             case 'repeat_required_expression':
               resultField.templateOptions.repeatSectionRequiredExpression = this.getPythonEvalFunction(field, p);
               break;
