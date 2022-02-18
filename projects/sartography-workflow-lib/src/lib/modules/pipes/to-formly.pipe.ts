@@ -140,18 +140,9 @@ export class ToFormlyPipe implements PipeTransform {
             return option;
           });
 
-          // Store entire options object as default value
           if (field.hasOwnProperty('default_value')) {
-            if (resultField.templateOptions.options instanceof Observable) {
-              resultField.templateOptions.options.subscribe(options => {
-                resultField.defaultValue = options.find(o => o.value === field.default_value);
-              });
-            } else if (resultField.templateOptions.options instanceof Array) {
-              resultField.defaultValue = resultField.templateOptions.options.find(o => o.value === field.default_value);
               resultField.expressionProperties['model.' + field.id] = this.getPythonEvalFunction(field, def);
-            }
           }
-
           break;
         case 'string':
           resultField.type = 'input';
@@ -202,7 +193,6 @@ export class ToFormlyPipe implements PipeTransform {
             ];
             // If you want a default value set, you have to find it in the options.
             if (field.default_value) {
-              resultField.defaultValue = resultField.templateOptions.options.find(o => o.value === field.default_value);
               resultField.expressionProperties['model.' + field.id] = this.getPythonEvalFunction(field, def);
             }
           }
@@ -291,7 +281,7 @@ export class ToFormlyPipe implements PipeTransform {
               resultField.templateOptions.repeatSectionHideExpression = this.getPythonEvalFunction(field, p);
               break;
             case 'hide_expression':
-              resultField.hideExpression = this.getPythonEvalFunction(field, p);
+              resultField.hideExpression = this.getPythonEvalFunction(field, p, true);
               break;
             case 'repeat_required_expression':
               resultField.templateOptions.repeatSectionRequiredExpression = this.getPythonEvalFunction(field, p);
