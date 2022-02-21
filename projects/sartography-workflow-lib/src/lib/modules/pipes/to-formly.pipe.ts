@@ -112,7 +112,7 @@ export class ToFormlyPipe implements PipeTransform {
   constructor(private apiService?: ApiService) {
   }
 
-  transform(value: BpmnFormJsonField[], fileParams = this.defaultFileParams, model: [], ...args: any[]): FormlyFieldConfig[] {
+  transform(value: BpmnFormJsonField[], fileParams = this.defaultFileParams, model: []= [], ...args: any[]): FormlyFieldConfig[] {
 
     const result: FormlyFieldConfig[] = [];
     for (const field of value) {
