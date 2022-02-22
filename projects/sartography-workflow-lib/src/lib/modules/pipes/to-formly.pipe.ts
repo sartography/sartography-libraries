@@ -139,10 +139,7 @@ export class ToFormlyPipe implements PipeTransform {
             }
             return option;
           });
-
-          if (field.hasOwnProperty('default_value')) {
-              resultField.expressionProperties['model.' + field.id] = this.getPythonEvalFunction(field, def);
-          }
+          this.setDefaultValue(model, resultField, field, def);
           break;
         case 'string':
           resultField.type = 'input';
@@ -180,10 +177,10 @@ export class ToFormlyPipe implements PipeTransform {
         case 'boolean':
           if (field.properties.find(x => x.id === 'boolean_type' && x.value === 'checkbox')) {
             resultField.type = 'checkbox';
-            this.setDefaultValue(model, resultField, field, def);
             resultField.templateOptions = { indeterminate: false };
-            resultField.validators = {validation: ['checked']};
-            break;
+            if(resultField.templateOptions.required) {
+              resultField.validators = {validation: ['checked']};
+            }
           }
           else if (!field.properties.find(x => x.id === 'boolean_type')) {
             resultField.type = 'radio';
@@ -191,11 +188,8 @@ export class ToFormlyPipe implements PipeTransform {
               {value: true, label: 'Yes'},
               {value: false, label: 'No'},
             ];
-            // If you want a default value set, you have to find it in the options.
-            if (field.default_value) {
-              resultField.expressionProperties['model.' + field.id] = this.getPythonEvalFunction(field, def);
-            }
           }
+          this.setDefaultValue(model, resultField, field, def);
           break;
         case 'date':
           resultField.type = 'datepicker';
@@ -228,15 +222,16 @@ export class ToFormlyPipe implements PipeTransform {
       }
 
       // Resolve the label
-      let match = field.label.match(/^(["'])(.*?(?<!\\)(\\\\)*)\1$/is)
-      if (match) {
-        resultField.templateOptions.label = match[2]
-      } else {
-        let label = {id: "label", value: field.label}
-        resultField.templateOptions.label = ""
-        resultField.expressionProperties['templateOptions.label'] = this.getPythonEvalFunction(field, label);
+      if(field.label) {
+        let match = field.label.match(/^(["'])(.*?(?<!\\)(\\\\)*)\1$/is)
+        if (match) {
+          resultField.templateOptions.label = match[2]
+        } else {
+          let label = {id: "label", value: field.label}
+          resultField.templateOptions.label = ""
+          resultField.expressionProperties['templateOptions.label'] = this.getPythonEvalFunction(field, label);
+        }
       }
-
       // Convert bpmnjs field validations to Formly field requirements
       if (field.validation && isIterable(field.validation) && (field.validation.length > 0)) {
         for (const v of field.validation) {
@@ -347,14 +342,7 @@ export class ToFormlyPipe implements PipeTransform {
                   resultField.templateOptions.multiple = true;
                   resultField.templateOptions.selectAllOption = 'Select All';
                   resultField.className = this._addClassName(resultField, 'vertical-checkbox-group');
-
-                  // Wrap default value in an array.
-                  if (resultField.hasOwnProperty('defaultValue')) {
-                    const defaultValue = cloneDeep(resultField.defaultValue);
-                    resultField.defaultValue = [defaultValue];
-                  }
                 }
-
                 if (p.value === 'radio') {
                   resultField.type = 'radio_data';
                   resultField.className = this._addClassName(resultField, 'vertical-radio-group');
@@ -526,7 +514,7 @@ export class ToFormlyPipe implements PipeTransform {
     let match = def.value.match(/^(["'])(.*?(?<!\\)(\\\\)*)\1$/is)
     if (match) {
       resultField.defaultValue = match[2]
-    } else if (!(model[resultField.key.toString()])) {
+    } else if (!(model.hasOwnProperty(resultField.key.toString()))) {
       console.log("Setting the Default Value for ", field)
       resultField.defaultValue = '';
       resultField.expressionProperties['model.' + field.id] = this.getPythonEvalFunction(field, def, resultField.defaultValue);
@@ -648,7 +636,6 @@ export class ToFormlyPipe implements PipeTransform {
         formState[variableSubjectKey].next({expression: p.value, data, key});
       }
       // We immediately return the variable, but it might change due to the above observable.
-      console.log("Returning", variableKey, formState[variableKey][key])
       return formState[variableKey][key];
 
     };
