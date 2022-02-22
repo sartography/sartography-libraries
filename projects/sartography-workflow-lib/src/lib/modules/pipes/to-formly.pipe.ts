@@ -228,9 +228,13 @@ export class ToFormlyPipe implements PipeTransform {
       }
 
       // Resolve the label
-      resultField.templateOptions.label = '';
-      let label = {id: "label", value: field.label}
-      resultField.expressionProperties['templateOptions.label'] = this.getPythonEvalFunction(field, label);
+``      let match = field.label.match(/(["'])(.*?(?<!\\)(\\\\)*)\1/is)
+      if (match) {
+        resultField.templateOptions.label = match[2]
+      } else {
+        let label = {id: "label", value: field.label}
+        resultField.expressionProperties['templateOptions.label'] = this.getPythonEvalFunction(field, label);
+      }
 
       // Convert bpmnjs field validations to Formly field requirements
       if (field.validation && isIterable(field.validation) && (field.validation.length > 0)) {
@@ -487,7 +491,6 @@ export class ToFormlyPipe implements PipeTransform {
           // Hidden field values will be removed on save.
           // // Clears value when hidden (will be the default in Formly v6?)
           // (newGroup as any).autoClear = true;
-
           newGroup.fieldGroup[0].expressionProperties = {
             'templateOptions.required': field.templateOptions.repeatSectionRequiredExpression,
           };
@@ -516,6 +519,9 @@ export class ToFormlyPipe implements PipeTransform {
   }
 
   protected setDefaultValue(model: any, resultField: FormlyFieldConfig, field: BpmnFormJsonField, def: any) {
+    if (def.value == null) {
+      return;
+    }
     if (!(model[resultField.key.toString()])) {
       resultField.defaultValue = '';
       resultField.expressionProperties['model.' + field.id] = this.getPythonEvalFunction(field, def, resultField.defaultValue);

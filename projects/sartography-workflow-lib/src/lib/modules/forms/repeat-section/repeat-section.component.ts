@@ -6,6 +6,7 @@ import { RepeatSectionDialogComponent } from '../repeat-section-dialog/repeat-se
 import { ApiService } from '../../../services/api.service';
 import { cloneDeep } from 'lodash';
 import { RepeatSectionConfirmDialogComponent } from '../repeat-section-confirm-dialog/repeat-section-confirm-dialog.component';
+import {clone, isNullOrUndefined} from '@ngx-formly/core/lib/utils';
 
 @Component({
   selector: 'lib-repeat-section',
@@ -51,16 +52,17 @@ export class RepeatSectionComponent extends FieldArrayType {
           console.log("Removing group")
           super.remove(i);
         }
+        console.log("This field is ", this.field)
         console.log("updating model at ", i, model);
-        super.add(i, model);
+        super.add(i, model, {markAsDirty: true});
       }
 
       this.field.formControl.updateValueAndValidity();
       this.field.fieldGroup.forEach(fg => {
-        console.log("Field Groups are: ", fg.model['ldap']);
+        console.log("Field Groups are: ", fg);
         fg.formControl.updateValueAndValidity();
       })
-
+      console.log("The Model is ", this.field.parent.model)
     });
   }
 
@@ -77,6 +79,7 @@ export class RepeatSectionComponent extends FieldArrayType {
       }
     });
   }
+
 
   remove(i: number) {
     for (const field of this.field.fieldGroup[i].fieldGroup) {
