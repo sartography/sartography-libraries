@@ -157,8 +157,7 @@ describe('ToFormlyPipe', () => {
     expect(after[0].key).toEqual(before[0].id);
     expect(after[0].type).toEqual('radio');
     expect(after[0].expressionProperties['model.should_ask_color']).toEqual(jasmine.any(Function));
-    expect(after[0].expressionProperties['templateOptions.label']).toEqual(jasmine.any(Function));
-    expect(after[0].templateOptions.label).toEqual('');
+    expect(after[0].templateOptions.label).toEqual('Does color affect your mood?');
     expect(after[0].templateOptions.required).toEqual(true);
     expect(after[0].templateOptions.options[0].value).toEqual(true);
     expect(after[0].templateOptions.options[0].label).toEqual('Yes');

@@ -228,11 +228,12 @@ export class ToFormlyPipe implements PipeTransform {
       }
 
       // Resolve the label
-``      let match = field.label.match(/(["'])(.*?(?<!\\)(\\\\)*)\1/is)
+      let match = field.label.match(/^(["'])(.*?(?<!\\)(\\\\)*)\1$/is)
       if (match) {
         resultField.templateOptions.label = match[2]
       } else {
         let label = {id: "label", value: field.label}
+        resultField.templateOptions.label = ""
         resultField.expressionProperties['templateOptions.label'] = this.getPythonEvalFunction(field, label);
       }
 
@@ -522,7 +523,11 @@ export class ToFormlyPipe implements PipeTransform {
     if (def.value == null) {
       return;
     }
-    if (!(model[resultField.key.toString()])) {
+    let match = def.value.match(/^(["'])(.*?(?<!\\)(\\\\)*)\1$/is)
+    if (match) {
+      resultField.defaultValue = match[2]
+    } else if (!(model[resultField.key.toString()])) {
+      console.log("Setting the Default Value for ", field)
       resultField.defaultValue = '';
       resultField.expressionProperties['model.' + field.id] = this.getPythonEvalFunction(field, def, resultField.defaultValue);
     } else {
@@ -599,8 +604,12 @@ export class ToFormlyPipe implements PipeTransform {
             (error: ApiError) => {
               console.warn(`Failed to update field ${field.id} unable to process expression. ${error.message}`);
               formState[variableKey] = 'error';
-            }
-            );
+            },
+            () => {
+              if (method) {
+                method()
+              }
+            });
       }
 
       let data = cloneDeep(model);
@@ -639,7 +648,9 @@ export class ToFormlyPipe implements PipeTransform {
         formState[variableSubjectKey].next({expression: p.value, data, key});
       }
       // We immediately return the variable, but it might change due to the above observable.
+      console.log("Returning", variableKey, formState[variableKey][key])
       return formState[variableKey][key];
+
     };
   }
 
