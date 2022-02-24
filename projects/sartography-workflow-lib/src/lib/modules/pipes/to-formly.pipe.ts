@@ -9,6 +9,7 @@ import {BpmnFormJsonField, BpmnFormJsonFieldEnumValue, BpmnFormJsonFieldProperty
 import isEqual from 'lodash.isequal';
 import {catchError, mergeMap} from 'rxjs/operators';
 import {ApiError} from '../../types/api';
+import {isNullOrUndefined} from "@ngx-formly/core/lib/utils";
 
 /***
  * Convert the given BPMN form JSON value to Formly JSON
@@ -508,18 +509,15 @@ export class ToFormlyPipe implements PipeTransform {
   }
 
   protected setDefaultValue(model: any, resultField: FormlyFieldConfig, field: BpmnFormJsonField, def: any) {
-    if (def.value == null) {
+    let model_value = resultField.key.toString().split('.').reduce((o,i)=> o[i], model);
+    if (def.value == null || (model_value !== undefined && model_value !== null)) {
       return;
     }
     let match = def.value.match(/^(["'])(.*?(?<!\\)(\\\\)*)\1$/is)
     if (match) {
       resultField.defaultValue = match[2]
-    } else if (!(model.hasOwnProperty(resultField.key.toString()))) {
-      console.log("Setting the Default Value for ", field)
-      resultField.defaultValue = '';
-      resultField.expressionProperties['model.' + field.id] = this.getPythonEvalFunction(field, def, resultField.defaultValue);
     } else {
-      resultField.defaultValue = model[resultField.key.toString()];
+      resultField.expressionProperties['model.' + field.id] = this.getPythonEvalFunction(field, def, resultField.defaultValue);
     }
   }
 
@@ -539,10 +537,6 @@ export class ToFormlyPipe implements PipeTransform {
     return (model: any, formState: any, fieldConfig: FormlyFieldConfig) => {
       if (!formState) {
         formState = {};
-      }
-      if (!fieldConfig.formControl.dirty) {
-        fieldConfig.formControl.markAsDirty();
-        return defaultValue;
       }
 
       // A bit of code to warn us when we are calling this 1000's of times.
