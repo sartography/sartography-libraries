@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import {ChangeDetectionStrategy, Component} from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { FieldArrayType, FormlyFieldConfig, FormlyFormOptions } from '@ngx-formly/core';
 import { RepeatSectionDialogData } from '../../../types/repeat-section-dialog-data';
@@ -10,6 +10,7 @@ import {clone, isNullOrUndefined} from '@ngx-formly/core/lib/utils';
 
 @Component({
   selector: 'lib-repeat-section',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './repeat-section.component.html',
   styleUrls: ['./repeat-section.component.scss'],
 })
