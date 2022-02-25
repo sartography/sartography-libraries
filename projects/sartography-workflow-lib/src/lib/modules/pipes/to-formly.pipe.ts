@@ -305,6 +305,7 @@ export class ToFormlyPipe implements PipeTransform {
               break;
             case 'placeholder':
               resultField.templateOptions.placeholder = p.value;
+              resultField.expressionProperties['templateOptions.placeholder'] = this.getPythonEvalFunction(field, p);
               break;
             case 'description':
               resultField.templateOptions.description = p.value;
