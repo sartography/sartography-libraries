@@ -7,7 +7,7 @@ import {ApiService} from '../../services/api.service';
 import {FileParams} from '../../types/file';
 import {BpmnFormJsonField, BpmnFormJsonFieldEnumValue, BpmnFormJsonFieldProperty} from '../../types/json';
 import isEqual from 'lodash.isequal';
-import {catchError, mergeMap} from 'rxjs/operators';
+import {catchError, debounceTime, mergeMap} from 'rxjs/operators';
 import {ApiError} from '../../types/api';
 import {isNullOrUndefined} from "@ngx-formly/core/lib/utils";
 
@@ -528,16 +528,18 @@ export class ToFormlyPipe implements PipeTransform {
    */
   protected getPythonEvalFunction(field: BpmnFormJsonField, p: BpmnFormJsonFieldProperty, defaultValue = false, method = null) {
     // Establish some variables to be added to the form state.
-    const variableKey = field.id + '_' + p.id;  // The actual value we want to return
-    const variableSubjectKey = field.id + '_' + p.id + '_subject'; // A subject to add api calls to.
-    const variableSubscriptionKey = field.id + '_' + p.id + '_subscription'; // a debounced subscription.
-    const variableCountCalls = field.id + '_' + p.id + '_count'; // Total number of times called.
+    const variableKey = p.value;  // The actual value we want to return
+    const variableSubjectKey = p.value + '_subject'; // A subject to add api calls to.
+    const variableSubscriptionKey = p.value + '_subscription'; // a debounced subscription.
+
 
     // Here is the function to execute to get the value.
     return (model: any, formState: any, fieldConfig: FormlyFieldConfig) => {
       if (!formState) {
         formState = {};
       }
+
+      console.log('F->', model, formState, fieldConfig, field, p)
 
       // A bit of code to warn us when we are calling this 1000's of times.
 
@@ -560,6 +562,7 @@ export class ToFormlyPipe implements PipeTransform {
         formState[variableKey].default = defaultValue;
         formState[variableSubjectKey] = new Subject<PythonEvaluation>();  // To debounce on this function
         formState[variableSubscriptionKey] = formState[variableSubjectKey].pipe(
+          debounceTime(500),
           mergeMap((subj: PythonEvaluation) => this.apiService.eval(subj.expression, subj.data, subj.key)))
           .pipe(
             // If the api service gets an error, handle it here, but don't error out our subscribers, so we
