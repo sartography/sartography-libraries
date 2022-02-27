@@ -1,4 +1,4 @@
-import {ChangeDetectionStrategy, Component} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component} from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { FieldArrayType, FormlyFieldConfig, FormlyFormOptions } from '@ngx-formly/core';
 import { RepeatSectionDialogData } from '../../../types/repeat-section-dialog-data';
@@ -18,6 +18,7 @@ export class RepeatSectionComponent extends FieldArrayType {
   constructor(
     public dialog: MatDialog,
     protected api: ApiService,
+    private changeDetector: ChangeDetectorRef
   ) {
     super();
   }
@@ -56,6 +57,7 @@ export class RepeatSectionComponent extends FieldArrayType {
         console.log("This field is ", this.field)
         console.log("updating model at ", i, model);
         super.add(i, model, {markAsDirty: true});
+        this.changeDetector.detectChanges()
       }
 
       this.field.formControl.updateValueAndValidity();
@@ -76,7 +78,8 @@ export class RepeatSectionComponent extends FieldArrayType {
 
     dialogRef.afterClosed().subscribe(result => {
       if (result == true) {
-        this.remove(i);
+        this.remove(i)
+        this.changeDetector.detectChanges()
       }
     });
   }
