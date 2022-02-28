@@ -202,8 +202,10 @@ export class ToFormlyPipe implements PipeTransform {
           break;
         case 'date':
           resultField.type = 'datepicker';
+          resultField.modelOptions.updateOn = 'blur'
           if (field.default_value) {
-            resultField.defaultValue = new Date(field.default_value);
+            this.setDefaultValue(model, resultField, field, def);
+            resultField.defaultValue = new Date(resultField.defaultValue);
           }
           resultField.templateOptions = {
             datepickerOptions : { datepickerTogglePosition: 'prefix'}
