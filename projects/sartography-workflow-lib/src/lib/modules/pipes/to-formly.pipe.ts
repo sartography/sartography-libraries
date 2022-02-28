@@ -537,46 +537,54 @@ export class ToFormlyPipe implements PipeTransform {
    * instead.
     * @protected
    */
-  protected javascriptEval(expression, model, defaultResult=null) {
-    let result = defaultResult
+  protected javascriptEval(expression, model, defaultResult="no_default") {
+    expression = expression.trim()
 
-    // If this is just a quoted string, evaluate it.
+    // If this is True or False, just return that.
+    if (expression === 'True') {
+      return true
+    }
+    if (expression === 'False') {
+      return false
+    }
+
+    // If this is just a quoted string, evaluate it to handle any escaped quotes.
     let match = expression.match(/^(["'])(.*?(?<!\\)(\\\\)*)\1$/is)
     if (match) {
-      result = eval(expression);
+      return eval(expression);
     }
 
     // If this is a single world (no spaces) and is a variable in the model, return it.
-    expression = expression.trim()
-    if(expression.match(/^\S+$/) && model.hasOwnProperty(expression)) {
-      result = model[expression]
+    // Also, handle any dot notation in the process.
+    if(expression.match(/^[\w_\-.]+$/) && model.hasOwnProperty(expression)) {
+      return expression.split('.').reduce((o,i)=> o[i], model)
     }
 
-    // If this is an expression that matches not XXX, where XXX is in the model, eval that.
-    let not_match = expression.match(/^not (\S+)$/)
+    // If this is an expression that matches not XXX or not(XXX), where XXX is in the model, eval that.
+    let not_match = expression.match(/^not[ \(](\w+)\)?$/)
     if(not_match && model.hasOwnProperty(not_match[1])) {
-      result = !(model[not_match[1]])
+      return !(this.javascriptEval(not_match[1], model))
     }
 
-    // If this is a direct comparison, would save a ton to look for == comparison.
-    let compare_match = expression.match(/([\S"']+) ?([=!]+) ?([\S"']+)$/)
+    // If this contains a comparison, split, eval each side, and compare the two.
+    let compare_match = expression.match(/(.*) ?(==|!=|and|or) ?(.*)$/)
     if(compare_match) {
       let arg1 = this.javascriptEval(compare_match[1], model)
       let arg2 = this.javascriptEval(compare_match[3], model)
       let comp = compare_match[2]
       if (comp == '!=')
-        result = arg1 !== arg2
+        return arg1 !== arg2
       else if (comp == '==')
-        result = arg1 === arg2
+        return arg1 === arg2
+      else if (comp == 'and')
+        return arg1 && arg2
+      else if (comp == 'or')
+        return arg1 || arg2
     }
-
-    if(result == defaultResult) {
-      console.log("Failed to find a value for ", expression, model)
+    if (defaultResult !== "no_default") {
+      throw SyntaxError("unable to evaluate expression " + expression)
     }
-    return result
   }
-
-
 
   /** Returns a function that can be used in template options and hide expressions that will
    * evaluate a python expression using an api endpoint eventually updating the assigned variable
@@ -600,6 +608,7 @@ export class ToFormlyPipe implements PipeTransform {
       }
 
       if(oneTime && formState[variableKey] !== null) {
+        console.log("We only run this once!!!!")
         return formState[variableKey]
       }
 
@@ -677,15 +686,13 @@ export class ToFormlyPipe implements PipeTransform {
       }
 
       // If we can evaluate the method locally, do so rather than calling the back end.
-      let local_eval = this.javascriptEval(p.value, data)
-      if(local_eval != null) {
-        return local_eval
-      }
-
-      // If this is a hide expression, stop here and report an error.
-      if(p.id == 'hide_expression') {
-        console.log("Failed to parse hid expression, stopping.", p.value, field.id, p.id)
-        return defaultValue
+      try {
+        return this.javascriptEval(p.value, data, null)
+      } catch(e) {
+        // If this is a hide expression, stop here and report an error.
+        if(p.id == 'hide_expression') {
+          console.log("Unable to evaluate the hide expression.", p.value, data)
+        }
       }
 
 
