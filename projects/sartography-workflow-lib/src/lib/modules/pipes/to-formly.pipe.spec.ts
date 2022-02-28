@@ -52,9 +52,9 @@ describe('ToFormlyPipe', () => {
     const before: BpmnFormJsonField[] = [
       {
         id: 'full_name',
-        label: 'has_grail ? "What shall we do now?" : "What is your quest?"',
+        label: '\'has_grail ? "What shall we do now?" : "What is your quest?"\'',
         type: 'string',
-        default_value: 'has_grail ? "Take a nap" : "I seek the Holy Grail!"',
+        default_value: '\'has_grail ? "Take a nap" : "I seek the Holy Grail!"\'',
         validation: [
           {
             name: 'max_length',
@@ -93,11 +93,8 @@ describe('ToFormlyPipe', () => {
     console.log(after[0])
     expect(after[0].key).toEqual(before[0].id);
     expect(after[0].type).toEqual('input');
-    expect(after[0].templateOptions.label).toEqual('');
     expect(after[0].hideExpression).toEqual(jasmine.any(Function));
     expect(after[0].expressionProperties['templateOptions.required']).toEqual(jasmine.any(Function));
-    expect(after[0].expressionProperties['templateOptions.label']).toEqual(jasmine.any(Function));
-    expect(after[0].expressionProperties['model.full_name']).toEqual(jasmine.any(Function));
     expect(after[0].templateOptions.description).toEqual(before[0].properties[3].value);
     expect(after[0].templateOptions.markdownDescription).toEqual(before[0].properties[4].value);
     expect(after[0].templateOptions.maxLength).toEqual(200);
@@ -108,7 +105,7 @@ describe('ToFormlyPipe', () => {
     const before: BpmnFormJsonField[] = [
       {
         id: 'random_number',
-        label: 'Pick a number. Any number',
+        label: '\'Pick a number. Any number\'',
         type: 'long',
         properties: [{id: 'read_only', value: 'true'}]
       }
@@ -121,7 +118,7 @@ describe('ToFormlyPipe', () => {
     const before: BpmnFormJsonField[] = [
       {
         id: 'airspeed',
-        label: 'What is the airspeed veolocity of an unladen swallow?',
+        label: '\'What is the airspeed veolocity of an unladen swallow?\'',
         type: 'long',
       }
     ];
@@ -137,7 +134,7 @@ describe('ToFormlyPipe', () => {
         id: 'should_ask_color',
         label: '"Does color affect your mood?"',
         type: 'boolean',
-        default_value: 'false',
+        default_value: '\'false\'',
         validation: [
           {
             name: 'required',
@@ -155,7 +152,6 @@ describe('ToFormlyPipe', () => {
     const after = pipe.transform(before);
     expect(after[0].key).toEqual(before[0].id);
     expect(after[0].type).toEqual('radio');
-    expect(after[0].expressionProperties['model.should_ask_color']).toEqual(jasmine.any(Function));
     expect(after[0].templateOptions.label).toEqual('Does color affect your mood?');
     expect(after[0].templateOptions.required).toEqual(true);
     expect(after[0].templateOptions.options[0].value).toEqual(true);
@@ -167,9 +163,9 @@ describe('ToFormlyPipe', () => {
     const before: BpmnFormJsonField[] =[
       {
         id: 'should_do_checkbox',
-        label: 'Does this do the checkbox?',
+        label: '\'Does this do the checkbox?\'',
         type: 'boolean',
-        default_value: 'false',
+        default_value: '\'false\'',
         properties: [
           {
             id: 'boolean_property',
@@ -186,9 +182,9 @@ describe('ToFormlyPipe', () => {
     const before: BpmnFormJsonField[] = [
       {
         id: 'favorite_color',
-        label: 'What is your favorite color?',
+        label: '\'What is your favorite color?\'',
         type: 'enum',
-        default_value: 'red',
+        default_value: '\'red\'',
         options: [
           {id: 'red', name: 'Red'},
           {id: 'green', name: 'Green'},
@@ -239,7 +235,7 @@ describe('ToFormlyPipe', () => {
     const before: BpmnFormJsonField[] = [
       {
         id: 'pb_time',
-        label: 'What time is it?',
+        label: '\'What time is it?\'',
         type: 'date',
         default_value: '1955-11-12T22:04:12.345Z'
       }
@@ -256,7 +252,7 @@ describe('ToFormlyPipe', () => {
     const before: BpmnFormJsonField[] = [
       {
         id: 'random_number',
-        label: 'Pick a number between 1 and 999',
+        label: '\'Pick a number between 1 and 999\'',
         type: 'long',
         validation: [
           {name: 'min', config: '1'},
@@ -276,7 +272,7 @@ describe('ToFormlyPipe', () => {
     const before: BpmnFormJsonField[] = [
       {
         id: 'upload_file',
-        label: 'TPS Report',
+        label: '\'TPS Report\'',
         type: 'file'
       }
     ];
@@ -291,7 +287,7 @@ describe('ToFormlyPipe', () => {
     const before: BpmnFormJsonField[] = [
       {
         id: 'upload_file',
-        label: 'TPS Report',
+        label: '\'TPS Report\'',
         type: 'file',
         properties: [
         {id: 'doc_code', value: '"my_doc_code"'},
@@ -311,7 +307,7 @@ describe('ToFormlyPipe', () => {
     const before: BpmnFormJsonField[] = [
       {
         id: 'upload_files',
-        label: 'My New Filing Technique Is Unstoppable',
+        label: '\'My New Filing Technique Is Unstoppable\'',
         type: 'files'
       }
     ];
@@ -324,7 +320,7 @@ describe('ToFormlyPipe', () => {
     const before: BpmnFormJsonField[] = [
       {
         id: 'life_story',
-        label: 'Write a short novel that sardonically recounts the story of your life from the perspective of your best frenemy.',
+        label: '\'Write a short novel that sardonically recounts the story of your life from the perspective of your best frenemy.\'',
         type: 'textarea',
         properties: [
           {id: 'rows', value: '7'},
@@ -350,7 +346,7 @@ describe('ToFormlyPipe', () => {
     const before: BpmnFormJsonField[] = [
       {
         id: 'mobile_num',
-        label: 'TPS Report',
+        label: '\'TPS Report\'',
         type: 'tel'
       }
     ];
@@ -364,7 +360,7 @@ describe('ToFormlyPipe', () => {
     const before: BpmnFormJsonField[] = [
       {
         id: 'email',
-        label: 'Email address',
+        label: '\'Email address\'',
         type: 'email'
       }
     ];
@@ -378,7 +374,7 @@ describe('ToFormlyPipe', () => {
     const before: BpmnFormJsonField[] = [
       {
         id: 'tps_report',
-        label: 'TPS Report',
+        label: '\'TPS Report\'',
         type: 'url'
       }
     ];
@@ -392,12 +388,12 @@ describe('ToFormlyPipe', () => {
     const before: BpmnFormJsonField[] = [
       {
         id: 'title',
-        label: 'Recipe title',
+        label: '\'Recipe title\'',
         type: 'input',
       },
       {
         id: 'ingredients',
-        label: 'Find Ingredient',
+        label: '\'Find Ingredient\'',
         type: 'autocomplete',
         properties: [
           {id: 'autocomplete_num', value: '15'},
@@ -405,7 +401,7 @@ describe('ToFormlyPipe', () => {
       },
       {
         id: 'instructions',
-        label: 'Write some instructions on making this recipe',
+        label: '\'Write some instructions on making this recipe\'',
         type: 'textarea',
       },
     ];
@@ -456,7 +452,7 @@ describe('ToFormlyPipe', () => {
     const before: BpmnFormJsonField[] = [
       {
         id: 'first_name',
-        label: 'First Name',
+        label: '\'First Name\'',
         type: 'string',
         properties: [
           {id: 'group', value: 'Contact Info'},
@@ -464,7 +460,7 @@ describe('ToFormlyPipe', () => {
       },
       {
         id: 'line_1',
-        label: 'Street Address Line 1',
+        label: '\'Street Address Line 1\'',
         type: 'string',
         properties: [
           {id: 'group', value: 'Address'},
@@ -472,7 +468,7 @@ describe('ToFormlyPipe', () => {
       },
       {
         id: 'line_2',
-        label: 'Street Address Line 1',
+        label: '\'Street Address Line 1\'',
         type: 'string',
         properties: [
           {id: 'group', value: 'Address'},
@@ -480,7 +476,7 @@ describe('ToFormlyPipe', () => {
       },
       {
         id: 'last_name',
-        label: 'Last Name',
+        label: '\'Last Name\'',
         type: 'string',
         properties: [
           {id: 'group', value: 'Contact Info'},
@@ -488,7 +484,7 @@ describe('ToFormlyPipe', () => {
       },
       {
         id: 'favorite_number',
-        label: 'Favorite Number',
+        label: '\'Favorite Number\'',
         type: 'long',
       },
     ];
@@ -517,7 +513,7 @@ describe('ToFormlyPipe', () => {
     const before: BpmnFormJsonField[] = [
       {
         id: 'first_name',
-        label: 'First Name',
+        label: '\'First Name\'',
         type: 'string',
         validation: [
           {name: 'repeat_required', config: 'true'},
@@ -534,7 +530,7 @@ describe('ToFormlyPipe', () => {
       },
       {
         id: 'line_1',
-        label: 'Street Address Line 1',
+        label: '\'Street Address Line 1\'',
         type: 'string',
         properties: [
           {id: 'repeat', value: 'Contact'},
@@ -543,7 +539,7 @@ describe('ToFormlyPipe', () => {
       },
       {
         id: 'line_2',
-        label: 'Street Address Line 1',
+        label: '\'Street Address Line 1\'',
         type: 'string',
         properties: [
           {id: 'repeat', value: 'Contact'},
@@ -552,7 +548,7 @@ describe('ToFormlyPipe', () => {
       },
       {
         id: 'last_name',
-        label: 'Last Name',
+        label: '\'Last Name\'',
         type: 'string',
         properties: [
           {id: 'repeat', value: 'Contact'},
@@ -561,7 +557,7 @@ describe('ToFormlyPipe', () => {
       },
       {
         id: 'favorite_number',
-        label: 'Favorite Number',
+        label: '\'Favorite Number\'',
         type: 'long',
       },
     ];
@@ -606,7 +602,7 @@ describe('ToFormlyPipe', () => {
     const before: BpmnFormJsonField[] = [
       {
         id: 'bad_field',
-        label: 'Mystery Field',
+        label: '\'Mystery Field\'',
         type: 'mystery',
         properties: [
           {id: 'bad_prop', value: 'whatever'}
@@ -623,9 +619,9 @@ describe('ToFormlyPipe', () => {
     const before: BpmnFormJsonField[] = [
       {
         id: 'favorite_color',
-        label: 'What is your favorite color?',
+        label: '\'What is your favorite color?\'',
         type: 'enum',
-        default_value: 'red',
+        default_value: '\'red\'',
         options: [
           {id: 'red', name: 'Red'},
           {id: 'green', name: 'Green'},

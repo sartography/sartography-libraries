@@ -22,14 +22,14 @@ export const mockFormlyFieldConfig = {
     {
       key: 'child_group',
       templateOptions: {
-        label: 'First Group',
+        label: '\'First Group\'',
       },
       fieldGroup: [
         {
           key: 'child_group_first_field',
           type: 'input',
           templateOptions: {
-            label: 'First Group First Field',
+            label: '\'First Group First Field\'',
             description: 'First Group First Field Description',
             markdownDescription: '# Heading 1\n\n## Heading 2\n\n[link](https://sartography.com)',
           }
@@ -38,7 +38,7 @@ export const mockFormlyFieldConfig = {
           key: 'child_group_second_field',
           type: 'input',
           templateOptions: {
-            label: 'First Group Second Field',
+            label: '\'First Group Second Field\'',
             description: 'First Group Second Field Description',
             markdownDescription: '# Heading 1\n\n## Heading 2\n\n[link](https://sartography.com)',
           }
@@ -50,7 +50,7 @@ export const mockFormlyFieldConfig = {
       type: 'input',
       templateOptions: {
         label: 'First Field',
-        description: 'First Field Description',
+        description: '\'First Field Description\'',
         markdownDescription: '# Heading 1\n\n## Heading 2\n\n[link](https://sartography.com)',
       }
     },
@@ -58,7 +58,7 @@ export const mockFormlyFieldConfig = {
       key: 'second_field',
       type: 'input',
       templateOptions: {
-        label: 'Second Field'
+        label: '\'Second Field\''
       }
     },
     {
