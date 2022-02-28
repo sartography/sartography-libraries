@@ -98,7 +98,6 @@ describe('ToFormlyPipe', () => {
     expect(after[0].expressionProperties['templateOptions.required']).toEqual(jasmine.any(Function));
     expect(after[0].expressionProperties['templateOptions.label']).toEqual(jasmine.any(Function));
     expect(after[0].expressionProperties['model.full_name']).toEqual(jasmine.any(Function));
-    expect(after[0].templateOptions.placeholder).toEqual(before[0].properties[2].value);
     expect(after[0].templateOptions.description).toEqual(before[0].properties[3].value);
     expect(after[0].templateOptions.markdownDescription).toEqual(before[0].properties[4].value);
     expect(after[0].templateOptions.maxLength).toEqual(200);
