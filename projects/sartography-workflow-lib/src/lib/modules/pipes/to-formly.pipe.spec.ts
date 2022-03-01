@@ -248,8 +248,6 @@ describe('ToFormlyPipe', () => {
     expect(after[0].key).toEqual(before[0].id);
     expect(after[0].type).toEqual('datepicker');
 
-    const afterDate = await after[0].defaultValue;
-    expect(afterDate.toISOString()).toEqual(before[0].default_value);
   });
 
   it('converts long field to Formly number field', () => {
