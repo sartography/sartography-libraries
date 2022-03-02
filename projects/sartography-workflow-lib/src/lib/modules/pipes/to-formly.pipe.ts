@@ -233,16 +233,12 @@ export class ToFormlyPipe implements PipeTransform {
 
       // Resolve the label
       if(field.label) {
-        let js_eval = this.javascriptEval(field.label, model)
-        if (js_eval) {
-          resultField.templateOptions.label = js_eval
-        } else {
-          let label = {id: "label", value: field.label}
-          resultField.templateOptions.label = ""
-          resultField.expressionProperties['templateOptions.label'] =
-            this.getPythonEvalFunction(field, label, '', null, true);
-        }
+        let label = {id: "label", value: field.label}
+        resultField.templateOptions.label = ""
+        resultField.expressionProperties['templateOptions.label'] =
+          this.getPythonEvalFunction(field, label, '', null, true);
       }
+
       // Convert bpmnjs field validations to Formly field requirements
       if (field.validation && isIterable(field.validation) && (field.validation.length > 0)) {
         for (const v of field.validation) {
@@ -530,10 +526,11 @@ export class ToFormlyPipe implements PipeTransform {
     if (def.value == null || (model_value !== undefined && model_value !== null)) {
       return;
     }
-    let js_eval = this.javascriptEval(def.value, model)
-    if (js_eval) {
-      resultField.defaultValue = js_eval
-    } else {
+
+    try {
+      resultField.defaultValue = this.javascriptEval(def.value, model)
+    } catch(e) {
+      // If this is a hide expression, stop here and report an error.
       resultField.expressionProperties['model.' + field.id] = this.getPythonEvalFunction(field, def, resultField.defaultValue);
     }
   }
@@ -610,9 +607,8 @@ export class ToFormlyPipe implements PipeTransform {
         formState = {};
       }
 
-      if(oneTime && formState[variableKey] !== null) {
-        console.log("We only run this once!!!!")
-        return formState[variableKey]
+      if(oneTime && formState[variableKey] != null  && formState[variableKey] != undefined) {
+        return formState[variableKey]['oneTime']
       }
 
       // A bit of code to warn us when we are calling this 1000's of times.
@@ -688,17 +684,6 @@ export class ToFormlyPipe implements PipeTransform {
         }
       }
 
-      // If we can evaluate the method locally, do so rather than calling the back end.
-      try {
-        return this.javascriptEval(p.value, data)
-      } catch(e) {
-        // If this is a hide expression, stop here and report an error.
-        if(p.id == 'hide_expression') {
-          console.log("Unable to evaluate the hide expression.", p.value)
-        }
-      }
-
-
       // Establish the data model that the evaluation will be based upon.  This may be
       // 'mainModel', if this is being handled in a form that was created in a repeat section, or it
       // may include the data extracted from a great grandparent, if one exists, which will happen in
@@ -710,14 +695,28 @@ export class ToFormlyPipe implements PipeTransform {
       } else if ("parent" in fieldConfig.parent && "parent" in fieldConfig.parent.parent) {
         data = {...fieldConfig.parent.parent.parent.model, ...data};
       }
-      const key = this.hashCode(JSON.stringify(data));
+
+      let key = 'oneTime'
+      if (!oneTime) {
+        key = this.hashCode(JSON.stringify(data));
+      }
+
+      // If we can evaluate the method locally, do so rather than calling the back end.
+      try {
+        formState[variableKey][key] = this.javascriptEval(p.value, data)
+        return formState[variableKey][key]
+      } catch(e) {
+        // If this is a hide expression, stop here and report an error.
+        if(p.id == 'hide_expression') {
+          console.log("Unable to evaluate the hide expression.", p.value)
+        }
+      }
+
       if (!(key in formState[variableKey])) {
-        console.log("Adding a new formState Value")
         formState[variableKey][key] = formState[variableKey].default;
         formState[variableSubjectKey].next({expression: p.value, data, key});
       }
       // We immediately return the variable, but it might change due to the above observable.
-      console.log('key is ', formState[variableKey][key])
       return formState[variableKey][key];
 
     };

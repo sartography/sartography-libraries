@@ -94,7 +94,7 @@ describe('ToFormlyPipe', () => {
     expect(after[0].key).toEqual(before[0].id);
     expect(after[0].type).toEqual('input');
     expect(after[0].hideExpression).toEqual(jasmine.any(Function));
-    expect(after[0].expressionProperties['templateOptions.required']).toEqual(jasmine.any(Function));
+    expect(after[0].expressionProperties['templateOptions.label']).toEqual(jasmine.any(Function));
     expect(after[0].templateOptions.description).toEqual(before[0].properties[3].value);
     expect(after[0].templateOptions.markdownDescription).toEqual(before[0].properties[4].value);
     expect(after[0].templateOptions.maxLength).toEqual(200);
@@ -132,7 +132,7 @@ describe('ToFormlyPipe', () => {
     const before: BpmnFormJsonField[] = [
       {
         id: 'should_ask_color',
-        label: '"Does color affect your mood?"',
+        label: '\'Does color affect your mood?\'',
         type: 'boolean',
         default_value: '\'false\'',
         validation: [
@@ -152,7 +152,7 @@ describe('ToFormlyPipe', () => {
     const after = pipe.transform(before);
     expect(after[0].key).toEqual(before[0].id);
     expect(after[0].type).toEqual('radio');
-    expect(after[0].templateOptions.label).toEqual('Does color affect your mood?');
+    expect(after[0].expressionProperties['templateOptions.label']).toEqual(jasmine.any(Function));
     expect(after[0].templateOptions.required).toEqual(true);
     expect(after[0].templateOptions.options[0].value).toEqual(true);
     expect(after[0].templateOptions.options[0].label).toEqual('Yes');
