@@ -351,6 +351,13 @@ export class ToFormlyPipe implements PipeTransform {
             case 'enum_type':
               if (field.type === 'enum') {
                 if (p.value === 'checkbox') {
+                   resultField.modelOptions.updateOn = 'blur'
+                  if (field.default_value) {
+                    this.setDefaultValue(model, resultField, field, def);
+                    resultField.defaultValue = new Array(resultField.defaultValue);
+                  } else {
+                    resultField.defaultValue = [];
+                  }
                   resultField.type = 'select';
                   resultField.templateOptions.multiple = true;
                   resultField.templateOptions.selectAllOption = 'Select All';
@@ -543,12 +550,8 @@ export class ToFormlyPipe implements PipeTransform {
     expression = expression.trim()
 
     // If this is True or False, just return that.
-    if (expression === 'True') {
-      return true
-    }
-    if (expression === 'False') {
-      return false
-    }
+    if (expression === 'True') return true;
+    if (expression === 'False') return false;
 
     // If this is just a quoted string, evaluate it to handle any escaped quotes.
     let match = expression.match(/^(["'])(.*?(?<!\\)(\\\\)*)\1$/is)
@@ -569,7 +572,7 @@ export class ToFormlyPipe implements PipeTransform {
     }
 
     // If this contains a comparison, split, eval each side, and compare the two.
-    let compare_match = expression.match(/(.*) ?(==|!=|and|or) ?(.*)$/)
+    let compare_match = expression.match(/(.*) ?(==|!=| and | or ) ?(.*)$/)
     if(compare_match) {
       let arg1 = this.javascriptEval(compare_match[1], model)
       let arg2 = this.javascriptEval(compare_match[3], model)
@@ -583,7 +586,7 @@ export class ToFormlyPipe implements PipeTransform {
       else if (comp == 'or')
         return arg1 || arg2
     }
-    if (defaultResult !== "no_default") {
+    if (defaultResult === "no_default") {
       throw SyntaxError("unable to evaluate expression " + expression)
     }
   }
@@ -689,11 +692,11 @@ export class ToFormlyPipe implements PipeTransform {
 
       // If we can evaluate the method locally, do so rather than calling the back end.
       try {
-        return this.javascriptEval(p.value, data, null)
+        return this.javascriptEval(p.value, data)
       } catch(e) {
         // If this is a hide expression, stop here and report an error.
         if(p.id == 'hide_expression') {
-          console.log("Unable to evaluate the hide expression.", p.value, data)
+          console.log("Unable to evaluate the hide expression.", p.value)
         }
       }
 
@@ -716,6 +719,7 @@ export class ToFormlyPipe implements PipeTransform {
         formState[variableSubjectKey].next({expression: p.value, data, key});
       }
       // We immediately return the variable, but it might change due to the above observable.
+      console.log('key is ', formState[variableKey][key])
       return formState[variableKey][key];
 
     };

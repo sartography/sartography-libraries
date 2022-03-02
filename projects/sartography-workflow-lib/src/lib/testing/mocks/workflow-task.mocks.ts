@@ -18,7 +18,7 @@ export const mockWorkflowTask0: WorkflowTask = {
       {
         id: 'happyClouds',
         type: 'string',
-        label: 'Happy Clouds',
+        label: '\'Happy Clouds\'',
         properties: [
           {id: 'description', value: 'Decide where your cloud lives.'},
           {
@@ -48,7 +48,7 @@ export const mockWorkflowTask1: WorkflowTask = {
     fields: [
       {
         id: 'should_ask_color',
-        label: 'Does color affect your mood?',
+        label: '\'Does color affect your mood?\'',
         type: 'boolean',
         default_value: 'false',
         validation: [
@@ -66,7 +66,7 @@ export const mockWorkflowTask1: WorkflowTask = {
       },
       {
         id: 'favorite_color',
-        label: 'What is your favorite color?',
+        label: '\'What is your favorite color?\'',
         type: 'enum',
         default_value: 'indigo',
         options: [
