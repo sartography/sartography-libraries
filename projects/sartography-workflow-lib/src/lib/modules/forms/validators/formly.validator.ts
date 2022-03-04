@@ -71,7 +71,7 @@ export function NumberValidator(control: FormControl): ValidationErrors {
   ) {
     return {required: true};
   }
-  return (typeof control.value === 'number') ? null : {number: true};
+  return !control.value || (typeof control.value === 'number') ? null : {number: true};
 }
 
 export function NumberValidatorMessage(err, field: FormlyFieldConfig) {

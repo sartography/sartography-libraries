@@ -9,8 +9,22 @@ import {BpmnFormJsonField, BpmnFormJsonFieldEnumValue, BpmnFormJsonFieldProperty
 import isEqual from 'lodash.isequal';
 import {catchError, debounceTime, mergeMap} from 'rxjs/operators';
 import {ApiError} from '../../types/api';
-import {isNullOrUndefined} from "@ngx-formly/core/lib/utils";
-import {MarkdownService} from 'ngx-markdown';
+
+export function checkNumeric(field,event){
+  if (event.shiftKey){
+    event.preventDefault();     // Prevent character input
+  }
+
+  if( !(event.keyCode == 9  //Tab!!
+    || event.keyCode == 8    // backspace
+    || event.keyCode == 46      // delete
+    || (event.keyCode >= 35 && event.keyCode <= 40)     // arrow keys/home/end
+    || (event.keyCode >= 48 && event.keyCode <= 57)     // numbers on keyboard
+    || (event.keyCode >= 96 && event.keyCode <= 105))   // number on keypad
+    ) {
+        event.preventDefault();     // Prevent character input
+  }
+}
 
 /***
  * Convert the given BPMN form JSON value to Formly JSON
@@ -158,6 +172,8 @@ export class ToFormlyPipe implements PipeTransform {
         case 'long':
           resultField.type = 'input';
           resultField.templateOptions.type = 'number';
+          resultField.templateOptions.keydown= checkNumeric;
+          resultField.templateOptions.attributes= { onpaste: 'return false;'};
           this.setDefaultValue(model, resultField, field, def);
           resultField.modelOptions.updateOn = 'blur'
           resultField.validators = {validation: ['number']};
