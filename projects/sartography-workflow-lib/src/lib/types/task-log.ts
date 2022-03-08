@@ -12,7 +12,10 @@ export interface TaskLog {
   code: string;
   message: string;
   study_id: number;
+  workflow: string;
   workflow_id: number;
+  workflow_spec_id: string;
+  category: string;
   user_uid: string;
   timestamp: Date;
 }
