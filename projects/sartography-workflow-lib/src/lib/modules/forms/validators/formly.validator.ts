@@ -154,3 +154,12 @@ export function RepeatSectionValidator(control: FormControl): ValidationErrors {
 export function RepeatSectionValidatorMessage(err, field: FormlyFieldConfig) {
   return 'Please add at least one.';
 }
+
+export function RegexValidator(control: FormControl): ValidationErrors {
+  console.log('regex control: ', control);
+  return !control.value || PHONE_REGEX.test(control.value) ? null : {phone: true};
+}
+
+export function RegexValidatorMessage(err, field: FormlyFieldConfig) {
+  return 'The given input is not valid.';
+}
