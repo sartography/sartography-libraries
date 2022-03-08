@@ -140,4 +140,13 @@ describe('Formly Validators', () => {
     field.formControl = undefined;
     expect(Validators.ShowError(field as FieldType)).toBeFalsy();
   });
+  it('should validate regex', () => {
+    control.setValue('abc');
+    let options = {regex: '^ABC$'}
+    expect(Validators.RegexValidator(control, field, options)).toEqual({regex: true});
+
+    control.setValue('ABC');
+    expect(Validators.RegexValidator(control, field, options)).toBeNull();
+  })
+
 });
