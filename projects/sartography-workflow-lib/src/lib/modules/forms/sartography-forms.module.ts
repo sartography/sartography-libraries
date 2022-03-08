@@ -88,7 +88,7 @@ export class AppFormlyConfig {
       {name: 'files', validation: FileUploadValidator},
       {name: 'repeat', validation: RepeatSectionValidator},
       {name: 'checked', validation: CheckedValidator},
-      {name: 'regex', validation: RegexValidator},
+      {name: 'regex', validation: RegexValidator, options: { regex: ''},},
 
     ],
     validationMessages: [
