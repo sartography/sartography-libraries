@@ -161,7 +161,7 @@ export class ToFormlyPipe implements PipeTransform {
         case 'string':
           resultField.type = 'input';
           this.setDefaultValue(model, resultField, field, def);
-          resultField.modelOptions.updateOn = 'blur'
+          resultField.modelOptions.updateOn = 'blur';
           break;
         case 'textarea':
           resultField.type = 'textarea';
@@ -259,6 +259,9 @@ export class ToFormlyPipe implements PipeTransform {
       if (field.validation && isIterable(field.validation) && (field.validation.length > 0)) {
         for (const v of field.validation) {
           switch (v.name) {
+            case 'regex':
+              resultField.validators = {validation: [{name: 'regex', options: {regex: v.config}}]};
+              break;
             case 'required':
               resultField.templateOptions.required = this._stringToBool(v.config);
               break;

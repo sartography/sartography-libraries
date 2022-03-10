@@ -154,3 +154,11 @@ export function RepeatSectionValidator(control: FormControl): ValidationErrors {
 export function RepeatSectionValidatorMessage(err, field: FormlyFieldConfig) {
   return 'Please add at least one.';
 }
+
+export function RegexValidator(control: FormControl, field: FormlyFieldConfig, options = {regex: ''}): ValidationErrors {
+  return !control.value || RegExp(options.regex).test(control.value) ? null : {regex: true};
+}
+
+export function RegexValidatorMessage(err, field: FormlyFieldConfig) {
+  return 'The given input is not valid.';
+}

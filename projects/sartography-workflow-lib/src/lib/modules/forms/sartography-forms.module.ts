@@ -49,6 +49,8 @@ import {
   NumberValidatorMessage,
   PhoneValidator,
   PhoneValidatorMessage,
+  RegexValidator,
+  RegexValidatorMessage,
   RepeatSectionValidator,
   RepeatSectionValidatorMessage,
   ShowError,
@@ -86,6 +88,7 @@ export class AppFormlyConfig {
       {name: 'files', validation: FileUploadValidator},
       {name: 'repeat', validation: RepeatSectionValidator},
       {name: 'checked', validation: CheckedValidator},
+      {name: 'regex', validation: RegexValidator, options: { regex: ''},},
 
     ],
     validationMessages: [
@@ -101,6 +104,7 @@ export class AppFormlyConfig {
       {name: 'min', message: MinValidationMessage},
       {name: 'max', message: MaxValidationMessage},
       {name: 'checked', message: CheckedValidatorMessage},
+      {name: 'regex', message: RegexValidatorMessage},
     ],
     wrappers: [
       {name: 'panel', component: PanelWrapperComponent},
