@@ -32,7 +32,9 @@ export enum ProgressStatus {
   APPROVED = 'approved',
   APPROVED_WITH_CONDITIONS = 'approved_with_conditions',
   DEFERRED = 'deferred',
-  DISAPPROVED = 'disapproved'
+  DISAPPROVED = 'disapproved',
+  READY_FOR_PRE_REVIEW = 'ready_for_pre_review',
+  RESUBMITTED_FOR_PRE_REVIEW = 'resubmitted_for_pre_review'
 }
 
 export enum ProgressStatusLabels {
@@ -45,8 +47,11 @@ export enum ProgressStatusLabels {
   APPROVED = 'Approved',
   APPROVED_WITH_CONDITIONS = 'Approved with Conditions',
   DEFERRED = 'Deferred',
-  DISAPPROVED = 'Disapproved'
+  DISAPPROVED = 'Disapproved',
+  READY_FOR_PRE_REVIEW = 'Ready for Pre-Review',
+  RESUBMITTED_FOR_PRE_REVIEW = 'Resubmitted for Pre-Review'
 }
+
 
 export const ProtocolBuilderRequiredDocs = {
   1: `Investigators Brochure`,
