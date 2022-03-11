@@ -8,15 +8,17 @@ import {LdapInfo} from './user';
 
 export enum StudyStatus {
   IN_PROGRESS = 'in_progress',
-  HOLD = 'hold',
   OPEN_FOR_ENROLLMENT = 'open_for_enrollment',
+  CR_CONNECT_COMPLETE = 'cr_connect_complete',
+  HOLD = 'hold',
   ABANDONED = 'abandoned',
 }
 
 export enum StudyStatusLabels {
   IN_PROGRESS = 'In Progress',
+  OPEN_FOR_ENROLLMENT = 'IRB Open to Enrollment',
+  CR_CONNECT_COMPLETE = 'CR Connect Complete',
   HOLD = 'Hold',
-  OPEN_FOR_ENROLLMENT = 'Open to Enrollment',
   ABANDONED = 'Abandoned',
 }
 
