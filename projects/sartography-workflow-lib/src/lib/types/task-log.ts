@@ -28,6 +28,7 @@ export interface TaskLog {
  * other values will be overwritten on execution.
  */
 export interface TaskLogQuery {
+  study_id?: number // Limits the query to study, maybe applied autoamtically for security
   code?: string; // Limits the task logs to just those that have this code.
   level?: string; // Limits the task logs to just those that have this level.
   user?: string; // Limits the task logs to just those that have this user.
@@ -40,4 +41,5 @@ export interface TaskLogQuery {
   pages: number; // Total number of pages for this query.
   has_next?: boolean; // True if there is another page after this one.
   has_prev?: boolean; // True if there is another page before this one.
+  download_url?: string;  // URL for a downloaded version of the query
 }
