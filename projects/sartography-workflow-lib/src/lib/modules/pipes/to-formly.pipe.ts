@@ -575,7 +575,7 @@ export class ToFormlyPipe implements PipeTransform {
 
     // If this is a single world (no spaces) and is a variable in the model, return it.
     // Also, handle any dot notation in the process.
-    if(expression.match(/^[\w_\-.]+$/) && model.hasOwnProperty(expression)) {
+    if(expression.match(/^[\w_\-.]+$/)) {
       return expression.split('.').reduce((o,i)=> o[i], model)
     }
 
