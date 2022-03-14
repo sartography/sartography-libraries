@@ -17,7 +17,7 @@ export enum StudyStatus {
 export enum StudyStatusLabels {
   IN_PROGRESS = 'In Progress',
   OPEN_FOR_ENROLLMENT = 'IRB Open to Enrollment',
-  CR_CONNECT_COMPLETE = 'CR Connect Complete',
+  CR_CONNECT_COMPLETE = 'CRConnect Complete',
   HOLD = 'Hold',
   ABANDONED = 'Abandoned',
 }
