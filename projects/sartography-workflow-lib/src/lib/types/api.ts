@@ -11,4 +11,5 @@ export interface ApiError {
   line_number: number;  // in multi line scripts, returns the line that contains an error, otherwise 0
   offset: number; // For syntax errors, returns the character in the line where the error happens, otherwise 0.
   error_line: string;
+  task_trace: string[]
 }

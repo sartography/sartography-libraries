@@ -10,12 +10,14 @@
       <mat-panel-title>
         <div class="title-section">
           <h4 *ngIf="e.code" class="title-case">{{snakeToSpace(e.code)}}</h4>
-          <div *ngIf="e.file_name">File: {{e.file_name}}</div>
-          <div *ngIf="e.task_name && e.task_id">{{e.task_name}} ({{e.task_id}})</div>
           <div *ngIf="e.task_id && !e.task_name">Task ID: {{e.task_id}}</div>
           <div *ngIf="e.task_name && !e.task_id">Task Name: {{e.task_name}}</div>
           <div *ngIf="e.tag">Tag: {{e.tag}}</div>
           <div *ngIf="e.line_number">Line #: {{e.line_number}}</div>
+          <div *ngIf="e.file_name">Task Trace(File):
+            <div *ngFor="let trace of e.task_trace">{{trace}}</div>
+          </div>
+
         </div>
       </mat-panel-title>
       <mat-panel-description>
