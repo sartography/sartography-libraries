@@ -30,8 +30,12 @@ export function PhoneValidatorMessage(err, field: FormlyFieldConfig) {
   return `"${field.formControl.value}" is not a valid phone number`;
 }
 
-export function CheckedValidator(control: FormControl): ValidationErrors {
-   return !control.value == true ? {checked:true} : null;
+export function CheckedValidator(control: FormControl, field: FormlyFieldConfig): ValidationErrors {
+  if (field.templateOptions.required) {
+    return !control.value == true ? {checked: true} : null;
+  } else {
+    return null
+  }
 }
 
 export function CheckedValidatorMessage() {
@@ -67,7 +71,7 @@ export function NumberValidator(control: FormControl): ValidationErrors {
   ) {
     return {required: true};
   }
-  return (typeof control.value === 'number') ? null : {number: true};
+  return !control.value || (typeof control.value === 'number') ? null : {number: true};
 }
 
 export function NumberValidatorMessage(err, field: FormlyFieldConfig) {
@@ -149,4 +153,12 @@ export function RepeatSectionValidator(control: FormControl): ValidationErrors {
 
 export function RepeatSectionValidatorMessage(err, field: FormlyFieldConfig) {
   return 'Please add at least one.';
+}
+
+export function RegexValidator(control: FormControl, field: FormlyFieldConfig, options = {regex: ''}): ValidationErrors {
+  return !control.value || RegExp(options.regex).test(control.value) ? null : {regex: true};
+}
+
+export function RegexValidatorMessage(err, field: FormlyFieldConfig) {
+  return 'The given input is not valid.';
 }

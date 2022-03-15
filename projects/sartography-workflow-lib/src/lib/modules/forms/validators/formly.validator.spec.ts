@@ -13,7 +13,9 @@ describe('Formly Validators', () => {
     err = new Error('some error');
     field = {
       type: 'email',
-      templateOptions: {},
+      templateOptions: {
+        required: true
+      },
       formControl: control,
     };
   });
@@ -67,13 +69,19 @@ describe('Formly Validators', () => {
 
   it('should validate a single boolean checkbox', () => {
     control.setValue('null');
-    expect(Validators.CheckedValidator(control)).toBeNull();
+    expect(Validators.CheckedValidator(control, field)).toBeNull();
 
     control.setValue(false);
-    expect(Validators.CheckedValidator(control)).toEqual({checked: true});
+    expect(Validators.CheckedValidator(control, field)).toEqual({checked: true});
+
+    control.setValue(false);
+    field.templateOptions.required = false
+    expect(Validators.CheckedValidator(control, field)).toBeNull();
+
 
     control.setValue(true);
-    expect(Validators.CheckedValidator(control)).toBeNull();
+    field.templateOptions.required = true
+    expect(Validators.CheckedValidator(control, field)).toBeNull();
   })
 
   it('should validate phone numbers', () => {
@@ -132,4 +140,13 @@ describe('Formly Validators', () => {
     field.formControl = undefined;
     expect(Validators.ShowError(field as FieldType)).toBeFalsy();
   });
+  it('should validate regex', () => {
+    control.setValue('abc');
+    let options = {regex: '^ABC$'}
+    expect(Validators.RegexValidator(control, field, options)).toEqual({regex: true});
+
+    control.setValue('ABC');
+    expect(Validators.RegexValidator(control, field, options)).toBeNull();
+  })
+
 });

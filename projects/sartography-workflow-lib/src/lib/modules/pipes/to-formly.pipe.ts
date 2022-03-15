@@ -7,8 +7,24 @@ import {ApiService} from '../../services/api.service';
 import {FileParams} from '../../types/file';
 import {BpmnFormJsonField, BpmnFormJsonFieldEnumValue, BpmnFormJsonFieldProperty} from '../../types/json';
 import isEqual from 'lodash.isequal';
-import {catchError, mergeMap} from 'rxjs/operators';
+import {catchError, debounceTime, mergeMap} from 'rxjs/operators';
 import {ApiError} from '../../types/api';
+
+export function checkNumeric(field,event){
+  if (event.shiftKey){
+    event.preventDefault();     // Prevent character input
+  }
+
+  if( !(event.keyCode == 9  //Tab!!
+    || event.keyCode == 8    // backspace
+    || event.keyCode == 46      // delete
+    || (event.keyCode >= 35 && event.keyCode <= 40)     // arrow keys/home/end
+    || (event.keyCode >= 48 && event.keyCode <= 57)     // numbers on keyboard
+    || (event.keyCode >= 96 && event.keyCode <= 105))   // number on keypad
+    ) {
+        event.preventDefault();     // Prevent character input
+  }
+}
 
 /***
  * Convert the given BPMN form JSON value to Formly JSON
@@ -112,7 +128,7 @@ export class ToFormlyPipe implements PipeTransform {
   constructor(private apiService?: ApiService) {
   }
 
-  transform(value: BpmnFormJsonField[], fileParams = this.defaultFileParams, ...args: any[]): FormlyFieldConfig[] {
+  transform(value: BpmnFormJsonField[], fileParams = this.defaultFileParams, model: []= [], ...args: any[]): FormlyFieldConfig[] {
 
     const result: FormlyFieldConfig[] = [];
     for (const field of value) {
@@ -124,9 +140,11 @@ export class ToFormlyPipe implements PipeTransform {
           task_spec_name:fileParams.task_spec_name,
         },
         expressionProperties: {},
+        modelOptions: {}
       };
 
       // Convert bpmnjs field type to Formly field type
+      let def = {id: "default", value: field.default_value};
       switch (field.type) {
         case 'enum':
           resultField.type = 'select';
@@ -138,81 +156,70 @@ export class ToFormlyPipe implements PipeTransform {
             }
             return option;
           });
-
-          // Store entire options object as default value
-          if (field.hasOwnProperty('default_value')) {
-            if (resultField.templateOptions.options instanceof Observable) {
-              resultField.templateOptions.options.subscribe(options => {
-                resultField.defaultValue = options.find(o => o.value === field.default_value);
-              });
-            } else if (resultField.templateOptions.options instanceof Array) {
-              resultField.defaultValue = resultField.templateOptions.options.find(o => o.value === field.default_value);
-            }
-          }
-
-          // Store the entire option object as the value of the select field, but, when comparing
-          // the control, Formly will look into the value attribute of the option object, rather than
-          // the value attribute of the field. Yes, it's confusing, but it allows us to access the label
-          // of the option so we can display it later.
-          // resultField.templateOptions.valueProp = (option) => option.value;
-          // resultField.templateOptions.compareWith = (o1, o2) => isEqual(o1.value, o2.value);
+          this.setDefaultValue(model, resultField, field, def);
           break;
         case 'string':
           resultField.type = 'input';
-          resultField.defaultValue = field.default_value;
+          this.setDefaultValue(model, resultField, field, def);
+          resultField.modelOptions.updateOn = 'blur';
           break;
         case 'textarea':
           resultField.type = 'textarea';
-          resultField.defaultValue = field.default_value;
+          this.setDefaultValue(model, resultField, field, def);
           resultField.templateOptions.rows = 5;
+          resultField.modelOptions.updateOn = 'blur'
           break;
         case 'long':
           resultField.type = 'input';
           resultField.templateOptions.type = 'number';
-          resultField.defaultValue = parseInt(field.default_value, 10);
+          resultField.templateOptions.keydown= checkNumeric;
+          resultField.templateOptions.attributes= { onpaste: 'return false;'};
+          this.setDefaultValue(model, resultField, field, def);
+          resultField.modelOptions.updateOn = 'blur'
           resultField.validators = {validation: ['number']};
           break;
         case 'url':
           resultField.type = 'input';
           resultField.templateOptions.type = 'url';
-          resultField.defaultValue = field.default_value;
+          resultField.modelOptions.updateOn = 'blur'
+          this.setDefaultValue(model, resultField, field, def);
           resultField.validators = {validation: ['url']};
           break;
         case 'email':
           resultField.type = 'input';
           resultField.templateOptions.type = 'email';
-          resultField.defaultValue = field.default_value;
+          resultField.modelOptions.updateOn = 'blur'
+          this.setDefaultValue(model, resultField, field, def);
           resultField.validators = {validation: ['email']};
           break;
         case 'tel':
           resultField.type = 'input';
           resultField.templateOptions.type = 'tel';
-          resultField.defaultValue = field.default_value;
+          resultField.modelOptions.updateOn = 'blur'
+          this.setDefaultValue(model, resultField, field, def);
           resultField.validators = {validation: ['phone']};
           break;
         case 'boolean':
           if (field.properties.find(x => x.id === 'boolean_type' && x.value === 'checkbox')) {
             resultField.type = 'checkbox';
-            resultField.defaultValue = false;
-            resultField.templateOptions = { indeterminate: false };
+            resultField.templateOptions.indeterminate = false;
             resultField.validators = {validation: ['checked']};
-            break;
           }
           else if (!field.properties.find(x => x.id === 'boolean_type')) {
             resultField.type = 'radio';
-            if (field.default_value !== undefined && field.default_value !== null && field.default_value !== '') {
-              resultField.defaultValue = this._stringToBool(field.default_value);
-            }
             resultField.templateOptions.options = [
               {value: true, label: 'Yes'},
               {value: false, label: 'No'},
             ];
           }
+          this.setDefaultValue(model, resultField, field, def);
           break;
         case 'date':
           resultField.type = 'datepicker';
+          resultField.modelOptions.updateOn = 'blur'
           if (field.default_value) {
-            resultField.defaultValue = new Date(field.default_value);
+            this.setDefaultValue(model, resultField, field, def);
+            resultField.defaultValue = new Date(resultField.defaultValue);
           }
           resultField.templateOptions = {
             datepickerOptions : { datepickerTogglePosition: 'prefix'}
@@ -229,6 +236,7 @@ export class ToFormlyPipe implements PipeTransform {
         case 'autocomplete':
           const fieldFileParams = Object.assign({}, fileParams || {});
           fieldFileParams.form_field_key = field.id;
+          resultField.modelOptions.updateOn = 'blur'
           resultField.type = 'autocomplete';
           resultField.templateOptions.limit = this._getAutocompleteNumResults(field, 5);
           resultField.validators = {validation: ['autocomplete']};
@@ -239,12 +247,21 @@ export class ToFormlyPipe implements PipeTransform {
           break;
       }
 
-      resultField.templateOptions.label = field.label;
+      // Resolve the label
+      if(field.label) {
+        let label = {id: "label", value: field.label}
+        resultField.templateOptions.label = ""
+        resultField.expressionProperties['templateOptions.label'] =
+          this.getPythonEvalFunction(field, label, '', null, true);
+      }
 
       // Convert bpmnjs field validations to Formly field requirements
       if (field.validation && isIterable(field.validation) && (field.validation.length > 0)) {
         for (const v of field.validation) {
           switch (v.name) {
+            case 'regex':
+              resultField.validators = {validation: [{name: 'regex', options: {regex: v.config}}]};
+              break;
             case 'required':
               resultField.templateOptions.required = this._stringToBool(v.config);
               break;
@@ -292,12 +309,6 @@ export class ToFormlyPipe implements PipeTransform {
             case 'hide_expression':
               resultField.hideExpression = this.getPythonEvalFunction(field, p);
               break;
-            case 'value_expression':
-              resultField.expressionProperties['model.' + field.id] = this.getPythonEvalFunction(field, p);
-              break;
-            case 'label_expression':
-              resultField.expressionProperties['templateOptions.label'] = this.getPythonEvalFunction(field, p);
-              break;
             case 'repeat_required_expression':
               resultField.templateOptions.repeatSectionRequiredExpression = this.getPythonEvalFunction(field, p);
               break;
@@ -318,16 +329,19 @@ export class ToFormlyPipe implements PipeTransform {
               }
               break;
             case 'placeholder':
-              resultField.templateOptions.placeholder = p.value;
+              resultField.expressionProperties['templateOptions.placeholder'] = this.getPythonEvalFunction(field, p);
               break;
             case 'description':
               resultField.templateOptions.description = p.value;
+              resultField.expressionProperties['templateOptions.description'] = this.getPythonEvalFunction(field, p);
               break;
             case 'help':
               resultField.templateOptions.help = p.value;
+              resultField.expressionProperties['templateOptions.help'] = this.getPythonEvalFunction(field, p);
               break;
             case 'markdown_description':
               resultField.templateOptions.markdownDescription = p.value;
+              resultField.expressionProperties['templateOptions.markdownDescription'] = this.getPythonEvalFunction(field, p);
               break;
             case 'autosize':
               resultField.templateOptions.autosize = this._stringToBool(p.value);
@@ -350,18 +364,18 @@ export class ToFormlyPipe implements PipeTransform {
             case 'enum_type':
               if (field.type === 'enum') {
                 if (p.value === 'checkbox') {
+                   resultField.modelOptions.updateOn = 'blur'
+                  if (field.default_value) {
+                    this.setDefaultValue(model, resultField, field, def);
+                    resultField.defaultValue = new Array(resultField.defaultValue);
+                  } else {
+                    resultField.defaultValue = [];
+                  }
                   resultField.type = 'select';
                   resultField.templateOptions.multiple = true;
                   resultField.templateOptions.selectAllOption = 'Select All';
                   resultField.className = this._addClassName(resultField, 'vertical-checkbox-group');
-
-                  // Wrap default value in an array.
-                  if (resultField.hasOwnProperty('defaultValue')) {
-                    const defaultValue = cloneDeep(resultField.defaultValue);
-                    resultField.defaultValue = [defaultValue];
-                  }
                 }
-
                 if (p.value === 'radio') {
                   resultField.type = 'radio_data';
                   resultField.className = this._addClassName(resultField, 'vertical-radio-group');
@@ -499,7 +513,6 @@ export class ToFormlyPipe implements PipeTransform {
           // Hidden field values will be removed on save.
           // // Clears value when hidden (will be the default in Formly v6?)
           // (newGroup as any).autoClear = true;
-
           newGroup.fieldGroup[0].expressionProperties = {
             'templateOptions.required': field.templateOptions.repeatSectionRequiredExpression,
           };
@@ -527,26 +540,97 @@ export class ToFormlyPipe implements PipeTransform {
     return grouped;
   }
 
+  protected setDefaultValue(model: any, resultField: FormlyFieldConfig, field: BpmnFormJsonField, def: any) {
+    let model_value = resultField.key.toString().split('.').reduce((o,i)=> o[i], model);
+    if (def.value == null || (model_value !== undefined && model_value !== null)) {
+      return;
+    }
+
+    try {
+      resultField.defaultValue = this.javascriptEval(def.value, model)
+    } catch(e) {
+      // If this is a hide expression, stop here and report an error.
+      resultField.expressionProperties['model.' + field.id] = this.getPythonEvalFunction(field, def, resultField.defaultValue);
+    }
+  }
+
+  /**
+   * Expressions should be evaluated as python, but it is very expensive to call the backend
+   * to make these calculations.  Whenever possible, evaluate the expression in the browser
+   * instead.
+    * @protected
+   */
+  protected javascriptEval(expression, model, defaultResult="no_default") {
+    expression = expression.trim()
+
+    // If this is True or False, just return that.
+    if (expression === 'True') return true;
+    if (expression === 'False') return false;
+
+    // If this is just a quoted string, evaluate it to handle any escaped quotes.
+    let match = expression.match(/^(["'])(.*?(?<!\\)(\\\\)*)\1$/is)
+    if (match) {
+      return eval(expression);
+    }
+
+    // If this is a single world (no spaces) and is a variable in the model, return it.
+    // Also, handle any dot notation in the process.
+    if(expression.match(/^[\w_\-.]+$/)) {
+      return expression.split('.').reduce((o,i)=> o[i], model)
+    }
+
+    // If this is an expression that matches not XXX or not(XXX), where XXX is in the model, eval that.
+    let not_match = expression.match(/^not[ \(](\w+)\)?$/)
+    if(not_match && model.hasOwnProperty(not_match[1])) {
+      return !(this.javascriptEval(not_match[1], model))
+    }
+
+    // If this contains a comparison, split, eval each side, and compare the two.
+    let compare_match = expression.match(/(.*) ?(==|!=| and | or ) ?(.*)$/)
+    if(compare_match) {
+      let arg1 = this.javascriptEval(compare_match[1], model)
+      let arg2 = this.javascriptEval(compare_match[3], model)
+      let comp = compare_match[2]
+      if (comp == '!=')
+        return arg1 !== arg2
+      else if (comp == '==')
+        return arg1 === arg2
+      else if (comp == 'and')
+        return arg1 && arg2
+      else if (comp == 'or')
+        return arg1 || arg2
+    }
+    if (defaultResult === "no_default") {
+      throw SyntaxError("unable to evaluate expression " + expression)
+    }
+  }
+
   /** Returns a function that can be used in template options and hide expressions that will
    * evaluate a python expression using an api endpoint eventually updating the assigned variable
    * to the correct value.
    * You can pass an optional method, which should be called when the result completes.
    */
-  protected getPythonEvalFunction(field: BpmnFormJsonField, p: BpmnFormJsonFieldProperty, defaultValue = false, method = null) {
+  protected getPythonEvalFunction(field: BpmnFormJsonField, p: BpmnFormJsonFieldProperty,
+                                  defaultValue:any = false, method = null, oneTime=false) {
+
     // Establish some variables to be added to the form state.
-    const variableKey = field.id + '_' + p.id;  // The actual value we want to return
-    const variableSubjectKey = field.id + '_' + p.id + '_subject'; // A subject to add api calls to.
-    const variableSubscriptionKey = field.id + '_' + p.id + '_subscription'; // a debounced subscription.
-    const variableCountCalls = field.id + '_' + p.id + '_count'; // Total number of times called.
+    const variableKey = p.value;  // The actual value we want to return
+    const variableSubjectKey = p.value + '_subject'; // A subject to add api calls to.
+    const variableSubscriptionKey = p.value + '_subscription'; // a subscription.
+    const varLastFormState = p.value + '_LAST_STATE'
 
     // Here is the function to execute to get the value.
     return (model: any, formState: any, fieldConfig: FormlyFieldConfig) => {
+
       if (!formState) {
         formState = {};
       }
 
-      // A bit of code to warn us when we are calling this 1000's of times.
+      if(oneTime && formState[variableKey] != null  && formState[variableKey] != undefined) {
+        return formState[variableKey]['oneTime']
+      }
 
+      // A bit of code to warn us when we are calling this 1000's of times.
       const c_key = 'total_python_eval_count';
       if(!(c_key in formState)) {
         formState[c_key] = 0;
@@ -592,8 +676,12 @@ export class ToFormlyPipe implements PipeTransform {
             (error: ApiError) => {
               console.warn(`Failed to update field ${field.id} unable to process expression. ${error.message}`);
               formState[variableKey] = 'error';
-            }
-            );
+            },
+            () => {
+              if (method) {
+                method()
+              }
+            });
       }
 
       let data = cloneDeep(model);
@@ -626,14 +714,32 @@ export class ToFormlyPipe implements PipeTransform {
       } else if ("parent" in fieldConfig.parent && "parent" in fieldConfig.parent.parent) {
         data = {...fieldConfig.parent.parent.parent.model, ...data};
       }
-      const key = this.hashCode(JSON.stringify(data));
+
+      let key = 'oneTime'
+      if (!oneTime) {
+        key = this.hashCode(JSON.stringify(data));
+      }
+
+      // If we can evaluate the method locally, do so rather than calling the back end.
+      try {
+        formState[variableKey][key] = this.javascriptEval(p.value, data)
+        return formState[variableKey][key]
+      } catch(e) {
+        // If this is a hide expression, stop here and report an error.
+        if(p.id == 'hide_expression') {
+          console.log("Unable to evaluate the hide expression.", p.value)
+        }
+      }
+
       if (!(key in formState[variableKey])) {
         formState[variableKey][key] = formState[variableKey].default;
         formState[variableSubjectKey].next({expression: p.value, data, key});
       }
       // We immediately return the variable, but it might change due to the above observable.
       return formState[variableKey][key];
+
     };
+
   }
 
   private  hashCode(str) {

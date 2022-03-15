@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component} from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { FieldArrayType, FormlyFieldConfig, FormlyFormOptions } from '@ngx-formly/core';
 import { RepeatSectionDialogData } from '../../../types/repeat-section-dialog-data';
@@ -6,9 +6,11 @@ import { RepeatSectionDialogComponent } from '../repeat-section-dialog/repeat-se
 import { ApiService } from '../../../services/api.service';
 import { cloneDeep } from 'lodash';
 import { RepeatSectionConfirmDialogComponent } from '../repeat-section-confirm-dialog/repeat-section-confirm-dialog.component';
+import {clone, isNullOrUndefined} from '@ngx-formly/core/lib/utils';
 
 @Component({
   selector: 'lib-repeat-section',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './repeat-section.component.html',
   styleUrls: ['./repeat-section.component.scss'],
 })
@@ -16,6 +18,7 @@ export class RepeatSectionComponent extends FieldArrayType {
   constructor(
     public dialog: MatDialog,
     protected api: ApiService,
+    private changeDetector: ChangeDetectorRef
   ) {
     super();
   }
@@ -51,16 +54,18 @@ export class RepeatSectionComponent extends FieldArrayType {
           console.log("Removing group")
           super.remove(i);
         }
+        console.log("This field is ", this.field)
         console.log("updating model at ", i, model);
-        super.add(i, model);
+        super.add(i, model, {markAsDirty: true});
+        this.changeDetector.detectChanges()
       }
 
       this.field.formControl.updateValueAndValidity();
       this.field.fieldGroup.forEach(fg => {
-        console.log("Field Groups are: ", fg.model['ldap']);
+        console.log("Field Groups are: ", fg);
         fg.formControl.updateValueAndValidity();
       })
-
+      console.log("The Model is ", this.field.parent.model)
     });
   }
 
@@ -73,10 +78,12 @@ export class RepeatSectionComponent extends FieldArrayType {
 
     dialogRef.afterClosed().subscribe(result => {
       if (result == true) {
-        this.remove(i);
+        this.remove(i)
+        this.changeDetector.detectChanges()
       }
     });
   }
+
 
   remove(i: number) {
     for (const field of this.field.fieldGroup[i].fieldGroup) {

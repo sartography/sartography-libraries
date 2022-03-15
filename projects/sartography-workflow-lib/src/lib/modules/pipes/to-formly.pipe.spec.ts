@@ -52,9 +52,9 @@ describe('ToFormlyPipe', () => {
     const before: BpmnFormJsonField[] = [
       {
         id: 'full_name',
-        label: 'What is your quest?',
+        label: '\'has_grail ? "What shall we do now?" : "What is your quest?"\'',
         type: 'string',
-        default_value: 'I seek the Holy Grail!',
+        default_value: '\'has_grail ? "Take a nap" : "I seek the Holy Grail!"\'',
         validation: [
           {
             name: 'max_length',
@@ -75,14 +75,6 @@ describe('ToFormlyPipe', () => {
             value: 'favorite_color !== "blue" || favorite_color !== "yellow"'
           },
           {
-            id: 'label_expression',
-            value: 'has_grail ? "What shall we do now?" : "What is your quest?"'
-          },
-          {
-            id: 'value_expression',
-            value: 'has_grail ? "Take a nap" : "I seek the Holy Grail!"'
-          },
-          {
             id: 'placeholder',
             value: 'State your quest here, in a complete sentence.'
           },
@@ -101,15 +93,10 @@ describe('ToFormlyPipe', () => {
     console.log(after[0])
     expect(after[0].key).toEqual(before[0].id);
     expect(after[0].type).toEqual('input');
-    expect(after[0].defaultValue).toEqual(before[0].default_value);
-    expect(after[0].templateOptions.label).toEqual(before[0].label);
     expect(after[0].hideExpression).toEqual(jasmine.any(Function));
-    expect(after[0].expressionProperties['templateOptions.required']).toEqual(jasmine.any(Function));
     expect(after[0].expressionProperties['templateOptions.label']).toEqual(jasmine.any(Function));
-    expect(after[0].expressionProperties['model.full_name']).toEqual(jasmine.any(Function));
-    expect(after[0].templateOptions.placeholder).toEqual(before[0].properties[4].value);
-    expect(after[0].templateOptions.description).toEqual(before[0].properties[5].value);
-    expect(after[0].templateOptions.markdownDescription).toEqual(before[0].properties[6].value);
+    expect(after[0].templateOptions.description).toEqual(before[0].properties[3].value);
+    expect(after[0].templateOptions.markdownDescription).toEqual(before[0].properties[4].value);
     expect(after[0].templateOptions.maxLength).toEqual(200);
     expect(after[0].templateOptions.minLength).toEqual(5);
   });
@@ -118,7 +105,7 @@ describe('ToFormlyPipe', () => {
     const before: BpmnFormJsonField[] = [
       {
         id: 'random_number',
-        label: 'Pick a number. Any number',
+        label: '\'Pick a number. Any number\'',
         type: 'long',
         properties: [{id: 'read_only', value: 'true'}]
       }
@@ -131,7 +118,7 @@ describe('ToFormlyPipe', () => {
     const before: BpmnFormJsonField[] = [
       {
         id: 'airspeed',
-        label: 'What is the airspeed veolocity of an unladen swallow?',
+        label: '\'What is the airspeed veolocity of an unladen swallow?\'',
         type: 'long',
       }
     ];
@@ -145,9 +132,9 @@ describe('ToFormlyPipe', () => {
     const before: BpmnFormJsonField[] = [
       {
         id: 'should_ask_color',
-        label: 'Does color affect your mood?',
+        label: '\'Does color affect your mood?\'',
         type: 'boolean',
-        default_value: 'false',
+        default_value: '\'false\'',
         validation: [
           {
             name: 'required',
@@ -165,8 +152,7 @@ describe('ToFormlyPipe', () => {
     const after = pipe.transform(before);
     expect(after[0].key).toEqual(before[0].id);
     expect(after[0].type).toEqual('radio');
-    expect(after[0].defaultValue).toEqual(false);
-    expect(after[0].templateOptions.label).toEqual(before[0].label);
+    expect(after[0].expressionProperties['templateOptions.label']).toEqual(jasmine.any(Function));
     expect(after[0].templateOptions.required).toEqual(true);
     expect(after[0].templateOptions.options[0].value).toEqual(true);
     expect(after[0].templateOptions.options[0].label).toEqual('Yes');
@@ -177,9 +163,9 @@ describe('ToFormlyPipe', () => {
     const before: BpmnFormJsonField[] =[
       {
         id: 'should_do_checkbox',
-        label: 'Does this do the checkbox?',
+        label: '\'Does this do the checkbox?\'',
         type: 'boolean',
-        default_value: 'false',
+        default_value: '\'false\'',
         properties: [
           {
             id: 'boolean_property',
@@ -196,9 +182,9 @@ describe('ToFormlyPipe', () => {
     const before: BpmnFormJsonField[] = [
       {
         id: 'favorite_color',
-        label: 'What is your favorite color?',
+        label: '\'What is your favorite color?\'',
         type: 'enum',
-        default_value: 'red',
+        default_value: '\'red\'',
         options: [
           {id: 'red', name: 'Red'},
           {id: 'green', name: 'Green'},
@@ -219,11 +205,9 @@ describe('ToFormlyPipe', () => {
       }
     ];
     const defaultEnumValue = {value: 'red', label: 'Red'};
-    const after = await pipe.transform(before);
+    const after = pipe.transform(before);
     expect(after[0].key).toEqual(before[0].id);
     expect(after[0].type).toEqual('select');
-    expect(after[0].defaultValue).toEqual(defaultEnumValue);
-    expect(after[0].templateOptions.label).toEqual(before[0].label);
     expect(after[0].templateOptions.required).toEqual(true);
 
     // Stupid hack to check length of options array because its
@@ -240,20 +224,18 @@ describe('ToFormlyPipe', () => {
     const afterMulticheckbox = await pipe.transform(before);
     expect(afterMulticheckbox[0].type).toEqual('select');
     expect(afterMulticheckbox[0].templateOptions.multiple).toEqual(true);
-    expect(afterMulticheckbox[0].defaultValue).toEqual([defaultEnumValue]);
 
     before[0].properties[1] = {id: 'enum_type', value: 'radio'};
     const afterRadio = await pipe.transform(before);
     expect(afterRadio[0].type).toEqual('radio_data');
     expect(afterRadio[0].className).toEqual('vertical-radio-group');
-    expect(afterRadio[0].defaultValue).toEqual(defaultEnumValue);
   });
 
   it('converts date field to Formly date field', async () => {
     const before: BpmnFormJsonField[] = [
       {
         id: 'pb_time',
-        label: 'What time is it?',
+        label: '\'What time is it?\'',
         type: 'date',
         default_value: '1955-11-12T22:04:12.345Z'
       }
@@ -262,16 +244,13 @@ describe('ToFormlyPipe', () => {
     expect(after[0].key).toEqual(before[0].id);
     expect(after[0].type).toEqual('datepicker');
 
-    const afterDate = await after[0].defaultValue;
-    expect(afterDate.toISOString()).toEqual(before[0].default_value);
-    expect(after[0].templateOptions.label).toEqual(before[0].label);
   });
 
   it('converts long field to Formly number field', () => {
     const before: BpmnFormJsonField[] = [
       {
         id: 'random_number',
-        label: 'Pick a number between 1 and 999',
+        label: '\'Pick a number between 1 and 999\'',
         type: 'long',
         validation: [
           {name: 'min', config: '1'},
@@ -283,7 +262,6 @@ describe('ToFormlyPipe', () => {
     expect(after[0].key).toEqual(before[0].id);
     expect(after[0].type).toEqual('input');
     expect(after[0].templateOptions.type).toEqual('number');
-    expect(after[0].templateOptions.label).toEqual(before[0].label);
     expect(after[0].templateOptions.min).toEqual(1);
     expect(after[0].templateOptions.max).toEqual(999);
   });
@@ -292,14 +270,13 @@ describe('ToFormlyPipe', () => {
     const before: BpmnFormJsonField[] = [
       {
         id: 'upload_file',
-        label: 'TPS Report',
+        label: '\'TPS Report\'',
         type: 'file'
       }
     ];
     const after = pipe.transform(before, fileParams);
     expect(after[0].key).toEqual(before[0].id);
     expect(after[0].type).toEqual('file');
-    expect(after[0].templateOptions.label).toEqual(before[0].label);
     expect(after[0].templateOptions.workflow_id).toEqual(workflowId);
     expect(after[0].templateOptions.study_id).toEqual(studyId);
   });
@@ -308,7 +285,7 @@ describe('ToFormlyPipe', () => {
     const before: BpmnFormJsonField[] = [
       {
         id: 'upload_file',
-        label: 'TPS Report',
+        label: '\'TPS Report\'',
         type: 'file',
         properties: [
         {id: 'doc_code', value: '"my_doc_code"'},
@@ -318,7 +295,6 @@ describe('ToFormlyPipe', () => {
     const after = pipe.transform(before, fileParams);
     expect(after[0].key).toEqual(before[0].id);
     expect(after[0].type).toEqual('file');
-    expect(after[0].templateOptions.label).toEqual(before[0].label);
     expect(after[0].templateOptions.workflow_id).toEqual(workflowId);
     expect(after[0].templateOptions.study_id).toEqual(studyId);
     expect(after[0].templateOptions.doc_code).not.toBeNull();
@@ -329,21 +305,20 @@ describe('ToFormlyPipe', () => {
     const before: BpmnFormJsonField[] = [
       {
         id: 'upload_files',
-        label: 'My New Filing Technique Is Unstoppable',
+        label: '\'My New Filing Technique Is Unstoppable\'',
         type: 'files'
       }
     ];
     const after = pipe.transform(before);
     expect(after[0].key).toEqual(before[0].id);
     expect(after[0].type).toEqual('files');
-    expect(after[0].templateOptions.label).toEqual(before[0].label);
   });
 
   it('converts textarea field to Formly textarea field', () => {
     const before: BpmnFormJsonField[] = [
       {
         id: 'life_story',
-        label: 'Write a short novel that sardonically recounts the story of your life from the perspective of your best frenemy.',
+        label: '\'Write a short novel that sardonically recounts the story of your life from the perspective of your best frenemy.\'',
         type: 'textarea',
         properties: [
           {id: 'rows', value: '7'},
@@ -355,7 +330,6 @@ describe('ToFormlyPipe', () => {
     const after1 = pipe.transform(before);
     expect(after1[0].key).toEqual(before[0].id);
     expect(after1[0].type).toEqual('textarea');
-    expect(after1[0].templateOptions.label).toEqual(before[0].label);
     expect(after1[0].templateOptions.rows).toEqual(7);
     expect(after1[0].templateOptions.cols).toEqual(3);
     expect(after1[0].templateOptions.autosize).toEqual(true);
@@ -370,7 +344,7 @@ describe('ToFormlyPipe', () => {
     const before: BpmnFormJsonField[] = [
       {
         id: 'mobile_num',
-        label: 'TPS Report',
+        label: '\'TPS Report\'',
         type: 'tel'
       }
     ];
@@ -378,14 +352,13 @@ describe('ToFormlyPipe', () => {
     expect(after[0].key).toEqual(before[0].id);
     expect(after[0].type).toEqual('input');
     expect(after[0].templateOptions.type).toEqual('tel');
-    expect(after[0].templateOptions.label).toEqual(before[0].label);
   });
 
   it('converts email field to Formly email field', () => {
     const before: BpmnFormJsonField[] = [
       {
         id: 'email',
-        label: 'Email address',
+        label: '\'Email address\'',
         type: 'email'
       }
     ];
@@ -393,14 +366,13 @@ describe('ToFormlyPipe', () => {
     expect(after[0].key).toEqual(before[0].id);
     expect(after[0].type).toEqual('input');
     expect(after[0].templateOptions.type).toEqual('email');
-    expect(after[0].templateOptions.label).toEqual(before[0].label);
   });
 
   it('converts URL field to Formly URL field', () => {
     const before: BpmnFormJsonField[] = [
       {
         id: 'tps_report',
-        label: 'TPS Report',
+        label: '\'TPS Report\'',
         type: 'url'
       }
     ];
@@ -408,19 +380,18 @@ describe('ToFormlyPipe', () => {
     expect(after[0].key).toEqual(before[0].id);
     expect(after[0].type).toEqual('input');
     expect(after[0].templateOptions.type).toEqual('url');
-    expect(after[0].templateOptions.label).toEqual(before[0].label);
   });
 
   it('converts autocomplete field to Formly autocomplete field', () => {
     const before: BpmnFormJsonField[] = [
       {
         id: 'title',
-        label: 'Recipe title',
+        label: '\'Recipe title\'',
         type: 'input',
       },
       {
         id: 'ingredients',
-        label: 'Find Ingredient',
+        label: '\'Find Ingredient\'',
         type: 'autocomplete',
         properties: [
           {id: 'autocomplete_num', value: '15'},
@@ -428,7 +399,7 @@ describe('ToFormlyPipe', () => {
       },
       {
         id: 'instructions',
-        label: 'Write some instructions on making this recipe',
+        label: '\'Write some instructions on making this recipe\'',
         type: 'textarea',
       },
     ];
@@ -437,7 +408,6 @@ describe('ToFormlyPipe', () => {
     expect(getAutocompleteNumResultsSpy).toHaveBeenCalledWith(before[1], 5);
     expect(after[1].key).toEqual(before[1].id);
     expect(after[1].type).toEqual('autocomplete');
-    expect(after[1].templateOptions.label).toEqual(before[1].label);
     expect(after[1].validators['validation']).toEqual(['autocomplete']);
 
   });
@@ -480,7 +450,7 @@ describe('ToFormlyPipe', () => {
     const before: BpmnFormJsonField[] = [
       {
         id: 'first_name',
-        label: 'First Name',
+        label: '\'First Name\'',
         type: 'string',
         properties: [
           {id: 'group', value: 'Contact Info'},
@@ -488,7 +458,7 @@ describe('ToFormlyPipe', () => {
       },
       {
         id: 'line_1',
-        label: 'Street Address Line 1',
+        label: '\'Street Address Line 1\'',
         type: 'string',
         properties: [
           {id: 'group', value: 'Address'},
@@ -496,7 +466,7 @@ describe('ToFormlyPipe', () => {
       },
       {
         id: 'line_2',
-        label: 'Street Address Line 1',
+        label: '\'Street Address Line 1\'',
         type: 'string',
         properties: [
           {id: 'group', value: 'Address'},
@@ -504,7 +474,7 @@ describe('ToFormlyPipe', () => {
       },
       {
         id: 'last_name',
-        label: 'Last Name',
+        label: '\'Last Name\'',
         type: 'string',
         properties: [
           {id: 'group', value: 'Contact Info'},
@@ -512,7 +482,7 @@ describe('ToFormlyPipe', () => {
       },
       {
         id: 'favorite_number',
-        label: 'Favorite Number',
+        label: '\'Favorite Number\'',
         type: 'long',
       },
     ];
@@ -533,7 +503,6 @@ describe('ToFormlyPipe', () => {
 
     // Last item has no group
     expect(after[2].key).toEqual(before[4].id);
-    expect(after[2].templateOptions.label).toEqual(before[4].label);
     expect(after[2].fieldGroup).toBeUndefined();
   });
 
@@ -542,7 +511,7 @@ describe('ToFormlyPipe', () => {
     const before: BpmnFormJsonField[] = [
       {
         id: 'first_name',
-        label: 'First Name',
+        label: '\'First Name\'',
         type: 'string',
         validation: [
           {name: 'repeat_required', config: 'true'},
@@ -559,7 +528,7 @@ describe('ToFormlyPipe', () => {
       },
       {
         id: 'line_1',
-        label: 'Street Address Line 1',
+        label: '\'Street Address Line 1\'',
         type: 'string',
         properties: [
           {id: 'repeat', value: 'Contact'},
@@ -568,7 +537,7 @@ describe('ToFormlyPipe', () => {
       },
       {
         id: 'line_2',
-        label: 'Street Address Line 1',
+        label: '\'Street Address Line 1\'',
         type: 'string',
         properties: [
           {id: 'repeat', value: 'Contact'},
@@ -577,7 +546,7 @@ describe('ToFormlyPipe', () => {
       },
       {
         id: 'last_name',
-        label: 'Last Name',
+        label: '\'Last Name\'',
         type: 'string',
         properties: [
           {id: 'repeat', value: 'Contact'},
@@ -586,7 +555,7 @@ describe('ToFormlyPipe', () => {
       },
       {
         id: 'favorite_number',
-        label: 'Favorite Number',
+        label: '\'Favorite Number\'',
         type: 'long',
       },
     ];
@@ -601,7 +570,6 @@ describe('ToFormlyPipe', () => {
     const repeatSection = after[0].fieldGroup[0];
     expect(repeatSection.key).toEqual(before[0].properties[0].value);
     expect(repeatSection.expressionProperties).toBeDefined();
-    expect(repeatSection.templateOptions.label).toEqual(before[0].properties[2].value);
     expect(repeatSection.templateOptions.buttonLabel).toEqual(before[0].properties[1].value);
     expect(repeatSection.templateOptions.editOnly).toBeFalse();
     expect(repeatSection.templateOptions.required).toBeTrue();
@@ -614,20 +582,15 @@ describe('ToFormlyPipe', () => {
     expect(repeatGroup1.key).toBeUndefined('fieldGroup key should be empty so Formly does not wrap the group data model');
     expect(repeatGroup1).toBeDefined();
     expect(repeatGroup1.fieldGroup[0]).toBeDefined();
-    expect(repeatGroup1.fieldGroup[0].templateOptions.label).toEqual(before[0].label);
-    expect(repeatGroup1.fieldGroup[1].templateOptions.label).toEqual(before[3].label);
 
     // Repeat Section - Group 2
     const repeatGroup2 = repeatSection.fieldArray.fieldGroup[1];
     expect(repeatGroup2.key).toBeUndefined('fieldGroup key should be empty so Formly does not wrap the group data model');
     expect(repeatGroup2).toBeDefined();
     expect(repeatGroup2.fieldGroup[0]).toBeDefined();
-    expect(repeatGroup2.fieldGroup[0].templateOptions.label).toEqual(before[1].label);
-    expect(repeatGroup2.fieldGroup[1].templateOptions.label).toEqual(before[2].label);
 
     // Last item has no group
     expect(after[1].key).toEqual(before[4].id);
-    expect(after[1].templateOptions.label).toEqual(before[4].label);
     expect(after[1].fieldGroup).toBeUndefined();
     expect(after[1].fieldArray).toBeUndefined();
   });
@@ -637,7 +600,7 @@ describe('ToFormlyPipe', () => {
     const before: BpmnFormJsonField[] = [
       {
         id: 'bad_field',
-        label: 'Mystery Field',
+        label: '\'Mystery Field\'',
         type: 'mystery',
         properties: [
           {id: 'bad_prop', value: 'whatever'}
@@ -654,9 +617,9 @@ describe('ToFormlyPipe', () => {
     const before: BpmnFormJsonField[] = [
       {
         id: 'favorite_color',
-        label: 'What is your favorite color?',
+        label: '\'What is your favorite color?\'',
         type: 'enum',
-        default_value: 'red',
+        default_value: '\'red\'',
         options: [
           {id: 'red', name: 'Red'},
           {id: 'green', name: 'Green'},

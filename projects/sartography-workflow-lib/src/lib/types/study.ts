@@ -8,15 +8,17 @@ import {LdapInfo} from './user';
 
 export enum StudyStatus {
   IN_PROGRESS = 'in_progress',
-  HOLD = 'hold',
   OPEN_FOR_ENROLLMENT = 'open_for_enrollment',
+  CR_CONNECT_COMPLETE = 'cr_connect_complete',
+  HOLD = 'hold',
   ABANDONED = 'abandoned',
 }
 
 export enum StudyStatusLabels {
   IN_PROGRESS = 'In Progress',
+  OPEN_FOR_ENROLLMENT = 'IRB Open to Enrollment',
+  CR_CONNECT_COMPLETE = 'CRConnect Complete',
   HOLD = 'Hold',
-  OPEN_FOR_ENROLLMENT = 'Open to Enrollment',
   ABANDONED = 'Abandoned',
 }
 
@@ -30,7 +32,9 @@ export enum ProgressStatus {
   APPROVED = 'approved',
   APPROVED_WITH_CONDITIONS = 'approved_with_conditions',
   DEFERRED = 'deferred',
-  DISAPPROVED = 'disapproved'
+  DISAPPROVED = 'disapproved',
+  READY_FOR_PRE_REVIEW = 'ready_for_pre_review',
+  RESUBMITTED_FOR_PRE_REVIEW = 'resubmitted_for_pre_review'
 }
 
 export enum ProgressStatusLabels {
@@ -43,8 +47,11 @@ export enum ProgressStatusLabels {
   APPROVED = 'Approved',
   APPROVED_WITH_CONDITIONS = 'Approved with Conditions',
   DEFERRED = 'Deferred',
-  DISAPPROVED = 'Disapproved'
+  DISAPPROVED = 'Disapproved',
+  READY_FOR_PRE_REVIEW = 'Ready for Pre-Review',
+  RESUBMITTED_FOR_PRE_REVIEW = 'Resubmitted for Pre-Review'
 }
+
 
 export const ProtocolBuilderRequiredDocs = {
   1: `Investigators Brochure`,
