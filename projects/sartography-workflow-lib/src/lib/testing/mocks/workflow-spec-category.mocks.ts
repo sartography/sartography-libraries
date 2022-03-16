@@ -1,5 +1,10 @@
-import {WorkflowSpecCategory} from '../../types/workflow';
+import {WorkflowCategoryMetadata, WorkflowSpecCategory, WorkflowState} from '../../types/workflow';
 import {mockWorkflowMetas} from './stats.mocks';
+
+export const mockCategoryMetaData: WorkflowCategoryMetadata = {
+  id: '0',
+  state: WorkflowState.HIDDEN,
+}
 
 export const mockWorkflowSpecCategory0: WorkflowSpecCategory = {
   id: '0',
@@ -23,7 +28,7 @@ export const mockWorkflowSpecCategory2: WorkflowSpecCategory = {
   admin: false,
 };
 export const mockWorkflowSpecCategory3: WorkflowSpecCategory = {
-  id: '2',
+  id: '3',
   display_name: 'Weird thing',
   display_order: 3,
   workflows: mockWorkflowMetas,
