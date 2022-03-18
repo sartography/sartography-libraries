@@ -19,6 +19,7 @@ export const mockStudy0: Study = {
   inactive: false,
   categories: mockWorkflowSpecCategories,
   progress_status: ProgressStatus.APPROVED,
+  progress: 0,
 };
 
 export const mockStudy1: Study = {
@@ -33,6 +34,7 @@ export const mockStudy1: Study = {
   inactive: false,
   categories: mockWorkflowSpecCategories,
   progress_status: ProgressStatus.APPROVED,
+  progress: 0,
 };
 
 export const mockStudies: Study[] = [
@@ -101,5 +103,6 @@ export const newRandomStudy = (): Study => {
     sponsor: _randomWords(2),
     title: _randomWords(10),
     inactive: false,
+    progress: 0,
   };
 };

@@ -116,6 +116,7 @@ export interface Study {
   events?: TaskEvent[];
   events_history?: StudyEvent[];
   progress_status?: ProgressStatus;
+  progress: number;
 
 }
 
