@@ -622,10 +622,11 @@ export class ApiService {
   }
 
   /** Get Task Events */
-  getTaskEvents(action?: TaskAction, studyId?: number, workflowId?: number): Observable<TaskEvent[]> {
+  getTaskEvents(action?: TaskAction, onlylanes?: boolean, studyId?: number, workflowId?: number): Observable<TaskEvent[]> {
     const url = this.apiRoot + this.endpoints.taskEvents;
     let httpParams = new HttpParams();
     if (action)  { httpParams = httpParams.set('action', action); }
+    if (onlylanes) { httpParams = httpParams.set('onlylanes', onlylanes.toString())}
     if (studyId) { httpParams = httpParams.set('study', studyId.toString()); }
     if (workflowId) { httpParams = httpParams.set('workflow', workflowId.toString()); }
 
