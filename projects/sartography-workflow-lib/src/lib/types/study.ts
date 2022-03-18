@@ -102,6 +102,7 @@ export interface Study {
   ind_number?: string;
   last_updated?: Date;
   primary_investigator_id?: string;
+  primary_investigator?: string;
   status?: StudyStatus;
   sponsor?: string;
   user_uid?: string;
