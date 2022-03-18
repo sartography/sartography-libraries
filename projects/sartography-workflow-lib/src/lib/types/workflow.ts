@@ -33,7 +33,14 @@ export interface WorkflowSpecCategory {
   display_name: string;
   display_order?: number;
   workflows?: WorkflowMetadata[];
+  meta?: WorkflowCategoryMetadata;
   admin: boolean;
+}
+
+export interface WorkflowCategoryMetadata {
+  id?: string;
+  state?: WorkflowState;
+  state_message?: string;
 }
 
 export interface WorkflowMetadata {
