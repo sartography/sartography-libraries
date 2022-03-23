@@ -15,6 +15,7 @@ import { Workflow, WorkflowSpec, WorkflowSpecCategory } from '../types/workflow'
 import { WorkflowTask } from '../types/workflow-task';
 import { isSignedIn } from '../util/is-signed-in';
 import {TaskLogQuery} from '../types/task-log';
+import {GitRepo} from "../types/git";
 
 @Injectable({
   providedIn: 'root'
@@ -89,6 +90,12 @@ export class ApiService {
     setCurrentTaskForWorkflow: '/workflow/{workflow_id}/task/{task_id}/set_token',
     fieldOptionsLookup: '/workflow/{workflow_id}/lookup/{task_spec_name}/{field_id}',
     workflowLogs: '/workflow/{workflow_id}/log',
+
+    // Git Repo
+    gitRepo: '/git_repo',
+    gitRepoMerge: '/git_repo/merge',
+    gitRepoPush: '/git_repo/push',
+    gitRepoPull: '/git_repo/pull',
 
     // Tools
     eval: '/eval',
@@ -866,6 +873,41 @@ export class ApiService {
     return this.httpClient
       .get<Object[]>(url, { params })
       .pipe(catchError(err => ApiService._handleError(err)));
+  }
+
+  /** Get the git repo */
+  gitRepo(): Observable<GitRepo> {
+     const url = this.apiRoot + this.endpoints.gitRepo;
+     return this.httpClient
+       .get<GitRepo>(url)
+       .pipe(catchError(err => ApiService._handleError(err)));
+  }
+
+  gitRepoMerge(branch: string) {
+    const url = this.apiRoot + this.endpoints.gitRepoMerge;
+    let params = new HttpParams()
+      .append('branch', branch)
+
+     return this.httpClient
+       .get<Object[]>(url, { params })
+       .pipe(catchError(err => ApiService._handleError(err)));
+  }
+
+  gitRepoPush(comment: string)  {
+    const url = this.apiRoot + this.endpoints.gitRepoPush;
+    let params = new HttpParams()
+      .append('comment', comment)
+
+     return this.httpClient
+       .get<Object[]>(url, { params })
+       .pipe(catchError(err => ApiService._handleError(err)));
+  }
+
+  gitRepoPull(): Observable<Object[]>  {
+    const url = this.apiRoot + this.endpoints.gitRepoPull;
+     return this.httpClient
+       .get<Object[]>(url)
+       .pipe(catchError(err => ApiService._handleError(err)));
   }
 
   /** Evaluate an expression using the api, which should return a true or false value */
