@@ -48,13 +48,51 @@ export class FileFieldComponent extends FileBaseComponent implements OnInit  {
 
   addFile(file: File) {
     // First, remove any existing file if it exists.
+    console.log('addFile: this.selectedFileMeta: ', this.selectedFileMeta)
     if (this.selectedFileMeta) {
-      this.api.deleteFileMeta(this.selectedFileMeta.id).subscribe(() => {
-        this._addFile(file);
-      });
+      console.log('addFile: this.selectedFileMeta: ');
+      // this.api.deleteFileMeta(this.selectedFileMeta.id).subscribe(() => {
+      //   this._addFile(file);
+      // });
+      this._updateFile(file, this.selectedFileMeta);
+      // this._updateFileMeta(this.selectedFileMeta);
     } else {
+      console.log('addFile: not this.selectedFileMeta: ');
       this._addFile(file);
     }
+  }
+
+  _updateFileMeta(fileMeta: FileMeta) {
+    console.log('_updateFileMeta: fileMeta: ', fileMeta)
+    this.api.updateFileMeta(fileMeta).subscribe(fm => {
+      this.selectedFileMeta = fm;
+    });
+  }
+
+  _updateFile(file: File, fileMeta: FileMeta) {
+    console.log('this: ', this);
+    console.log('this.fieldKey: ', this.fieldKey);
+    console.log('file: ', file);
+    console.log('fileMeta: ', fileMeta);
+    let docCode = this.fieldKey;
+    if ('doc_code' in this.field.templateOptions) {
+      docCode = this.field.templateOptions.doc_code;
+    }
+    fileMeta.form_field_key = docCode;
+    this.fileParams.form_field_key = fileMeta.form_field_key;
+    fileMeta.name = file.name;
+
+    // this.api.updateFileMeta(fileMeta).subscribe(fm => {
+    //   this.selectedFileMeta = fm;
+    // });
+    this.api.updateFileData(fileMeta, file).subscribe(fm => {
+      this.selectedFile = file;
+      // this.selectedFileMeta = fm;
+      this.model[this.fieldKey] = this.selectedFileMeta;
+      this.fileId = fm.id;
+      this.formControl.setValue(fm);
+      console.log('File Field Model', this.model);
+    });
   }
 
   _addFile(file: File) {
