@@ -86,6 +86,6 @@ export interface FileParams {
   workflow_id?: number;
   study_id?: number;
   task_spec_name?: string;
-  form_field_key?: string | number | string[];
+  irb_doc_code?: string | number | string[];
 }
 

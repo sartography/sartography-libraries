@@ -408,7 +408,7 @@ describe('ApiService', () => {
   it('should add a file for a given workflow task form field', () => {
     const params: FileParams = {
       workflow_id: mockWorkflow0.id,
-      form_field_key: 'some_field_id',
+      irb_doc_code: 'some_field_id',
     };
     service.addFile(params, mockFileMeta0, mockFile0).subscribe(data => {
       expect(data.workflow_spec_id).toEqual(mockFileMeta0.workflow_spec_id);
@@ -416,7 +416,7 @@ describe('ApiService', () => {
       expect(data.content_type).toEqual(mockFileMeta0.content_type);
     });
 
-    const queryString = `workflow_id=${params.workflow_id}&form_field_key=${params.form_field_key}`;
+    const queryString = `workflow_id=${params.workflow_id}&irb_doc_code=${params.irb_doc_code}`;
     const req = httpMock.expectOne('apiRoot/file?' + queryString);
     expect(req.request.method).toEqual('POST');
     req.flush(mockFileMeta0);

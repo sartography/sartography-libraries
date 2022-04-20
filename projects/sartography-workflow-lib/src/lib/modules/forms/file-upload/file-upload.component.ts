@@ -98,7 +98,7 @@ export class FileUploadComponent extends FileBaseComponent {
       type: getFileType(file),
       study_id: this.studyId,
       workflow_id: this.workflowId,
-      form_field_key: this.fieldKey,
+      irb_doc_code: this.fieldKey,
     };
     this.api.addFile(this.fileParams, fileMeta, file).subscribe(fm => {
       this.fileMetas.add(fm);

@@ -74,7 +74,7 @@ describe('FileBaseComponent', () => {
     expect(fp).toBeTruthy();
     expect(fp.study_id).toEqual(9);
     expect(fp.workflow_id).toEqual(10);
-    expect(fp.form_field_key).toEqual('hi');
+    expect(fp.irb_doc_code).toEqual('hi');
   });
 
 });
