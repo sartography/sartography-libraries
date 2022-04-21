@@ -1,14 +1,15 @@
 import {Injectable, Pipe, PipeTransform} from '@angular/core';
 import {FormlyFieldConfig} from '@ngx-formly/core';
 import { cloneDeep } from 'lodash';
-import {Observable, of, Subject, timer} from 'rxjs';
+import {defer, from, Observable, of, Subject, timer} from 'rxjs';
 import {isIterable} from 'rxjs/internal-compatibility';
-import {ApiService} from '../../services/api.service';
 import {FileParams} from '../../types/file';
 import {BpmnFormJsonField, BpmnFormJsonFieldEnumValue, BpmnFormJsonFieldProperty} from '../../types/json';
 import isEqual from 'lodash.isequal';
 import {catchError, debounceTime, mergeMap} from 'rxjs/operators';
 import {ApiError} from '../../types/api';
+import {ScriptService} from '../../services/script.service';
+import {PythonService} from '../../services/python.service';
 
 export function checkNumeric(field,event){
   if (event.shiftKey){
@@ -125,7 +126,13 @@ export interface PythonEvaluation {
 })
 export class ToFormlyPipe implements PipeTransform {
   private defaultFileParams: FileParams = {};
-  constructor(private apiService?: ApiService) {
+
+  /**
+   * For evaluations to work correctly, the python service must be loaded, and ready to execute at the time of construction.
+   * @param apiService
+   * @param pythonService
+   */
+  constructor(private pythonService?: PythonService) {
   }
 
   transform(value: BpmnFormJsonField[], fileParams = this.defaultFileParams, model: []= [], ...args: any[]): FormlyFieldConfig[] {
@@ -144,7 +151,6 @@ export class ToFormlyPipe implements PipeTransform {
       };
 
       // Convert bpmnjs field type to Formly field type
-      let def = {id: "default", value: field.default_value};
       switch (field.type) {
         case 'enum':
           resultField.type = 'select';
@@ -156,16 +162,16 @@ export class ToFormlyPipe implements PipeTransform {
             }
             return option;
           });
-          this.setDefaultValue(model, resultField, field, def);
+          this.setDefaultValue(model, resultField, field, field.default_value);
           break;
         case 'string':
           resultField.type = 'input';
-          this.setDefaultValue(model, resultField, field, def);
+          this.setDefaultValue(model, resultField, field, field.default_value);
           resultField.modelOptions.updateOn = 'blur';
           break;
         case 'textarea':
           resultField.type = 'textarea';
-          this.setDefaultValue(model, resultField, field, def);
+          this.setDefaultValue(model, resultField, field, field.default_value);
           resultField.templateOptions.rows = 5;
           resultField.modelOptions.updateOn = 'blur'
           break;
@@ -174,7 +180,7 @@ export class ToFormlyPipe implements PipeTransform {
           resultField.templateOptions.type = 'number';
           resultField.templateOptions.keydown= checkNumeric;
           resultField.templateOptions.attributes= { onpaste: 'return false;'};
-          this.setDefaultValue(model, resultField, field, def);
+          this.setDefaultValue(model, resultField, field, field.default_value);
           resultField.modelOptions.updateOn = 'blur'
           resultField.validators = {validation: ['number']};
           break;
@@ -182,21 +188,21 @@ export class ToFormlyPipe implements PipeTransform {
           resultField.type = 'input';
           resultField.templateOptions.type = 'url';
           resultField.modelOptions.updateOn = 'blur'
-          this.setDefaultValue(model, resultField, field, def);
+          this.setDefaultValue(model, resultField, field, field.default_value);
           resultField.validators = {validation: ['url']};
           break;
         case 'email':
           resultField.type = 'input';
           resultField.templateOptions.type = 'email';
           resultField.modelOptions.updateOn = 'blur'
-          this.setDefaultValue(model, resultField, field, def);
+          this.setDefaultValue(model, resultField, field, field.default_value);
           resultField.validators = {validation: ['email']};
           break;
         case 'tel':
           resultField.type = 'input';
           resultField.templateOptions.type = 'tel';
           resultField.modelOptions.updateOn = 'blur'
-          this.setDefaultValue(model, resultField, field, def);
+          this.setDefaultValue(model, resultField, field, field.default_value);
           resultField.validators = {validation: ['phone']};
           break;
         case 'boolean':
@@ -212,13 +218,13 @@ export class ToFormlyPipe implements PipeTransform {
               {value: false, label: 'No'},
             ];
           }
-          this.setDefaultValue(model, resultField, field, def);
+          this.setDefaultValue(model, resultField, field, field.default_value);
           break;
         case 'date':
           resultField.type = 'datepicker';
           resultField.modelOptions.updateOn = 'blur'
           if (field.default_value) {
-            this.setDefaultValue(model, resultField, field, def);
+            this.setDefaultValue(model, resultField, field, field.default_value);
             resultField.defaultValue = new Date(resultField.defaultValue);
           }
           resultField.templateOptions = {
@@ -249,10 +255,9 @@ export class ToFormlyPipe implements PipeTransform {
 
       // Resolve the label
       if(field.label) {
-        let label = {id: "label", value: field.label}
         resultField.templateOptions.label = ""
         resultField.expressionProperties['templateOptions.label'] =
-          this.getPythonEvalFunction(field, label, '', null, true);
+          this.getPythonEvalFunction(field, field.label, '');
       }
 
       // Convert bpmnjs field validations to Formly field requirements
@@ -304,19 +309,19 @@ export class ToFormlyPipe implements PipeTransform {
               resultField.templateOptions.repeatSectionEditOnly = this._stringToBool(p.value);
               break;
             case 'repeat_hide_expression':
-              resultField.templateOptions.repeatSectionHideExpression = this.getPythonEvalFunction(field, p);
+              resultField.templateOptions.repeatSectionHideExpression = this.getPythonEvalFunction(field, p.value);
               break;
             case 'hide_expression':
-              resultField.hideExpression = this.getPythonEvalFunction(field, p);
+              resultField.hideExpression = this.getPythonEvalFunction(field, p.value);
               break;
             case 'repeat_required_expression':
-              resultField.templateOptions.repeatSectionRequiredExpression = this.getPythonEvalFunction(field, p);
+              resultField.templateOptions.repeatSectionRequiredExpression = this.getPythonEvalFunction(field, p.value);
               break;
             case 'required_expression':
-              resultField.expressionProperties['templateOptions.required'] = this.getPythonEvalFunction(field, p);
+              resultField.expressionProperties['templateOptions.required'] = this.getPythonEvalFunction(field, p.value);
               break;
             case 'read_only_expression':
-              resultField.expressionProperties['templateOptions.readonly'] = this.getPythonEvalFunction(field, p);
+              resultField.expressionProperties['templateOptions.readonly'] = this.getPythonEvalFunction(field, p.value);
               resultField.expressionProperties['templateOptions.floatLabel'] = `field.templateOptions.readonly ? 'always' : ''`;
               resultField.expressionProperties.className = this._readonlyClassName;
               break;
@@ -329,19 +334,19 @@ export class ToFormlyPipe implements PipeTransform {
               }
               break;
             case 'placeholder':
-              resultField.expressionProperties['templateOptions.placeholder'] = this.getPythonEvalFunction(field, p);
+              resultField.expressionProperties['templateOptions.placeholder'] = this.getPythonEvalFunction(field, p.value);
               break;
             case 'description':
               resultField.templateOptions.description = p.value;
-              resultField.expressionProperties['templateOptions.description'] = this.getPythonEvalFunction(field, p);
+              resultField.expressionProperties['templateOptions.description'] = this.getPythonEvalFunction(field, p.value);
               break;
             case 'help':
               resultField.templateOptions.help = p.value;
-              resultField.expressionProperties['templateOptions.help'] = this.getPythonEvalFunction(field, p);
+              resultField.expressionProperties['templateOptions.help'] = this.getPythonEvalFunction(field, p.value);
               break;
             case 'markdown_description':
               resultField.templateOptions.markdownDescription = p.value;
-              resultField.expressionProperties['templateOptions.markdownDescription'] = this.getPythonEvalFunction(field, p);
+              resultField.expressionProperties['templateOptions.markdownDescription'] = this.getPythonEvalFunction(field, p.value);
               break;
             case 'autosize':
               resultField.templateOptions.autosize = this._stringToBool(p.value);
@@ -366,7 +371,7 @@ export class ToFormlyPipe implements PipeTransform {
                 if (p.value === 'checkbox') {
                    resultField.modelOptions.updateOn = 'blur'
                   if (field.default_value) {
-                    this.setDefaultValue(model, resultField, field, def);
+                    this.setDefaultValue(model, resultField, field, field.default_value);
                     resultField.defaultValue = new Array(resultField.defaultValue);
                   } else {
                     resultField.defaultValue = [];
@@ -383,7 +388,7 @@ export class ToFormlyPipe implements PipeTransform {
               }
               break;
             case 'doc_code':
-              resultField.expressionProperties['templateOptions.doc_code'] = this.getPythonEvalFunction(field, p);
+              resultField.expressionProperties['templateOptions.doc_code'] = this.getPythonEvalFunction(field, p.value);
               break;
             default:
               break;
@@ -540,214 +545,69 @@ export class ToFormlyPipe implements PipeTransform {
     return grouped;
   }
 
-  protected setDefaultValue(model: any, resultField: FormlyFieldConfig, field: BpmnFormJsonField, def: any) {
+  protected setDefaultValue(model: any, resultField: FormlyFieldConfig, field: BpmnFormJsonField, def_value: any) {
     let model_value = resultField.key.toString().split('.').reduce((o,i)=> o[i], model);
-    if (def.value == null || (model_value !== undefined && model_value !== null)) {
+    if (def_value == null || (model_value !== undefined && model_value !== null)) {
       return;
     }
+    resultField.defaultValue = this.pythonService.eval(def_value, model)
+    //console.log("Setting the default value of ", field.id, model_value)
+    //resultField.expressionProperties['model.' + field.id] = this.getPythonEvalFunction(field, def.value, resultField.defaultValue);
+  }
 
-    try {
-      resultField.defaultValue = this.javascriptEval(def.value, model)
-    } catch(e) {
-      // If this is a hide expression, stop here and report an error.
-      resultField.expressionProperties['model.' + field.id] = this.getPythonEvalFunction(field, def, resultField.defaultValue);
+
+  protected getPythonEvalFunction(field: BpmnFormJsonField, expression: string, defaultValue:any = false) {
+    // We return a function that can be called many times.
+    return (model: any, formState: any, fieldConfig: FormlyFieldConfig): any => {
+      let data = this.getEvalContext(model, formState, fieldConfig)
+      if (this.pythonService.isReady()) {
+        return this.pythonService.eval(expression, data, defaultValue);
+      } else {
+        return defaultValue;
+      }
     }
   }
 
   /**
-   * Expressions should be evaluated as python, but it is very expensive to call the backend
-   * to make these calculations.  Whenever possible, evaluate the expression in the browser
-   * instead.
-    * @protected
+   * The context for any python evaluation will be the model.  But repeating sections really only have a porition of
+   * the model to reference in Formly, so we have to add the parent models context back in so we can make reference
+   * to other data in the model/task.data
+   * @private
    */
-  protected javascriptEval(expression, model, defaultResult="no_default") {
-    expression = expression.trim()
+  private getEvalContext(model:any, formState: any, fieldConfig: FormlyFieldConfig) {
+    let data = cloneDeep(model);
 
-    // If this is True or False, just return that.
-    if (expression === 'True') return true;
-    if (expression === 'False') return false;
-
-    // If this is just a quoted string, evaluate it to handle any escaped quotes.
-    let match = expression.match(/^(["'])(.*?(?<!\\)(\\\\)*)\1$/is)
-    if (match) {
-      return eval(expression);
+    // Give fields a default value of None (so they can be used in dynamic expressions, and dont error out)
+    for (let field of fieldConfig.parent.fieldGroup) {
+      if (field.key && !(field.key.toString() in data)){
+        data[field['key']] = null;
+      }
     }
 
-    // If this is a single world (no spaces) and is a variable in the model, return it.
-    // Also, handle any dot notation in the process.
-    if(expression.match(/^[\w_\-.]+$/)) {
-      return expression.split('.').reduce((o,i)=> o[i], model)
+    // Field parent.parent (repeats, groups)
+    if (fieldConfig.parent.parent) {
+      for (let field of fieldConfig.parent.parent.fieldGroup) {
+        if (field.key && !(field.key.toString() in data)) {
+          data[field['key']] = null;
+        }
+      }
     }
 
-    // If this is an expression that matches not XXX or not(XXX), where XXX is in the model, eval that.
-    let not_match = expression.match(/^not[ \(](\w+)\)?$/)
-    if(not_match && model.hasOwnProperty(not_match[1])) {
-      return !(this.javascriptEval(not_match[1], model))
+    // Establish the data model that the evaluation will be based upon.  This may be
+    // 'mainModel', if this is being handled in a form that was created in a repeat section, or it
+    // may include the data extracted from a great grandparent, if one exists, which will happen in
+    // repeat sections, where the parent is fieldArray, and the grandparent is a list of field arrays,
+    // and the great grandparent is the original form field.  I AM SORRY, if you are here trying to
+    // debug this.
+    if (formState.hasOwnProperty('mainModel')) {
+      data = {...formState.mainModel, ...data};
+    } else if ("parent" in fieldConfig.parent && "parent" in fieldConfig.parent.parent) {
+      data = {...fieldConfig.parent.parent.parent.model, ...data};
     }
 
-    // If this contains a comparison, split, eval each side, and compare the two.
-    let compare_match = expression.match(/(.*) ?(==|!=| and | or ) ?(.*)$/)
-    if(compare_match) {
-      let arg1 = this.javascriptEval(compare_match[1], model)
-      let arg2 = this.javascriptEval(compare_match[3], model)
-      let comp = compare_match[2]
-      if (comp == '!=')
-        return arg1 !== arg2
-      else if (comp == '==')
-        return arg1 === arg2
-      else if (comp == 'and')
-        return arg1 && arg2
-      else if (comp == 'or')
-        return arg1 || arg2
-    }
-    if (defaultResult === "no_default") {
-      throw SyntaxError("unable to evaluate expression " + expression)
-    }
+    return data
   }
 
-  /** Returns a function that can be used in template options and hide expressions that will
-   * evaluate a python expression using an api endpoint eventually updating the assigned variable
-   * to the correct value.
-   * You can pass an optional method, which should be called when the result completes.
-   */
-  protected getPythonEvalFunction(field: BpmnFormJsonField, p: BpmnFormJsonFieldProperty,
-                                  defaultValue:any = false, method = null, oneTime=false) {
-
-    // Establish some variables to be added to the form state.
-    const variableKey = p.value;  // The actual value we want to return
-    const variableSubjectKey = p.value + '_subject'; // A subject to add api calls to.
-    const variableSubscriptionKey = p.value + '_subscription'; // a subscription.
-    const varLastFormState = p.value + '_LAST_STATE'
-
-    // Here is the function to execute to get the value.
-    return (model: any, formState: any, fieldConfig: FormlyFieldConfig) => {
-
-      if (!formState) {
-        formState = {};
-      }
-
-      if(oneTime && formState[variableKey] != null  && formState[variableKey] != undefined) {
-        return formState[variableKey]['oneTime']
-      }
-
-      // A bit of code to warn us when we are calling this 1000's of times.
-      const c_key = 'total_python_eval_count';
-      if(!(c_key in formState)) {
-        formState[c_key] = 0;
-      } else {
-        formState[c_key] += 1;
-        if (formState[c_key] % 10000 === 0) {
-          console.warn("WARNING!  The Python Eval Function is being called excessively.  " +
-            "Current count " + formState[c_key] )
-        }
-      }
-
-      // Do this only the first time it is called to establish some subjects and subscriptions.
-      // Set up a variable that can be returned, and a variable subject that can be debounced,
-      // calls to the api will eventually end up in the formState[variable]
-      if (!(formState.hasOwnProperty(variableKey))) {
-        formState[variableKey] = {};
-        formState[variableKey].default = defaultValue;
-        formState[variableSubjectKey] = new Subject<PythonEvaluation>();  // To debounce on this function
-        formState[variableSubscriptionKey] = formState[variableSubjectKey].pipe(
-          mergeMap((subj: PythonEvaluation) => this.apiService.eval(subj.expression, subj.data, subj.key)))
-          .pipe(
-            // If the api service gets an error, handle it here, but don't error out our subscribers, so we
-            // can make subsequent calls.
-            catchError(err => of([]))
-          )
-          .subscribe(
-            response => {
-              // wrap the assignment to the variable in a promise - so that it gets evaluated as a part
-              // of angular's next round of DOM updates, so we avoid modifying the state in the middle of a call.
-              // If there is no error, update the value.
-              if (!response.hasOwnProperty('error')) {
-                Promise.resolve(null).then(() => {
-                  if(response.result != formState[variableKey][response.key]) {
-                    // The last successful evaluation becomes the new default, this keeps things from flickering.
-                    formState[variableKey].default = response.result;
-                    formState[variableKey][response.key] = response.result;
-                    // Assure that the field is updated in the display with the new information.
-                    fieldConfig.formControl.updateValueAndValidity({onlySelf: true, emitEvent: true});
-                  }
-                });
-              }
-            },
-            (error: ApiError) => {
-              console.warn(`Failed to update field ${field.id} unable to process expression. ${error.message}`);
-              formState[variableKey] = 'error';
-            },
-            () => {
-              if (method) {
-                method()
-              }
-            });
-      }
-
-      let data = cloneDeep(model);
-      delete data[field.id];  // eDeep(model);do not consider the current field when calculating the data model hash.\
-
-      // Give fields a default value of None (so they can be used in dynamic expressions)
-      for (let field of fieldConfig.parent.fieldGroup) {
-        if (field.key && !(field.key.toString() in data)){
-           data[field['key']] = null;
-        }
-      }
-
-      // Field parent.parent (repeats, groups)
-      if (fieldConfig.parent.parent) {
-        for (let field of fieldConfig.parent.parent.fieldGroup) {
-          if (field.key && !(field.key.toString() in data)) {
-            data[field['key']] = null;
-          }
-        }
-      }
-
-      // Establish the data model that the evaluation will be based upon.  This may be
-      // 'mainModel', if this is being handled in a form that was created in a repeat section, or it
-      // may include the data extracted from a great grandparent, if one exists, which will happen in
-      // repeat sections, where the parent is fieldArray, and the grandparent is a list of field arrays,
-      // and the great grandparent is the original form field.  I AM SORRY, if you are here trying to
-      // debug this.
-      if (formState.hasOwnProperty('mainModel')) {
-        data = {...formState.mainModel, ...data};
-      } else if ("parent" in fieldConfig.parent && "parent" in fieldConfig.parent.parent) {
-        data = {...fieldConfig.parent.parent.parent.model, ...data};
-      }
-
-      let key = 'oneTime'
-      if (!oneTime) {
-        key = this.hashCode(JSON.stringify(data));
-      }
-
-      // If we can evaluate the method locally, do so rather than calling the back end.
-      try {
-        formState[variableKey][key] = this.javascriptEval(p.value, data)
-        return formState[variableKey][key]
-      } catch(e) {
-        // If this is a hide expression, stop here and report an error.
-        if(p.id == 'hide_expression') {
-          console.log("Unable to evaluate the hide expression.", p.value)
-        }
-      }
-
-      if (!(key in formState[variableKey])) {
-        formState[variableKey][key] = formState[variableKey].default;
-        formState[variableSubjectKey].next({expression: p.value, data, key});
-      }
-      // We immediately return the variable, but it might change due to the above observable.
-      return formState[variableKey][key];
-
-    };
-
-  }
-
-  private  hashCode(str) {
-    /* eslint-disable no-bitwise */
-    return str.split('').reduce((prevHash, currVal) =>
-      (((prevHash << 5) - prevHash) + currVal.charCodeAt(0)) | 0, 0);
-    /* eslint-enable no-bitwise */
-  }
 
   /** Get num_results property from given field, or return the given default if no num_results property found. */
   private _getAutocompleteNumResults(field: BpmnFormJsonField, defaultNum: number): number {

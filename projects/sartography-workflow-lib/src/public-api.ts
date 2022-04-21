@@ -43,6 +43,8 @@ export * from './lib/services/auth-interceptor';
 export * from './lib/services/error-interceptor';
 export * from './lib/services/google-analytics.service';
 export * from './lib/services/interval/interval.service';
+export * from './lib/services/python.service';
+export * from './lib/services/piodide.service';
 
 // Static Files
 export * from './lib/static/bpmn';

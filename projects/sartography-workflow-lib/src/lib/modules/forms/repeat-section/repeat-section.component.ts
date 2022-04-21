@@ -39,7 +39,6 @@ export class RepeatSectionComponent extends FieldArrayType {
       options,
     };
     const cachedData: RepeatSectionDialogData = cloneDeep(dialogData);
-    console.log('Cache Data:', cachedData);
     const dialogRef = this.dialog.open(RepeatSectionDialogComponent, {
       maxWidth: '100vw',
       maxHeight: '100vh',
@@ -49,23 +48,17 @@ export class RepeatSectionComponent extends FieldArrayType {
 
     dialogRef.afterClosed().subscribe((model: any) => {
       if (model) {
-        console.log("This model is ", model)
         if (this.field.fieldGroup.length > i) {
-          console.log("Removing group")
           super.remove(i);
         }
-        console.log("This field is ", this.field)
-        console.log("updating model at ", i, model);
         super.add(i, model, {markAsDirty: true});
         this.changeDetector.detectChanges()
       }
 
       this.field.formControl.updateValueAndValidity();
       this.field.fieldGroup.forEach(fg => {
-        console.log("Field Groups are: ", fg);
         fg.formControl.updateValueAndValidity();
       })
-      console.log("The Model is ", this.field.parent.model)
     });
   }
 

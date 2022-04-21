@@ -4,16 +4,15 @@ import {MatBottomSheetModule} from '@angular/material/bottom-sheet';
 import {Router} from '@angular/router';
 import {ApiService} from '../../services/api.service';
 import {MockEnvironment} from '../../testing/mocks/environment.mocks';
-import {FileParams} from '../../types/file';
 import {BpmnFormJsonField} from '../../types/json';
 import {ToFormlyPipe} from './to-formly.pipe';
 import {APP_BASE_HREF} from '@angular/common';
-import {isBoolean} from "util";
+import {PythonService} from '../../services/python.service';
 
 describe('ToFormlyPipe', () => {
   let httpMock: HttpTestingController;
   let pipe: ToFormlyPipe;
-  let apiService: ApiService;
+  let pythonService: PythonService;
   const mockRouter = {navigate: jasmine.createSpy('navigate')};
   const workflowId = 20;
   const studyId = 15;
@@ -30,7 +29,7 @@ describe('ToFormlyPipe', () => {
         ToFormlyPipe,
       ],
       providers: [
-        ApiService,
+        PythonService,
         {provide: 'APP_ENVIRONMENT', useClass: MockEnvironment},
         {provide: APP_BASE_HREF, useValue: '/'},
         {provide: Router, useValue: mockRouter},
@@ -40,8 +39,8 @@ describe('ToFormlyPipe', () => {
 
   beforeEach(() => {
     httpMock = TestBed.inject(HttpTestingController);
-    apiService = TestBed.inject(ApiService);
-    pipe = new ToFormlyPipe(apiService);
+    pythonService = TestBed.inject(PythonService);
+    pipe = new ToFormlyPipe(pythonService);
   });
 
   it('should create a pipe instance', () => {
