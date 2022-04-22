@@ -51,15 +51,17 @@ export class FileFieldComponent extends FileBaseComponent implements OnInit  {
     console.log('addFile: this.selectedFileMeta: ', this.selectedFileMeta)
     if (this.selectedFileMeta) {
       console.log('addFile: this.selectedFileMeta: ');
-      // this.api.deleteFileMeta(this.selectedFileMeta.id).subscribe(() => {
+      // this.api.deleteFile(this.selectedFileMeta.id).subscribe(() => {
       //   this._addFile(file);
       // });
-      this._updateFile(file, this.selectedFileMeta);
+      this.api.deleteFile(this.selectedFileMeta.id);
+      // this._updateFile(file, this.selectedFileMeta);
       // this._updateFileMeta(this.selectedFileMeta);
-    } else {
-      console.log('addFile: not this.selectedFileMeta: ');
-      this._addFile(file);
+    // } else {
+    //   console.log('addFile: not this.selectedFileMeta: ');
+    //   this._addFile(file);
     }
+    this._addFile(file);
   }
 
   _updateFileMeta(fileMeta: FileMeta) {
@@ -79,7 +81,7 @@ export class FileFieldComponent extends FileBaseComponent implements OnInit  {
       docCode = this.field.templateOptions.doc_code;
     }
     fileMeta.form_field_key = docCode;
-    this.fileParams.form_field_key = fileMeta.form_field_key;
+    this.fileParams.irb_doc_code = fileMeta.form_field_key;
     fileMeta.name = file.name;
 
     // this.api.updateFileMeta(fileMeta).subscribe(fm => {

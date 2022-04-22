@@ -574,6 +574,15 @@ export class ApiService {
     return this.deleteFileMeta(fileMetaId, this.endpoints.referenceFile)
   }
 
+  deleteFile(fileId: number, base_url: String = this.endpoints.file): Observable<null> {
+    const url = this.apiRoot + base_url
+      .replace('file_id', fileId.toString());
+
+    return this.httpClient
+      .delete<null>(url)
+      .pipe(catchError(err => ApiService._handleError(err)));
+  }
+
   deleteFileMeta(fileMetaId: number, base_url: String = this.endpoints.file): Observable<null> {
     const url = this.apiRoot + base_url
       .replace('{file_id}', fileMetaId.toString());
