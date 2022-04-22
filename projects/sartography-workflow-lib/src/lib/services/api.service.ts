@@ -841,7 +841,7 @@ export class ApiService {
     const url = this.apiRoot + this.endpoints.fieldOptionsLookup
       .replace('{workflow_id}', fileParams.workflow_id.toString())
       .replace('{task_spec_name}', fileParams.task_spec_name.toString())
-      .replace('{field_id}', fileParams.form_field_key as string);
+      .replace('{field_id}', fileParams.irb_doc_code as string);
 
     if (fileParams.task_spec_name === null) {
       return throwError('The task spec name is not defined. Lookups will fail');

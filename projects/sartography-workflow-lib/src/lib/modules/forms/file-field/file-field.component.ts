@@ -106,8 +106,8 @@ export class FileFieldComponent extends FileBaseComponent implements OnInit  {
     if ('doc_code' in this.field.templateOptions) {
       docCode = this.field.templateOptions.doc_code;
     }
-    fileMeta.form_field_key = docCode;
-    this.fileParams.form_field_key = fileMeta.form_field_key;
+    fileMeta.irb_doc_code = docCode;
+    this.fileParams.irb_doc_code = fileMeta.irb_doc_code;
 
     this.api.addFile(this.fileParams, fileMeta, file).subscribe(fm => {
       //

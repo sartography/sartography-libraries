@@ -241,7 +241,7 @@ export class ToFormlyPipe implements PipeTransform {
           break;
         case 'autocomplete':
           const fieldFileParams = Object.assign({}, fileParams || {});
-          fieldFileParams.form_field_key = field.id;
+          fieldFileParams.irb_doc_code = field.id;
           resultField.modelOptions.updateOn = 'blur'
           resultField.type = 'autocomplete';
           resultField.templateOptions.limit = this._getAutocompleteNumResults(field, 5);

@@ -77,7 +77,7 @@ export class FormPrintoutComponent implements OnInit, OnChanges {
       study_id: this.field.templateOptions.study_id,
       workflow_id: this.field.templateOptions.workflow_id,
       task_spec_name: this.field.templateOptions.task_spec_name,
-      form_field_key: this.field.key as string,
+      irb_doc_code: this.field.key as string,
     };
     return this.api.lookupFieldOptions('', fileParams, this.model[this.key], 1).pipe(
       map(results => {
