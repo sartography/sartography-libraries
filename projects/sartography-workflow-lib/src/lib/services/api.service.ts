@@ -140,12 +140,26 @@ export class ApiService {
       .pipe(catchError(err => ApiService._handleError(err)));
   }
 
-  getDocumentDirectory(studyId: number, workflowId?: number): Observable<DocumentDirectory[]> {
+  getDocumentDirectory(studyId: number, workflowId?: number, includeArchived?: boolean): Observable<DocumentDirectory[]> {
     let url = this.apiRoot + this.endpoints.documentDirectory
       .replace('{study_id}', studyId.toString());
+    console.log('url: ', url);
+    let query_string = '?';
     if (workflowId) {
-      url = url + '?workflow_id=' + workflowId.toString();
+      query_string = query_string + 'workflow_id=' + workflowId.toString();
     }
+    console.log('query_string: ', query_string);
+    if (includeArchived) {
+      if (workflowId) {
+        query_string += '&';
+      }
+      query_string = query_string + 'include_archived=' + includeArchived.toString();
+    }
+    console.log('query_string: ', query_string);
+    if ((workflowId) || (includeArchived)){
+      url = url + query_string;
+    }
+    console.log('url: ', url);
     return this.httpClient
       .get<DocumentDirectory[]>(url)
       .pipe(catchError(err => ApiService._handleError(err)));
