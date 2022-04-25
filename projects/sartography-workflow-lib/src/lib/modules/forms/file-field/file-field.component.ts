@@ -110,7 +110,7 @@ export class FileFieldComponent extends FileBaseComponent implements OnInit  {
 
   removeFile() {
     if (this.selectedFileMeta) {
-      this.api.deleteFileMeta(this.selectedFileMeta.id).subscribe(() => {
+      this.api.deleteFile(this.selectedFileMeta.id).subscribe(() => {
         this.selectedFile = undefined;
         this.selectedFileMeta = undefined;
         this.model[this.fieldKey] = undefined;

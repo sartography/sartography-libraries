@@ -125,7 +125,7 @@ describe('FileFieldComponent', () => {
 
   it('should add a file', () => {
     // as a file is defined by default, it should attempt to delete it before adding the new one.
-    spyOn((component as any).api, 'deleteFileMeta').and.returnValue(of(null));
+    spyOn((component as any).api, 'deleteFile').and.returnValue(of(null));
     spyOn((component as any).api, 'addFile').and.returnValue(of(mockFileMeta0));
     component.addFile(mockFile0);
     expect(component.selectedFile).toEqual(mockFile0);
@@ -133,7 +133,7 @@ describe('FileFieldComponent', () => {
   });
 
   it('should remove a file', () => {
-    spyOn((component as any).api, 'deleteFileMeta').and.returnValue(of(null));
+    spyOn((component as any).api, 'deleteFile').and.returnValue(of(null));
     component.selectedFileMeta = mockFileMeta0;
     component.selectedFile = mockFile0;
 
