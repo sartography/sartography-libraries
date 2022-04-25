@@ -143,23 +143,19 @@ export class ApiService {
   getDocumentDirectory(studyId: number, workflowId?: number, includeArchived?: boolean): Observable<DocumentDirectory[]> {
     let url = this.apiRoot + this.endpoints.documentDirectory
       .replace('{study_id}', studyId.toString());
-    console.log('url: ', url);
     let query_string = '?';
     if (workflowId) {
       query_string = query_string + 'workflow_id=' + workflowId.toString();
     }
-    console.log('query_string: ', query_string);
     if (includeArchived) {
       if (workflowId) {
         query_string += '&';
       }
       query_string = query_string + 'include_archived=' + includeArchived.toString();
     }
-    console.log('query_string: ', query_string);
     if ((workflowId) || (includeArchived)){
       url = url + query_string;
     }
-    console.log('url: ', url);
     return this.httpClient
       .get<DocumentDirectory[]>(url)
       .pipe(catchError(err => ApiService._handleError(err)));
@@ -575,11 +571,9 @@ export class ApiService {
   }
 
   deleteFile(fileId: number, base_url: String = this.endpoints.file): Observable<null> {
-    console.log('deleteFile: ')
     const url = this.apiRoot + base_url
       .replace('{file_id}', fileId.toString());
 
-    console.log('deleteFile: url: ', url)
     return this.httpClient
       .delete<null>(url)
       .pipe(catchError(err => ApiService._handleError(err)));
@@ -862,7 +856,6 @@ export class ApiService {
 
   /** lookupFieldOptions */
   lookupFieldOptions(query: string, fileParams?: FileParams, value: string=null, limit = 5): Observable<Object[]> {
-    console.log(fileParams);
     const url = this.apiRoot + this.endpoints.fieldOptionsLookup
       .replace('{workflow_id}', fileParams.workflow_id.toString())
       .replace('{task_spec_name}', fileParams.task_spec_name.toString())

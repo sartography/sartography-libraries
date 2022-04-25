@@ -35,7 +35,6 @@ export class FileFieldComponent extends FileBaseComponent implements OnInit  {
   }
 
   onFileSelected($event: Event) {
-    console.log('onFileSelected: ')
     this.selectedFile = ($event.target as HTMLFormElement).files[0];
 
     if (this.selectedFile) {
@@ -49,30 +48,22 @@ export class FileFieldComponent extends FileBaseComponent implements OnInit  {
 
   addFile(file: File) {
     // First, remove any existing file if it exists.
-    console.log('addFile: this.selectedFileMeta: ', this.selectedFileMeta)
     if (this.selectedFileMeta) {
-      console.log('addFile: this.selectedFileMeta: ');
       this.api.deleteFile(this.selectedFileMeta.id).subscribe(() => {
         this._addFile(file);
       });
     } else {
-      console.log('addFile: not this.selectedFileMeta: ');
       this._addFile(file);
     }
   }
 
   _updateFileMeta(fileMeta: FileMeta) {
-    console.log('_updateFileMeta: fileMeta: ', fileMeta)
     this.api.updateFileMeta(fileMeta).subscribe(fm => {
       this.selectedFileMeta = fm;
     });
   }
 
   _updateFile(file: File, fileMeta: FileMeta) {
-    console.log('this: ', this);
-    console.log('this.fieldKey: ', this.fieldKey);
-    console.log('file: ', file);
-    console.log('fileMeta: ', fileMeta);
     let docCode = this.fieldKey;
     if ('doc_code' in this.field.templateOptions) {
       docCode = this.field.templateOptions.doc_code;
@@ -90,7 +81,6 @@ export class FileFieldComponent extends FileBaseComponent implements OnInit  {
       this.model[this.fieldKey] = this.selectedFileMeta;
       this.fileId = fm.id;
       this.formControl.setValue(fm);
-      console.log('File Field Model', this.model);
     });
   }
 
@@ -115,7 +105,6 @@ export class FileFieldComponent extends FileBaseComponent implements OnInit  {
       this.model[this.fieldKey] = fm;
       this.fileId = fm.id;
       this.formControl.setValue(fm);
-      console.log('File Field Model', this.model);
     });
   }
 
