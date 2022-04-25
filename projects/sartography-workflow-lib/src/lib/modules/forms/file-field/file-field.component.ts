@@ -55,8 +55,6 @@ export class FileFieldComponent extends FileBaseComponent implements OnInit  {
       this.api.deleteFile(this.selectedFileMeta.id).subscribe(() => {
         this._addFile(file);
       });
-      // this._updateFile(file, this.selectedFileMeta);
-      // this._updateFileMeta(this.selectedFileMeta);
     } else {
       console.log('addFile: not this.selectedFileMeta: ');
       this._addFile(file);
