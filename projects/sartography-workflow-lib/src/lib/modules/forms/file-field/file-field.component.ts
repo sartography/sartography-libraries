@@ -35,6 +35,7 @@ export class FileFieldComponent extends FileBaseComponent implements OnInit  {
   }
 
   onFileSelected($event: Event) {
+    console.log('onFileSelected: ')
     this.selectedFile = ($event.target as HTMLFormElement).files[0];
 
     if (this.selectedFile) {
@@ -51,17 +52,15 @@ export class FileFieldComponent extends FileBaseComponent implements OnInit  {
     console.log('addFile: this.selectedFileMeta: ', this.selectedFileMeta)
     if (this.selectedFileMeta) {
       console.log('addFile: this.selectedFileMeta: ');
-      // this.api.deleteFile(this.selectedFileMeta.id).subscribe(() => {
-      //   this._addFile(file);
-      // });
-      this.api.deleteFile(this.selectedFileMeta.id);
+      this.api.deleteFile(this.selectedFileMeta.id).subscribe(() => {
+        this._addFile(file);
+      });
       // this._updateFile(file, this.selectedFileMeta);
       // this._updateFileMeta(this.selectedFileMeta);
-    // } else {
-    //   console.log('addFile: not this.selectedFileMeta: ');
-    //   this._addFile(file);
+    } else {
+      console.log('addFile: not this.selectedFileMeta: ');
+      this._addFile(file);
     }
-    this._addFile(file);
   }
 
   _updateFileMeta(fileMeta: FileMeta) {
