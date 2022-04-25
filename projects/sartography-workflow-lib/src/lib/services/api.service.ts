@@ -575,9 +575,11 @@ export class ApiService {
   }
 
   deleteFile(fileId: number, base_url: String = this.endpoints.file): Observable<null> {
+    console.log('deleteFile: ')
     const url = this.apiRoot + base_url
-      .replace('file_id', fileId.toString());
+      .replace('{file_id}', fileId.toString());
 
+    console.log('deleteFile: url: ', url)
     return this.httpClient
       .delete<null>(url)
       .pipe(catchError(err => ApiService._handleError(err)));
