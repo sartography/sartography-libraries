@@ -144,4 +144,8 @@ describe('PythonService', () => {
     expect(service.eval('a.b.startswith(c)', {a: {b: "cat"}, c:"c"})).toEqual(true)
   })
 
+  it ('should append two strings together', () => {
+    expect(service.eval('"this and " + that', {that: "that"})).toEqual("this and that")
+  })
+
 });
