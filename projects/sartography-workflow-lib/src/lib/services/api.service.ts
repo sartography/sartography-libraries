@@ -143,21 +143,15 @@ export class ApiService {
   getDocumentDirectory(studyId: number, workflowId?: number, includeArchived?: boolean): Observable<DocumentDirectory[]> {
     let url = this.apiRoot + this.endpoints.documentDirectory
       .replace('{study_id}', studyId.toString());
-    let query_string = '?';
+    let params = new HttpParams();
     if (workflowId) {
-      query_string = query_string + 'workflow_id=' + workflowId.toString();
+      params = params.set('workflow_id', workflowId);
     }
     if (includeArchived) {
-      if (workflowId) {
-        query_string += '&';
-      }
-      query_string = query_string + 'include_archived=' + includeArchived.toString();
-    }
-    if ((workflowId) || (includeArchived)){
-      url = url + query_string;
+      params = params.set('include_archived', includeArchived);
     }
     return this.httpClient
-      .get<DocumentDirectory[]>(url)
+      .get<DocumentDirectory[]>(url, {params})
       .pipe(catchError(err => ApiService._handleError(err)));
   }
 
