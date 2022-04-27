@@ -57,33 +57,6 @@ export class FileFieldComponent extends FileBaseComponent implements OnInit  {
     }
   }
 
-  _updateFileMeta(fileMeta: FileMeta) {
-    this.api.updateFileMeta(fileMeta).subscribe(fm => {
-      this.selectedFileMeta = fm;
-    });
-  }
-
-  _updateFile(file: File, fileMeta: FileMeta) {
-    let docCode = this.fieldKey;
-    if ('doc_code' in this.field.templateOptions) {
-      docCode = this.field.templateOptions.doc_code;
-    }
-    fileMeta.form_field_key = docCode;
-    this.fileParams.irb_doc_code = fileMeta.form_field_key;
-    fileMeta.name = file.name;
-
-    // this.api.updateFileMeta(fileMeta).subscribe(fm => {
-    //   this.selectedFileMeta = fm;
-    // });
-    this.api.updateFileData(fileMeta, file).subscribe(fm => {
-      this.selectedFile = file;
-      // this.selectedFileMeta = fm;
-      this.model[this.fieldKey] = this.selectedFileMeta;
-      this.fileId = fm.id;
-      this.formControl.setValue(fm);
-    });
-  }
-
   _addFile(file: File) {
     const fileMeta: FileMeta = {
       content_type: file.type,
