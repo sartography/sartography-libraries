@@ -49,7 +49,8 @@ export enum ProgressStatusLabels {
   DEFERRED = 'Deferred',
   DISAPPROVED = 'Disapproved',
   READY_FOR_PRE_REVIEW = 'Ready for Pre-Review',
-  RESUBMITTED_FOR_PRE_REVIEW = 'Resubmitted for Pre-Review'
+  RESUBMITTED_FOR_PRE_REVIEW = 'Resubmitted for Pre-Review',
+  FINANCE_IN_PROGRESS = 'Finance In Progress'
 }
 
 
