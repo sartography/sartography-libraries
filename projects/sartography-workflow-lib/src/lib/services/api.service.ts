@@ -140,14 +140,18 @@ export class ApiService {
       .pipe(catchError(err => ApiService._handleError(err)));
   }
 
-  getDocumentDirectory(studyId: number, workflowId?: number): Observable<DocumentDirectory[]> {
+  getDocumentDirectory(studyId: number, workflowId?: number, includeArchived?: boolean): Observable<DocumentDirectory[]> {
     let url = this.apiRoot + this.endpoints.documentDirectory
       .replace('{study_id}', studyId.toString());
+    let params = new HttpParams();
     if (workflowId) {
-      url = url + '?workflow_id=' + workflowId.toString();
+      params = params.set('workflow_id', workflowId);
+    }
+    if (includeArchived) {
+      params = params.set('include_archived', includeArchived);
     }
     return this.httpClient
-      .get<DocumentDirectory[]>(url)
+      .get<DocumentDirectory[]>(url, {params})
       .pipe(catchError(err => ApiService._handleError(err)));
   }
 
@@ -560,6 +564,15 @@ export class ApiService {
     return this.deleteFileMeta(fileMetaId, this.endpoints.referenceFile)
   }
 
+  deleteFile(fileId: number, base_url: String = this.endpoints.file): Observable<null> {
+    const url = this.apiRoot + base_url
+      .replace('{file_id}', fileId.toString());
+
+    return this.httpClient
+      .delete<null>(url)
+      .pipe(catchError(err => ApiService._handleError(err)));
+  }
+
   deleteFileMeta(fileMetaId: number, base_url: String = this.endpoints.file): Observable<null> {
     const url = this.apiRoot + base_url
       .replace('{file_id}', fileMetaId.toString());
@@ -837,7 +850,6 @@ export class ApiService {
 
   /** lookupFieldOptions */
   lookupFieldOptions(query: string, fileParams?: FileParams, value: string=null, limit = 5): Observable<Object[]> {
-    console.log(fileParams);
     const url = this.apiRoot + this.endpoints.fieldOptionsLookup
       .replace('{workflow_id}', fileParams.workflow_id.toString())
       .replace('{task_spec_name}', fileParams.task_spec_name.toString())

@@ -49,7 +49,7 @@ export class FileFieldComponent extends FileBaseComponent implements OnInit  {
   addFile(file: File) {
     // First, remove any existing file if it exists.
     if (this.selectedFileMeta) {
-      this.api.deleteFileMeta(this.selectedFileMeta.id).subscribe(() => {
+      this.api.deleteFile(this.selectedFileMeta.id).subscribe(() => {
         this._addFile(file);
       });
     } else {
@@ -78,13 +78,12 @@ export class FileFieldComponent extends FileBaseComponent implements OnInit  {
       this.model[this.fieldKey] = fm;
       this.fileId = fm.id;
       this.formControl.setValue(fm);
-      console.log('File Field Model', this.model);
     });
   }
 
   removeFile() {
     if (this.selectedFileMeta) {
-      this.api.deleteFileMeta(this.selectedFileMeta.id).subscribe(() => {
+      this.api.deleteFile(this.selectedFileMeta.id).subscribe(() => {
         this.selectedFile = undefined;
         this.selectedFileMeta = undefined;
         this.model[this.fieldKey] = undefined;
