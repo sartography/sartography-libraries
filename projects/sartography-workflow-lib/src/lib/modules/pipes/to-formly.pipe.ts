@@ -314,6 +314,9 @@ export class ToFormlyPipe implements PipeTransform {
             case 'hide_expression':
               resultField.hideExpression = this.getPythonEvalFunction(field, p.value);
               break;
+            case 'value_expression':
+              resultField.expressionProperties['model.' + field.id] = this.getPythonEvalFunction(field, p.value);
+              break;
             case 'repeat_required_expression':
               resultField.templateOptions.repeatSectionRequiredExpression = this.getPythonEvalFunction(field, p.value);
               break;
@@ -321,7 +324,7 @@ export class ToFormlyPipe implements PipeTransform {
               resultField.expressionProperties['templateOptions.required'] = this.getPythonEvalFunction(field, p.value);
               break;
             case 'read_only_expression':
-              resultField.expressionProperties['templateOptions.readonly'] = this.getPythonEvalFunction(field, p.value);
+              resultField.expressionProperties['templateOptions.readonly'] = this.getPythonEvalFunction(field, p.value, false);
               resultField.expressionProperties['templateOptions.floatLabel'] = `field.templateOptions.readonly ? 'always' : ''`;
               resultField.expressionProperties.className = this._readonlyClassName;
               break;
@@ -551,8 +554,6 @@ export class ToFormlyPipe implements PipeTransform {
       return;
     }
     resultField.defaultValue = this.pythonService.eval(def_value, model)
-    //console.log("Setting the default value of ", field.id, model_value)
-    //resultField.expressionProperties['model.' + field.id] = this.getPythonEvalFunction(field, def.value, resultField.defaultValue);
   }
 
 

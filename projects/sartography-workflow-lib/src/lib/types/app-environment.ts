@@ -7,4 +7,5 @@ export interface AppEnvironment {
   title: string;
   googleAnalyticsKey: string;
   sentryKey?: string;
+  sentryEnvironment?: string;
 }
