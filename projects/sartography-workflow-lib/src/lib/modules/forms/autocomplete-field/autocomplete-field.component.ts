@@ -37,7 +37,7 @@ export class AutocompleteFieldComponent extends FieldType implements OnInit, Aft
       study_id: this.to.study_id,
       workflow_id: this.to.workflow_id,
       task_spec_name: this.to.task_spec_name,
-      form_field_key: this.key as string,
+      irb_doc_code: this.key as string,
     };
 
     this.filter = this.textInputControl.valueChanges.pipe(
