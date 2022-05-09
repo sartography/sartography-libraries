@@ -12,6 +12,7 @@ export enum WorkflowState {
   DISABLED = 'disabled',
   REQUIRED = 'required',
   OPTIONAL = 'optional',
+  LOCKED = 'locked',
 }
 
 export interface WorkflowSpec {
@@ -72,6 +73,7 @@ export interface Workflow {
   is_review?: boolean;
   title?: string;
   redirect?: number;
+  state?: string;
 }
 
 export interface WorkflowNavItem {
