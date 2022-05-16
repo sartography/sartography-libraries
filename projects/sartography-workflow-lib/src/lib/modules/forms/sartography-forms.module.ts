@@ -32,8 +32,6 @@ import {MarkdownDescriptionWrapperComponent} from './markdown-description-wrappe
 import {markdownDescriptionWrapperExtension} from './markdown-description-wrapper/markdown-description-wrapper.extension';
 import {PanelWrapperComponent} from './panel-wrapper/panel-wrapper.component';
 import {RadioDataFieldComponent} from './radio-data-field/radio-data-field.component';
-import {RepeatSectionDialogComponent} from './repeat-section-dialog/repeat-section-dialog.component';
-import {RepeatSectionComponent} from './repeat-section/repeat-section.component';
 import {
   AutocompleteValidator,
   AutocompleteValidatorMessage,
@@ -62,6 +60,7 @@ import {
 import { RepeatSectionConfirmDialogComponent } from './repeat-section-confirm-dialog/repeat-section-confirm-dialog.component';
 import {MatProgressSpinnerModule, MatSpinner} from '@angular/material/progress-spinner';
 import {ConfigOption} from '@ngx-formly/core/lib/services/formly.config';
+import {RepeatTypeComponent} from './repeat-type/repeat-type.component';
 
 
 @Injectable()
@@ -76,7 +75,7 @@ export class AppFormlyConfig {
       {name: 'file', component: FileFieldComponent, wrappers: ['form-field']},
       {name: 'files', component: FileUploadComponent, wrappers: ['form-field']},
       {name: 'radio_data', component: RadioDataFieldComponent, wrappers: ['form-field']},
-      {name: 'repeat', component: RepeatSectionComponent},
+      {name: 'repeat', component: RepeatTypeComponent},
     ],
     validators: [
       {name: 'phone', validation: PhoneValidator},
@@ -131,9 +130,8 @@ export class AppFormlyConfig {
     MarkdownDescriptionWrapperComponent,
     PanelWrapperComponent,
     RadioDataFieldComponent,
-    RepeatSectionComponent,
-    RepeatSectionDialogComponent,
     RepeatSectionConfirmDialogComponent,
+    RepeatTypeComponent
   ],
   imports: [
     CommonModule,
@@ -170,13 +168,12 @@ export class AppFormlyConfig {
     MarkdownDescriptionWrapperComponent,
     PanelWrapperComponent,
     RadioDataFieldComponent,
-    RepeatSectionComponent,
-    RepeatSectionDialogComponent,
+    RepeatTypeComponent
   ],
   providers: [],
   entryComponents: [
     HelpDialogComponent,
-    RepeatSectionDialogComponent,
+    RepeatSectionConfirmDialogComponent
   ],
 })
 export class SartographyFormsModule {

@@ -18,17 +18,16 @@ import { of } from 'rxjs';
 import { mockFormlyFieldConfig } from '../../../testing/mocks/form.mocks';
 import { FormPrintoutComponent } from '../form-printout/form-printout.component';
 import { PanelWrapperComponent } from '../panel-wrapper/panel-wrapper.component';
-import { RepeatSectionDialogComponent } from '../repeat-section-dialog/repeat-section-dialog.component';
-import { RepeatSectionComponent } from './repeat-section.component';
+import { RepeatTypeComponent } from './repeat-type.component';
 import { MockEnvironment } from '../../../testing/mocks/environment.mocks';
 import { APP_BASE_HREF } from '@angular/common';
 import { ApiService } from '../../../services/api.service';
 import { Router } from '@angular/router';
 import { FlexLayoutModule } from '@angular/flex-layout';
 
-describe('RepeatSectionComponent', () => {
-  let component: RepeatSectionComponent;
-  let fixture: ComponentFixture<RepeatSectionComponent>;
+describe('RepeatTypeComponent', () => {
+  let component: RepeatTypeComponent;
+  let fixture: ComponentFixture<RepeatTypeComponent>;
   let httpMock: HttpTestingController;
   let builder: FormlyFormBuilder;
   let form: FormGroup;
@@ -50,7 +49,7 @@ describe('RepeatSectionComponent', () => {
         FlexLayoutModule,
         FormlyModule.forRoot({
           types: [
-            {name: 'repeat', component: RepeatSectionComponent},
+            {name: 'repeat', component: RepeatTypeComponent},
           ],
           wrappers: [
             {name: 'panel', component: PanelWrapperComponent},
@@ -72,8 +71,7 @@ describe('RepeatSectionComponent', () => {
       declarations: [
         FormPrintoutComponent,
         PanelWrapperComponent,
-        RepeatSectionComponent,
-        RepeatSectionDialogComponent,
+        RepeatTypeComponent
       ],
       providers: [
         ApiService,
@@ -94,7 +92,7 @@ describe('RepeatSectionComponent', () => {
     }).overrideModule(BrowserDynamicTestingModule, {
       set: {
         entryComponents: [
-          RepeatSectionDialogComponent,
+          RepeatTypeComponent,
         ],
       },
     })
@@ -118,7 +116,7 @@ describe('RepeatSectionComponent', () => {
 
   beforeEach(() => {
     httpMock = TestBed.inject(HttpTestingController);
-    fixture = TestBed.createComponent(RepeatSectionComponent);
+    fixture = TestBed.createComponent(RepeatTypeComponent);
     component = fixture.componentInstance;
     component.field = field;
     fixture.detectChanges();
@@ -128,15 +126,6 @@ describe('RepeatSectionComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should open dialog', () => {
-    const addSpy = spyOn(FieldArrayType.prototype, 'add').and.stub();
-    // @ts-ignore
-    const openDialogSpy = spyOn(component.dialog, 'open').and.returnValue({afterClosed: () => of(mockData)});
-
-    component.openDialog(0);
-    expect(openDialogSpy).toHaveBeenCalled();
-    expect(addSpy).toHaveBeenCalled();
-  });
 
   it('should open a dialog confirming deletion of an item', () => {
     const removeSpy = spyOn(component, 'remove').and.stub();

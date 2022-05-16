@@ -3,7 +3,7 @@
 mat-card.repeat {
   background-color: $brand-primary-light;
   border-left: solid 8px $brand-primary;
-
+  margin-bottom: 12px;
   &:active, &:hover, &:focus, &:focus-within {
     background: #eeeeee;
   }

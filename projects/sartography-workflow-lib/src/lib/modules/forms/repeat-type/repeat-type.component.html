@@ -1,0 +1,27 @@
+<mat-card class="repeat" *ngFor="let field of field.fieldGroup; let i = index;">
+  <mat-card-content fxLayout="row">
+    <div fxFlex="90">
+      <formly-field class="col" [field]="field"></formly-field>
+    </div>
+    <div
+      fxFlex="10"
+      fxLayout="row"
+      fxLayoutAlign="end start"
+    >
+      <button
+        *ngIf="!field.templateOptions.editOnly"
+        (click)="confirmDelete(i)"
+        mat-icon-button
+        color="warn"
+        type="button"
+      >
+        <mat-icon>close</mat-icon>
+      </button>
+  </div>
+  </mat-card-content>
+</mat-card>
+<div style="margin:30px 0;">
+  <button color="accent"
+          mat-flat-button type="button" (click)="add()">
+    <mat-icon>add</mat-icon>Add {{ to.buttonLabel }}</button>
+</div>
