@@ -74,6 +74,7 @@ export interface Workflow {
   title?: string;
   redirect?: number;
   state?: string;
+  is_admin_workflow?: boolean;
 }
 
 export interface WorkflowNavItem {
