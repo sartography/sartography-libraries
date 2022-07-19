@@ -32,8 +32,6 @@ export const mockWorkflows: Workflow[] = [
 
 export const mockWorkflowMetadata0: WorkflowMetadata = {
   state: WorkflowState.REQUIRED,
-  completed_tasks: 0,
-  total_tasks: 10,
   category_id: mockWorkflowSpecCategory0.id,
   category_display_name: '',
   description: '',
@@ -46,8 +44,6 @@ export const mockWorkflowMetadata0: WorkflowMetadata = {
 
 export const mockWorkflowMetadata1: WorkflowMetadata = {
   state: WorkflowState.REQUIRED,
-  completed_tasks: 1,
-  total_tasks: 11,
   category_id: mockWorkflowSpecCategory1.id,
   category_display_name: '',
   description: '',

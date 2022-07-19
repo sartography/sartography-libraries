@@ -9,8 +9,6 @@ export const mockWorkflowMeta0: WorkflowMetadata = {
   state: WorkflowState.REQUIRED,
   status: WorkflowStatus.USER_INPUT_REQUIRED,
   category_display_name: '',
-  total_tasks: 5,
-  completed_tasks: 0,
   display_order: 1,
 };
 
@@ -23,8 +21,6 @@ export const mockWorkflowMeta1: WorkflowMetadata = {
   category_id: '0',
   state: WorkflowState.REQUIRED,
   status: WorkflowStatus.USER_INPUT_REQUIRED,
-  total_tasks: 10,
-  completed_tasks: 0,
   display_order: 1,
 };
 
