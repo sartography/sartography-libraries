@@ -46,8 +46,6 @@ export interface WorkflowCategoryMetadata {
 
 export interface WorkflowMetadata {
   state: WorkflowState;
-  completed_tasks: number;
-  total_tasks: number;
   category_id: string;
   category_display_name: string;
   description: string;
