@@ -15,15 +15,15 @@ export enum WorkflowTaskState {
 
 export enum WorkflowTaskType {
   BUSINESS_RULE_TASK = 'BusinessRuleTask',
-  CANCEL_TASK = 'CancelTask',
-  END_EVENT = 'EndEvent',
-  MANUAL_TASK = 'ManualTask',
-  NONE_TASK = 'NoneTask',
-  SCRIPT_TASK = 'ScriptTask',
-  START_EVENT = 'StartEvent',
-  START_TASK = 'StartTask',
-  USER_TASK = 'UserTask',
-  TEST_USER_TASK = 'TestUserTask',
+  CANCEL_TASK = 'Cancel Task',
+  END_EVENT = 'End Event',
+  MANUAL_TASK = 'Manual Task',
+  NONE_TASK = 'None Task',
+  SCRIPT_TASK = 'Script Task',
+  START_EVENT = 'Start Event',
+  START_TASK = 'Start Task',
+  USER_TASK = 'User Task',
+  TEST_USER_TASK = 'Test User Task',
 }
 
 export enum NavItemType {
