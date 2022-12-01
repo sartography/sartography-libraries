@@ -72,6 +72,7 @@ export interface Workflow {
   title?: string;
   redirect?: number;
   state?: string;
+  user_id?: string;
   is_admin_workflow?: boolean;
 }
 
