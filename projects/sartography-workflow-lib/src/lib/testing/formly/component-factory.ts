@@ -47,7 +47,8 @@ export function createComponent<T>({
     declarations: [FormlyTestComponent, ...(declarations || [])],
     imports: [ReactiveFormsModule, FormlyModule.forRoot(config), ...(imports || [])],
     providers: providers || [],
-  }).overrideComponent(FormlyTestComponent, {
+    teardown: { destroyAfterEach: false }
+}).overrideComponent(FormlyTestComponent, {
     set: {
       template,
       inputs: Object.keys(inputs),

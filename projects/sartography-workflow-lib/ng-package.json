@@ -2,23 +2,6 @@
   "$schema": "../../node_modules/ng-packagr/ng-package.schema.json",
   "dest": "../../dist/sartography-workflow-lib",
   "lib": {
-    "entryFile": "src/public-api.ts",
-    "umdModuleIds": {
-      "@ngx-formly/core": "ngxFormlyCore",
-      "@ngx-formly/material": "ngxFormlyMaterial",
-      "@ngx-formly/material/datepicker": "ngxFormlyMaterialDatepicker",
-      "ngx-file-drop": "ngxFileDrop",
-      "ngx-markdown": "ngxMarkdown",
-      "ngx-device-detector": "ngxDeviceDetector",
-      "ngx-highlightjs": "ngxHighlightjs",
-      "@yellowspot/ng-truncate": "ngTruncate",
-      "lodash.isequal": "lodashIsEqual",
-      "lodash/cloneDeep": "lodashCloneDeep",
-      "@ngx-formly/material/multicheckbox" : "ngFormlyMulticheckbox",
-      "@ngx-formly/material/radio" : "ngFormlyRadio",
-      "@sentry/browser" : "sentryBrowser",
-      "@ngx-formly/core/select" : "ngFormlySelect",
-      "lodash": "lodash"
-    }
+    "entryFile": "src/public-api.ts"
   }
 }
