@@ -4,7 +4,7 @@ import {EMPTY, Observable} from 'rxjs';
 import {debounceTime, startWith, switchMap, tap} from 'rxjs/operators';
 import {ApiService} from '../../../services/api.service';
 import {FileParams} from '../../../types/file';
-import {FormControl} from '@angular/forms';
+import {UntypedFormControl} from '@angular/forms';
 import {MatAutocompleteSelectedEvent} from '@angular/material/autocomplete';
 
 @Component({
@@ -20,7 +20,7 @@ export class AutocompleteFieldComponent extends FieldType implements OnInit, Aft
   fileParams: FileParams;
   numResults = 0;
 
-  textInputControl = new FormControl('');
+  textInputControl = new UntypedFormControl('');
 
   constructor(
     protected api: ApiService,

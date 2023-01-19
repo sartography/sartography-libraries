@@ -48,9 +48,10 @@
       }
     }
   },
-  "defaultProject": "sartography-workflow-lib",
   "cli": {
     "analytics": "bc6a81f9-c4c5-46ec-a27b-ba6ec643e910",
-    "defaultCollection": "@angular-eslint/schematics"
+    "schematicCollections": [
+      "@angular-eslint/schematics"
+    ]
   }
 }
