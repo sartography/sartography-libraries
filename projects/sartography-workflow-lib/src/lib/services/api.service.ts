@@ -35,6 +35,7 @@ export class ApiService {
     specFileList: '/workflow-specification/{spec_id}/file',
     specFile: '/workflow-specification/{spec_id}/file/{file_name}',
     specFileData: '/workflow-specification/{spec_id}/file/{file_name}/data',
+    specFileFilename: '/workflow-specification/{spec_id}/file/{file_name}/filename',
 
     // Reference Files
     referenceFileList: '/reference_file',
@@ -531,6 +532,18 @@ export class ApiService {
       .replace('{file_name}', fileMeta.name)
 
     const params = new HttpParams().set('is_primary', is_primary);
+
+    return this.httpClient
+      .put<FileMeta>(url, fileMeta, { params })
+      .pipe(catchError(err => ApiService._handleError(err)));
+  }
+
+  updateSpecFileFilename(workflowSpec: WorkflowSpec, fileMeta: FileMeta, newFilename: string): Observable<FileMeta> {
+    const url = this.apiRoot + this.endpoints.specFileFilename
+      .replace('{spec_id}', workflowSpec.id)
+      .replace('{file_name}', fileMeta.name)
+
+    const params = new HttpParams().set('new_filename', newFilename)
 
     return this.httpClient
       .put<FileMeta>(url, fileMeta, { params })
