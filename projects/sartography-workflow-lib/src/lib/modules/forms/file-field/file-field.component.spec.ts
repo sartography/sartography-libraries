@@ -1,7 +1,7 @@
 import {HttpHeaders, HttpResponse} from '@angular/common/http';
 import {HttpClientTestingModule, HttpTestingController} from '@angular/common/http/testing';
 import {async, ComponentFixture, inject, TestBed} from '@angular/core/testing';
-import {FormGroup, FormsModule, ReactiveFormsModule} from '@angular/forms';
+import {UntypedFormGroup, FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {MatBottomSheetModule} from '@angular/material/bottom-sheet';
 import {MatFormFieldModule} from '@angular/material/form-field';
 import {MatIconModule} from '@angular/material/icon';
@@ -24,7 +24,7 @@ describe('FileFieldComponent', () => {
   let fixture: ComponentFixture<FileFieldComponent>;
   let httpMock: HttpTestingController;
   let builder: FormlyFormBuilder;
-  let form: FormGroup;
+  let form: UntypedFormGroup;
   let field: FormlyFieldConfigCache;
   let config: FormlyConfig;
   const mockRouter = {navigate: jasmine.createSpy('navigate')};
@@ -63,7 +63,7 @@ describe('FileFieldComponent', () => {
   }));
 
   beforeEach(inject([FormlyFormBuilder, FormlyConfig], (formlyBuilder: FormlyFormBuilder, formlyConfig: FormlyConfig) => {
-    form = new FormGroup({});
+    form = new UntypedFormGroup({});
     config = formlyConfig;
     builder = formlyBuilder;
     field = {

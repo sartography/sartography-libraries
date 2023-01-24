@@ -1,5 +1,5 @@
 import {async, ComponentFixture, inject, TestBed} from '@angular/core/testing';
-import {FormGroup} from '@angular/forms';
+import {UntypedFormGroup} from '@angular/forms';
 import {MatNativeDateModule} from '@angular/material/core';
 import {FormlyConfig, FormlyFormBuilder, FormlyModule} from '@ngx-formly/core';
 import {FormlyFieldConfigCache} from '@ngx-formly/core/lib/components/formly.field.config';
@@ -18,7 +18,7 @@ describe('FormPrintoutComponent', () => {
   let component: FormPrintoutComponent;
   let fixture: ComponentFixture<FormPrintoutComponent>;
   let builder: FormlyFormBuilder;
-  let form: FormGroup;
+  let form: UntypedFormGroup;
   let field: FormlyFieldConfigCache;
   let config: FormlyConfig;
 
@@ -46,7 +46,7 @@ describe('FormPrintoutComponent', () => {
   }));
 
   beforeEach(inject([FormlyFormBuilder, FormlyConfig], (formlyBuilder: FormlyFormBuilder, formlyConfig: FormlyConfig) => {
-    form = new FormGroup({});
+    form = new UntypedFormGroup({});
     config = formlyConfig;
     builder = formlyBuilder;
     field = mockFormlyFieldConfig;

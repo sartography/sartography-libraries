@@ -1,6 +1,6 @@
 import {HttpClientTestingModule, HttpTestingController} from '@angular/common/http/testing';
 import {async, ComponentFixture, inject, TestBed} from '@angular/core/testing';
-import {FormGroup} from '@angular/forms';
+import {UntypedFormGroup} from '@angular/forms';
 import {MatBottomSheetModule} from '@angular/material/bottom-sheet';
 import {ActivatedRoute, convertToParamMap, Router} from '@angular/router';
 import {FormlyConfig, FormlyFormBuilder, FormlyModule} from '@ngx-formly/core';
@@ -16,7 +16,7 @@ describe('FileBaseComponent', () => {
   let fixture: ComponentFixture<FileBaseComponent>;
   let httpMock: HttpTestingController;
   let builder: FormlyFormBuilder;
-  let form: FormGroup;
+  let form: UntypedFormGroup;
   let field: FormlyFieldConfigCache;
   let config: FormlyConfig;
   const mockRouter = {navigate: jasmine.createSpy('navigate')};
@@ -40,7 +40,7 @@ describe('FileBaseComponent', () => {
   }));
 
   beforeEach(inject([FormlyFormBuilder, FormlyConfig], (formlyBuilder: FormlyFormBuilder, formlyConfig: FormlyConfig) => {
-    form = new FormGroup({});
+    form = new UntypedFormGroup({});
     config = formlyConfig;
     builder = formlyBuilder;
     field = {

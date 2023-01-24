@@ -1,4 +1,4 @@
-import {FormControl, ValidationErrors} from '@angular/forms';
+import {UntypedFormControl, ValidationErrors} from '@angular/forms';
 import {FieldType, FormlyFieldConfig} from '@ngx-formly/core';
 import isEqual from 'lodash.isequal';
 import {isNumberDefined} from '../../../util/is-number-defined';
@@ -6,7 +6,7 @@ import EMAIL_REGEX from './email.regex';
 import PHONE_REGEX from './phone.regex';
 import URL_REGEX from './url.regex';
 
-export function EmailValidator(control: FormControl): ValidationErrors {
+export function EmailValidator(control: UntypedFormControl): ValidationErrors {
   return !control.value || EMAIL_REGEX.test(control.value) ? null : {email: true};
 }
 
@@ -14,7 +14,7 @@ export function EmailValidatorMessage(err, field: FormlyFieldConfig) {
   return `"${field.formControl.value}" is not a valid email address`;
 }
 
-export function UrlValidator(control: FormControl): ValidationErrors {
+export function UrlValidator(control: UntypedFormControl): ValidationErrors {
   return !control.value || URL_REGEX.test(control.value) ? null : {url: true};
 }
 
@@ -22,7 +22,7 @@ export function UrlValidatorMessage(err, field: FormlyFieldConfig) {
   return `We cannot save "${field.formControl.value}". Please provide the full path, including http:// or https://`;
 }
 
-export function PhoneValidator(control: FormControl): ValidationErrors {
+export function PhoneValidator(control: UntypedFormControl): ValidationErrors {
   return !control.value || PHONE_REGEX.test(control.value) ? null : {phone: true};
 }
 
@@ -30,7 +30,7 @@ export function PhoneValidatorMessage(err, field: FormlyFieldConfig) {
   return `"${field.formControl.value}" is not a valid phone number`;
 }
 
-export function CheckedValidator(control: FormControl, field: FormlyFieldConfig): ValidationErrors {
+export function CheckedValidator(control: UntypedFormControl, field: FormlyFieldConfig): ValidationErrors {
   if (field.templateOptions.required) {
     return !control.value == true ? {checked: true} : null;
   } else {
@@ -60,7 +60,7 @@ export function ShowError(field: FieldType) {
     );
 }
 
-export function NumberValidator(control: FormControl): ValidationErrors {
+export function NumberValidator(control: UntypedFormControl): ValidationErrors {
   const fields = (control as any)._fields;
   if (
     fields &&
@@ -78,7 +78,7 @@ export function NumberValidatorMessage(err, field: FormlyFieldConfig) {
   return 'Please enter a number.';
 }
 
-export function AutocompleteValidator(control: FormControl): ValidationErrors {
+export function AutocompleteValidator(control: UntypedFormControl): ValidationErrors {
   const fields = (control as any)._fields;
   const isRequired = (
     fields &&
@@ -99,7 +99,7 @@ export function AutocompleteValidatorMessage(err, field: FormlyFieldConfig) {
   return 'Not a valid selection. Please edit your entry and choose an option from the displayed list.';
 }
 
-export function FileFieldValidator(control: FormControl): ValidationErrors {
+export function FileFieldValidator(control: UntypedFormControl): ValidationErrors {
   const fields = (control as any)._fields;
 
   if (
@@ -118,7 +118,7 @@ export function FileFieldValidatorMessage(err, field: FormlyFieldConfig) {
   return 'Please upload a file.';
 }
 
-export function FileUploadValidator(control: FormControl): ValidationErrors {
+export function FileUploadValidator(control: UntypedFormControl): ValidationErrors {
   const fields = (control as any)._fields;
 
   if (
@@ -137,7 +137,7 @@ export function FileUploadValidatorMessage(err, field: FormlyFieldConfig) {
   return 'Please upload a file.';
 }
 
-export function RepeatSectionValidator(control: FormControl): ValidationErrors {
+export function RepeatSectionValidator(control: UntypedFormControl): ValidationErrors {
   const fields = (control as any)._fields;
   if (
     fields &&
@@ -155,7 +155,7 @@ export function RepeatSectionValidatorMessage(err, field: FormlyFieldConfig) {
   return 'Please add at least one.';
 }
 
-export function RegexValidator(control: FormControl, field: FormlyFieldConfig, options = {regex: ''}): ValidationErrors {
+export function RegexValidator(control: UntypedFormControl, field: FormlyFieldConfig, options = {regex: ''}): ValidationErrors {
   return !control.value || RegExp(options.regex).test(control.value) ? null : {regex: true};
 }
 

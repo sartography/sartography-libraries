@@ -1,6 +1,6 @@
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { async, ComponentFixture, inject, TestBed } from '@angular/core/testing';
-import { FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { UntypedFormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatCardModule } from '@angular/material/card';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
@@ -30,7 +30,7 @@ describe('RepeatTypeComponent', () => {
   let fixture: ComponentFixture<RepeatTypeComponent>;
   let httpMock: HttpTestingController;
   let builder: FormlyFormBuilder;
-  let form: FormGroup;
+  let form: UntypedFormGroup;
   let field: FormlyFieldConfigCache;
   let config: FormlyConfig;
   const mockRouter = {navigate: jasmine.createSpy('navigate')};
@@ -100,7 +100,7 @@ describe('RepeatTypeComponent', () => {
   }));
 
   beforeEach(inject([FormlyFormBuilder, FormlyConfig], (formlyBuilder: FormlyFormBuilder, formlyConfig: FormlyConfig) => {
-    form = new FormGroup({});
+    form = new UntypedFormGroup({});
     config = formlyConfig;
     builder = formlyBuilder;
     field = {

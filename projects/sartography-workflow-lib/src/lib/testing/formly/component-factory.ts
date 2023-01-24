@@ -9,7 +9,7 @@
 import { TestBed, ComponentFixture } from '@angular/core/testing';
 import { Component, DebugElement, APP_INITIALIZER, NgModule } from '@angular/core';
 import { FormlyModule, FormlyFormBuilder, FormlyFieldConfig, ConfigOption } from '@ngx-formly/core';
-import {FormControl, FormGroup, ReactiveFormsModule} from '@angular/forms';
+import {UntypedFormControl, UntypedFormGroup, ReactiveFormsModule} from '@angular/forms';
 import { By } from '@angular/platform-browser';
 import { of } from 'rxjs';
 
@@ -47,7 +47,8 @@ export function createComponent<T>({
     declarations: [FormlyTestComponent, ...(declarations || [])],
     imports: [ReactiveFormsModule, FormlyModule.forRoot(config), ...(imports || [])],
     providers: providers || [],
-  }).overrideComponent(FormlyTestComponent, {
+    teardown: { destroyAfterEach: false }
+}).overrideComponent(FormlyTestComponent, {
     set: {
       template,
       inputs: Object.keys(inputs),
@@ -107,9 +108,9 @@ export function createFormlyFieldComponent(
       {
         provide: APP_INITIALIZER,
         useFactory: (builder: FormlyFormBuilder) => () => {
-          const testControl = new FormControl();
+          const testControl = new UntypedFormControl();
           builder.buildForm(
-            new FormGroup({test: testControl}),
+            new UntypedFormGroup({test: testControl}),
             [field],
             model,
             options
