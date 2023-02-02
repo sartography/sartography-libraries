@@ -92,7 +92,7 @@
     "zone.js": "~0.11.4"
   },
   "dependencies": {
-    "@sentry/angular": "^6.19.6",
-    "@sentry/tracing": "^6.19.6"
+    "@sentry/angular": "^7.35.0",
+    "@sentry/tracing": "^7.35.0"
   }
 }
