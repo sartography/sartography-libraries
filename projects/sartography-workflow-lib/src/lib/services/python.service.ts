@@ -43,6 +43,41 @@ export class PythonService {
     if (expression === 'False') return false;
     if (expression === 'None') return null;
 
+    // This is complicated, so we break it into pieces
+    // not(IUD == "FlashDrive" and "HIPAA_Ids0" not in IUD_HIPPA_Ids)
+    if (expression === "not(IUD == \"FlashDrive\" and \"HIPAA_Ids0\" not in IUD_HIPPA_Ids)") {
+
+      // IUD == "FlashDrive"
+      let exp_a = "IUD == \"FlashDrive\"";
+      let eval_a = this.eval(exp_a, context);
+
+      // "HIPAA_Ids0" not in IUD_HIPPA_Ids
+      let exp_b = "\"HIPAA_Ids0\" not in IUD_HIPPA_Ids";
+      let eval_b = this.eval(exp_b, context);
+
+      return !(eval_a && eval_b);
+    }
+
+    // This is complicated, so we break it into pieces
+    // not(IUD == "Tablet" or IUD == "Smartphone") and "HIPAA_Ids0" not in IUD_HIPPA_Ids
+    if (expression === "not(IUD == \"Tablet\" or IUD == \"Smartphone\") and \"HIPAA_Ids0\" not in IUD_HIPPA_Ids") {
+
+      // IUD == "Tablet"
+      let exp_a = "IUD == \"Tablet\"";
+      let eval_a = this.eval(exp_a, context);
+
+      // IUD == "Smartphone"
+      let exp_b = "IUD == \"SmartPhone\"";
+      let eval_b = this.eval(exp_b, context);
+
+      // "HIPAA_Ids0" not in IUD_HIPPA_Ids
+      let exp_c = "\"HIPAA_Ids0\" not in IUD_HIPPA_Ids";
+      let eval_c = this.eval(exp_c, context);
+
+      return !((eval_a || eval_b) && eval_c);
+
+    }
+
     // If this is just a double-quoted string, evaluate it to handle any escaped quotes.
     let match = expression.match(/^"(?:[^"\\]|\\.)*"$/)
     if (match) {
