@@ -6,7 +6,7 @@
     "start": "ng serve",
     "build": "ng build",
     "test": "ng test",
-    "test:coverage": "ng test --codeCoverage=true --watch=false --browsers=ChromeHeadless",
+    "test:coverage": "ng test --code-coverage=true --watch=false --browsers=ChromeHeadless",
     "lint": "ng lint",
     "patch-version": "cd projects/sartography-workflow-lib && npm version patch && cd ../..",
     "republish": "ng build sartography-workflow-lib && cd dist/sartography-workflow-lib && npm publish && cd ../..",
